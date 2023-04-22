@@ -1,0 +1,8 @@
+pytest
+
+#
+jsonschema>=4.17.3
+
+rfc3339-validator
+
+flake8
