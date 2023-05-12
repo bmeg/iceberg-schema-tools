@@ -1,0 +1,25 @@
+
+# CLI processor
+click
+
+# faster json
+orjson  # ~=3.8.3
+
+# pluralization
+inflection~=0.5.1
+
+# fhir model
+fhir.resources
+
+# yaml
+PyYAML
+
+#
+flatten_json
+
+#
+dataclass-csv
+
+#
+gen3
+
