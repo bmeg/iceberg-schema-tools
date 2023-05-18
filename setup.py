@@ -43,7 +43,7 @@ setup(
 
     # Versions should comply with PEP 440:
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.0.1',  # Required
+    version='0.0.2rc1',  # Required
 
     # This is a one-line description or tagline of what your project does. This
     # corresponds to the "Summary" metadata field:
@@ -123,7 +123,7 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'iceberg = tools.schema:cli'
+            'iceberg = tools.cli:cli'
         ],
     },
 
@@ -139,8 +139,7 @@ setup(
     # maintainers, and where to support the project financially. The key is
     # what's used to render the link text on PyPI.
     project_urls={  # Optional
-        'Bug Reports': 'https://source.ohsu.edu/HOP/data-etl/issues',
-        'Source': 'https://source.ohsu.edu/HOP/data-etl',
+        'Bug Reports': 'https://github.com/bmeg/iceberg-schema-tools/issues',
+        'Source': 'https://github.com/bmeg/iceberg-schema-tools/data-etl',
     },
 )
-
