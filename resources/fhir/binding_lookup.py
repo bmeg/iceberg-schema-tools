@@ -1,3 +1,4 @@
+import pathlib
 from typing import Iterator, List
 from zipfile import ZipFile
 
@@ -68,7 +69,11 @@ def main():
 
     generator = _elements_with_bindings(['5.0.0-definitions.json.zip', 'profiles-resources.json', 'profiles-others.json', 'profiles-types.json'])
 
-    connection = sqlite3.connect("element_bindings.sqlite")
+    path = pathlib.Path("~/.iceberg").expanduser()
+    path.mkdir(parents=True, exist_ok=True)
+    path = path / "element_bindings.sqlite"
+    connection = sqlite3.connect(path)
+
     with connection:
         connection.execute(f'DROP table IF EXISTS element_bindings')
         connection.execute(f'CREATE TABLE if not exists element_bindings (id PRIMARY KEY, entity Text)')
@@ -78,7 +83,7 @@ def main():
         with connection:
             cursor = connection.cursor()
             cursor.execute('select count(*) from element_bindings;')
-            print('element_bindings inserted in element_bindings.sqlite:', cursor.fetchone()[0])
+            print('element_bindings inserted in ', path, cursor.fetchone()[0])
 
 
 if __name__ == "__main__":

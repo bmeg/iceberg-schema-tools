@@ -1,6 +1,7 @@
 import copy
 import importlib
 import logging
+import pathlib
 import sqlite3
 from collections import defaultdict
 from typing import List
@@ -10,7 +11,14 @@ import orjson
 from fhir.resources.core.utils.common import get_fhir_type_name
 from fhir.resources.fhirprimitiveextension import FHIRPrimitiveExtension
 
-ELEMENT_DB = sqlite3.connect("resources/fhir/element_bindings.sqlite")
+path = pathlib.Path("~/.iceberg").expanduser()
+path.mkdir(parents=True, exist_ok=True)
+path = path / "element_bindings.sqlite"
+if not path.is_file():
+    print("Please see resources/fhir/README.md first.")
+    exit(2)
+
+ELEMENT_DB = sqlite3.connect(path)
 BASE_URI = 'http://bmeg.io/schema/0.0.2'
 
 logger = logging.getLogger(__name__)

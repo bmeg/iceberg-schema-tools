@@ -27,14 +27,15 @@ pip install -e .
 $ iceberg
 Usage: iceberg [OPTIONS] COMMAND [ARGS]...
 
+  Manage schemas.
+
 Options:
   --help  Show this message and exit.
 
 Commands:
-  cytoscape  Extract a SIF file for import into cytoscape.
-  generate   Create BMEG and gen3 schemas
-  publish    Copy dictionary to s3 (note:aws cli dependency)
-
+  compile   Create aggregated json file from individual yaml schemas
+  generate  Generate bmeg or gen3 FHIR based schemas
+  publish   Copy dictionary to s3 (note:aws cli dependency)
 
 ```
 
@@ -43,7 +44,10 @@ Commands:
 
 ```
 pip install -r requirements-dev.txt
-pytest
+pytest --cov
+---
+83%
+
 ```
 
 ## Contributing
