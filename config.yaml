@@ -192,6 +192,3 @@ extra_properties:
       enum_reference_types:
       - BodyStructure
       title: Anatomical collection site
-
-
-INFO:extra property: Patient.address_postalCode str
