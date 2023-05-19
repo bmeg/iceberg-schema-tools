@@ -1,8 +1,12 @@
+# testing
 pytest
-
-#
-jsonschema>=4.17.3
-
-rfc3339-validator
-
+pytest-cov
+# syntax check
 flake8
+# syntax enforcer
+black
+# pypi
+twine
+wheel
+# project hygene
+pre-commit

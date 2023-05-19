@@ -152,16 +152,6 @@ oct_embedded:
     cde_version: 1.0
     term_url: "https://cdebrowser.nci.nih.gov/CDEBrowser/search?elementDetails=9&FirstTimer=0&PageId=ElementDetailsGroup&publicId=5432538&version=1.0"
 
-years_smoked:
-  description: >
-    Number of years the Donor smoked. (GTEx)
-  termDef:
-    term: Person Cigarette Smoking History Pack Year Value
-    source: caDSR
-    cde_id: 2955385
-    cde_version: 1.0
-    term_url: "https://cdebrowser.nci.nih.gov/CDEBrowser/search?elementDetails=9&FirstTimer=0&PageId=ElementDetailsGroup&publicId=2955385&version=1.0"
-
 percent_eosinophil_infiltration:
   description: >
     Numeric value to represent the percentage of infiltration by eosinophils in a tumor sample or

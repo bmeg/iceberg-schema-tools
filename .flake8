@@ -1,4 +1,2 @@
 [flake8]
-extend-ignore = E501
-exclude = .git,__pycache__,docs/source/conf.py,old,build,dist
-max-complexity = 25
+max-line-length = 256
