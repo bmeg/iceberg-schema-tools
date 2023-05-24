@@ -11,13 +11,36 @@ from yaml import SafeLoader
 
 from tools.schema import _list_of_type, _scalar_of_type, _list_of_any_type, _scalar_of_any_type
 
-
 logger = logging.getLogger(__name__)
 
 cache_path = pathlib.Path("~/.iceberg").expanduser()
 cache_path.mkdir(parents=True, exist_ok=True)
 cache_path = cache_path / "requests_cache"
 requests_cache.install_cache(cache_path)
+
+
+FHIR_PRIMITIVES_TO_JSON_SCHEMA = {
+    "boolean": 'boolean',
+    "string": 'string',
+    "base64Binary": 'string',
+    "code": 'string',
+    "id": 'string',
+    "decimal": 'string',
+    "integer": 'number',
+    "unsignedInt": 'number',
+    "positiveInt": 'number',
+    "uri": 'string',
+    "oid": 'string',
+    "uuid": 'string',
+    "canonical": 'string',
+    "url": 'string',
+    "markdown": 'string',
+    "xhtml": 'string',
+    "date": 'string',
+    "dateTime": 'string',
+    "instant": 'string',
+    "time": 'string'
+}
 
 
 def _simplify_schemas(gen3_config, gen3_fixtures, schemas):  # , edge_schemas
@@ -102,9 +125,12 @@ def _add_extensions(extensions, schemas):
 
             for element_name, element in extension_elements.items():
                 type_ = element['type'][0]['code']
+                # https://github.com/nazrulworld/fhir.resources/blob/02b04257dfe2f956fb2c7825624da50f8a464afd/fhir/resources/fhirtypes.py#L33
                 if type_[0].isupper():
                     type_ = ('$ref', f"{type_}.yaml")
                 else:
+                    assert type_ in FHIR_PRIMITIVES_TO_JSON_SCHEMA, f"Unknown FHIR primitive: {type_}"
+                    type_ = FHIR_PRIMITIVES_TO_JSON_SCHEMA[type_]
                     type_ = ('type', type_)
                 property_type = type_
                 property_items = None
@@ -253,8 +279,6 @@ def _simplify_codeable_concepts(schemas: dict):
             _add_enum(property_)
             _adjust_description(property_)
 
-            if '$ref' not in property_:
-                print("?")
             del property_['$ref']
             property_['type'] = 'string'
 
