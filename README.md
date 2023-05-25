@@ -24,18 +24,34 @@ pip install -e .
 ## Use
 
 ```
-$ iceberg
-Usage: iceberg [OPTIONS] COMMAND [ARGS]...
+$ iceberg schema
+Usage: iceberg schema [OPTIONS] COMMAND [ARGS]...
 
-  Manage schemas.
+  Manage bmeg or gen3 schemas from FHIR resources.
 
 Options:
   --help  Show this message and exit.
 
 Commands:
+  generate  Generate from FHIR resources.
   compile   Create aggregated json file from individual yaml schemas
-  generate  Generate bmeg or gen3 FHIR based schemas
   publish   Copy dictionary to s3 (note:aws cli dependency)
+
+$ iceberg data
+
+Usage: iceberg data [OPTIONS] COMMAND [ARGS]...
+
+  Project data (ResearchStudy, ResearchSubjects, Patient, etc.).
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  simplify       Renders Gen3 friendly flattened records.
+  validate       Check FHIR data for validity and ACED conventions.
+  validate-gen3  Check Gen3 data for validity and ACED conventions.
+  pfb            Write simplified FHIR files to a PFB.
+  migrate        Migrate from FHIR R4B to R5.0.
 
 ```
 
@@ -46,7 +62,7 @@ Commands:
 pip install -r requirements-dev.txt
 pytest --cov
 ---
-83%
+86%
 
 ```
 
