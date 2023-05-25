@@ -53,6 +53,7 @@ def _extract_schemas(classes: List[type], base_uri: str) -> dict:
     schemas = {}
     for klass in classes:
         schema = klass.schema()
+
         assert 'title' in schema, schema
         schema['$id'] = schema['title']
 
@@ -63,7 +64,7 @@ def _extract_schemas(classes: List[type], base_uri: str) -> dict:
         schema['description'] = schema['description'].replace("""Disclaimer: Any field name ends with ``__ext`` doesn't part of\nResource StructureDefinition, instead used to enable Extensibility feature\nfor FHIR Primitive Data Types.\n""", '')
         schema['description'] = schema['description'].replace('\n', ' ')
 
-        schema['description'] += f" [See https://hl7.org/fhir/R5/{schema['title']}]"
+        schema['description'] += f" [See https://hl7.org/fhir/R5/{schema['title']}.html]"
 
         # rename python style name back to resourceType
         if 'resource_type' in schema['properties']:
