@@ -1,0 +1,131 @@
+entities:
+
+  # admin
+  Organization:
+    category: Administrative
+    links:
+      partOf:
+        required: false
+        targetProfile: http://hl7.org/fhir/StructureDefinition/Organization
+    source: null
+
+  Practitioner:
+    category: Administrative
+    source: null
+
+  PractitionerRole:
+    category: Administrative
+    links:
+      organization:
+        required: true
+        targetProfile: http://hl7.org/fhir/StructureDefinition/Organization
+      practitioner:
+        required: true
+        targetProfile: http://hl7.org/fhir/StructureDefinition/Practitioner
+    source: null
+
+  # clinical
+
+  ResearchStudy:
+    category: Administrative
+    links:
+      partOf:
+        required: false
+        targetProfile: http://hl7.org/fhir/StructureDefinition/ResearchStudy
+      principalInvestigator:
+        required: false
+        targetProfile: http://hl7.org/fhir/StructureDefinition/Practitioner
+      sponsor:
+        required: false
+        targetProfile: http://hl7.org/fhir/StructureDefinition/Organization
+    source: null
+
+  Patient:
+    category: Administrative
+    links:
+      managingOrganization:
+        required: true
+        targetProfile: http://hl7.org/fhir/StructureDefinition/Organization
+    source: null
+
+  ResearchSubject:
+    category: Administrative
+    links:
+      individual:
+        required: true
+        targetProfile: http://hl7.org/fhir/StructureDefinition/Patient
+      study:
+        required: true
+        targetProfile: http://hl7.org/fhir/StructureDefinition/ResearchStudy
+    source: null
+
+
+  Specimen:
+    category: Biospecimen
+    links:
+      subject:
+        required: true
+        targetProfile: http://hl7.org/fhir/StructureDefinition/Patient
+    source: null
+
+
+  FamilyRelationship:
+    category: Administrative
+    links:
+      subject:
+        required: true
+        targetProfile: http://hl7.org/fhir/StructureDefinition/Patient
+    source: https://nih-ncpi.github.io/ncpi-fhir-ig/StructureDefinition-family-relationship.json
+  Observation:
+    category: Clinical
+    links:
+      focus:
+        required: false
+        targetProfile: http://hl7.org/fhir/StructureDefinition/ResearchStudy
+      specimen:
+        required: false
+        targetProfile: http://hl7.org/fhir/StructureDefinition/Specimen
+      subject:
+        required: false
+        targetProfile: http://hl7.org/fhir/StructureDefinition/Patient
+    source: null
+
+  Questionnaire:
+    category: Clinical
+    links:
+      researchStudy:
+        required: true
+        targetProfile: http://hl7.org/fhir/StructureDefinition/ResearchStudy
+    source: null
+  QuestionnaireResponse:
+    category: Clinical
+    links:
+      questionnaire:
+        required: true
+        targetProfile: http://hl7.org/fhir/StructureDefinition/Questionnaire
+      subject:
+        required: true
+        targetProfile: http://hl7.org/fhir/StructureDefinition/Patient
+    source: null
+
+  DocumentReference:
+    category: data_file
+    links:
+      subject:
+        required: true
+        targetProfile: http://hl7.org/fhir/StructureDefinition/Patient
+    source: https://nih-ncpi.github.io/ncpi-fhir-ig/StructureDefinition-ncpi-drs-document-reference.json
+
+  Task:
+    category: Analysis
+    links:
+      for:
+        required: true
+        targetProfile: http://hl7.org/fhir/StructureDefinition/Patient
+      focus:
+        required: true
+        targetProfile: http://hl7.org/fhir/StructureDefinition/Specimen
+      output:
+        required: true
+        targetProfile: http://hl7.org/fhir/StructureDefinition/DocumentReference
+    source: https://nih-ncpi.github.io/ncpi-fhir-ig/StructureDefinition-ncpi-specimen-task.json

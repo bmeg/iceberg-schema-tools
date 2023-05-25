@@ -1,0 +1,1025 @@
+{
+  "resourceType": "Bundle",
+  "id": "22e0b36d-dac3-4b00-9f59-fd72f16493a8",
+  "meta": {
+    "lastUpdated": "2023-01-26T15:22:44.009+00:00"
+  },
+  "type": "searchset",
+  "total": 1,
+  "link": [
+    {
+      "relation": "self",
+      "url": "http://localhost:8090/fhir/ResearchStudy?_id=218b110b-b689-50be-8139-a1c85b378838&_revinclude=ResearchSubject%3Astudy"
+    }
+  ],
+  "entry": [
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchStudy/218b110b-b689-50be-8139-a1c85b378838",
+      "resource": {
+        "resourceType": "ResearchStudy",
+        "id": "218b110b-b689-50be-8139-a1c85b378838",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:37.918+00:00",
+          "source": "#QzooZFcZKA6zy7CW"
+        },
+        "title": "Alcoholism",
+        "status": "active",
+        "description": "Patients from 'Coherent Data Set' https://www.mdpi.com/2079-9292/11/8/1199/htm that were diagnosed with condition(s) of: Alcoholism.  Data hosted by: aced-ohsu"
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/c9a07690-1425-5ce1-b1f8-4f118dfdc59c",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "c9a07690-1425-5ce1-b1f8-4f118dfdc59c",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:41.212+00:00",
+          "source": "#PctxWLjzNpiHXNfr"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/45c11dad-2b38-4c8e-822e-7abff8a1ee1d"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/96ebd22d-9091-515f-9079-da57cdc0281e",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "96ebd22d-9091-515f-9079-da57cdc0281e",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:40.785+00:00",
+          "source": "#gBRWrf8a0sVgQocn"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/f1c84786-8b4a-4f37-b2c7-738bbc4bcc57"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/a3cf7612-9250-5f0e-8b15-3fe5f9bb1537",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "a3cf7612-9250-5f0e-8b15-3fe5f9bb1537",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:40.831+00:00",
+          "source": "#0nR7svGwnHPrVazP"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/3e28b6cb-e77c-428a-8252-ff10da76a886"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/9cad543d-bdea-5ed6-b0c9-99ed8e455aaa",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "9cad543d-bdea-5ed6-b0c9-99ed8e455aaa",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:40.905+00:00",
+          "source": "#9M37MQd0YFmcgDv9"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/fbd13aa7-d97f-4db9-814d-9e9257cd5d76"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/e7010cfe-3daf-5c3f-81b1-54bff7c34409",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "e7010cfe-3daf-5c3f-81b1-54bff7c34409",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:40.993+00:00",
+          "source": "#AmaZbxMNV9uiBj38"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/74af22f2-a67d-4aa6-b932-30383fec846b"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/674b1444-6520-50b6-8cb5-b8b5507869b4",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "674b1444-6520-50b6-8cb5-b8b5507869b4",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:41.040+00:00",
+          "source": "#EF4lJSHpojiDCoYS"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/372e3d05-3417-4f39-a3b7-08627a3d3d17"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/0a2e5534-ed99-59bb-bf21-8dceb7072100",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "0a2e5534-ed99-59bb-bf21-8dceb7072100",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:41.075+00:00",
+          "source": "#qeGkTAuloAegI2KN"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/38a48a72-d2b2-4c92-aa70-42185c77b4a1"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/b6846ecd-da0d-5c24-b238-b7aad5c773c1",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "b6846ecd-da0d-5c24-b238-b7aad5c773c1",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:41.132+00:00",
+          "source": "#Zp1utv2ruQrT8j16"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/609512d9-75f6-46fb-8245-9ad0440b27c6"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/f7d6cf10-069b-502c-8a5c-8b846298794d",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "f7d6cf10-069b-502c-8a5c-8b846298794d",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:41.175+00:00",
+          "source": "#m1Nh8F2B9i7ryQA1"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/c63f9302-5aa1-4a14-b789-b1616b102ea2"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/6db0483b-ee3e-570b-b876-2813f533bc55",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "6db0483b-ee3e-570b-b876-2813f533bc55",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:40.457+00:00",
+          "source": "#q4bsBe69XO65tYSo"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/bd88a6cc-26a4-46e0-94aa-f4dd494e39f7"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/f224ebe7-2666-5138-8e3a-02c6ec0b3a67",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "f224ebe7-2666-5138-8e3a-02c6ec0b3a67",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:40.501+00:00",
+          "source": "#182pwTtI1Usz6ClC"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/00029bcb-d551-49a4-a16f-427abd54f120"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/6ce08f2e-2731-51b7-99b5-dd0b5ab482c3",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "6ce08f2e-2731-51b7-99b5-dd0b5ab482c3",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:40.545+00:00",
+          "source": "#LRd68oawpyu2u5XQ"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/307a55af-f941-4a47-89f6-a20b31da9b66"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/adecd9e3-6e81-56c1-9410-f61782a3ddc5",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "adecd9e3-6e81-56c1-9410-f61782a3ddc5",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:40.583+00:00",
+          "source": "#hg04xyT5Nydofj5P"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/8d63a991-2dc3-4cab-8bdc-f5a59cddc926"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/8251d047-b02a-5650-affa-91b9c164374e",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "8251d047-b02a-5650-affa-91b9c164374e",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:40.623+00:00",
+          "source": "#KynyqxSs0vPDBzaY"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/c8af8fdb-fece-4ddc-a2b6-fbe024cd2c2a"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/d9814fb1-ca5a-5012-a275-fa078fc2f292",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "d9814fb1-ca5a-5012-a275-fa078fc2f292",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:40.662+00:00",
+          "source": "#YUC3lj1WyeJGRPsn"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/9168db2b-0dde-4bab-b3ac-9242f2534545"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/af99cfc9-836f-5c3b-bc0b-17750ba199ed",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "af99cfc9-836f-5c3b-bc0b-17750ba199ed",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:40.703+00:00",
+          "source": "#BH1TTs02YSglsnPs"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/13089282-6296-4df7-a0d9-22a8825dfd41"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/f59348fd-9425-53ca-97de-492c215803cc",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "f59348fd-9425-53ca-97de-492c215803cc",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:40.744+00:00",
+          "source": "#4p836F1CVl1byMIl"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/d53c77d3-d35b-4576-af68-cb3d47de2ebc"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/f194b8f8-b524-541f-bbc1-7b9ff079565e",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "f194b8f8-b524-541f-bbc1-7b9ff079565e",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:40.108+00:00",
+          "source": "#cGjF830gu8zyWcxo"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/c139f92d-daa0-46a9-96c9-20f60d648c5d"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/4d2f13f9-b5ff-522b-9399-cfad83c09b3c",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "4d2f13f9-b5ff-522b-9399-cfad83c09b3c",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:40.148+00:00",
+          "source": "#0Ump4s5KcrWIwyC4"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/041095c0-41b7-4cad-be5d-5942f5e72331"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/c1ea0d30-2890-51ff-8fbd-faa4d065737a",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "c1ea0d30-2890-51ff-8fbd-faa4d065737a",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:40.204+00:00",
+          "source": "#JhDM93dBBJ1gUwGF"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/c80ee811-45e3-41ed-b85b-6eb8fa1c1681"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/79fef301-9c06-5882-9275-8adf736b1e55",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "79fef301-9c06-5882-9275-8adf736b1e55",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:40.242+00:00",
+          "source": "#CPk9kxIH0MeKJayf"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/16c1d9e4-f8ab-4490-b48a-3101033c76a6"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/040ea83c-c619-57dd-89b4-96ba9942915a",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "040ea83c-c619-57dd-89b4-96ba9942915a",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:40.278+00:00",
+          "source": "#HaQo7b0kabnyDEln"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/6cb850d8-f386-4fdf-bc5a-ab46c90a89ac"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/6da30e54-56e9-5baa-98a8-8a92be7b579c",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "6da30e54-56e9-5baa-98a8-8a92be7b579c",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:40.322+00:00",
+          "source": "#PFH5UvuR56xyGHvu"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/6d4386de-2491-40a2-9550-d499e0e067af"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/5930b2c6-ed7e-5e83-8a3f-9f31319f63a2",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "5930b2c6-ed7e-5e83-8a3f-9f31319f63a2",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:40.361+00:00",
+          "source": "#QJhkZrMPqPlXaRtV"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/d39ba0c8-d469-4b9f-adc2-8e467cb7589a"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/1f04e2ca-5b31-5735-9ffe-369fe310dfeb",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "1f04e2ca-5b31-5735-9ffe-369fe310dfeb",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:40.408+00:00",
+          "source": "#w1D9ckIztSgrEC3b"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/86f3c450-ed66-4ead-b570-ad6b603894b8"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/1f3ce1cf-e3be-5fc6-ba8a-5ab98fd4e19c",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "1f3ce1cf-e3be-5fc6-ba8a-5ab98fd4e19c",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:39.676+00:00",
+          "source": "#yJWKj6PaQ278Ey21"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/c6e3328e-34b8-4b4d-8e60-b96764ce5b99"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/03961d60-6ca4-5f75-92e8-b8693c0116d2",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "03961d60-6ca4-5f75-92e8-b8693c0116d2",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:39.719+00:00",
+          "source": "#NYe2qYcv18y9e54B"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/1efc46e2-8aad-46be-8713-13d17e3eda83"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/7e3be6a6-a830-5392-a7cb-0b6f0347af50",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "7e3be6a6-a830-5392-a7cb-0b6f0347af50",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:39.817+00:00",
+          "source": "#i668kZdtxf3uojNB"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/de71112e-010b-4bb7-9acf-a672d47a5c2e"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/1548a602-ec1f-510a-9327-f9de1a928aa6",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "1548a602-ec1f-510a-9327-f9de1a928aa6",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:39.889+00:00",
+          "source": "#m3PxvTZyAxibaFWy"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/870e23e8-a143-4f72-ab50-3bd5852d1dcc"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/d0b18264-6766-5a02-a6ce-73453cdf0835",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "d0b18264-6766-5a02-a6ce-73453cdf0835",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:39.929+00:00",
+          "source": "#BoqhU4JyzhA8Ee6e"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/414717de-e3a5-4614-a416-d54fc63eff6e"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/6b0ccd24-1c41-5905-a616-fff1a6ae284c",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "6b0ccd24-1c41-5905-a616-fff1a6ae284c",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:39.973+00:00",
+          "source": "#fRm3tOuaO975MVhR"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/98b28333-ba72-4c29-bcfa-8162bad951ee"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/18748953-24b9-538e-aab2-1a701d09e01a",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "18748953-24b9-538e-aab2-1a701d09e01a",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:40.028+00:00",
+          "source": "#3kNnsEL5aCUbS2Nw"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/3488dca2-e4b7-4901-ab95-d7429ce31336"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/1c05dc50-e8ae-5e46-a8a6-da5bf1f32105",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "1c05dc50-e8ae-5e46-a8a6-da5bf1f32105",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:40.067+00:00",
+          "source": "#yXa3Aj8DQBEAApRa"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/d3666daa-b9e7-48a7-a003-59afd18e9f15"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/1cd10440-9aef-5009-8155-2806ec4963c0",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "1cd10440-9aef-5009-8155-2806ec4963c0",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:39.285+00:00",
+          "source": "#c7bwpecF1JSCubbu"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/a218ccd5-f6b2-4d87-bc3e-4526a68fb6b6"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/9e212565-3e40-513b-b2b5-f074be839ebe",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "9e212565-3e40-513b-b2b5-f074be839ebe",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:39.344+00:00",
+          "source": "#72jF01f4N6mwAiH8"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/6c41377e-1b05-4402-b95d-973ee35b2c48"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/3e8e32b3-dc1d-5343-8fe3-2b93b1fca0d8",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "3e8e32b3-dc1d-5343-8fe3-2b93b1fca0d8",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:39.397+00:00",
+          "source": "#iLBiXpZAD6iqNAqc"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/740d42b4-248c-4603-a9a0-18fd4b314ad8"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/f09c119d-8425-5802-812b-e522bfce609e",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "f09c119d-8425-5802-812b-e522bfce609e",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:39.447+00:00",
+          "source": "#uljuyxCZBrqjlqH0"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/b09d2e55-2754-448f-b058-85e15d8820ea"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/fdf380ad-6ad5-5205-81b0-4da89538fba3",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "fdf380ad-6ad5-5205-81b0-4da89538fba3",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:39.494+00:00",
+          "source": "#qmqQX4wRkqhqF83T"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/04aa4b17-a062-44bd-b0ae-5c2b88a1ac75"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/152396e3-ba50-5411-95b9-f63c5ab63346",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "152396e3-ba50-5411-95b9-f63c5ab63346",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:39.554+00:00",
+          "source": "#pg1r0No5X6bAtx9v"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/498fa911-aa03-4ed6-aaad-61ee425fc4df"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/338d6360-cac8-5f36-8c21-a8ef1b75cc42",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "338d6360-cac8-5f36-8c21-a8ef1b75cc42",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:39.595+00:00",
+          "source": "#aEkbVpAqgeSVWQWn"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/9c1216a8-44c9-4f3f-86bd-02ddddea6620"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/3cac1a11-7992-5b01-be6b-ff7c26e893ff",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "3cac1a11-7992-5b01-be6b-ff7c26e893ff",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:39.635+00:00",
+          "source": "#C144wLDuNQzDAuSl"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/0e67ef67-bc88-4792-aa70-ccef7db25153"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/8e09bc9c-38f0-5a19-a516-0916b27e93bd",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "8e09bc9c-38f0-5a19-a516-0916b27e93bd",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:39.081+00:00",
+          "source": "#uTIjJSxDEQuCQf4g"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/8715480d-6f20-44af-9d66-14d1ebb851de"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/59f7efa8-23eb-58b8-ba09-8cd8dddbcb6d",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "59f7efa8-23eb-58b8-ba09-8cd8dddbcb6d",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:39.133+00:00",
+          "source": "#eNRTtCJLmuK0rObH"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/c476f50b-908d-403f-a700-80c8a6bd60cc"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/bc75ecca-866d-5f0c-afa9-a40fd1ebbdd6",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "bc75ecca-866d-5f0c-afa9-a40fd1ebbdd6",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:39.186+00:00",
+          "source": "#WyZMeYfa4TcP2CzF"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/73d39580-7a20-4716-ab13-5c21386bfbdc"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    },
+    {
+      "fullUrl": "http://localhost:8090/fhir/ResearchSubject/823ac634-6780-558c-b62c-62c2739a8699",
+      "resource": {
+        "resourceType": "ResearchSubject",
+        "id": "823ac634-6780-558c-b62c-62c2739a8699",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2023-01-26T15:18:39.237+00:00",
+          "source": "#Pthea5ImWMLsrJuQ"
+        },
+        "status": "on-study",
+        "study": {
+          "reference": "ResearchStudy/218b110b-b689-50be-8139-a1c85b378838"
+        },
+        "subject": {
+          "reference": "Patient/967846d4-dedb-4f79-8607-391185082f20"
+        }
+      },
+      "search": {
+        "mode": "include"
+      }
+    }
+  ]
+}
