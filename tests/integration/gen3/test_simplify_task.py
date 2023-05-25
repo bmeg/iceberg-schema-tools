@@ -1,7 +1,7 @@
 import orjson
 from fhir.resources.task import Task
 
-from tools.data.simplifier import simplify, _render_dialect, SimplifierContextManager
+from iceberg_tools.data.simplifier import simplify, _render_dialect, SimplifierContextManager
 
 
 def test_simplify_task(distribution_schema):

@@ -4,7 +4,7 @@ import logging
 
 import orjson
 
-from tools.util import parse_obj
+from iceberg_tools.util import parse_obj
 
 logger = logging.getLogger(__name__)
 
@@ -239,7 +239,7 @@ def _is_resource(resource):
 
 def migrate_bundles(output_path, path, validate):
     """Migrate bundles."""
-    for input_file in path.glob('*.json'):   # TODO: see util directory_reader
+    for input_file in path.glob('**/*.json'):   # TODO: see util directory_reader
         with open(input_file, "rb") as fp:
             resource = orjson.loads(fp.read())
             if not _is_resource(resource):
@@ -264,7 +264,7 @@ def migrate_bundles(output_path, path, validate):
 
 def migrate_resources(output_path, path, validate):
     """Migrate single resource per file."""
-    for input_file in path.glob('*.json'):  # TODO: see util directory_reader
+    for input_file in path.glob('**/*.json'):  # TODO: see util directory_reader
         with open(input_file, "rb") as fp:
             resource = orjson.loads(fp.read())
             if not _is_resource(resource):
@@ -292,7 +292,7 @@ def logging_validator(_, input_file, validate):
 
 def migrate_ndjson(output_path, path, validate):
     """Migrate ndjson files, not expecting bundles."""
-    for input_file in path.glob('*.ndjson'):  # TODO: see util directory_reader
+    for input_file in path.glob('**/*.ndjson'):  # TODO: see util directory_reader
         with open(input_file, "r") as fp:
             output_file = output_path / input_file.name
             with open(output_file, "wb") as out_fp:

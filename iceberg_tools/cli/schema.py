@@ -6,10 +6,10 @@ import click
 import yaml
 from yaml import SafeLoader
 
-from tools.schema import _find_fhir_classes, BASE_URI, _extract_schemas
-from tools.schema.bmeg import _bundle_schemas
-from tools.schema.gen3 import _simplify_schemas
-from tools.util import NaturalOrderGroup
+from iceberg_tools.schema import _find_fhir_classes, BASE_URI, _extract_schemas
+from iceberg_tools.schema.bmeg import _bundle_schemas
+from iceberg_tools.schema.gen3 import _simplify_schemas
+from iceberg_tools.util import NaturalOrderGroup
 
 logger = logging.getLogger(__name__)
 

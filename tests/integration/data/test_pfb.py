@@ -1,5 +1,5 @@
-from tools.data.pfb import SimplePFBWriter
-from tools.data.simplifier import simplify_directory
+from iceberg_tools.data.pfb import SimplePFBWriter
+from iceberg_tools.data.simplifier import simplify_directory
 
 
 def test_studies(caplog):

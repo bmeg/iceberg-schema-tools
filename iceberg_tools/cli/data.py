@@ -6,11 +6,11 @@ import uuid
 import click
 from fhir.resources import FHIRAbstractModel  # noqa
 
-from tools.data.migrator import migrate_directory
-from tools.data.pfb import SimplePFBWriter
-from tools.data.simplifier import cli as simplifier
-from tools.schema.gen3_validator import directory_reader as gen3_directory_reader
-from tools.util import NaturalOrderGroup, directory_reader
+from iceberg_tools.data.migrator import migrate_directory
+from iceberg_tools.data.pfb import SimplePFBWriter
+from iceberg_tools.data.simplifier import cli as simplifier
+from iceberg_tools.schema.gen3_validator import directory_reader as gen3_directory_reader
+from iceberg_tools.util import NaturalOrderGroup, directory_reader
 
 LINKS = threading.local()
 CLASSES = threading.local()
@@ -104,6 +104,9 @@ def pfb(path, output_path, schema_path):
         logger.error(inspection.warnings)
     if len(inspection.warnings) > 0:
         logger.warning(inspection.warnings)
+    if len(inspection.info) > 0:
+        for _ in inspection.info:
+            logger.info(_)
 
 
 @cli.command('migrate')

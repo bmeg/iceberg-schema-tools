@@ -9,7 +9,7 @@ import requests_cache
 import yaml
 from yaml import SafeLoader
 
-from tools.schema import _list_of_type, _scalar_of_type, _list_of_any_type, _scalar_of_any_type
+from iceberg_tools.schema import _list_of_type, _scalar_of_type, _list_of_any_type, _scalar_of_any_type
 
 logger = logging.getLogger(__name__)
 

@@ -1,7 +1,7 @@
 import orjson
 from fhir.resources.medicationadministration import MedicationAdministration
 
-from tools.data.simplifier import simplify, _render_dialect, SimplifierContextManager
+from iceberg_tools.data.simplifier import simplify, _render_dialect, SimplifierContextManager
 
 
 def test_simplify_medication(distribution_schema):

@@ -9,7 +9,7 @@ import requests
 from dictionaryutils import DataDictionary
 from jsonschema.exceptions import ValidationError
 
-from tools.util import _to_file, ParseResult
+from iceberg_tools.util import _to_file, ParseResult
 
 
 logger = logging.getLogger(__name__)

@@ -22,8 +22,8 @@ from fhir.resources.observation import Observation
 from fhir.resources.reference import Reference
 from fhir.resources.task import Task
 
-from tools.util import EmitterContextManager, directory_reader
-from tools.data.simplifier.oid_lookup import get_oid
+from iceberg_tools.util import EmitterContextManager, directory_reader
+from iceberg_tools.data.simplifier.oid_lookup import get_oid
 
 # Latest FHIR version by default
 FHIR_CLASSES = importlib.import_module('fhir.resources')
@@ -590,7 +590,7 @@ def simplify_directory(input_path, pattern, output_path, schema_path, dialect):
     assert schemas, f"No schema found at {schema_path}"
 
     with SimplifierContextManager():
-        with EmitterContextManager(output_path, verbose=True) as emitter:
+        with EmitterContextManager(output_path) as emitter:
             for parse_result in directory_reader(directory_path=input_path, pattern=pattern,
                                                  validate=False):
                 if parse_result.exception is not None:
@@ -632,7 +632,7 @@ def _assert_all_ok(all_ok, parse_result, resource, simplified):
 
 
 @click.command('simplify')
-@click.argument('input_path')
+@click.argument('path')
 @click.argument('output_path')
 @click.option('--pattern', required=True, default="**/*.*", show_default=True,
               help='File name pattern')
@@ -642,7 +642,7 @@ def _assert_all_ok(all_ok, parse_result, resource, simplified):
               help='Path to gen3 schema json.  (Accepts file path for schema development)'
               )
 @click.option('--dialect',
-              default='FHIR',
+              default='GEN3',
               type=click.Choice(['FHIR', 'GEN3'], case_sensitive=False),
               help='GEN3: adds common properties, FHIR: passthrough'
               )

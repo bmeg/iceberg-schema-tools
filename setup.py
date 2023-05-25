@@ -48,7 +48,7 @@ setup(
     # This is a one-line description or tagline of what your project does. This
     # corresponds to the "Summary" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#summary
-    description='Maintain schemas',
+    description='FHIR schemas tools for bioinformatics.',
     # Optional
 
     # This field corresponds to the "Description" metadata field:
@@ -63,7 +63,7 @@ setup(
 
     # This should be your name or the name of the organization which owns the
     # project.
-    author='compbio',  # Optional
+    author='Ellrott Lab',  # Optional
 
 
     # For a list of valid classifiers, see https://pypi.org/classifiers/
@@ -77,7 +77,7 @@ setup(
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Build Tools',
 
-        'License :: OSI Approved :: APACHE License',
+        'License :: OSI Approved :: MIT License',
 
         # Specify the Python versions you support here.
         'Programming Language :: Python :: 3.9',
@@ -123,7 +123,8 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'iceberg = tools.cli:cli'
+            'iceberg = iceberg_tools.cli:cli',
+            'pfb_fhir = iceberg_tools.cli:cli'
         ],
     },
 
@@ -140,6 +141,6 @@ setup(
     # what's used to render the link text on PyPI.
     project_urls={  # Optional
         'Bug Reports': 'https://github.com/bmeg/iceberg-schema-tools/issues',
-        'Source': 'https://github.com/bmeg/iceberg-schema-tools/data-etl',
+        'Source': 'https://github.com/bmeg/iceberg-schema-tools',
     },
 )

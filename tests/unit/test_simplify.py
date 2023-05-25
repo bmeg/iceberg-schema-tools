@@ -2,7 +2,7 @@ import pathlib
 
 import orjson
 
-from tools.data.simplifier import simplify_directory, validate_simplified_value
+from iceberg_tools.data.simplifier import simplify_directory, validate_simplified_value
 
 
 def test_simplify_study():
