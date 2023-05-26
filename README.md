@@ -3,7 +3,8 @@ Create and maintain central iceberg schema.  Render and validate FHIR data.
 
 ## Overview
 
-![image](docs/figure-5.png)
+![image](https://github.com/bmeg/iceberg-schema-tools/assets/47808/cf5f544c-081f-470f-b1d8-27f16ad21b67)
+
 
 
 Code that generates the base schema from FHIR goes here.  Additional tools are provided to lints, validates and visualize the schema.
