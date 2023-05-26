@@ -1,9 +1,9 @@
 # iceberg-schema-tools
-Create and maintain central iceberg schema.
+Create and maintain central iceberg schema.  Render and validate FHIR data.
 
 ## Overview
 
-![image](https://user-images.githubusercontent.com/47808/233504556-498adff7-428d-4fa3-b534-937802cb6af4.png)
+![image](docs/figure-5.png)
 
 
 Code that generates the base schema from FHIR goes here.  Additional tools are provided to lints, validates and visualize the schema.
@@ -14,10 +14,7 @@ Note: The actual schemas are stored in [iceberg](https://github.com/bmeg/iceberg
 ## Setup
 
 ```
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-pip install -e .
+pip install iceberg-tools
 ```
 
 
@@ -55,38 +52,37 @@ Commands:
 
 ```
 
+> Note: `pfb_fhir` and `iceberg` are synonymous in this context.
 
-## Testing
+## Examples
+
+The commands:
+```commandline
+pfb_fhir data simplify  tests/fixtures/simplify/study/ tmp/simplified
+pfb_fhir data pfb tmp/simplified/ tmp/study.pfb
+tree tmp
 
 ```
-pip install -r requirements-dev.txt
-pytest --cov
----
-86%
+
+Will generate the following output:
+```commandline
+INFO:'Records with relationships': 59413
+INFO:'Records': 59460
+tmp
+├── simplified
+│   ├── Condition.ndjson
+│   ├── DocumentReference.ndjson
+│   ├── Encounter.ndjson
+│   ├── MedicationAdministration.ndjson
+│   ├── Observation.ndjson
+│   ├── Patient.ndjson
+│   ├── ResearchStudy.ndjson
+│   ├── ResearchSubject.ndjson
+│   ├── Specimen.ndjson
+│   └── Task.ndjson
+└── study.pfb
 
 ```
 
 ## Contributing
-
-```
-pre-commit install
-```
-
-## Distribution
-
-- PyPi
-
-```
-# update pypi
-
-# pypi credentials - see https://twine.readthedocs.io/en/stable/#environment-variables
-
-export TWINE_USERNAME=  #  the username to use for authentication to the repository.
-export TWINE_PASSWORD=  # the password to use for authentication to the repository.
-
-# this could be maintained as so: export $(cat .env | xargs)
-
-rm -r dist/
-python3  setup.py sdist bdist_wheel
-twine upload dist/*
-```
+See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for developer notes.
