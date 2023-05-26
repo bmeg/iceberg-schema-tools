@@ -2,15 +2,16 @@ from iceberg_tools.data.pfb import SimplePFBWriter
 from iceberg_tools.data.simplifier import simplify_directory
 
 
-def test_studies(caplog):
+def test_studies(caplog, dependency_order):
     """Ensure we can create a pfb file from a synthetic study."""
     simplify_directory('tests/fixtures/simplify/study/', '**/*.*', 'tmp/study/extractions',
-                       'iceberg/schemas/gen3/aced.json', 'GEN3')
+                       'iceberg/schemas/gen3/aced.json', 'GEN3', 'config.yaml')
 
     pfb_writer = SimplePFBWriter(schema_path='iceberg/schemas/gen3/aced.json',
-                                 output_path='tmp/study/extractions/simplified-study.avro')
-    for _ in pfb_writer.transform_directory('tmp/study/extractions'):
-        print(_)
+                                 output_path='tmp/CohesiveDataSet.avro',
+                                 dependency_order=dependency_order)
+
+    list(pfb_writer.transform_directory('tmp/study/extractions'))
 
     inspection = pfb_writer.inspect()
     assert len(inspection.errors) == 0, "Unexpected errors"
@@ -18,15 +19,16 @@ def test_studies(caplog):
         print(inspection.warnings)
 
 
-def test_synthea(caplog):
+def test_synthea(caplog, dependency_order):
     """Ensure we can create a pfb file from a synthetic study."""
     simplify_directory('tests/fixtures/simplify/synthea', '**/*.*', 'tmp/synthea/extractions',
-                       'iceberg/schemas/gen3/aced.json', 'GEN3')
+                       'iceberg/schemas/gen3/aced.json', 'GEN3', 'config.yaml')
 
     pfb_writer = SimplePFBWriter(schema_path='iceberg/schemas/gen3/aced.json',
-                                 output_path='tmp/synthea/simplified-synthea.avro')
-    for _ in pfb_writer.transform_directory('tmp/synthea/extractions'):
-        print(_)
+                                 output_path='tmp/Synthea.avro',
+                                 dependency_order=dependency_order)
+
+    list(pfb_writer.transform_directory('tmp/synthea/extractions'))
 
     inspection = pfb_writer.inspect()
     assert len(inspection.errors) == 0, "Unexpected errors"
@@ -34,16 +36,16 @@ def test_synthea(caplog):
         print(inspection.warnings)
 
 
-def test_kf(caplog):
+def test_kf(caplog, dependency_order):
     """Ensure we can create a pfb file from a Kids first study."""
     simplify_directory('tests/fixtures/simplify/kf', '**/*.*', 'tmp/kf/extractions',
-                       'iceberg/schemas/gen3/aced.json', 'GEN3')
+                       'iceberg/schemas/gen3/aced.json', 'GEN3', 'config.yaml')
 
     pfb_writer = SimplePFBWriter(schema_path='iceberg/schemas/gen3/aced.json',
-                                 output_path='tmp/kf/simplified-kf.avro')
+                                 output_path='tmp/KidsFirst.avro',
+                                 dependency_order=dependency_order)
 
-    for _ in pfb_writer.transform_directory('tmp/kf/extractions'):
-        print(_)
+    list(pfb_writer.transform_directory('tmp/kf/extractions'))
 
     inspection = pfb_writer.inspect()
     assert len(inspection.errors) == 0, "Unexpected errors"
@@ -51,17 +53,17 @@ def test_kf(caplog):
         print(inspection.warnings)
 
 
-def test_ncpi(caplog):
+def test_ncpi(caplog, dependency_order):
     """Ensure we can create a pfb file from a NCPI IG examples."""
 
     simplify_directory('tests/fixtures/simplify/ncpi/examples-5.0', '*.*', 'tmp/ncpi/extractions',
-                       'iceberg/schemas/gen3/aced.json', 'GEN3')
+                       'iceberg/schemas/gen3/aced.json', 'GEN3', 'config.yaml')
 
     pfb_writer = SimplePFBWriter(schema_path='iceberg/schemas/gen3/aced.json',
-                                 output_path='tmp/ncpi/simplified-ncpi.avro')
+                                 output_path='tmp/NCPI.avro',
+                                 dependency_order=dependency_order)
 
-    for _ in pfb_writer.transform_directory('tmp/ncpi/extractions'):
-        print(_)
+    list(pfb_writer.transform_directory('tmp/ncpi/extractions'))
 
     inspection = pfb_writer.inspect()
     assert len(inspection.errors) == 0, "Unexpected errors"
@@ -69,17 +71,18 @@ def test_ncpi(caplog):
         print(inspection.warnings)
 
 
-def test_genomics_reporting(caplog):
+def test_genomics_reporting(caplog, dependency_order):
     """Ensure we can create a pfb file from a Genomics Reporting IG examples."""
 
-    simplify_directory('tests/fixtures/simplify/genomics-reporting/examples-5.0', '*.*', 'tmp/genomics-reporting/extractions',
-                       'iceberg/schemas/gen3/aced.json', 'GEN3')
+    simplify_directory('tests/fixtures/simplify/genomics-reporting/examples-5.0',
+                       '*.*', 'tmp/genomics-reporting/extractions',
+                       'iceberg/schemas/gen3/aced.json', 'GEN3', 'config.yaml')
 
     pfb_writer = SimplePFBWriter(schema_path='iceberg/schemas/gen3/aced.json',
-                                 output_path='tmp/genomics-reporting/simplified-ncpi.avro')
+                                 output_path='tmp/GenomicsReporting.avro',
+                                 dependency_order=dependency_order)
 
-    for _ in pfb_writer.transform_directory('tmp/genomics-reporting/extractions'):
-        print(_)
+    list(pfb_writer.transform_directory('tmp/genomics-reporting/extractions'))
 
     inspection = pfb_writer.inspect()
     assert len(inspection.errors) == 0, "Unexpected errors"
@@ -87,17 +90,17 @@ def test_genomics_reporting(caplog):
         print(inspection.warnings)
 
 
-def test_dbgap(caplog):
+def test_dbgap(caplog, dependency_order):
     """Ensure we can create a pfb file from dbGAP examples."""
 
     simplify_directory('tests/fixtures/simplify/dbgap/examples-5.0', '*.*', 'tmp/dbgap/extractions',
-                       'iceberg/schemas/gen3/aced.json', 'GEN3')
+                       'iceberg/schemas/gen3/aced.json', 'GEN3', 'config.yaml')
 
     pfb_writer = SimplePFBWriter(schema_path='iceberg/schemas/gen3/aced.json',
-                                 output_path='tmp/dbgap/simplified-dbgap.avro')
+                                 output_path='tmp/dbGap.avro',
+                                 dependency_order=dependency_order)
 
-    for _ in pfb_writer.transform_directory('tmp/dbgap/extractions'):
-        print(_)
+    list(pfb_writer.transform_directory('tmp/dbgap/extractions'))
 
     inspection = pfb_writer.inspect()
     assert len(inspection.errors) == 0, "Unexpected errors"
@@ -105,17 +108,17 @@ def test_dbgap(caplog):
         print(inspection.warnings)
 
 
-def test_anvil(caplog):
+def test_anvil(caplog, dependency_order):
     """Ensure we can create a pfb file from AnVIL examples."""
 
-    simplify_directory('tests/fixtures/simplify/anvil/fhir/', '**/*.*', 'tmp/anvil/extractions',
-                       'iceberg/schemas/gen3/aced.json', 'GEN3')
+    simplify_directory('tests/fixtures/simplify/anvil/fhir-5.0/', '**/*.*', 'tmp/anvil/extractions',
+                       'iceberg/schemas/gen3/aced.json', 'GEN3', 'config.yaml')
 
     pfb_writer = SimplePFBWriter(schema_path='iceberg/schemas/gen3/aced.json',
-                                 output_path='tmp/anvil/simplified-anvil.avro')
+                                 output_path='tmp/AnVIL.avro',
+                                 dependency_order=dependency_order)
 
-    for _ in pfb_writer.transform_directory('tmp/anvil/extractions'):
-        print(_)
+    list(pfb_writer.transform_directory('tmp/anvil/extractions'))
 
     inspection = pfb_writer.inspect()
     assert len(inspection.errors) == 0, "Unexpected errors"
