@@ -78,7 +78,6 @@ def generate_bmeg(output_path, config_path, stats):
               help='Path to gen3 static data dictionary files.')
 @click.option('--stats/--no-stats', default=True, is_flag=True, show_default=True,
               help="Log statistics about the FHIR classes found.")
-
 # @click.option('--cytoscape_output_path', required=True,
 #               default='iceberg/docs',
 #               show_default=True,
