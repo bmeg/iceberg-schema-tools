@@ -9,6 +9,7 @@ import click
 import inflection
 import orjson
 import requests
+import yaml
 from fhir.resources import FHIRAbstractModel  # noqa
 from fhir.resources.attachment import Attachment
 from fhir.resources.codeableconcept import CodeableConcept
@@ -21,6 +22,7 @@ from fhir.resources.identifier import Identifier
 from fhir.resources.observation import Observation
 from fhir.resources.reference import Reference
 from fhir.resources.task import Task
+from yaml import SafeLoader
 
 from iceberg_tools.util import EmitterContextManager, directory_reader
 from iceberg_tools.data.simplifier.oid_lookup import get_oid
@@ -480,13 +482,17 @@ def _ensure_dialect(simplified: dict, resource: FHIRAbstractModel, dialect: str)
     return simplified
 
 
-def _render_dialect(simplified: dict, references: List[str], dialect: str, schemas) -> dict:
+def _render_dialect(simplified: dict, references: List[str], dialect: str, schemas: dict, limit_links: dict) -> dict:
     """Render as Gen3 record ready for import
     """
     if dialect != 'GEN3':
         return simplified
 
     labels = [_['title'] for _ in schemas.values() if 'title' in _]
+
+    permitted_destinations = None
+    if simplified['resourceType'] in limit_links:
+        permitted_destinations = limit_links[simplified['resourceType']]
 
     gen3_links = []
     for _ in references:
@@ -495,6 +501,8 @@ def _render_dialect(simplified: dict, references: List[str], dialect: str, schem
             continue
         label, id_ = _.split('/')
         if label not in labels:
+            continue
+        if permitted_destinations is not None and label not in permitted_destinations:
             continue
         gen3_links.append({"dst_id": id_, "dst_name": inflection.underscore(label)})
 
@@ -575,7 +583,7 @@ class SimplifierContextManager:
         Task.dict = self.orig_task_dict
 
 
-def simplify_directory(input_path, pattern, output_path, schema_path, dialect):
+def simplify_directory(input_path, pattern, output_path, schema_path, dialect, config_path):
     """Reads directory of FHIR, renders simple, data frame friendly flattened records."""
 
     input_path = pathlib.Path(input_path)
@@ -588,6 +596,10 @@ def simplify_directory(input_path, pattern, output_path, schema_path, dialect):
     else:
         schemas = requests.get(schema_path).json()
     assert schemas, f"No schema found at {schema_path}"
+
+    with open(config_path) as fp:
+        gen3_config = yaml.load(fp, SafeLoader)
+    limit_links = gen3_config['limit_links']
 
     with SimplifierContextManager():
         with EmitterContextManager(output_path) as emitter:
@@ -609,7 +621,7 @@ def simplify_directory(input_path, pattern, output_path, schema_path, dialect):
                 all_ok = all([validate_simplified_value(_) for _ in simplified.values()])
                 _assert_all_ok(all_ok, parse_result, resource, simplified)
 
-                simplified = _render_dialect(simplified, references, dialect, schemas)
+                simplified = _render_dialect(simplified, references, dialect, schemas, limit_links)
                 fp = emitter.emit(resource.resource_type)
                 fp.write(orjson.dumps(simplified, default=_default_json_serializer,
                                       option=orjson.OPT_APPEND_NEWLINE).decode())
@@ -646,13 +658,17 @@ def _assert_all_ok(all_ok, parse_result, resource, simplified):
               type=click.Choice(['FHIR', 'GEN3'], case_sensitive=False),
               help='GEN3: adds common properties, FHIR: passthrough'
               )
-def cli(path, pattern, output_path, schema_path, dialect):
+@click.option('--config_path',
+              default='config.yaml',
+              show_default=True,
+              help='Path to config file.')
+def cli(path, pattern, output_path, schema_path, dialect, config_path):
     """Renders Gen3 friendly flattened records.
 
     PATH: Path containing bundles (*.json) or resources (*.ndjson)
     OUTPUT_PATH: Path where simplified resources will be stored
     """
-    simplify_directory(path, pattern, output_path, schema_path, dialect)
+    simplify_directory(path, pattern, output_path, schema_path, dialect, config_path)
 
 
 if __name__ == '__main__':

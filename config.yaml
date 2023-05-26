@@ -33,10 +33,10 @@ dependency_order:
   #
   # FHIR objects
   #
-#  - Organization
-#  - Location
-#  - Practitioner
-#  - PractitionerRole
+  - Organization
+  - Location
+  - Practitioner
+  - PractitionerRole
   - ResearchStudy
   - Patient
   - ResearchSubject
@@ -44,16 +44,16 @@ dependency_order:
   - Specimen
   - Encounter
   - Observation
-#  - DiagnosticReport
+  - DiagnosticReport
   - Condition
   - Medication
   - MedicationAdministration
-#  - ImagingStudy
-#  - Procedure
+  - Procedure
   - DocumentReference
   - Task
   - FamilyMemberHistory
   - BodyStructure
+  - Immunization
 
 
 # Specify which entities you want to add to a FHIR entities model
@@ -70,14 +70,18 @@ extensions:
   - https://hl7.org/fhir/extensions/StructureDefinition-patient-mothersMaidenName.json
 
 
-# limit the parent destination links from a Node for the Simplified Model.
+# constrain the parent destination links from a Node for the Simplified Model.
 
 limit_links:
   Observation:
     - ResearchStudy
     - Patient
     - Specimen
-
+  Encounter:
+    - Patient
+  DocumentReference:
+    - Patient
+    - Specimen
 
 # Add these extra properties to the simplified schema
 # These may be used to add extra scalar properties to the simplified schema as well as constrain edge destination types.

@@ -41,8 +41,23 @@ def migrate_resource(resource: dict) -> dict:
     migrate_practitioner_role(resource, resource_type)
     migrate_specimen(resource, resource_type)
     migrate_organization(resource, resource_type)
+    migrate_location(resource, resource_type)
 
     return resource
+
+
+def migrate_location(resource, resource_type):
+    """Migrate Location resource to 5.0"""
+    if resource_type == "Location":
+        contact_0 = {}
+        if 'address' in resource:
+            contact_0['address'] = resource['address']
+            del resource['address']
+        if 'telecom' in resource:
+            contact_0['telecom'] = resource['telecom']
+            del resource['telecom']
+        if len(contact_0.keys()) > 0:
+            resource['contact'] = [contact_0]
 
 
 def migrate_organization(resource, resource_type):
@@ -87,10 +102,14 @@ def migrate_encounter(resource, resource_type):
             }
         ]
         for _ in resource['participant']:
-            _['actor'] = _['individual']
-            del _['individual']
-        resource['actualPeriod'] = resource['period']
-        del resource['period']
+            if 'individual' in _:
+                _['actor'] = _['individual']
+                del _['individual']
+
+        if 'period' in resource:
+            resource['actualPeriod'] = resource['period']
+            del resource['period']
+
         if 'reasonCode' in resource:
             resource['reason'] = [{'use': resource['reasonCode']}]
             del resource['reasonCode']
@@ -118,9 +137,10 @@ def migrate_observation(resource, resource_type):
     if resource_type == "Observation":
         _ = resource.get('valueSampledData', None)
         if _:
-            _['intervalUnit'] = '/s'
-            _['interval'] = _['period']
-            del _['period']
+            if 'period' in _:
+                _['intervalUnit'] = '/s'
+                _['interval'] = _['period']
+                del _['period']
         if 'status' not in resource:
             resource['status'] = 'final'
 
@@ -128,16 +148,19 @@ def migrate_observation(resource, resource_type):
 def migrate_medication_administration(resource, resource_type):
     """Migrate MedicationAdministration resource to 5.0"""
     if resource_type == "MedicationAdministration":
-        resource['occurenceDateTime'] = resource['effectiveDateTime']
-        del resource['effectiveDateTime']
+        if 'effectiveDateTime' in resource:
+            resource['occurenceDateTime'] = resource['effectiveDateTime']
+            del resource['effectiveDateTime']
 
-        resource['medication'] = {
-            'concept': resource['medicationCodeableConcept']
-        }
-        del resource['medicationCodeableConcept']
+        if 'medicationCodeableConcept' in resource:
+            resource['medication'] = {
+                'concept': resource['medicationCodeableConcept']
+            }
+            del resource['medicationCodeableConcept']
 
-        resource['encounter'] = resource['context']
-        del resource['context']
+        if 'context' in resource:
+            resource['encounter'] = resource['context']
+            del resource['context']
 
         if 'reasonReference' in resource:
             resource['reason'] = [{'reference': _} for _ in resource['reasonReference']]
@@ -237,19 +260,20 @@ def _is_resource(resource):
     return 'resourceType' in resource
 
 
-def migrate_bundles(output_path, path, validate):
+def migrate_bundles(output_path, path, validate, pattern='**/*.json'):
     """Migrate bundles."""
-    for input_file in path.glob('**/*.json'):   # TODO: see util directory_reader
+    for input_file in path.glob(pattern):   # TODO: see util directory_reader
         with open(input_file, "rb") as fp:
             resource = orjson.loads(fp.read())
             if not _is_resource(resource):
                 logger.warning(f"Not a FHIR resource {input_file}")
                 continue
             if not _is_bundle(resource):
+                logger.warning(f"Not a bundle {input_file}")
                 continue
             bundle_ = resource
             if 'entry' not in bundle_:
-                print(f"No 'entry' in bundle {input_file} ")
+                logger.warning(f"No 'entry' in bundle {input_file} ")
                 continue
         for entry in bundle_['entry']:
             resource = entry['resource']
@@ -257,14 +281,15 @@ def migrate_bundles(output_path, path, validate):
             logging_validator(_, input_file, validate)
 
         output_file = output_path / input_file.name
+
         with open(output_file, "wb") as fp:
             fp.write(orjson.dumps(bundle_))
-        logger.info(f'Migrated {input_file} to {output_file}')
+        logger.info(f"Migrated bundle {input_file} to {output_file} entry_count:{len(bundle_['entry'])}")
 
 
-def migrate_resources(output_path, path, validate):
+def migrate_resources(output_path, path, validate, pattern='**/*.json'):
     """Migrate single resource per file."""
-    for input_file in path.glob('**/*.json'):  # TODO: see util directory_reader
+    for input_file in path.glob(pattern):  # TODO: see util directory_reader
         with open(input_file, "rb") as fp:
             resource = orjson.loads(fp.read())
             if not _is_resource(resource):
@@ -278,7 +303,7 @@ def migrate_resources(output_path, path, validate):
         output_file = output_path / input_file.name
         with open(output_file, "wb") as fp:
             fp.write(orjson.dumps(_))
-        logger.info(f'Migrated {input_file} to {output_file}')
+        logger.info(f'Migrated resource {input_file} to {output_file}')
 
 
 def logging_validator(_, input_file, validate):
@@ -290,24 +315,34 @@ def logging_validator(_, input_file, validate):
                 logger.warning(f"{input_file} has exception {parse_result.exception}")
 
 
-def migrate_ndjson(output_path, path, validate):
+def migrate_ndjson(output_path, path, validate, pattern='**/*.json'):
     """Migrate ndjson files, not expecting bundles."""
-    for input_file in path.glob('**/*.ndjson'):  # TODO: see util directory_reader
-        with open(input_file, "r") as fp:
-            output_file = output_path / input_file.name
-            with open(output_file, "wb") as out_fp:
+    for input_file in path.glob(pattern):  # TODO: see util directory_reader
+        out_fp = None
+        try:
+            with open(input_file, "r") as fp:
+                output_file = output_path / input_file.name
                 for line in fp.readlines():
                     resource = orjson.loads(line)
                     _ = migrate_resource(resource)
+                    if out_fp is None:
+                        out_fp = open(output_file, "wb")
                     logging_validator(_, input_file, validate)
-
                     out_fp.write(orjson.dumps(_, option=orjson.OPT_APPEND_NEWLINE))
-        logger.info(f'Migrated {input_file} to {output_file}')
+            logger.info(f'Migrated {input_file} to {output_file}')
+        except orjson.JSONDecodeError as e:
+            if 'unexpected end of data' not in str(e):
+                logger.warning(f"{input_file} has exception {e}")
+        finally:
+            if out_fp is not None:
+                out_fp.close()
 
 
-def migrate_json_gz(output_path, path, validate):
+def migrate_json_gz(output_path, path, validate, pattern='**/*.json'):
     """Migrate *json.gz files."""
-    for input_file in path.glob('*.*json.gz'):  # TODO: see util directory_reader
+    if 'gz' not in pattern:
+        pattern += ".gz"
+    for input_file in path.glob(pattern):  # TODO: see util directory_reader
 
         with io.TextIOWrapper(io.BufferedReader(gzip.GzipFile(input_file))) as fp:
             output_file = output_path / input_file.name
@@ -325,12 +360,12 @@ def migrate_json_gz(output_path, path, validate):
         logger.info(f'Migrated {input_file} to {output_file}')
 
 
-def migrate_directory(path, output_path, validate):
+def migrate_directory(path, output_path, validate, pattern):
     """Migrate all files in a directory."""
     # single resources per file
-    migrate_bundles(output_path, path, validate)
-    migrate_resources(output_path, path, validate)
+    migrate_bundles(output_path, path, validate, pattern)
+    migrate_resources(output_path, path, validate, pattern)
 
     # multiple resources per file
-    migrate_ndjson(output_path, path, validate)
-    migrate_json_gz(output_path, path, validate)
+    migrate_ndjson(output_path, path, validate, pattern)
+    migrate_json_gz(output_path, path, validate, pattern)
