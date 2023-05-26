@@ -4,8 +4,11 @@ import threading
 import uuid
 
 import click
+import yaml
 from fhir.resources import FHIRAbstractModel  # noqa
+from yaml import SafeLoader
 
+from iceberg_tools.data.report import aggregate_edges
 from iceberg_tools.data.migrator import migrate_directory
 from iceberg_tools.data.pfb import SimplePFBWriter
 from iceberg_tools.data.simplifier import cli as simplifier
@@ -85,16 +88,33 @@ def _validate_gen3(path, schema_path):
               show_default=True,
               help='Path to gen3 schema json, a file path or url'
               )
-def pfb(path, output_path, schema_path):
+@click.option('--config_path',
+              default='config.yaml',
+              show_default=True,
+              help='Path to config file.')
+def pfb(path, output_path, schema_path, config_path):
 
     """Write simplified FHIR files to a PFB.
 
     \b
-    PATH: Path to simplified FHIR ndjson files.
-    OUTPUT_PATH: Path where to the PFB
+    PATH: Directory path to simplified FHIR ndjson files.
+    OUTPUT_PATH: File path where to write the PFB.
     """
+    path = pathlib.Path(path)
+    output_path = pathlib.Path(output_path)
+    config_path = pathlib.Path(config_path)
+    assert output_path.is_dir(), f"Path {output_path} is not a directory"
+    assert config_path.is_file(), f"Path {config_path} is not a file"
+    assert path.is_file(), f"Path {path} is not a file"
+
+    with open(config_path) as fp:
+        gen3_config = yaml.load(fp, SafeLoader)
+    dependency_order = gen3_config['dependency_order']
+
     pfb_writer = SimplePFBWriter(schema_path=schema_path,
-                                 output_path=output_path)
+                                 output_path=output_path,
+                                 dependency_order=dependency_order
+                                 )
 
     # this is a generator, needs to be consumed
     [_ for _ in pfb_writer.transform_directory(path)]
@@ -112,9 +132,11 @@ def pfb(path, output_path, schema_path):
 @cli.command('migrate')
 @click.argument('path')
 @click.argument('output_path')
-@click.option('--validate', default=True, is_flag=True, show_default=True,
+@click.option('--validate/--no-validate', default=True, is_flag=True, show_default=True,
               help="Validate after migration")
-def migrate(path, output_path, validate):
+@click.option('--pattern', required=True, default="**/*.*json", show_default=True,
+              help='File name pattern')
+def migrate(path, output_path, validate, pattern):
     """Migrate from FHIR R4B to R5.0.
 
 
@@ -134,7 +156,23 @@ def migrate(path, output_path, validate):
 
     assert output_path.is_dir(), f"Path {output_path} is not a directory"
 
-    migrate_directory(path, output_path, validate)
+    migrate_directory(path, output_path, validate, pattern)
+
+
+@cli.command()
+@click.argument('path')
+@click.argument('output_path')
+@click.option('--pattern', default='**/*.avro', help='Search pattern', show_default=True)
+def report(path: str,  output_path: str,  pattern: str):
+    """Aggregate avro pfb files into a cytoscape friendly tsv.
+
+    \b
+    PATH: Directory path to search for pfb files
+    OUTPUT_PATH: Directory path to write the report TSVs
+    """
+    assert pathlib.Path(path).is_dir(), f"Path {path} is not a directory"
+    assert pathlib.Path(output_path).is_dir(), f"Path {output_path} is not a directory"
+    aggregate_edges(path, output_path, pattern)
 
 
 if __name__ == '__main__':
