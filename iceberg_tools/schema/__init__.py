@@ -26,14 +26,18 @@ logger = logging.getLogger(__name__)
 
 def _find_fhir_classes(gen3_config) -> List[type]:
     """Based on config, expand dependencies."""
+
     class_names = [c for c in gen3_config['dependency_order'] if not c.startswith('_')]
     class_names = [c for c in class_names if c not in ['Program', 'Project']]
+
+    subclass_depth = gen3_config.get('subclass_depth', 3)
+
     mod = importlib.import_module('fhir.resources')
     classes = set()
     for class_name in class_names:
         classes.add(mod.get_fhir_model_class(class_name))
-    # find subclasses 3 levels deep
-    for _ in range(3):
+    # find subclasses N levels deep
+    for _ in range(subclass_depth):
         embedded_classes = set()
         for klass in classes:
             for p in klass.element_properties():
