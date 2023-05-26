@@ -43,10 +43,21 @@ FHIR_PRIMITIVES_TO_JSON_SCHEMA = {
 }
 
 
-def _simplify_schemas(gen3_config, gen3_fixtures, schemas):  # , edge_schemas
+def _summarize_stats(gen3_schema) -> str:
+    """Summarize the stats of the schema."""
+    summary = {}
+    for schema in gen3_schema.values():
+        if 'title' not in schema or 'properties' not in schema:
+            continue
+        summary[schema['title']] = {'total_property_counts': len(schema['properties'])}
+    stats_table = '\n  '.join(sorted([f'{k}: {v}' for k, v in summary.items()]))
+    return '  ' + stats_table
+
+
+def _simplify_schemas(gen3_config, gen3_fixtures, schemas, log_stats=True):
     """Make the schema Gen3 (data-frame) friendly."""
 
-    # config_paths = gen3_config['paths']
+    # extract expected configurations
     config_categories = gen3_config['categories']
     ignored_properties = gen3_config['ignored_properties']
     dependency_order = gen3_config['dependency_order']
@@ -85,6 +96,9 @@ def _simplify_schemas(gen3_config, gen3_fixtures, schemas):  # , edge_schemas
 
     # change to lowercase for gen3
     gen3_schema = {inflection.underscore(k).replace('.yaml', ''): schemas[k] for k in dependency_order if k in schemas}
+
+    if log_stats:
+        logger.info(f"Class statistics number of simplified objects:\n{_summarize_stats(gen3_schema)}")
 
     return gen3_schema
 
@@ -320,6 +334,7 @@ def _simplify_quantities(schemas: dict):
 
 def _simplify_embedded_types(schemas):
     """Any remaining embedded types are simply rendered as strings."""
+    # TODO - implement "PLUCK"
     for schema in schemas.values():
         lists_of_any = _list_of_any_type(schema)
         for name, property_ in lists_of_any.items():

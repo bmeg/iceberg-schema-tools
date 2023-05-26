@@ -36,7 +36,9 @@ def generate():
               default='config.yaml',
               show_default=True,
               help='Path to config file.')
-def generate_bmeg(output_path, config_path):
+@click.option('--stats/--no-stats', default=True, is_flag=True, show_default=True,
+              help="Log statistics about the FHIR classes found.")
+def generate_bmeg(output_path, config_path, stats):
     """Create BMEG schemas."""
 
     output_path = pathlib.Path(output_path)
@@ -46,7 +48,7 @@ def generate_bmeg(output_path, config_path):
     with open(config_path) as fp:
         gen3_config = yaml.load(fp, SafeLoader)
 
-    classes = _find_fhir_classes(gen3_config)
+    classes = _find_fhir_classes(gen3_config, log_stats=stats)
     schemas = _extract_schemas(classes, BASE_URI)
 
     output_path.mkdir(parents=True, exist_ok=True)
@@ -74,6 +76,9 @@ def generate_bmeg(output_path, config_path):
               default='resources/static_gen3_fixtures',
               show_default=True,
               help='Path to gen3 static data dictionary files.')
+@click.option('--stats/--no-stats', default=True, is_flag=True, show_default=True,
+              help="Log statistics about the FHIR classes found.")
+
 # @click.option('--cytoscape_output_path', required=True,
 #               default='iceberg/docs',
 #               show_default=True,
@@ -83,7 +88,7 @@ def generate_bmeg(output_path, config_path):
 #               default=False,
 #               show_default=True,
 #               help='Generate specialized Edge schemas.')
-def generate_gen3(output_path, config_path, gen3_fixtures):
+def generate_gen3(output_path, config_path, gen3_fixtures, stats):
     """Create Gen3 schemas."""
 
     output_path = pathlib.Path(output_path)
@@ -95,9 +100,9 @@ def generate_gen3(output_path, config_path, gen3_fixtures):
     with open(config_path) as fp:
         gen3_config = yaml.load(fp, SafeLoader)
 
-    classes = _find_fhir_classes(gen3_config)
+    classes = _find_fhir_classes(gen3_config, log_stats=stats)
     schemas = _extract_schemas(classes, BASE_URI)
-    schemas = _simplify_schemas(gen3_config, gen3_fixtures, schemas)
+    schemas = _simplify_schemas(gen3_config, gen3_fixtures, schemas, log_stats=stats)
 
     # also write out yaml files
     for k, v in schemas.items():

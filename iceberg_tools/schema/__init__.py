@@ -24,7 +24,7 @@ BASE_URI = 'http://bmeg.io/schema/0.0.2'
 logger = logging.getLogger(__name__)
 
 
-def _find_fhir_classes(gen3_config) -> List[type]:
+def _find_fhir_classes(gen3_config, log_stats=True) -> List[type]:
     """Based on config, expand dependencies."""
 
     class_names = [c for c in gen3_config['dependency_order'] if not c.startswith('_')]
@@ -36,20 +36,65 @@ def _find_fhir_classes(gen3_config) -> List[type]:
     classes = set()
     for class_name in class_names:
         classes.add(mod.get_fhir_model_class(class_name))
+
     # find subclasses N levels deep
+    # maintain statistics
+    stats = defaultdict(int)
+
     for _ in range(subclass_depth):
         embedded_classes = set()
         for klass in classes:
+
             for p in klass.element_properties():
-                mod = importlib.import_module('fhir.resources')
                 try:
+
                     embedded_class = mod.get_fhir_model_class(get_fhir_type_name(p.type_))
                     embedded_classes.add(embedded_class)
+
+                    _update_stats(stats, klass, embedded_class)
+
                 except KeyError:
                     pass
+
         classes.update(embedded_classes)
-        classes.add(FHIRPrimitiveExtension)
+    classes.add(FHIRPrimitiveExtension)
+
+    if log_stats:
+        logger.info(f"Class statistics number of nested objects:\n{_summarize_stats(stats)}")
+
     return classes
+
+
+def _summarize_stats(stats: dict) -> str:
+    """Summarize stats, counts of subclasses."""
+    summary = {}
+    for _ in stats:
+        parts = _.split('.')
+        klass_name = parts[0]
+        if klass_name in ['Meta', 'Extension']:
+            continue
+        nested_class_count = len(parts[1:])
+        total_property_counts = stats[_]
+        summary[klass_name] = {'nested_class_count': nested_class_count, 'total_property_counts': total_property_counts}
+
+    stats_table = '\n  '.join(sorted([f'{k}: {v}' for k, v in summary.items()]))
+    return '  ' + stats_table
+
+
+def _update_stats(stats: dict, klass, embedded_class):
+    """Update stats for class and embedded class."""
+    if embedded_class.__name__ in ['Meta', 'Extension']:
+        return
+    stat_property = f"{klass.__name__}.{embedded_class.__name__}"
+    existing_stat_property = next(iter([k for k in stats.keys() if klass.__name__ in k]), None)
+    if existing_stat_property:
+        if embedded_class.__name__ not in existing_stat_property:
+            property_count = stats[existing_stat_property]
+            del stats[existing_stat_property]
+            existing_stat_property += f".{embedded_class.__name__}"
+            stats[existing_stat_property] = property_count + len(list(embedded_class.element_properties()))
+    else:
+        stats[stat_property] += 1
 
 
 def _extract_schemas(classes: List[type], base_uri: str) -> dict:
