@@ -1,18 +1,6 @@
+# subclass_depth: 3  # default is 3 uncomment to override for fhir json schema
 
 
-
-# Gen3 entity category: defaults to Clinical
-categories:
-  DocumentReference: data_file
-  Location: Administrative
-  Organization: Administrative
-  Patient: Administrative
-  Practitioner: Administrative
-  PractitionerRole: Administrative
-  ResearchStudy: Administrative
-  ResearchSubject: Administrative
-  Specimen: Biospecimen
-  Task: Analysis
 
 # ignore these properties in all objects
 ignored_properties:
@@ -32,13 +20,19 @@ renamed_properties:
   for: for_fhir  # https://github.com/nazrulworld/fhir.resources/blob/main/fhir/resources/task.py#L145
   class: class_fhir
 
+# This limits the top level objects the system will render
+# For some output targets, e.g. PFB order of output is important, parents must be rendered before children
 dependency_order:
-  # gen3 scaffolding
+  #
+  # gen3 scaffolding required objects
+  #
   - _definitions.yaml
   - _terms.yaml
-  # gen3 required objects
   - Program
   - Project
+  #
+  # FHIR objects
+  #
 #  - Organization
 #  - Location
 #  - Practitioner
@@ -61,8 +55,8 @@ dependency_order:
   - FamilyMemberHistory
   - BodyStructure
 
-# add extensions
 
+# Specify which entities you want to add to a FHIR entities model
 extensions:
   Patient:
   - http://hl7.org/fhir/us/core/STU6/StructureDefinition-us-core-race.json
@@ -76,10 +70,7 @@ extensions:
   - https://hl7.org/fhir/extensions/StructureDefinition-patient-mothersMaidenName.json
 
 
-
-
-
-# limit the destination links from a Node for the Gen3 Model.
+# limit the parent destination links from a Node for the Simplified Model.
 
 limit_links:
   Observation:
@@ -88,11 +79,12 @@ limit_links:
     - Specimen
 
 
-# add these extra properties to Gen3 schema
+# Add these extra properties to the simplified schema
+# These may be used to add extra scalar properties to the simplified schema as well as constrain edge destination types.
 
 extra_properties:
 
-  # add gen3 file scaffolding
+  # Add gen3 file scaffolding expected properties
   DocumentReference:
     $ref: "_definitions.yaml#/data_file_properties"
     data_category:
@@ -128,7 +120,7 @@ extra_properties:
         type: string
         description: Denormalized patient id
 
-  # add gen3 project
+  # a link that does not exist in the FHIR schema, in this case from ResearchStudy to Project
   ResearchStudy:
     gen3_project:
       description: The Gen3 project this study belongs to.  Used to generate link.
@@ -138,7 +130,12 @@ extra_properties:
       - Project
       title: The Gen3 project this study belongs to.
 
-  # create edges task inputs -> specimen and outputs -> DocumentReferences
+  # Create edges from references typed as ANY
+  # In this case Task we hint that Task inputs will point to Specimen and outputs point to DocumentReferences
+  # see:
+  # * https://build.fhir.org/task-definitions.html#Task.input.value_x_
+  # * https://build.fhir.org/task-definitions.html#Task.output.value_x_
+
   Task:
     specimen:
       description: The specimen input to this task.  Used to generate link.
@@ -161,13 +158,7 @@ extra_properties:
       backref: focus_observation
       description: The actual focus of an observation when it is not the patient of
         record representing something or someone associated with the patient such as
-        a spouse, parent, fetus, or donor. For example, fetus observations in a mother's
-        record.  The focus of an observation could also be an existing condition,  an
-        intervention, the subject's diet,  another observation of the subject,  or a
-        body structure such as tumor or implanted device.   An example use case would
-        be using the Observation resource to capture whether the mother is trained to
-        change her child's tracheostomy tube. In this example, the child is the patient
-        of record and the mother is the focus.
+        a spouse, parent, fetus, or donor.
       element_property: true
       enum_reference_types:
       - ResearchStudy
@@ -192,3 +183,17 @@ extra_properties:
       enum_reference_types:
       - BodyStructure
       title: Anatomical collection site
+
+
+# Add a `category` field to the simplified schema: defaults to Clinical
+categories:
+  DocumentReference: data_file
+  Location: Administrative
+  Organization: Administrative
+  Patient: Administrative
+  Practitioner: Administrative
+  PractitionerRole: Administrative
+  ResearchStudy: Administrative
+  ResearchSubject: Administrative
+  Specimen: Biospecimen
+  Task: Analysis
