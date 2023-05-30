@@ -36,7 +36,7 @@ def generate():
               default='config.yaml',
               show_default=True,
               help='Path to config file.')
-@click.option('--stats/--no-stats', default=True, is_flag=True, show_default=True,
+@click.option('--stats/--no-stats', default=False, is_flag=True, show_default=True,
               help="Log statistics about the FHIR classes found.")
 def generate_bmeg(output_path, config_path, stats):
     """Create BMEG schemas."""
@@ -76,17 +76,8 @@ def generate_bmeg(output_path, config_path, stats):
               default='resources/static_gen3_fixtures',
               show_default=True,
               help='Path to gen3 static data dictionary files.')
-@click.option('--stats/--no-stats', default=True, is_flag=True, show_default=True,
+@click.option('--stats/--no-stats', default=False, is_flag=True, show_default=True,
               help="Log statistics about the FHIR classes found.")
-# @click.option('--cytoscape_output_path', required=True,
-#               default='iceberg/docs',
-#               show_default=True,
-#               help='Path to generated docs'
-#               )
-# @click.option('--generate_edge_schemas',
-#               default=False,
-#               show_default=True,
-#               help='Generate specialized Edge schemas.')
 def generate_gen3(output_path, config_path, gen3_fixtures, stats):
     """Create Gen3 schemas."""
 

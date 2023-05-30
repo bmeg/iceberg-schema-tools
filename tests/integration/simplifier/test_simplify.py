@@ -8,7 +8,8 @@ from iceberg_tools.data.simplifier import simplify_directory, validate_simplifie
 def test_simplify_study():
     """Ensure we can validate a synthetic study"""
 
-    simplify_directory('tests/fixtures/simplify/study/', '**/*.*', 'tmp/study/extractions', 'iceberg/schemas/gen3/aced.json', 'FHIR')
+    simplify_directory('tests/fixtures/simplify/study/', '**/*.*', 'tmp/study/extractions',
+                       'iceberg/schemas/gen3/aced.json', 'FHIR', 'config.yaml')
 
     directory_path = pathlib.Path('tmp/study/extractions')
     input_files = [_ for _ in directory_path.glob("*.ndjson")]
@@ -19,6 +20,10 @@ def test_simplify_study():
                 all_ok = all([validate_simplified_value(_) for _ in simplified.values()])
                 assert all_ok, (file_name, line)
                 if simplified['resourceType'] == 'DocumentReference':
-                    expected = set(['content_md5', 'content_contentType', 'content_url', 'content_size'])
+                    # 'content_md5'
+                    expected = set(
+                        ['content_attachment_contentType', 'content_attachment_url', 'content_attachment_size',
+                         'content_attachment_extension_md5']
+                    )
                     actual = set([_ for _ in simplified if _.startswith('content')])
                     assert expected == actual, (file_name, line)

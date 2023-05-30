@@ -65,17 +65,14 @@ def _simplify_schemas(gen3_config, gen3_fixtures, schemas, log_stats=True):
     renamed_properties = gen3_config['renamed_properties']
     limit_links = gen3_config['limit_links']
     extensions = gen3_config['extensions']
-
-    # delete vertices we don't want
-    vertices_to_delete = set(schemas.keys()) - set(dependency_order)
-    for k in vertices_to_delete:
-        del schemas[k]
+    nested_objects = gen3_config['nested_objects']
 
     _remove_required_flag(schemas)
 
     _ensure_description(schemas)
     _add_extra_properties(schemas, extra_properties)
     _rename_properties(schemas, renamed_properties)
+    _add_plucked_properties(schemas, nested_objects)
 
     _add_gen3_schema_scaffolding(config_categories, schemas)
     _add_extensions(extensions, schemas)
@@ -88,6 +85,11 @@ def _simplify_schemas(gen3_config, gen3_fixtures, schemas, log_stats=True):
     _simplify_quantities(schemas)
 
     _simplify_embedded_types(schemas)
+
+    # delete vertices we don't want
+    vertices_to_delete = set(schemas.keys()) - set(dependency_order)
+    for k in vertices_to_delete:
+        del schemas[k]
 
     _add_gen3_static_dependencies(gen3_fixtures, schemas)
 
@@ -201,10 +203,14 @@ def _add_gen3_schema_scaffolding(config_categories, schemas):
 def _simplify_identifiers(schemas: dict):
     """Transform identifiers to a list of strings"""
     for schema in schemas.values():
+
         if 'properties' not in schema:
             continue
         if 'identifier' not in schema['properties']:
             continue
+        if 'items' not in schema['properties']['identifier']:
+            continue
+
         schema['properties']['identifier']['items']['type'] = 'string'
         del schema['properties']['identifier']['items']['$ref']
 
@@ -332,10 +338,34 @@ def _simplify_quantities(schemas: dict):
 #         if len(codings) > 0:
 #             print()
 
-def _simplify_embedded_types(schemas):
-    """Any remaining embedded types are simply rendered as strings."""
-    # TODO - implement "PLUCK"
+def _add_plucked_properties(schemas: dict, nested_objects: dict):
+    """Add plucked properties to schemas
+
+    nested_objects: render child objects properties
+    """
+
     for schema in schemas.values():
+        plucked_properties = _plucked_properties(schema, schemas,  nested_objects)
+
+        if plucked_properties:
+            properties_with_plucked = set()
+            for plucked_property_source, plucked_property in plucked_properties.items():
+                for nested_property_name, nested_property in plucked_property['_nested_objects'].items():
+                    compound_property_name = f"{plucked_property_source}_{nested_property_name}"
+                    nested_property['description'] = f"[Plucked from {schema['title']}.{plucked_property_source}] {nested_property['description']}"
+                    schema['properties'][compound_property_name] = nested_property
+                    properties_with_plucked.add(plucked_property_source)
+            for _ in properties_with_plucked:
+                del schema['properties'][_]
+
+
+def _simplify_embedded_types(schemas: dict):
+    """Any remaining embedded types are simply rendered as strings.
+
+    """
+
+    for schema in schemas.values():
+
         lists_of_any = _list_of_any_type(schema)
         for name, property_ in lists_of_any.items():
             property_['description'] = f"[Text representation of {property_['items']['$ref'].replace('.yaml', '')}] {property_['description']}"
@@ -346,6 +376,54 @@ def _simplify_embedded_types(schemas):
             property_['description'] = f"[Text representation of {property_['$ref'].replace('.yaml', '')}] {property_['description']}"
             property_['type'] = 'string'
             del property_['$ref']
+
+
+def _plucked_properties(schema, schemas, nested_objects) -> dict:
+    """Pluck properties tree from nested objects."""
+    plucked_properties = {}
+
+    if any([name == schema['title'] for name in nested_objects]):
+        for path in nested_objects[schema['title']]:
+            k = path.split('.')[0]
+            assert k in schema['properties']
+            plucked_properties[k] = schema['properties'][k]
+            if '_nested_objects' not in plucked_properties[k]:
+                plucked_properties[k]['_nested_objects'] = {}
+            _ = '.'.join(path.split('.')[1:])
+            plucked_properties[k]['_nested_objects'].update({_.replace('.', '_'): {}})
+
+    for k, v in plucked_properties.items():
+        if 'items' in v:
+            if '$ref' in v['items']:
+                for path in v['_nested_objects']:
+                    sub_schema_key = v['items']['$ref'].replace('.yaml', '')
+                    assert sub_schema_key in schemas, (sub_schema_key, schemas.keys())
+                    sub_schema = schemas[sub_schema_key]
+                    for sub_property_name in path.split('_'):
+                        if sub_schema['title'] == 'Extension':
+                            v['_nested_objects'][path] = {'description': 'Value of extension', 'type': 'string'}
+                            continue
+                        assert sub_property_name in sub_schema['properties'], (sub_property_name, sub_schema['title'])
+                        sub_property = sub_schema['properties'][sub_property_name]
+                        v['_nested_objects'][path] = sub_property
+                        if '$ref' in sub_property:
+                            sub_schema = schemas[sub_property['$ref'].replace('.yaml', '')]
+                        if '$ref' in sub_property.get('items', {}):
+                            sub_schema = schemas[sub_property['items']['$ref'].replace('.yaml', '')]
+        elif '$ref' in v:
+            sub_schema_key = v['$ref'].replace('.yaml', '')
+            assert sub_schema_key in schemas, (sub_schema_key, schemas.keys())
+            sub_schema = schemas[sub_schema_key]
+            for _ in v['_nested_objects']:
+                for sub_property_name in _.split('.'):
+                    sub_property = sub_schema['properties'][sub_property_name]
+                    v['_nested_objects'][sub_property_name] = sub_property
+                    if '$ref' in sub_property:
+                        sub_schema = schemas[sub_property['$ref'].replace('.yaml', '')]
+                    if '$ref' in sub_property.get('items', {}):
+                        sub_schema = schemas[sub_property['items']['$ref'].replace('.yaml', '')]
+
+    return plucked_properties
 
 
 def _ensure_description(schemas):
@@ -404,7 +482,7 @@ def _simplify_references(schemas: dict, dependency_order: list, limit_links: dic
         delete_from_properties = []
         for name_, property_ in links_to_add.items():
             if 'enum_reference_types' not in property_:
-                logger.warning(
+                logger.info(
                     f"{schema['title']}.{name_} has no defined targets, "
                     "i.e a Reference->Any.  Not supported by Gen3. Skipping."
                 )
@@ -424,8 +502,8 @@ def _simplify_references(schemas: dict, dependency_order: list, limit_links: dic
                 target_type = inflection.underscore(reference_type)
                 label = f"{schema['title']}_{name_}_{reference_type}_{property_['backref']}"
                 if target_type in targets:
-                    logger.warning(f"{schema['title']} already has link to {target_type} via {targets[target_type]}. "
-                                   f"Therefore ignoring: {label}")
+                    logger.info(f"{schema['title']} already has link to {target_type} via {targets[target_type]}, "
+                                f"ignoring {schema['title']}.{name_}")
                     continue
                 link_name = name_
                 if multiple_targets:
@@ -438,7 +516,7 @@ def _simplify_references(schemas: dict, dependency_order: list, limit_links: dic
                     'required': False,
                     'target_type': target_type
                 })
-                targets[target_type] = label
+                targets[target_type] = f"{schema['title']}.{name_}"
                 delete_from_properties.append(name_)
 
         # # remove link from property dict

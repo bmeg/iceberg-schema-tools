@@ -10,6 +10,7 @@ import inflection
 import orjson
 import requests
 import yaml
+
 from fhir.resources import FHIRAbstractModel  # noqa
 from fhir.resources.attachment import Attachment
 from fhir.resources.codeableconcept import CodeableConcept
@@ -35,6 +36,51 @@ logger = logging.getLogger(__name__)
 
 # create a local instance
 THREAD_LOCAL = threading.local()
+
+
+class Getter:
+    """A getter for a FHIR resource."""
+
+    def __init__(self, path: str):
+        """Initialize Getter."""
+        self.path = compile('this.' + path, '<string>', 'eval')
+        self.path_str = 'this.' + path
+
+    def _traverse_path(self, resource: FHIRAbstractModel, path_to_search: str = None):
+        """Traverse the path, return the last element ,traverse 1st element in list."""
+        target = resource
+        path_to_search = path_to_search or str(self.path_str)
+        path_to_search = path_to_search.replace('this.', '')
+        for path in path_to_search.split('.'):
+            _ = f"this.{path}"
+            _ = eval(_, {}, {'this': target})
+            if _ is None:
+                break
+            if isinstance(_, list):
+                target = _[0]
+            else:
+                target = _
+        return _
+
+    def get(self, resource: FHIRAbstractModel):
+        """Get the value from the resource."""
+        """content.attachment.extension.md5"""
+        if 'extension' in self.path_str:
+            prefix, extension_name = self.path_str.split('.extension.')
+            val = self._traverse_path(resource, path_to_search=prefix)
+            if val:
+                extension_list = getattr(val, 'extension', None)
+                for extension in extension_list or []:
+                    if extension_name in extension.url:
+                        return extension.dict()['__value__']
+            return None
+
+        return self._traverse_path(resource)
+
+
+def _get_nested_object(resource: FHIRAbstractModel, path: str):
+    """Pluck a value from a resource, using path."""
+    return Getter(path).get(resource)
 
 
 def _simple_coding_dict(self: Coding, *args, **kwargs):
@@ -190,9 +236,6 @@ def _simple_document_reference_dict(self: DocumentReference, *args, **kwargs):
     """MonkeyPatch replacement for dict(), render DocumentReference."""
     # defaults
     document_reference = _simple_resource_dict(self)
-    # # sub-resource
-    # _render_sub_resources(document_reference, self)
-
     return document_reference
 
 
@@ -207,65 +250,134 @@ def _simple_task_dict(self: Task, *args, **kwargs):
 
 def _render_sub_resources(resource: FHIRAbstractModel) -> dict:
     """Render sub-resources with keys "{sub_resource}_{if list index}_{property_name}: simple_value" """
-    config = {
-        'DocumentReference': {
-            'lists': {
-                'content': {'limit': 1, 'properties': ['contentType', 'md5', 'size', 'url']}
-            },
-            'scalars': {}
-        },
-        'Patient': {
-            'lists': {
-                'address': {'limit': 1, 'properties': ['postalCode']}
-            },
-            'scalars': {}
-        }
-    }
+
+    # read config
+    nested_objects = THREAD_LOCAL.nested_objects
     # render lists to scalar
     simplified = {}
-    if resource.resource_type not in config:
+
+    if resource.resource_type not in nested_objects:
         return simplified
 
-    lists = config[resource.resource_type].get('lists', {})
-    scalars = config[resource.resource_type].get('scalars', {})
+    paths = nested_objects[resource.resource_type]
+    for path in paths:
+        nested_object_value = _get_nested_object(resource=resource, path=path)
+        nested_object_name = '_'.join(path.split('.'))
 
-    # add values to simplified resource
+        # # fyi:resource.schema() caches results
+        # parent_property_name = path.split('.')[0]
+        # parent_property_schema = resource.schema()['properties'][parent_property_name]
 
-    # lists
-    for resource_property_name in lists:  # sub_resource's property name
-        assert hasattr(resource, resource_property_name), f"{resource.resource_type} has no property named {resource_property_name}"
-        resource_property = getattr(resource, resource_property_name)
-        if not resource_property:
-            continue
-        limit = lists[resource_property_name].get('limit', 1)
-        properties = lists[resource_property_name].get('properties', [])
-        count = 0
-        for item in resource_property:
-            _ = item.dict()
-            # only add index in name if > 0
-            separator = '_'
-            if count > 0:
-                separator = f"_{count}_"
-            for k, v in _.items():
-                if k in properties:
-                    simplified[f"{resource_property_name}{separator}{k}"] = v
-            count += 1
-            if count == limit:
-                break
-            # warn if data had more than limit
-            if len(resource.content) > limit:
-                logger.warning(f"{resource.resource_type}/{resource.id} {resource_property_name}"
-                               f" had {len(resource.content)} items limit was {limit}")
+        is_array = nested_object_value is not None and isinstance(nested_object_value, list)
 
-    # scalars
-    for resource_property_name in scalars:  # sub_resource's property name
-        assert hasattr(resource, resource_property_name), f"{resource.resource_type} has no property named {resource_property_name}"
-        resource_property = getattr(resource, resource_property_name)
-        if not resource_property:
-            continue
-        _ = resource_property.dict()
-        for k, v in _.items():
-            simplified[f"{resource_property_name}_{k}"] = v
+        if is_array and nested_object_value is not None:
+            limit = 1
+            if isinstance(path, dict):
+                limit = path['limit']
+
+            count = 0
+            for item in nested_object_value:
+                _ = item.dict()
+
+                # only add index in name if > 0
+                separator = '_'
+                if count > 0:
+                    separator = f"_{count}_"
+                if '__value__' not in _:
+                    print("?")
+                value = _['__value__']
+                name = _.get('__name__', None)
+                if name:
+                    name = separator + name
+                else:
+                    name = ''
+                simplified[f"{nested_object_name}{name}"] = value
+
+                count += 1
+                if count == limit:
+                    break
+
+                count += 1
+                if count == limit:
+                    break
+
+        else:
+            # scalar
+            # is_simple
+            if nested_object_value is not None:
+                if hasattr(nested_object_value, 'dict'):
+                    name_value_list = nested_object_value.dict()
+                    if not isinstance(name_value_list, list):
+                        name_value_list = [name_value_list]
+                    for item in name_value_list:
+                        value = item['__value__']
+                        name = item.get('__name__', None)
+                        if name:
+                            name = '_' + name
+                        else:
+                            name = ''
+                        simplified[f"{nested_object_name}{name}"] = value
+                else:
+                    simplified[f"{nested_object_name}"] = nested_object_value
+
+    # config = {
+    #     'DocumentReference': {
+    #         'lists': {
+    #             'content': {'limit': 1, 'properties': ['contentType', 'md5', 'size', 'url']}
+    #         },
+    #         'scalars': {}
+    #     },
+    #     'Patient': {
+    #         'lists': {
+    #             'address': {'limit': 1, 'properties': ['postalCode']}
+    #         },
+    #         'scalars': {}
+    #     }
+    # }
+
+    # if resource.resource_type not in config:
+    #     return simplified
+    #
+    # lists = config[resource.resource_type].get('lists', {})
+    # scalars = config[resource.resource_type].get('scalars', {})
+    #
+    # # add values to simplified resource
+    #
+    # # lists
+    # for resource_property_name in lists:  # sub_resource's property name
+    #     assert hasattr(resource, resource_property_name), f"{resource.resource_type} has no property named {resource_property_name}"
+    #     resource_property = getattr(resource, resource_property_name)
+    #     if not resource_property:
+    #         continue
+    #     limit = lists[resource_property_name].get('limit', 1)
+    #     properties = lists[resource_property_name].get('properties', [])
+    #     count = 0
+    #     for item in resource_property:
+    #         _ = item.dict()
+    #         # only add index in name if > 0
+    #         separator = '_'
+    #         if count > 0:
+    #             separator = f"_{count}_"
+    #         for k, v in _.items():
+    #             if k in properties:
+    #                 simplified[f"{resource_property_name}{separator}{k}"] = v
+    #         count += 1
+    #         if count == limit:
+    #             break
+    #         # warn if data had more than limit
+    #         if len(resource.content) > limit:
+    #             logger.warning(f"{resource.resource_type}/{resource.id} {resource_property_name}"
+    #                            f" had {len(resource.content)} items limit was {limit}")
+    #
+    # # scalars
+    # for resource_property_name in scalars:  # sub_resource's property name
+    #     assert hasattr(resource, resource_property_name), f"{resource.resource_type} has no property named {resource_property_name}"
+    #     resource_property = getattr(resource, resource_property_name)
+    #     if not resource_property:
+    #         continue
+    #     _ = resource_property.dict()
+    #     for k, v in _.items():
+    #         simplified[f"{resource_property_name}_{k}"] = v
 
     return simplified
 
@@ -482,7 +594,7 @@ def _ensure_dialect(simplified: dict, resource: FHIRAbstractModel, dialect: str)
     return simplified
 
 
-def _render_dialect(simplified: dict, references: List[str], dialect: str, schemas: dict, limit_links: dict) -> dict:
+def _render_dialect(simplified: dict, references: List[str], dialect: str, schemas: dict, limit_links: dict = {}) -> dict:
     """Render as Gen3 record ready for import
     """
     if dialect != 'GEN3':
@@ -509,10 +621,14 @@ def _render_dialect(simplified: dict, references: List[str], dialect: str, schem
     return {'id': simplified['id'], 'name': inflection.underscore(simplified['resourceType']), 'relations': gen3_links, 'object': simplified}
 
 
-def simplify(resource: FHIRAbstractModel, dialect: str) -> (Dict, List[str]):
-    """Create a Gen3 friendly resource. Returns simplified resource and associated references."""
-    # most of the heavy lifting done in dict() overrides
+def simplify(resource: FHIRAbstractModel, dialect: str, nested_objects: dict = {}) -> (Dict, List[str]):
+    """Create a Gen3 friendly resource. Returns simplified resource and associated references.
+    Most of the heavy lifting done in dict() overrides of FHIRAbstractModel.dict()
+    """
+    # filled in by _simple_reference_dict
     THREAD_LOCAL.references = []
+    # read by _render_sub_resources
+    THREAD_LOCAL.nested_objects = nested_objects
     simplified = resource.dict()
     # cleanup goes here...
     simplified = _ensure_dialect(simplified, resource, dialect)
@@ -546,12 +662,14 @@ class SimplifierContextManager:
         self.orig_identifier_dict = Identifier.dict
         self.orig_reference_dict = Reference.dict
         self.orig_extension_dict = Extension.dict
+
         self.orig_attachment_dict = Attachment.dict
         self.orig_document_reference_content_dict = DocumentReferenceContent.dict
-        # self.orig_document_reference_dict = DocumentReference.dict
+
         self.orig_observation_dict = Observation.dict
         self.orig_codeable_concept_dict = CodeableConcept.dict
         self.orig_codeable_reference_dict = CodeableReference.dict
+
         self.orig_task_dict = Task.dict
 
         FHIRAbstractModel.dict = _simple_resource_dict
@@ -559,13 +677,15 @@ class SimplifierContextManager:
         Identifier.dict = _simple_identifier_dict
         Reference.dict = _simple_reference_dict
         Extension.dict = _simple_extension_dict
-        Attachment.dict = _simple_attachment_dict
-        DocumentReferenceContent.dict = _simple_document_reference_content_dict
-        # DocumentReference.dict = _simple_document_reference_dict
+
+        # Attachment.dict = _simple_attachment_dict
+        # DocumentReferenceContent.dict = _simple_document_reference_content_dict
+
         Observation.dict = _simple_observation_dict
         CodeableConcept.dict = _simple_codeable_concept_dict
         CodeableReference.dict = _simple_codeable_reference_dict
-        Task.dict = _simple_task_dict
+
+        Task.dict = _simple_task_dict    # TODO - do we still need this?
 
     def __exit__(self, exc_type, exc_value, exc_tb):
         # print("Restoring original FHIR classes", file=sys.stderr)
@@ -574,12 +694,14 @@ class SimplifierContextManager:
         Identifier.dict = self.orig_identifier_dict
         Reference.dict = self.orig_reference_dict
         Extension.dict = self.orig_extension_dict
+
         Attachment.dict = self.orig_attachment_dict
         DocumentReferenceContent.dict = self.orig_document_reference_content_dict
-        # DocumentReference.dict = self.orig_document_reference_dict
+
         Observation.dict = self.orig_observation_dict
         CodeableConcept.dict = self.orig_codeable_concept_dict
         CodeableReference.dict = self.orig_codeable_reference_dict
+
         Task.dict = self.orig_task_dict
 
 
@@ -600,6 +722,7 @@ def simplify_directory(input_path, pattern, output_path, schema_path, dialect, c
     with open(config_path) as fp:
         gen3_config = yaml.load(fp, SafeLoader)
     limit_links = gen3_config['limit_links']
+    nested_objects = gen3_config['nested_objects']
 
     with SimplifierContextManager():
         with EmitterContextManager(output_path) as emitter:
@@ -611,7 +734,7 @@ def simplify_directory(input_path, pattern, output_path, schema_path, dialect, c
                     continue
                 resource = parse_result.resource
 
-                simplified, references = simplify(resource, dialect)
+                simplified, references = simplify(resource, dialect, nested_objects)
                 try:
                     check_simplified_schemas(simplified, schemas)
                 except (TypeError, AssertionError) as e:

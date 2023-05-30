@@ -1,25 +1,6 @@
 # subclass_depth: 3  # default is 3 uncomment to override for fhir json schema
 
 
-
-# ignore these properties in all objects
-ignored_properties:
-  - contained
-  - meta
-  - implicitRules
-  - language
-  - contained
-  - modifierExtension
-  - assigner
-  - fhir_comments
-  - text
-
-# rename these properties
-renamed_properties:
-  label: label_ # https://cdis.slack.com/archives/CDDPLU1NU/p1682393064223499
-  for: for_fhir  # https://github.com/nazrulworld/fhir.resources/blob/main/fhir/resources/task.py#L145
-  class: class_fhir
-
 # This limits the top level objects the system will render
 # For some output targets, e.g. PFB order of output is important, parents must be rendered before children
 dependency_order:
@@ -56,6 +37,22 @@ dependency_order:
   - Immunization
 
 
+# Properties to 'pluck' from nested objects and render in the parent object
+nested_objects:
+  Patient:
+    - address.postalCode
+  Specimen:
+    - processing.additive
+    - processing.method
+  DocumentReference:
+    - content.attachment.contentType
+    - content.attachment.extension.md5
+    - content.attachment.size
+    - content.attachment.url
+  Task:
+    - input.valueReference
+    - output.valueReference
+
 # Specify which entities you want to add to a FHIR entities model
 extensions:
   Patient:
@@ -70,8 +67,7 @@ extensions:
   - https://hl7.org/fhir/extensions/StructureDefinition-patient-mothersMaidenName.json
 
 
-# constrain the parent destination links from a Node for the Simplified Model.
-
+# Constrain the parent destination links from a Node for the Simplified Model.
 limit_links:
   Observation:
     - ResearchStudy
@@ -85,7 +81,6 @@ limit_links:
 
 # Add these extra properties to the simplified schema
 # These may be used to add extra scalar properties to the simplified schema as well as constrain edge destination types.
-
 extra_properties:
 
   # Add gen3 file scaffolding expected properties
@@ -106,19 +101,19 @@ extra_properties:
     auth_resource_path:
         type: string
         description: Gen3 scaffolding
-    # from content attachment
-    content_url:
-        type: string
-        description: from content attachment
-    content_contentType:
-        type: string
-        description: from content attachment
-    content_size:
-        type: number
-        description: from content attachment
-    content_md5:
-        type: string
-        description: from content attachment
+#    # from content attachment
+#    content_url:
+#        type: string
+#        description: from content attachment
+#    content_contentType:
+#        type: string
+#        description: from content attachment
+#    content_size:
+#        type: number
+#        description: from content attachment
+#    content_md5:
+#        type: string
+#        description: from content attachment
     # from denormalization
     patient_id:
         type: string
@@ -201,3 +196,23 @@ categories:
   ResearchSubject: Administrative
   Specimen: Biospecimen
   Task: Analysis
+
+
+# Ignore these properties in all objects
+ignored_properties:
+  - contained
+  - meta
+  - implicitRules
+  - language
+  - contained
+  - modifierExtension
+  - assigner
+  - fhir_comments
+  - text
+
+
+# Rename these properties
+renamed_properties:
+  label: label_ # https://cdis.slack.com/archives/CDDPLU1NU/p1682393064223499
+  for: for_fhir  # https://github.com/nazrulworld/fhir.resources/blob/main/fhir/resources/task.py#L145
+  class: class_fhir
