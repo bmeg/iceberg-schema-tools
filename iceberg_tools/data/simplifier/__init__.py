@@ -43,7 +43,6 @@ class Getter:
 
     def __init__(self, path: str):
         """Initialize Getter."""
-        self.path = compile('this.' + path, '<string>', 'eval')
         self.path_str = 'this.' + path
 
     def _traverse_path(self, resource: FHIRAbstractModel, path_to_search: str = None):
@@ -63,8 +62,7 @@ class Getter:
         return _
 
     def get(self, resource: FHIRAbstractModel):
-        """Get the value from the resource."""
-        """content.attachment.extension.md5"""
+        """Get the value from the resource, including extensions."""
         if 'extension' in self.path_str:
             prefix, extension_name = self.path_str.split('.extension.')
             val = self._traverse_path(resource, path_to_search=prefix)
