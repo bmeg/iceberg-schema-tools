@@ -583,19 +583,19 @@ def _gen3_references(simplified: dict, resource: FHIRAbstractModel) -> dict:
 
 def _ensure_dialect(simplified: dict, resource: FHIRAbstractModel, dialect: str) -> dict:
     """Enforce dialect rules, update simplified dict.
-    In practice, it toggles between GEN3 and plain FHIR.
-    Gen3 dialect injects Gen3 properties and harvests edges.
+    In practice, it toggles between PFB and plain FHIR.
+    PFB dialect injects Gen3 properties and harvests edges.
     """
-    if dialect != 'GEN3':
+    if dialect != 'PFB':
         return simplified
     simplified = _gen3_scaffolding_document_reference(simplified, resource)
     return simplified
 
 
 def _render_dialect(simplified: dict, references: List[str], dialect: str, schemas: dict, limit_links: dict = {}) -> dict:
-    """Render as Gen3 record ready for import
+    """Render as PFB record ready for import
     """
-    if dialect != 'GEN3':
+    if dialect != 'PFB':
         return simplified
 
     labels = [_['title'] for _ in schemas.values() if 'title' in _]
@@ -620,7 +620,7 @@ def _render_dialect(simplified: dict, references: List[str], dialect: str, schem
 
 
 def simplify(resource: FHIRAbstractModel, dialect: str, nested_objects: dict = {}) -> (Dict, List[str]):
-    """Create a Gen3 friendly resource. Returns simplified resource and associated references.
+    """Create a PFB friendly resource. Returns simplified resource and associated references.
     Most of the heavy lifting done in dict() overrides of FHIRAbstractModel.dict()
     """
     # filled in by _simple_reference_dict
@@ -774,16 +774,16 @@ def _assert_all_ok(all_ok, parse_result, resource, simplified):
               help='Path to simplified schema json.  (Accepts url or file path)'
               )
 @click.option('--dialect',
-              default='GEN3',
-              type=click.Choice(['FHIR', 'GEN3'], case_sensitive=False),
-              help='GEN3: adds common properties, FHIR: passthrough'
+              default='PFB',
+              type=click.Choice(['FHIR', 'PFB'], case_sensitive=False),
+              help='PFB: adds common properties, FHIR: passthrough'
               )
 @click.option('--config_path',
               default='config.yaml',
               show_default=True,
               help='Path to config file.')
 def cli(path, pattern, output_path, schema_path, dialect, config_path):
-    """Renders Gen3 friendly flattened records.
+    """Renders PFB friendly flattened records.
 
     PATH: Path containing bundles (*.json) or resources (*.ndjson)
     OUTPUT_PATH: Path where simplified resources will be stored

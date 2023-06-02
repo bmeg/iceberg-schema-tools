@@ -23,8 +23,8 @@ def test_simplify_medication(distribution_schema):
     medication_administration = MedicationAdministration(**medication_administration)
     with SimplifierContextManager():
 
-        simplified, references = simplify(medication_administration, dialect='GEN3')
-        rendered = _render_dialect(simplified, references, 'GEN3', schemas=distribution_schema)
+        simplified, references = simplify(medication_administration, dialect='PFB')
+        rendered = _render_dialect(simplified, references, 'PFB', schemas=distribution_schema)
 
         print(orjson.dumps(rendered, option=orjson.OPT_INDENT_2).decode())
 

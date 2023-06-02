@@ -22,8 +22,8 @@ def test_simplify_task(distribution_schema):
     task = Task(**task)
     with SimplifierContextManager():
 
-        simplified, references = simplify(task, dialect='GEN3')
-        rendered = _render_dialect(simplified, references, 'GEN3', schemas=distribution_schema)
+        simplified, references = simplify(task, dialect='PFB')
+        rendered = _render_dialect(simplified, references, 'PFB', schemas=distribution_schema)
 
         print(orjson.dumps(rendered, option=orjson.OPT_INDENT_2).decode())
 

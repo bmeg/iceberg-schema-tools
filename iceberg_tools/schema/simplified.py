@@ -55,7 +55,7 @@ def _summarize_stats(gen3_schema) -> str:
 
 
 def _simplify_schemas(gen3_config, gen3_fixtures, schemas, log_stats=True):
-    """Make the schema Gen3 (data-frame) friendly."""
+    """Make the schema PFB (data-frame) friendly."""
 
     # extract expected configurations
     config_categories = gen3_config['categories']
@@ -484,7 +484,7 @@ def _simplify_references(schemas: dict, dependency_order: list, limit_links: dic
             if 'enum_reference_types' not in property_:
                 logger.info(
                     f"{schema['title']}.{name_} has no defined targets, "
-                    "i.e a Reference->Any.  Not supported by Gen3. Skipping."
+                    "i.e a Reference->Any.  Not supported by PFB. Skipping."
                 )
                 continue
 

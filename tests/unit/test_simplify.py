@@ -98,7 +98,7 @@ def test_simplify():
     }
     specimen = Specimen(**SPECIMEN)
     with SimplifierContextManager():
-        simplified, references = simplify(specimen, 'GEN3', nested_objects)
+        simplified, references = simplify(specimen, 'PFB', nested_objects)
 
     print(orjson.dumps(simplified, default=_default_json_serializer,
                        option=orjson.OPT_APPEND_NEWLINE).decode())
