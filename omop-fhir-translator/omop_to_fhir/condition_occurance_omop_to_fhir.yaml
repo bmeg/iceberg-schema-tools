@@ -1,0 +1,221 @@
+class: sifter
+name: condition_occurance_omop_to_fhir
+
+outdir: ../output
+
+config:
+  condition_data : ../data_used/Eunomia_condition_occurrence.json
+  schema: ../iceberg/schemas/bmeg/
+  conceptData: "../data_used/MASTER_CONCEPT_TABLE_MODIFIED.json"
+
+inputs:
+  Condition_Data:
+    plugin:
+      commandLine: python3 epochtime_convert.py {{config.condition_data}} Condition
+  
+  conceptData:
+    jsonLoad:
+      input: "{{config.conceptData}}"
+
+pipelines:
+  conceptTable:
+    - from: conceptData
+    - map:
+        method: fix
+        gpython: |
+          def fix(row):
+            return {
+              "concept_id": str(int(row["concept_id"])),
+              "vocabulary_id": str(row["vocabulary_id"]),
+              "concept_name": str(row["concept_name"]),
+              "concept_code": str(row["concept_code"])
+            }
+
+  Condition :
+    - from: Condition_Data
+    - lookup:
+        pipeline:
+          from: conceptTable
+          key: concept_id
+        lookup: "{{row.condition_concept_id}}"
+        copy: 
+          concept_id: concept_id
+          concept_vocabulary_id: vocabulary_id
+          concept_id_name: concept_name
+          concept_code: concept_code
+
+    - lookup:
+        pipeline:
+          from: conceptTable
+          key: concept_id
+        lookup: "{{row.condition_type_concept_id}}"
+        copy: 
+          concept_id: concept_id
+          condition_type_vocabulary_id: vocabulary_id
+          condition_type_name: concept_name
+          condition_type_concept_code: concept_code
+  
+    - lookup:
+        pipeline:
+          from: conceptTable
+          key: concept_id
+        lookup: "{{row.condition_source_value}}"
+        copy: 
+          concept_id: concept_id
+          condition_source_vocabulary_id: vocabulary_id
+
+    
+    - map:
+        method: build_fhir_condition
+        gpython: |
+          def is_int(num):
+            try:
+              int(num)
+              return True
+            except ValueError:
+              return False
+
+          def build_fhir_condition(row):
+          # most of these mappings came from lookup up an entry of the vocabulary 
+          # on athena and seeing what the linked website asociated with the vocabulary was
+            vocab_code_to_display = {
+              "NUCC": "https://www.nucc.org/",
+              "CMS Place of Service": "https://www.cms.gov/Medicare/Coding/place-of-service-codes",
+              "SNOMED":"http://snomed.info/sct/",
+              "LOINC": "https://loinc.org/",
+              "Visit": "https://athena.ohdsi.org/search-terms/terms/",
+              "Type Concept": "https://athena.ohdsi.org/search-terms/terms/",
+              "ICD9CM": "https://www.cms.gov/Medicare/Coding/ICD9ProviderDiagnosticCodes/codes",
+              "ICD10CM": "https://icd10cmtool.cdc.gov/",
+              "SOPT": "https://www.nahdo.org/sopt",
+              "Relationship": "https://athena.ohdsi.org/search-terms/terms/",
+              "Vocabulary": "https://athena.ohdsi.org/search-terms/terms/",
+              "UCUM": "https://ucum.org/",
+              "MeSH": "https://www.nlm.nih.gov/research/umls/licensedcontent/umlsknowledgesources.html",
+              "NDFRT": 'https://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html',
+              "Condition Type": "https://athena.ohdsi.org/search-terms/terms/",
+              "NDC": "https://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html",
+              "RxNorm": "https://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html",
+              "RxNorm Extension": "https://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html", #note sure about this one
+            }
+
+            # If there is no condition end date, can 
+            # it be assumed that the clinical status is active?
+            out = {
+              "id": str(int(row["condition_occurrence_id"])),
+              "resourceType":"Condition",
+              "clinicalStatus":{
+                "coding":[{
+                  "system": "http://hl7.org/fhir/ValueSet/condition-clinical",
+                  "code": "active",
+                  "display":  "active"    
+                }],
+              },
+              "category":[{
+                "coding":[{
+                   "system": vocab_code_to_display[str(row["condition_type_vocabulary_id"])],
+                    "code": str(row["condition_type_concept_code"]),
+                    "display": row["condition_type_name"]
+                }],
+                "text":row["condition_type_name"]
+              }],
+              "subject":{"reference":"patient/"+ str(int(row["person_id"]))},
+              "code":{
+                "coding":[{
+                  "system": str(vocab_code_to_display[row["concept_vocabulary_id"]]),
+                  "code": str(row["concept_code"]),
+                  "display": str(row["concept_id_name"])
+                }],
+                "text": str(row["concept_id_name"]),
+               },
+               "extension": [],
+              "onsetDateTime": row["condition_start_date"]
+            }
+
+            if "condition_end_date" in row and row["condition_end_date"] is not None:
+              out["abatementDateTime"] = str(row["condition_end_date"])
+              out["clinicalStatus"]["coding"][0]["code"] = "resolved"
+              out["clinicalStatus"]["coding"][0]["display"] = "resolved"
+
+            elif "condition_end_datetime" in row and row["condition_end_datetime"] is not None:
+              out["abatementDateTime"] = str(row["condition_end_datetime"])
+              out["clinicalStatus"]["coding"][0]["code"] = "resolved"
+              out["clinicalStatus"]["coding"][0]["display"] = "resolved"
+              out["clinicalStatus"]["text"] = "resolved"
+
+            # No value for condition_status_concept_id in any dataset
+            # Not sure where to put this.
+            if "condition_status_concept_id" in row and row["condition_status_concept_id"] is not None:
+              out["category"] = [{
+                "coding":[{
+                  "system": "http://hl7.org/fhir/ValueSet/condition-category",
+                  "code": str(row["condition_status_concept_id"]),
+                  "display": str(row["condition_status_concept_id"])
+                }],
+                "text": "example"
+              }]
+            if "stop_reason" in row and row["stop_reason"] is not None:
+              out["note"] = [{
+                "text": str(row["stop_reason"])
+              }]
+
+            if "provider_id" in row and row["provider_id"] is not None:
+              out["extension"].append({
+                "url":"https://ohdsi.github.io/CommonDataModel/cdm54.html#CONDITION_OCCURRENCE__provider_id",
+                "valueReference": {"reference":"Practitioner/"+  str(int(row["provider_id"]))}
+              })
+
+            if "condition_source_value" in row and row["condition_source_value"] is not None:
+              out["extension"].append({
+                "url": "https://ohdsi.github.io/CommonDataModel/cdm54.html#CONDITION_OCCURRENCE__condition_source_value",
+                "valueString": str(row["condition_source_value"])
+              }) 
+
+            # this implies if there is not a system match for it in vocabularies, do not add it into FHIR
+            # this is a place where non lossless translation could occur
+            if (("condition_source_concept_id" in row and row["condition_source_concept_id"] is not None) 
+            and ("condition_source_vocabulary_id" in row and row["condition_source_vocabulary_id"] is not None)):
+              # there are alot of misses here, might be better just to keep it as is,
+              # because every miss is a place where data is lost in the translation
+              # or just have some sort of default "url" and make the if statement more relaxed/
+              # don't do a lookup on a column that you know isn't 100% going to return a proper concept ID
+              out["extension"].append({
+                "url": vocab_code_to_display[str(row["condition_source_vocabulary_id"])],
+                "valueString": str(int(row["condition_source_concept_id"]))
+              })
+              
+            # like in this style below could be done above.
+            if "condition_status_source_value" in row and row["condition_status_source_value"] is not None:
+              out["category"]["extension"] = [{
+                "url": "https://ohdsi.github.io/CommonDataModel/cdm54.html#CONDITION_OCCURRENCE__condition_status_source_value",
+                "valueString": str(row["condition_status_source_value"])
+              }]
+            if "visit_occurrence_id" in row and row["visit_occurrence_id"] is not None:
+              out["encounter"] = {"reference": "Encounter/" + str(int(row["visit_occurrence_id"]))}
+              if "visit_detail_id" in row and row["visit_detail_id"] is not None:       
+                out["encounter"]["extension"] = [{
+                  "url":"https://ohdsi.github.io/CommonDataModel/cdm54.html#CONDITION_OCCURRENCE__visit_detail_id",
+                  "valueReference": {"reference": "Encounter/" + str(int(row["visit_detail_id"]))}
+                }]
+
+            if(len(out["extension"]) == 0):
+             del(out["extension"])
+            
+            return out
+
+    - project: 
+        mapping:
+          identifier: [{ 
+                "system": "https://github.com/OHDSI/Eunomia",
+                "value": "{{row.id}}"
+            }] 
+
+    - objectValidate:
+        schema: "{{config.schema}}"
+        title: Condition
+    #- debug: {}
+
+    - emit:
+        name: Condition
+
+

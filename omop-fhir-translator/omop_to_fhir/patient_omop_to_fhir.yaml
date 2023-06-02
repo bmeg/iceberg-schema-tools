@@ -1,0 +1,238 @@
+
+class: sifter
+name: patient_omop_to_fhir
+
+outdir: ../output
+
+config:
+  patient_data:  ../data_used/redivis_person.json #../mimic-iv-omop-data/person.json 
+  location_data: ../data_used/redivis_location.json #../mimic-iv-omop-data/location.json
+  schema: ../iceberg/schemas/bmeg/
+
+inputs:
+  patient_Data:
+    jsonLoad:
+      input: "{{config.patient_data}}"
+
+  location_Data:
+    jsonLoad:
+      input: "{{config.location_data}}"
+
+pipelines:
+  patientDraft:
+    - from: patient_Data   
+    - map:
+        method: fix
+        gpython: | 
+          def mappings(item,value):
+            if item == "location_id": value = int(value)
+            if item == "gender_source_value":
+              gender_val_mappings = {
+                '0' : "unknown",
+                '1' : "male",
+                '2' : "female"
+              }
+              value = gender_val_mappings[str(value)]
+
+            mapping = {
+              'gender_source_value': (str(value), "gender"),
+              'location_id': (str(value),"location_id"),
+              'provider_id' : ([{ "reference": 'Practitioner/' + str(int(value))}],"generalPractitioner"),
+              'care_site_id' : ({ "reference": 'Organization/' + str(int(value))},"managingOrganization")
+            }
+            if item in mapping.keys():
+              return mapping[item]
+            else: return None
+            # test this ^^
+
+          def fix(row):
+            # TODO: type checking on required fields to make sure errors
+            # from casting to different datatypes don't occur later
+
+            items = [val for val in row.items() if val[1] is not None]
+            required_fields = ['person_id','gender_concept_id','year_of_birth','race_concept_id','ethnicity_concept_id']
+            assert(not all(item in items for item in required_fields)),"Error, not all required fields are present in OMOP structures"
+            gender_mappings = {
+              "8532":"female",
+              "8507":"male",
+              "8551":"unknown",
+              "8521":"other"
+            }
+            ethnicity_mappings = {
+              "38003563":("2135-2","Hispanic or Latino"),
+              "38003564":("2186-5","Not Hispanic or Latino")
+            }
+            race_mappings = {
+              "8657":("1002-5","American Indian or Alaska Native"),
+              "8515":("2028-9","Asian"),
+              "8516":("2054-5","Black or African American"),
+              "8557":("2076-8","Native Hawaiian or Other Pacific Islander"),
+              "8527":("2106-3","White")
+            }
+            
+            if (str(int(row["race_concept_id"])) not in race_mappings):
+              raise Exception("Your us_core_racec code does not comply with fhir standards.")
+            else:
+              us_core_race = race_mappings[str(int(row["race_concept_id"]))]
+
+            birthDate = str(int(row['year_of_birth']))
+            day, month = "01", "01"
+            if row['month_of_birth'] is not None and row['day_of_birth'] is not None:
+              day, month = int(row['day_of_birth']), int(row['month_of_birth'])
+              if month < 10: month = '0' + str(month)
+              if day < 10: day = '0' + str(day)
+            birthDate =  str(int(row['year_of_birth'])) + "-" + str(month) + "-" + str(day)
+
+            out = {
+              "id": str(int(row["person_id"])),
+              "birthDate": birthDate,
+              "gender": gender_mappings[str(int(row["gender_concept_id"]))],
+              "resourceType":"Patient",
+              "identifier":[{
+                "system": "https://redivis.com/datasets/ye2v-6skh7wdr7/tables",
+                "value":str(int(row["person_id"]))
+              }],
+              "extension":[
+                {
+                "extension": [
+                  {
+                    "url":'ombCategory',
+                    "valueCoding":{
+                      "system":"urn:oid:2.16.840.1.113883.6.238",
+                      "code":str(us_core_race[0]),
+                      "display":str(us_core_race[1])
+                    }
+                  },
+                  {
+                  "url":"text",
+                  "valueString": str(us_core_race[1])
+                  }
+                ],
+              "url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-race"
+              },
+              {
+                "extension": [
+                {
+                  "url": "ombCategory",
+                  "valueCoding": {
+                    "system": "urn:oid:2.16.840.1.113883.6.238",
+                    "code": str(ethnicity_mappings[str(int(row["ethnicity_concept_id"]))][0]),
+                    "display": str(ethnicity_mappings[str(int(row["ethnicity_concept_id"]))][1])
+                  }
+                },
+                {
+                  "url": "text",
+                  "valueString": str(ethnicity_mappings[str(int(row["ethnicity_concept_id"]))][1])
+                }
+              ],
+              "url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity"
+              }
+            ]
+            }
+            if("birth_datetime" in row and row["birth_datetime"] is not None):
+              out["extension"].append({
+                  "url":"http://hl7.org/fhir/StructureDefinition/patient-birthTime",
+                  "valueDateTime": row["birth_datetime"]
+                })
+
+            source_values = ["ethnicity_source_value","gender_source_value","race_source_value"]
+            for value in source_values:
+              if(value in row and row[value] is not None):
+                out["extension"].append({
+                    "url":"https://ohdsi.github.io/CommonDataModel/cdm54.html#PERSON" + "_" + value,
+                    "valueString": str(row[value])
+                  })
+            
+            if(row["person_source_value"] is not None):
+              out["identifier"].append({"value": row["person_source_value"] })  
+            else:
+              out["identifier"].append({"value": "None"})
+            
+            #not sure how person_source_value could have a system url
+            # might by worth simplifying this code to make it more readable
+            if (row["location_id"] is not None):
+              out["identifier"][1]["value"] =  out["identifier"][1]["value"] + "_" + str(int(row["location_id"]))
+            else:
+              out["identifier"][1]["value"] =  str(out["identifier"][1]["value"]) + "_" + "None"
+            
+            non_required_items_include = ['location_id','provider_id','care_site_id']
+            non_required_items = [item for item in items if item not in required_fields and item[0] in non_required_items_include]
+
+            for val in non_required_items:
+              mapped_values = mappings(val[0],val[1])
+              if mapped_values is not None:
+                out[mapped_values[1]] = mapped_values[0]
+
+            return out
+  
+  locationTable:
+    - from: location_Data
+    - map:
+        method: sticks
+        gpython: |
+          def sticks(row):
+            #print("THE VALUE OF ROW ",row)
+            return {
+              "location_id" : str(int(row["location_id"])), 
+              "state" : str(row["state"]),
+              "address_1": str(row["address_1"]),
+              "address_2": str(row["address_2"]),
+              "city": str(row["city"]),
+              "zip": str(row["zip"]),
+              "county": str(row["county"])
+            }
+  Patient:
+    - from: patientDraft
+    - lookup:
+        pipeline:
+          from: locationTable
+          key: location_id
+        lookup: "{{row.location_id}}"
+        copy: 
+          state: state
+          address_1: address_1
+          address_2: address_2
+          city: city
+          zip: zip
+          county: county
+    
+    - map:
+        method: fix
+        gpython: |
+          def fix(row):
+            if "location_id" not in row:
+              return row
+            #print("LAST MAP",row)
+              
+            row["address"] = [{
+                              "line":[str(row['address_1'])],
+                              "city":str(row['city']),
+                              "state":str(row['state']),
+                              "postalCode":str(row['zip']),
+                              "district":str(row['county'])
+                              },{
+                              "line":[str(row['address_2'])]
+                              }]
+            
+            keys = [row for row in row["address"][0].keys()]
+            for val in keys:
+              if(str(row["address"][0][val]) == "None"): 
+                del(row["address"][0][val])
+              elif(type(row["address"][0][val]) == list and str(row["address"][0][val][0]) == "None"):
+                del(row["address"][0][val])
+
+            if(type(row["address"][1]["line"]) == list and str(row["address"][1]["line"][0]) == "None"): 
+              del(row["address"][1])
+    
+            del(row["state"],row["county"],row["address_1"],row["address_2"],row["city"],row["zip"])
+            return row
+
+    - objectValidate:
+        schema: "{{config.schema}}"
+        title: Patient
+
+    - emit:
+        name: Patient
+    
+    
+

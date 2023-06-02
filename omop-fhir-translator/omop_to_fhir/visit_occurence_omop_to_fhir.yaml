@@ -1,0 +1,222 @@
+
+class: sifter
+name: visit_occurence_omop_to_fhir
+
+outdir: ../output
+
+config:
+  vist_occurence:  ../data_used/mimic-iv_visit_occurrence.json  #../r_script_data/visit_occurrence.json 
+  schema: ../iceberg/schemas/bmeg/
+  conceptData: ../data_used/MASTER_CONCEPT_TABLE_MODIFIED.json
+
+inputs:
+  visit_occurence_Data:
+    plugin:
+      commandLine: python3 epochtime_convert.py {{config.vist_occurence}} Visit_Occurence
+  
+  conceptTheta:
+    jsonLoad:
+      input: "{{config.conceptData}}"
+
+# class["system"] -> 
+# https://athena.ohdsi.org/search-terms/terms?conceptClass=Visit&vocabulary=Visit&vocabulary=CMS+Place+of+Service&page=1&pageSize=100&query=&boosts
+# https://terminology.hl7.org/5.1.0/ValueSet-v3-ActEncounterCode.html
+pipelines:
+  conceptTable:
+    - from: conceptTheta
+    - map:
+        method: fix
+        gpython: |
+          def fix(row):
+            return {
+              "concept_id": str(int(row["concept_id"])),
+              "vocabulary_id": str(row["vocabulary_id"]),
+              "concept_name": str(row["concept_name"]),
+              "concept_code": str(row["concept_code"])
+            }
+
+  Encounter:
+    - from: visit_occurence_Data
+    # All 4 lookups take 30 seconss
+    # Just one lookup takes 21 seconds for file:
+    # ../data/MASTER_CONCEPT_TABLE.json
+
+    - lookup:
+        pipeline:
+          from: conceptTable
+          key: concept_id
+        lookup: "{{row.ADMITTING_SOURCE_CONCEPT_ID}}"
+        copy: 
+          NEWCABULARY_ID: vocabulary_id
+          SOURCE_CONCEPT_ID_NAME: concept_name
+          SOURCE_CONCEPT_ID_CODE: concept_code
+
+          
+    - lookup:
+        pipeline:
+          from: conceptTable
+          key: concept_id
+        lookup: "{{row.DISCHARGE_TO_CONCEPT_ID}}"
+        copy: 
+          DISCHARGE_VOCAB_ID: vocabulary_id
+          DISCHARGE_NAME: concept_name
+          DISHCHARGE_CONCEPT_CODE: concept_code
+
+    - lookup:
+        pipeline:
+          from: conceptTable
+          key: concept_id
+        lookup: "{{row.VISIT_TYPE_CONCEPT_ID}}"
+        copy: 
+          VISIT_TYPE_VOCAB_CONCEPT_ID: vocabulary_id
+  
+    - lookup:
+        pipeline:
+          from: conceptTable
+          key: concept_id
+        lookup: "{{row.VISIT_CONCEPT_ID}}"
+        copy: 
+          VISIT_VOCAB_CONCEPT_ID: vocabulary_id
+          visit_name: concept_name
+          visit_concept_id_code: concept_code
+
+
+    - map:
+        method: fix
+        gpython: | 
+          def is_int(num):
+              try:
+                int(num)
+                return True
+              except ValueError:
+                return False
+
+          def fix(row):
+            # Need to figure out what system to map to
+            # if the code doesn't hit this table
+            vocab_code_to_display = {
+              "NUCC": "https://www.nucc.org/",
+              "CMS Place of Service": "https://www.cms.gov/Medicare/Coding/place-of-service-codes",
+              "SNOMED":"http://snomed.info/sct/",
+              "LOINC": "https://loinc.org/",
+              "Visit": "https://athena.ohdsi.org/search-terms/terms/",
+              "Type Concept": "https://athena.ohdsi.org/search-terms/terms/"
+            }
+
+            out = {
+              "id": str(int(row["VISIT_OCCURRENCE_ID"])),
+              "resourceType":"Encounter",
+              "status": "finished",
+              "subject": {"reference":"Patient/" + str(row["PERSON_ID"])},
+              "class":[{
+                "coding":
+                  [{
+                  "system": str(vocab_code_to_display[row["VISIT_VOCAB_CONCEPT_ID"]]),
+                  "code": str(row["visit_concept_id_code"]).replace(" ", ""),
+                  "display": str(row["visit_name"]).replace(" ", "")
+                }]
+              }],
+              "period": {"start":row["VISIT_START_DATE"], "end":row["VISIT_END_DATE"]}
+            }
+            if "VISIT_START_DATETIME" in row and row["VISIT_START_DATETIME"] is not None:
+              out["period"]["start"] = row["VISIT_START_DATETIME"]
+            if "VISIT_END_DATETIME" in row and row["VISIT_END_DATETIME"] is not None:
+              out["period"]["end"] = row["VISIT_END_DATETIME"]
+            
+            if "VISIT_SOURCE_VALUE" in row and row["VISIT_SOURCE_VALUE"] is not None:
+              out["type"] = [{
+                "coding":
+                [{
+                  "system": "https://ohdsi.github.io/CommonDataModel/cdm54.html#VISIT_OCCURRENCE__visit_source_value",
+                  "code": str(row["VISIT_SOURCE_VALUE"]),
+                  "display": str(row["VISIT_SOURCE_VALUE"])
+                }]
+              }]
+            
+            if "PROVIDER_ID" in row and row["PROVIDER_ID"] is not None:
+              if(is_int(row["PROVIDER_ID"])):
+                out["performer"] = [{"reference":"Practitioner/" + str(int(row["PROVIDER_ID"]))}]
+              else:
+                out["performer"] = [{"reference":"Practitioner/" + str(row["PROVIDER_ID"])}]
+            
+            if "CARE_SITE_ID" in row and row["CARE_SITE_ID"] is not None:
+              out["location"] = [{
+                "location":{"reference":"Location/" + str(row["CARE_SITE_ID"])}
+              }]
+            
+            if "VISIT_TYPE_CONCEPT_ID" in row and row["VISIT_TYPE_CONCEPT_ID"] is not None:
+              # this is a provenance descriptor, ex: EHR. The problem is it can't go in
+              # diagnosis because FHIR expects a condition reference if diagnosis is populated
+              # and OMOP data does not require this condition reference in encounter like FHIR does
+              # So it's a general extension until a better place can be found for it 
+              out["extension"] = [{
+                "url": vocab_code_to_display[str(row["VISIT_TYPE_VOCAB_CONCEPT_ID"])],
+                "valueCode": row["VISIT_TYPE_CONCEPT_ID"]
+                }]
+            
+            if "VISIT_SOURCE_CONCEPT_ID" in row and row["VISIT_SOURCE_CONCEPT_ID"] is not None: 
+              if "extension" not in out:
+                out["extension"] = []
+              out['extension'].append({
+                "url":"https://ohdsi.github.io/CommonDataModel/cdm54.html#VISIT_OCCURRENCE__visit_source_concept_id",
+                "valueString": str(row["VISIT_SOURCE_CONCEPT_ID"])
+              })
+            if (("ADMITTING_SOURCE_VALUE" in row and row["ADMITTING_SOURCE_VALUE"] is not None) or \
+                ("DISCHARGE_TO_SOURCE_VALUE" in row and row["DISCHARGE_TO_SOURCE_VALUE"] is not None) or \
+                ("DISCHARGE_TO_CONCEPT_ID" in row and row["DISCHARGE_TO_CONCEPT_ID"] is not None) or \
+                ("ADMITTING_SOURCE_CONCEPT_ID" in row and row["ADMITTING_SOURCE_CONCEPT_ID"] is not None)):
+              out["admission"] = {}
+
+              if(("ADMITTING_SOURCE_VALUE" in row and row["ADMITTING_SOURCE_VALUE"] is not None) or \
+                 ("DISCHARGE_TO_SOURCE_VALUE" in row and row["DISCHARGE_TO_SOURCE_VALUE"] is not None)):
+                out["admission"]["extension"] = []
+              
+                if "ADMITTING_SOURCE_VALUE" in row and row["ADMITTING_SOURCE_VALUE"] is not None:
+                  out["admission"]["extension"].append({
+                    "url": "http://hl7.org/fhir/us/cdmh/StructureDefinition/cdmh-pcornet-admitting-source-facility-type",
+                    "valueString": str(row["ADMITTING_SOURCE_VALUE"])
+                  })
+                if "DISCHARGE_TO_SOURCE_VALUE" in row and row["DISCHARGE_TO_SOURCE_VALUE"] is not None:
+                  out["admission"]["extension"].append({
+                    "url": "http://hl7.org/fhir/us/cdmh/StructureDefinition/cdmh-pcornet-discharge-status",
+                    "valueString": str(row["DISCHARGE_TO_SOURCE_VALUE"])
+                  })
+          
+            if "DISHCHARGE_CONCEPT_CODE" in row and row["DISHCHARGE_CONCEPT_CODE"] is not None:
+              if "DISCHARGE_VOCAB_ID" in row and row["DISCHARGE_VOCAB_ID"] is not None:
+                #print(row["DISHCHARGE_CONCEPT_CODE"])
+                out["admission"]["dischargeDisposition"] = {
+                  "coding": [
+                    {
+                      "system": vocab_code_to_display[str(row["DISCHARGE_VOCAB_ID"])],
+                      "code": str(row["DISHCHARGE_CONCEPT_CODE"]),
+                      "display": row["DISCHARGE_NAME"]
+                    }
+                  ]
+                }
+            if "SOURCE_CONCEPT_ID_CODE" in row and row["SOURCE_CONCEPT_ID_CODE"] is not None:
+              if "NEWCABULARY_ID" in row and row["NEWCABULARY_ID"] is not None:
+                out["admission"]["admitSource"] = {
+                  "coding": [
+                    {
+                      "system": vocab_code_to_display[str(row["NEWCABULARY_ID"])],
+                      "code": str(row["SOURCE_CONCEPT_ID_CODE"]),
+                      "display": row["SOURCE_CONCEPT_ID_NAME"]
+                    }
+                  ]
+                }
+
+            if "PRECEDING_VISIT_OCCURRENCE_ID" in row and row["PRECEDING_VISIT_OCCURRENCE_ID"] is not None:
+              out["partOf"] = {"reference": "Encounter/" + str(row["PRECEDING_VISIT_OCCURRENCE_ID"])}
+
+            return out
+
+    # getting a schema issue here that I don't think I should be getting considering the output
+    #- objectValidate:
+        #schema: "{{config.schema}}"
+        #title: Encounter
+        
+    #- debug: {}
+    - emit:
+        name: Encounter
+

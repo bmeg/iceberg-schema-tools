@@ -1,0 +1,8 @@
+redivis
+snakemake
+python-dotenv
+orjson
+polars
+ndjson
+click
+tqdm

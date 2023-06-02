@@ -1,0 +1,230 @@
+class: sifter
+name: drug_exposure_omop_to_fhir
+
+outdir: ../output
+
+config:
+  drug_exposure:  ../data_used/redivis_drug_exposure.json  #../r_script_data/visit_occurrence.json 
+  schema: ../iceberg/schemas/bmeg/
+  conceptData: ../data_used/MASTER_CONCEPT_TABLE_MODIFIED.json
+
+inputs:
+  drug_Exposure_Data:
+    plugin:
+      commandLine: python3 epochtime_convert.py {{config.drug_exposure}} Drug_Exposure
+  
+  conceptTheta:
+    jsonLoad:
+      input: "{{config.conceptData}}"
+
+pipelines:
+  conceptTable:
+    - from: conceptTheta
+    - map:
+        method: fix
+        gpython: |
+          def fix(row):
+            return {
+              "concept_id": str(row["concept_id"]),
+              "vocabulary_id": str(row["vocabulary_id"]),
+              "concept_name": str(row["concept_name"]),
+              "concept_code": str(row["concept_code"])
+            }
+
+  MedicationRequest: #TODO get this all squared away
+    - from: drug_Exposure_Data
+    - map:
+        method: formulate_med_req
+        gpython: |
+          def formulate_med_req(row):
+            out = {
+             "id": str(int(row["drug_exposure_id"]+ "OFFSET")),
+             "resourceType": "MedicationRequest",
+             "status": "stopped", #don't think there is anything for this in the OMOP structure
+             "subject": {"reference":"Patient/" + str(row["person_id"])},]
+            }
+
+            if (("sig" in row and row["sig"] is not None) or  ("route_concept_id" in row and row["route_concept_id"] is not None)):
+               out["dosageInstruction"] = []
+               if (("sig" in row and row["sig"] is not None) and ("route_concept_id" in row and row["rout_concept_id"] is not None)):
+                out["dosageInstruction"].append({
+                  "text":row["sig"],
+                  "route":{
+                    "coding":[{
+                      "display":"filler",
+                      "code":row["route_concept_id"],
+                      "system":"filler"
+                    }],
+                    "text":"filler"
+                  }
+                })
+               elif ("sig" in row and row["sig"] is not None):
+                 out["dosageInstruction"].append({
+                  "text":row["sig"]
+                  })
+               elif ("route_concept_id" in row and row["route_concept_id"] is not None):
+                out["dosageInstruction"].append({
+                  "route":{
+                    "coding":[{
+                      "display":"filler",
+                      "code":row["route_concept_id"],
+                      "system":"filler"
+                    }],
+                    "text":"filler"
+                  }
+                })
+            if (("refils" in row and row["refils"] is not None) or ("quanitity" in row and row["quantity"] is not None) or ("days_supply" in row and row["days_supply"] is not None)):
+              if ("refils" in row and row["refils"] is not None):
+                out["dispenseRquest"]["numberOfRepeatsAllowed"] = int(row["refils"])
+              if ("quantity" in row and row["quantity"] is not None):
+                out["dispenseRequest"]["quantity"] = row["quantity"]
+              if ("days_supply" in row and row["days_supply"] is not None):
+                out["dispenseRequest"]["expectedSupplyDuration"] = row["days_supply"]
+            
+            if "provider_id" in row and row["provider_id"] is not None:
+              if(is_int(row["provider_id"])):
+                out["requester"] = [{"reference":"Practitioner/" + str(int(row["provider_id"]))}]
+              else:
+                out["requester"] = [{"reference":"Practitioner/" + str(row["provider_id"])}]
+
+
+
+
+
+
+            return out
+
+    #- objectValidate:
+        #schema: "{{config.schema}}"
+        #title: MedicationRequest
+        
+    #- debug: {}
+    - emit:
+        name: MedicationRequest
+
+
+  MedicationStatement:
+    - from: drug_Exposure_Data
+    - map:
+        method: cast
+        gpython: |
+          def cast(row):
+            row["drug_concept_id"] = int(row["drug_concept_id"])
+            row["drug_type_concept_id"] = int(row["drug_type_concept_id"])
+            return row
+          
+    - lookup:
+        pipeline:
+          from: conceptTable
+          key: concept_id
+        lookup: "{{row.drug_concept_id}}"
+        copy: 
+          CONCEPT_ID_NAME: concept_name
+          CONCEPT_ID_CODE: concept_code
+          CONCEPT_VOCAB_ID: vocabulary_id
+
+    - lookup:
+        pipeline:
+          from: conceptTable
+          key: concept_id
+        lookup: "{{row.drug_type_concept_id}}"
+        copy: 
+          NEWCABULARY_ID: vocabulary_id
+          DRUG_TYPE_CONCEPT_ID_NAME: concept_name
+          DRUG_TYPE_CONCEPT_ID_CODE: concept_code
+
+    - map:
+        method: fix
+        gpython: | 
+          def is_int(num):
+              try:
+                int(num)
+                return True
+              except ValueError:
+                return False
+
+          def fix(row):
+            vocab_code_to_display = {
+              "NUCC": "https://www.nucc.org/",
+              "CMS Place of Service": "https://www.cms.gov/Medicare/Coding/place-of-service-codes",
+              "SNOMED":"http://snomed.info/sct/",
+              "LOINC": "https://loinc.org/",
+              "Visit": "https://athena.ohdsi.org/search-terms/terms/",
+              "Type Concept": "https://athena.ohdsi.org/search-terms/terms/",
+              "ICD9CM": "https://www.cms.gov/Medicare/Coding/ICD9ProviderDiagnosticCodes/codes",
+              "ICD10CM": "https://icd10cmtool.cdc.gov/",
+              "SOPT": "https://www.nahdo.org/sopt",
+              "Relationship": "https://athena.ohdsi.org/search-terms/terms/",
+              "Vocabulary": "https://athena.ohdsi.org/search-terms/terms/",
+              "UCUM": "https://ucum.org/",
+              "MeSH": "https://www.nlm.nih.gov/research/umls/licensedcontent/umlsknowledgesources.html",
+              "NDFRT": 'https://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html',
+              "Condition Type": "https://athena.ohdsi.org/search-terms/terms/",
+              "NDC": "https://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html",
+              "RxNorm": "https://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html",
+              "RxNorm Extension": "https://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html", #note sure about this one
+              "Observation Type": "https://athena.ohdsi.org/search-terms/terms/",
+              "None": "https://athena.ohdsi.org/search-terms/terms/",
+              "CPT4": "https://www.nlm.nih.gov/research/umls/licensedcontent/umlsknowledgesources.html"
+            }
+
+            out = {
+              "id": str(int(row["drug_exposure_id"])),
+              "resourceType":"MedicationStatement",
+              "status": "finished",
+              "subject": {"reference":"Patient/" + str(row["person_id"])},
+              "partOf": {"referejce": "MedicationStatement/" + str(row["medication_statement_id"])}, # pass this in downstream from medication statement
+              "medicationCodeableConcept":{
+                "coding":[{
+                  "system": vocab_code_to_display[str(row["CONCEPT_VOCAB_ID"])],
+                  "display": str(row["CONCEPT_ID_CODE"]),
+                  "code": str(row["CONCEPT_ID_NAME"])
+                }],
+                "text": str(row["CONCEPT_ID_NAME"]),
+              },
+              "effectivePeriod":{
+                "start": row["drug_exposure_start_date"],
+                "end": row["drug_exposure_end_date"]
+              },
+              "extension":[{
+                "url": "https://ohdsi.github.io/CommonDataModel/cdm53.html#DRUG_EXPOSURE__TYPE_CONCEPT_ID",
+                "value": row["DRUG_TYPE_CONCEPT_ID_CODE"]
+              }]
+            }
+            
+            if "drug_exposure_start_datetime" in row and row["drug_exposure_start_datetime"] is not None:
+              out["effectivePeriod"]["start"] = row["drug_exposure_start_datetime"]
+            if "drug_exposure_end_datetime" in row and row["drug_exposure_end_datetime"] is not None:
+              out["effectivePeriod"]["end"] = row["drug_exposure_end_datetime"]
+            
+            if "provider_id" in row and row["provider_id"] is not None:
+              if(is_int(row["provider_id"])):
+                out["informationSource"] = [{"reference":"Practitioner/" + str(int(row["provider_id"]))}]
+              else:
+                out["informationSource"] = [{"reference":"Practitioner/" + str(row["provider_id"])}]
+            
+            if "stop_reason" in row and row["stop_reason"] is not None:
+              out["statusReason"] = [{
+                "coding":[{
+                  "code": row["stop_reason"], # this should be looked up / mapped if there is a reason
+                  "display": "filler",
+                  "system": "filler",
+                }],
+                "text":"filler",
+              }]
+            
+            if "visit_occurrence_id" in row and row["visit_occurrence_id"] is not None:
+              out["context"] =  [{"reference":"Encounter/" + str(int(row["visit_occurrence_id"]))}]
+
+            ##VERBATIM END DATE
+            return out
+    
+    # Iceberg doesn't have medication statement currently
+    #- objectValidate:
+        #schema: "{{config.schema}}"
+        #title: MedicationStatement
+        
+    #- debug: {}
+    - emit:
+        name: MedicationStatement
+

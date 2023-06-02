@@ -1,0 +1,119 @@
+
+class: sifter
+name: patient_fhir_to_omop
+
+outdir: ../output
+
+config:
+  patient_data : ../output/patient_omop_to_fhir.Patient.Patient.json.gz
+
+inputs:
+  patient_Data:
+    jsonLoad:
+      input: "{{config.patient_data}}"
+
+pipelines:
+  person:
+    - from: patient_Data
+    #- debug: {}
+
+    - map:
+        method: build_omop_patient
+        gpython: |
+          def build_omop_patient(row):
+            gender_mappings = {
+              "female":"8532",
+              "male":"8507",
+              "unknown":"8551",
+              "other":"8521"
+            }
+            race_mappings = {
+              "1002-5":"8657",
+              "2028-9":"8515",
+              "2054-5":"8516",
+              "2076-8":"8557",
+              "2106-3":"8527"
+            }
+
+            ethnicity_mappings = {
+              "2135-2":"38003563",
+              "2186-5":"38003564"
+            }
+            
+            out = {}
+            items = [val for val in row.items() if val[1] is not None]
+            required_fields = ['person_id','gender_concept_id','year_of_birth','race_concept_id','ethnicity_concept_id']
+            assert(not all(item in items for item in required_fields)),"Error, not all required fields are present in OMOP structures"
+
+            out["person_id"] = int(row["identifier"][0]["value"])
+            out["gender_concept_id"] = int(gender_mappings[str(row["gender"])])
+            # this could be done by looking for the race code url instead of relying on order
+
+            codes  = [row["extension"][0]["valueCoding"]["code"] for row in row["extension"] if "extension" in row]
+            assert(len(codes) == 2),"ERROR, not enough codes"
+            out["race_concept_id"] = int(race_mappings[str(codes[0])])
+            out["ethnicity_concept_id"] = int(ethnicity_mappings[str(codes[1])])
+
+            birth_datetime  = [row for row in row["extension"] if "valueDateTime" in row]
+            if(len(birth_datetime) > 0):
+              out["birth_datetime"] = birth_datetime[0]["valueDateTime"]
+            else:
+              out["birth_datetime"] = None
+
+            source_values = ["gender_source_value", "race_source_value", "ethnicity_source_value"]
+            for val in source_values:
+              val_catcher = [row for row in row["extension"] if "url" in row and val in row["url"]]
+              if len(val_catcher) > 0:
+                out[val] = val_catcher[0]["valueString"]
+              else:
+                out[val] = None
+
+            birthSplit = row["birthDate"].split("-")
+            if (len(birthSplit) == 3):
+                if(birthSplit[1][0] == "0"):
+                  out["month_of_birth"] = int(birthSplit[1][-1]) 
+                else:
+                  out["month_of_birth"] = int(birthSplit[1])
+            else: out["month_of_birth"] = None
+            if (len(birthSplit) >= 2): 
+                #print("THE VALUE OF BIRTHSPLIT ",birthSplit)
+                if(birthSplit[2][0] == "0"):
+                  out["day_of_birth"] = int(birthSplit[2][-1])
+                else:
+                  out["day_of_birth"] = int(birthSplit[2]) 
+            else: out["day_of_birth"] = None
+
+            out["year_of_birth"] = int(birthSplit[0])
+
+            # TODO: these shouldn't be hardcoded but if there is no
+            # foreign key Concept table it is difficult to figure out what this maps to
+            out["gender_source_concept_id"] = None
+            out["race_source_concept_id"] = None
+            out["ethnicity_source_concept_id"] = None
+
+            vals = row["identifier"][1]["value"].split("_")
+            if (vals[0] != "None"):
+              out["person_source_value"] = str(vals[0])
+            else:
+              out["person_source_value"] = None
+              
+            if (vals[1] != "None"):
+              out["location_id"] = int(vals[1])
+            else:
+              out["location_id"] = None
+            
+            if ("generalPractitioner" in row):
+              out["provider_id"] = int(row["generalPractitioner"][0]["reference"].split("Practitioner/")[1])
+            else:
+              out["provider_id"] = None
+            
+            if ("managingOrganization" in row):
+              out["care_site_id"] = int(row["managingOrganization"]["reference"].split("Organization/")[1])
+            else:
+              out["provider_id"] = None
+
+            return out
+    - emit:
+        name: person
+
+

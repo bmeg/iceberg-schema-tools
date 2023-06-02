@@ -1,0 +1,28 @@
+
+class: sifter
+name: build_concept_table
+outdir: ../output
+
+# python3 build_concept_table.py  ../output/observation_omop_to_fhir.observation.Observation.json.gz ../output/condition_occurance_omop_to_fhir.Condition.Condition.json.gz ../output/patient_omop_to_fhir.Patient.Patient.json.gz ../output/specimen_omop_to_fhir.Anatomic_Site.BodyStructure.json.gz
+config:
+  observation_file : ../output/observation_omop_to_fhir.observation.Observation.json.gz
+  condition_file: ../output/condition_occurance_omop_to_fhir.Condition.Condition.json.gz
+  patient_file: ../output/patient_omop_to_fhir.Patient.Patient.json.gz
+  body_structure_file: ../output/specimen_omop_to_fhir.Anatomic_Site.BodyStructure.json.gz
+
+inputs:
+  build_concepts:
+    plugin:
+      commandLine: python3 build_concept_table.py {{config.observation_file}} {{config.condition_file}} {{config.patient_file}} {{config.body_structure_file}}
+
+pipelines:
+  concept:
+    - from: build_concepts
+    - emit:
+        name: concept
+    
+
+          
+
+
+

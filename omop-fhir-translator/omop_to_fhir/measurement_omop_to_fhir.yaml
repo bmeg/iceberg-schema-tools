@@ -1,0 +1,248 @@
+
+class: sifter
+name: measurement_omop_to_fhir
+
+outdir: ../output
+
+config:
+  schema: ../iceberg/schemas/bmeg/
+  measurement_file: ../data_used/mimic-iv_measurement.json 
+  conceptData: ../data_used/Eunomia_concept.json
+
+inputs:
+  measurement_Data:
+    plugin:
+      commandLine: python3 epochtime_convert.py {{config.measurement_file}} Measurement
+    
+  conceptData:
+    jsonLoad:
+      input: "{{config.conceptData}}"
+
+pipelines:
+  conceptTable:
+    - from: conceptData
+    - map:
+        method: fix
+        gpython: |
+          def fix(row):
+            return {
+              "concept_id": str(int(row["concept_id"])),
+              "concept_code": str(row["concept_code"]),
+              "vocabulary_id": str(row["vocabulary_id"]),
+              "concept_name": str(row["concept_name"]),
+              "concept_class_id": str(row["concept_class_id"])
+            }
+
+  measurement:
+    - from: measurement_Data
+    - lookup:
+        pipeline:
+          from: conceptTable
+          key: concept_id
+        lookup: "{{row.measurement_concept_id}}"
+        copy: 
+          concept_measurement_id: vocabulary_id
+          concept_id_name: concept_name
+          concept_code_id: concept_code
+          concept_class_id: concept_class_id
+ 
+    - lookup:
+        pipeline:
+          from: conceptTable
+          key: concept_id
+        lookup: "{{row.measurement_type_concept_id}}"
+        copy: 
+          measurement_type_vocabulary_id: vocabulary_id
+          measurement_type_name: concept_name
+          measurement_type_code: concept_code
+    
+    - map:
+        method: populate_observation
+        gpython : |
+          def is_url(string):
+            if string.startswith('http://') or string.startswith('https://'):
+              return True
+            return False
+
+          def is_int(num):
+            try:
+              int(num)
+              return True
+            except ValueError:
+              return False
+
+          def populate_observation(row):
+            vocab_code_to_display = {
+              "NUCC": "https://www.nucc.org/",
+              "CMS Place of Service": "https://www.cms.gov/Medicare/Coding/place-of-service-codes",
+              "SNOMED":"http://snomed.info/sct/",
+              "LOINC": "https://loinc.org/",
+              "Visit": "https://athena.ohdsi.org/search-terms/terms/",
+              "Type Concept": "https://athena.ohdsi.org/search-terms/terms/",
+              "ICD9CM": "https://www.cms.gov/Medicare/Coding/ICD9ProviderDiagnosticCodes/codes",
+              "ICD10CM": "https://icd10cmtool.cdc.gov/",
+              "SOPT": "https://www.nahdo.org/sopt",
+              "Relationship": "https://athena.ohdsi.org/search-terms/terms/",
+              "Vocabulary": "https://athena.ohdsi.org/search-terms/terms/",
+              "UCUM": "https://ucum.org/",
+              "MeSH": "https://www.nlm.nih.gov/research/umls/licensedcontent/umlsknowledgesources.html",
+              "NDFRT": 'https://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html',
+              "Condition Type": "https://athena.ohdsi.org/search-terms/terms/",
+              "NDC": "https://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html",
+              "RxNorm": "https://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html",
+              "RxNorm Extension": "https://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html", #note sure about this one
+              "Observation Type": "https://athena.ohdsi.org/search-terms/terms/",
+            }
+
+            observation_concept_class_mapper = {
+              "Context-dependent":"survey", # <-- what would you even put for context dependant? 
+              "Clinical Finding": "exam",
+              "Morph Abnormality": "exam",
+              "Clinical Observation": "exam",
+              "Lab Test": "laboratory"
+            }
+
+            #print(row["concept_code"],row["concept_id"])
+            #if "concept_code" not in row:
+              #row["concept_code"] = ""
+              #raise Exception("Concept table does not 100% map to measurement table. Check if measurement_source_concept_id maps to concept_id in the concept table")
+            out = {
+              "id": str(int(row["measurement_id"])),
+              "status": "final",
+              "identifier":[{"value":str(int(row["measurement_id"]))}],
+              "effectiveDateTime": str(row["measurement_datetime"]),
+              "resourceType": "Observation",
+              "subject": {"reference": "Patient/" + str(int(row["person_id"]))},
+
+              "code":{
+                "coding":[{
+                  "system": str(vocab_code_to_display[row["concept_measurement_id"]]) ,
+                  "code": str(row["concept_code_id"]),
+                  "display": row["concept_id_name"]
+                }],
+                "text": row["concept_id_name"]
+              },
+              "category":[{
+                "coding":[{
+                  "system": "http://hl7.org/fhir/ValueSet/observation-category",
+                  "code": observation_concept_class_mapper[row["concept_class_id"]],
+                  "display": observation_concept_class_mapper[row["concept_class_id"]] #str(row["concept_id_name"])
+                },
+                {
+                  "system": str(vocab_code_to_display[row["measurement_type_vocabulary_id"]]),
+                  "code": str(row["measurement_type_code"]),
+                  "display": str(row["measurement_type_name"])
+                }],
+                "text": str(row["measurement_type_name"])
+              }]
+            }
+            # the type casting here is probably going to take more logic is_float function soon
+            if "measurement_source_concept_id" in row and row["measurement_source_concept_id"] is not None:
+              out["code"]["coding"].append({
+                  # was thinking of making this system hardcode to "https://athena.ohdsi.org/search-terms/terms/" but there are instances 
+                  # with custom concept codes where the values will not be in Athena then that system will be technically incorrect 
+                  "system":"https://ohdsi.github.io/CommonDataModel/cdm54.html#MEASUREMENT__measurement_source_concept_id",
+                  # this code isn't guarenteed to map to anything especially if it's a custom code like in these instances.
+                  "code": str(int(float(row["measurement_source_concept_id"]))),
+                  "display": str(int(float(row["measurement_source_concept_id"])))
+                #"text": str(int(float(row["measurement_source_concept_id"])))
+              })
+            
+            if "operator_concept_id" in row and row["operator_concept_id"] is not None:
+              out["code"][0]["extension"] = []
+              out["code"][0]["extension"].append(
+                {
+                "url": "https://ohdsi.github.io/CommonDataModel/cdm54.html#MEASUREMENT__operator_concept_id",
+                "valueInteger": int(row["operator_concept_id"])
+              })
+            
+            if "provider_id" in row and row["provider_id"] is not None:
+              if(isinstance(row["provider_id"]),int):
+                out["performer"] = [{"reference":"Practitioner/" + str(int(row["provider_id"]))}]
+              else:
+                out["performer"] = [{"reference":"Practitioner/" + str(row["provider_id"])}]
+
+            if "visit_occurrence_id" in row and row["visit_occurrence_id"] is not None:
+              if(is_int(row["visit_occurrence_id"])):
+                out["encounter"] = {"reference": "Encounter/" + str(int(row["visit_occurrence_id"]))}  
+              else:
+                out["encounter"] = {"reference": "Encounter/" + str(row["visit_occurrence_id"])} 
+
+            # I think visit_detail_id should be a reference to encounter but you can only have one of those
+            # So going to make it an extension instead.
+            if "visit_detail_id" in row and row["visit_detail_id"] is not None:
+              if(is_int(row["visit_detail_id"])):
+                if "extension" not in out:
+                  out["extension"] = []
+                out["extension"].append({
+                  "url":"http://hl7.org/fhir/StructureDefinition/#ENCOUNTER_Reference_id",
+                  "valueReference": {"reference": "Encounter/" + str(int(row["visit_detail_id"]))}}) 
+              else:
+                raise Exception("visit_detail_id should be an integer and it is not")
+
+            if ("range_high" in row and row["range_high"] is not None) or ("range_low" in row and row["range_low"] is not None):
+              out["referenceRange"] = [{}]
+              if "range_high" in row and row["range_high"] is not None:
+                out["referenceRange"][0]["high"] = {"value": float(row["range_high"])}
+              if "range_high" in row and row["range_high"] is not None:
+                out["referenceRange"][0]["low"] = {"value": float(row["range_low"])}
+
+            extensions = ["measurement_source_value","unit_source_value","value_source_value"]
+            for value in extensions:
+              if(value in row and row[value] is not None):
+                if "extension" not in out:
+                  out["extension"] = []
+                if(is_int(row[value])):
+                  out["extension"].append({
+                    "url":"http://hl7.org/fhir/StructureDefinition/#MEASUREMENT" + "__" + str(value),
+                    "valueInteger": int(row[value])
+                  })
+                else:
+                  out["extension"].append({
+                      "url":"https://ohdsi.github.io/CommonDataModel/cdm54.html#MEASUREMENT" + "__" + str(value),
+                      "valueString": str(row[value])
+                  })
+            
+            if "value_as_number" in row and "value_as_concept_id" in row and \
+            row["value_as_number"] is not None and row["value_as_concept_id"] is not None:
+              raise Exception(" value_as_number nad value_as_concept ID are Mutually exclusive fields in OMOP but there are both populated in this instance")
+            
+            if "value_as_number" in row and row["value_as_number"] is not None and is_int(row["value_as_number"]):
+              out["valueInteger"]  = int(row["value_as_number"])
+            else:
+              out["value"] = str(row["value_as_number"])
+
+            if "value_as_concept_id" in row and row["value_as_concept_id"] is not None:
+              out["valueCodeableConcept"] = {'coding': [{
+                        'system': "https://www.hl7.org/fhir/structuredefinition-value_as_concept_id",
+                        'code': str(row["value_as_concept_id"]),
+                        'display': str(row["value_as_concept_id"])
+                      }],
+                "text":str(row["value_as_concept_id"])
+                }
+            if "unit_concept_id" in row and row["unit_concept_id"] is not None and is_int(row["unit_concept_id"]):
+              out["valueQuantity"] = {"value": int(row["unit_concept_id"])}
+            elif "unit_concept_id" in row and row["unit_concept_id"] is not None and not is_int(row["unit_concept_id"]):
+              out["valueQuantity"] = {"value": int(float(row["unit_concept_id"]))}
+
+            return out
+    
+    - project: 
+        mapping:
+          identifier: [{ 
+                "system": "https://physionet.org/content/mimic-iv-demo-omop/0.9/",
+                "value": "{{row.id}}"
+            }] 
+
+    - objectValidate:
+        schema: "{{config.schema}}"
+        title: Observation
+        
+    - emit:
+        name: Observation
+
+
+
+            
+
+            

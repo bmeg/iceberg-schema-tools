@@ -1,0 +1,210 @@
+
+class: sifter
+name: specimen_omop_to_fhir
+
+outdir: ../output
+config:
+  patient_data:  ../data_used/mimic-iv_person.json 
+  specimen_data: ../data_used/mimic-iv_specimen.json 
+  schema: ../iceberg/schemas/bmeg/
+  conceptData: "../data_used/MASTER_CONCEPT_TABLE_MODIFIED.json"
+
+inputs:
+  specimen_Data:
+    plugin:
+      commandLine: python3 epochtime_convert.py {{config.specimen_data}} Specimen
+    
+  site_data:
+    plugin:
+      commandLine: python3 specimen_anatomic_site_to_fhir_Body_Structure.py {{config.specimen_data}}
+  
+  conceptData:
+    jsonLoad:
+      input: "{{config.conceptData}}"
+
+pipelines:
+  conceptTable:
+    - from: conceptData
+    - map:
+        method: fix
+        gpython: |
+          def fix(row):
+            return {
+              "concept_id": str(int(row["concept_id"])),
+              "vocabulary_id": str(row["vocabulary_id"]),
+              "concept_name": str(row["concept_name"]),
+              "concept_code": str(row["concept_code"])
+            }
+
+  Specimen:
+    - from: specimen_Data
+    - lookup:
+        pipeline:
+          from: conceptTable
+          key: concept_id
+        lookup: "{{row.specimen_concept_id}}"
+        copy: 
+          concept_id: concept_id
+          specimen_vocab_concept_id: vocabulary_id
+          specimen_concept_name: concept_name
+          specimen_concept_code: concept_code
+    
+    - lookup:
+        pipeline:
+          from: conceptTable
+          key: concept_id
+        lookup: "{{row.specimen_type_concept_id}}"
+        copy: 
+          concept_id: concept_id
+          specimen_type_vocab_concept_id: vocabulary_id
+
+
+    - map:
+        method: fix
+        gpython: | 
+          def is_int(num):
+              try:
+                int(num)
+                return True
+              except ValueError:
+                return False
+
+          def fix(row):
+            vocab_code_to_display = {
+              "NUCC": "https://www.nucc.org/",
+              "CMS Place of Service": "https://www.cms.gov/Medicare/Coding/place-of-service-codes",
+              "SNOMED":"http://snomed.info/sct/",
+              "LOINC": "https://loinc.org/",
+              "Visit": "https://athena.ohdsi.org/search-terms/terms/",
+              "Type Concept": "https://athena.ohdsi.org/search-terms/terms/",
+              "ICD9CM": "https://www.cms.gov/Medicare/Coding/ICD9ProviderDiagnosticCodes/codes",
+              "ICD10CM": "https://icd10cmtool.cdc.gov/",
+              "SOPT": "https://www.nahdo.org/sopt",
+              "Relationship": "https://athena.ohdsi.org/search-terms/terms/",
+              "Vocabulary": "https://athena.ohdsi.org/search-terms/terms/",
+              "UCUM": "https://ucum.org/",
+              "MeSH": "https://www.nlm.nih.gov/research/umls/licensedcontent/umlsknowledgesources.html",
+              "NDFRT": 'https://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html',
+              "Condition Type": "https://athena.ohdsi.org/search-terms/terms/",
+              "NDC": "https://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html",
+              "RxNorm": "https://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html",
+              "RxNorm Extension": "https://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html", #note sure about this one
+            }
+
+            if row["unit_source_value"] is not None and is_int(row["unit_source_value"]):
+              row["unit_source_value"] = int(row["unit_source_value"])
+
+            out = {
+              "id": str(int(row["specimen_id"])),
+              "resourceType":"Specimen",
+              "subject": {"reference":"Patient/" + str(row["person_id"])},
+              "type":{
+                "coding":[{
+                  "system": vocab_code_to_display[row["specimen_vocab_concept_id"]],
+                  "code": str(row["specimen_concept_code"]).replace(" ", ""),
+                  "display": str(row["specimen_concept_name"])
+                }],
+                "extension": [{
+                    "url": vocab_code_to_display[row["specimen_type_vocab_concept_id"]],
+                    "valueString": str(row["specimen_type_concept_id"])
+                 }]
+                },
+                "collection":{"collectedDateTime": str(row["specimen_date"])}
+            }
+            
+            # just going to assume that the date is in the correct format 
+            if "specimen_datetime" in row and row["specimen_datetime"] is not None:
+              out["collection"]["collectedDateTime"]  = str(row["specimen_datetime"])
+
+            if "quantity" in row and row["quantity"] is not None:
+              out["collection"]["quantity"] = {"value": row["quantity"] }
+            
+            if "unit_concept_id" in row and row["unit_concept_id"] is not None:
+               out["collection"]["quantity"]["unit"] = row["unit_concept_id"]
+            
+            #probably not unique
+            if "anatomic_site_concept_id" in row and row["anatomic_site_concept_id"] is not None:
+              out["collection"]["bodySite"] = {"reference":{"reference": str(row["person_id"]) + "-" + row["anatomic_site_concept_id"] + "-" + row["specimen_datetime"]}}
+
+            if "anatomic_site_source_value" in row and row["anatomic_site_source_value"] is not None:
+              out["collection"]["bodySite"]["extension"] = [{
+                "url":"placeholder",
+                "value": row["anatomic_site_source_value"]
+              }]
+
+            if "disease_status_concept_id" in row and row["disease_status_concept_id"] is not None:
+              if "extension" not in out:
+                  out["extension"] = []
+              out["extension"] = [{
+                  "url": "https://ohdsi.github.io/CommonDataModel/cdm54.html#SPECIMEN__disease_status_concept_id",
+                  "valueString": str(int(row["disease_status_concept_id"]))
+              }]
+            
+            if "specimen_source_id" in row and row["specimen_source_id"] is not None:
+                out["identifier"] = [{"value": str(row["specimen_source_id"])}]
+            
+            if "specimen_source_value" in row and row["specimen_source_value"] is not None:
+              if "extension" not in out:
+                out["extension"] = []
+              out["extension"].append({
+                "url": "https://ohdsi.github.io/CommonDataModel/cdm54.html#SPECIMEN__specimen_source_value",
+                "valueString": str(row["specimen_source_value"])
+              })
+            
+            if "unit_source_value" in row and row["unit_source_value"] is not None:
+              out["collection"]["quantity"]["extension"] = [{
+                  "url": "https://ohdsi.github.io/CommonDataModel/cdm54.html#SPECIMEN__unit_source_value",
+                  "valueString": str(row["unit_source_value"])
+              }]
+            
+            if "disease_status_source_value" in row and row["disease_status_source_value"] is not None:
+              if "extension" not in out:
+                  out["extension"] = []
+              out["extension"] = [{
+                  "url": "https://ohdsi.github.io/CommonDataModel/cdm54.html#SPECIMEN__disease_status_source_value",
+                  "valueString": str(int(row["disease_status_source_value"]))
+              }]
+            
+            return out 
+          
+    - objectValidate:
+        schema: "{{config.schema}}"
+        title: Specimen
+
+    - emit:
+        name: Specimen
+  
+  Anatomic_Site:
+    - from: site_data
+    - lookup:
+        pipeline:
+          from: conceptTable
+          key: concept_id
+        lookup: "{{row.value}}"
+        copy: 
+          concept_id: concept_id
+          specimen_vocab_concept_id: concept_code
+          specimen_anatomic_concept_name: concept_name
+    - map:
+        method: fix
+        gpython: |
+          def fix(row):
+            if "specimen_vocab_concept_id" in row:
+              row["includedStructure"][0]["structure"]["coding"][0]["code"] = row["specimen_vocab_concept_id"]
+              row["includedStructure"][0]["structure"]["coding"][0]["display"] = row["specimen_anatomic_concept_name"]
+              del(row["specimen_anatomic_concept_name"])
+              del(row["specimen_vocab_concept_id"])
+
+            return row
+  
+    # object validate busted here as well for me. 
+    # not sure why probably just out of data schema still in r4      
+    #- objectValidate:
+        #schema: "{{config.schema}}"
+        #title: BodyStructure
+    
+    - emit:
+        name: BodyStructure
+    
+    
+
