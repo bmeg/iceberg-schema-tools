@@ -11,17 +11,22 @@ import orjson
 from fhir.resources.core.utils.common import get_fhir_type_name
 from fhir.resources.fhirprimitiveextension import FHIRPrimitiveExtension
 
+from iceberg_tools.schema.fhir_resources.binding_lookup import create_fhir_definitions_lookup
+
+
+logger = logging.getLogger(__name__)
+
 path = pathlib.Path("~/.iceberg").expanduser()
 path.mkdir(parents=True, exist_ok=True)
 path = path / "element_bindings.sqlite"
 if not path.is_file():
-    print("Please see resources/fhir/README.md first.")
+    create_fhir_definitions_lookup()
+if not path.is_file():
+    logger.error(f"Unable to find fhir bindings at {path}")
     exit(2)
 
 ELEMENT_DB = sqlite3.connect(path)
 BASE_URI = 'http://graph-fhir.io/schema/0.0.2'
-
-logger = logging.getLogger(__name__)
 
 
 def _find_fhir_classes(gen3_config, log_stats=True) -> List[type]:
