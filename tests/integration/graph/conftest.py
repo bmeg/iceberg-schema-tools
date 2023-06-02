@@ -5,24 +5,24 @@ import pathlib
 import pytest
 from jsonschema.validators import Draft202012Validator
 
-from tests.integration.bmeg import is_edge
+from tests.integration.graph import is_edge
 
 
 @pytest.fixture()
 def bmeg_dir():
-    """cd to bmeg dir"""
+    """cd to graph dir"""
     # setup
     cwd = os.getcwd()
-    os.chdir('iceberg/schemas/bmeg')
+    os.chdir('iceberg/schemas/graph')
     # run test
-    yield 'iceberg/schemas/bmeg'
+    yield 'iceberg/schemas/graph'
     # teardown
     os.chdir(cwd)
 
 
 @pytest.fixture()
 def fhir_schema(bmeg_dir):
-    fhir_schema = json.load(open("aced-bmeg.json"))
+    fhir_schema = json.load(open("graph-fhir.json"))
     Draft202012Validator.check_schema(fhir_schema)
     yield fhir_schema
 

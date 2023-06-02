@@ -19,7 +19,7 @@ if not path.is_file():
     exit(2)
 
 ELEMENT_DB = sqlite3.connect(path)
-BASE_URI = 'http://bmeg.io/schema/0.0.2'
+BASE_URI = 'http://graph-fhir.io/schema/0.0.2'
 
 logger = logging.getLogger(__name__)
 

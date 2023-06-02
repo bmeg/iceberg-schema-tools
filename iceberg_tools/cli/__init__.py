@@ -21,4 +21,4 @@ cli.add_command(data)
 
 
 if __name__ == '__main__':
-    cli()
+    cli(auto_envvar_prefix='ICEBERG')

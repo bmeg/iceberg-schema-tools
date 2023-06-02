@@ -93,7 +93,7 @@ def _simplify_schemas(gen3_config, gen3_fixtures, schemas, log_stats=True):
 
     _add_gen3_static_dependencies(gen3_fixtures, schemas)
 
-    # save gen3 schema in order
+    # save simplified schema in order
     dependency_order.extend(k for k in schemas if k not in dependency_order)
 
     # change to lowercase for gen3

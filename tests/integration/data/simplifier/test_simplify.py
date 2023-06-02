@@ -9,7 +9,7 @@ def test_simplify_study():
     """Ensure we can validate a synthetic study"""
 
     simplify_directory('tests/fixtures/simplify/study/', '**/*.*', 'tmp/study/extractions',
-                       'iceberg/schemas/gen3/aced.json', 'FHIR', 'config.yaml')
+                       'iceberg/schemas/simplified/simplified-fhir.json', 'FHIR', 'config.yaml')
 
     directory_path = pathlib.Path('tmp/study/extractions')
     input_files = [_ for _ in directory_path.glob("*.ndjson")]

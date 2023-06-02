@@ -7,8 +7,8 @@ import yaml
 from yaml import SafeLoader
 
 from iceberg_tools.schema import _find_fhir_classes, BASE_URI, _extract_schemas
-from iceberg_tools.schema.bmeg import _bundle_schemas
-from iceberg_tools.schema.gen3 import _simplify_schemas
+from iceberg_tools.schema.graph import _bundle_schemas
+from iceberg_tools.schema.simplified import _simplify_schemas
 from iceberg_tools.util import NaturalOrderGroup
 
 logger = logging.getLogger(__name__)
@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 @click.group('schema', cls=NaturalOrderGroup)
 def cli():
-    """Manage bmeg or gen3 schemas from FHIR resources."""
+    """Manage graph or simplified schemas from FHIR resources."""
     pass
 
 
@@ -26,9 +26,9 @@ def generate():
     pass
 
 
-@generate.command('bmeg')
+@generate.command('graph')
 @click.option('--output_path', required=True,
-              default='iceberg/schemas/bmeg',
+              default='iceberg/schemas/graph',
               show_default=True,
               help='Path to generated schema files'
               )
@@ -42,6 +42,7 @@ def generate_bmeg(output_path, config_path, stats):
     """Create BMEG schemas."""
 
     output_path = pathlib.Path(output_path)
+    output_path.mkdir(parents=True, exist_ok=True)
     config_path = pathlib.Path(config_path)
     assert output_path.is_dir()
     assert config_path.is_file()
@@ -62,9 +63,9 @@ def generate_bmeg(output_path, config_path, stats):
     logger.info(f"Aggregated json schema written to {path}")
 
 
-@generate.command('gen3')
+@generate.command('simplified')
 @click.option('--output_path', required=True,
-              default='iceberg/schemas/gen3',
+              default='iceberg/schemas/simplified',
               show_default=True,
               help='Path to generated schema files'
               )
@@ -78,10 +79,11 @@ def generate_bmeg(output_path, config_path, stats):
               help='Path to gen3 static data dictionary files.')
 @click.option('--stats/--no-stats', default=False, is_flag=True, show_default=True,
               help="Log statistics about the FHIR classes found.")
-def generate_gen3(output_path, config_path, gen3_fixtures, stats):
-    """Create Gen3 schemas."""
+def generate_simplified(output_path, config_path, gen3_fixtures, stats):
+    """Create simplified schemas."""
 
     output_path = pathlib.Path(output_path)
+    output_path.mkdir(parents=True, exist_ok=True)
     config_path = pathlib.Path(config_path)
     gen3_fixtures = pathlib.Path(gen3_fixtures)
     assert gen3_fixtures.is_dir()
@@ -107,17 +109,17 @@ def generate_gen3(output_path, config_path, gen3_fixtures, stats):
             v['$schema'] = "http://json-schema.org/draft-04/schema#"
             yaml.dump(v, fp)
 
-    logger.info(f"Gen3 individual yaml schemas written to {output_path}/*.yaml")
+    logger.info(f"Simplified individual yaml schemas written to {output_path}/*.yaml")
 
     compile_gen3_schemas(output_path)
 
-    logger.info(f'Gen3 schema written to {output_path / pathlib.Path("aced.json")}')
+    logger.info(f'Simplified schema written to {output_path / pathlib.Path("simplified-fhir.json")}')
 
 
 def compile_gen3_schemas(output_path):
     """create uber schema of all yaml"""
     from dictionaryutils import dump_schemas_from_dir
-    with open(output_path / pathlib.Path("aced.json"), "w") as fp:
+    with open(output_path / pathlib.Path("simplified-fhir.json"), "w") as fp:
         json.dump(dump_schemas_from_dir(output_path), fp, indent=2, sort_keys=False)
 
 
@@ -127,14 +129,14 @@ def compile_():
     pass
 
 
-@compile_.command('gen3')
+@compile_.command('simplified')
 @click.option('--output_path', required=True,
-              default='iceberg/schemas/gen3',
+              default='iceberg/schemas/simplified',
               show_default=True,
               help='Path to generated schema files'
               )
-def compile_gen3(output_path):
-    """Compile Gen3 schemas."""
+def compile_simplified(output_path):
+    """Compile simplified schemas."""
     output_path = pathlib.Path(output_path)
     compile_gen3_schemas(output_path)
-    logger.info(f'Gen3 schemas written to {output_path / pathlib.Path("aced.json")}')
+    logger.info(f'Simplified schemas written to {output_path / pathlib.Path("simplified-fhir.json")}')

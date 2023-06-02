@@ -1,6 +1,6 @@
 from pydantic import ValidationError
 
-from tests.integration.bmeg import is_edge
+from tests.integration.graph import is_edge
 
 
 def test_negative_trivial_schema_load(fhir_schema, fhir_validator):

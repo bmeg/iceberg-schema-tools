@@ -1,6 +1,6 @@
 from jsonschema.exceptions import ValidationError, UnknownType
 
-from tests.integration.bmeg import is_edge
+from tests.integration.graph import is_edge
 
 
 def test_trivial_schema_load(fhir_schema, fhir_validator):

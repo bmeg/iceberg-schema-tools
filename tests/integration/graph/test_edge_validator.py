@@ -2,7 +2,7 @@ from collections import defaultdict
 
 from jsonschema.exceptions import ValidationError
 
-from tests.integration.bmeg import edge_validator
+from tests.integration.graph import edge_validator
 
 
 def test_edge_validator(fhir_schema, fhir_validator, edge_schemas):
@@ -45,7 +45,7 @@ def test_edge_validator(fhir_schema, fhir_validator, edge_schemas):
     if not needs_unresolved_primary:
         print('  None')
 
-    print('multi-edges (ie need `is_primary` manually set for uni-graphs (gen3)):')
+    print('multi-edges (ie need `is_primary` manually set for uni-graphs (simplified)):')
 
     edge_counts = defaultdict(dict)
     for edge in edge_schemas:

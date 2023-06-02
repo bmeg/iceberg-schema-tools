@@ -25,7 +25,7 @@ def log_once(msg):
 
 
 def _validate(gen3_resource: dict, schemas: dict):
-    """Ensure resource is valid for gen3 schema."""
+    """Ensure resource is valid for simplified schema."""
     try:
         resource = None
         for expected_property in ['id', 'relations', 'object']:

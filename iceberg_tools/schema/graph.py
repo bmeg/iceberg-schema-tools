@@ -37,7 +37,7 @@ def _bundle_schemas(output_path, base_uri) -> pathlib.Path:
             schemas['$defs'][schema['title']] = schema
             schemas['anyOf'].append({'$ref': f"{base_uri}/{schema['title']}"})
 
-    path = output_path / pathlib.Path("aced-bmeg.json")
+    path = output_path / pathlib.Path("graph-fhir.json")
     with open(path, "w") as fp:
         json.dump(schemas, fp, indent=2)
 

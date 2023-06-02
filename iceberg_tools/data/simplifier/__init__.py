@@ -770,9 +770,8 @@ def _assert_all_ok(all_ok, parse_result, resource, simplified):
 @click.option('--pattern', required=True, default="**/*.*", show_default=True,
               help='File name pattern')
 @click.option('--schema_path', required=True,
-              default='https://aced-public.s3.us-west-2.amazonaws.com/aced.json',
               show_default=True,
-              help='Path to gen3 schema json.  (Accepts file path for schema development)'
+              help='Path to simplified schema json.  (Accepts url or file path)'
               )
 @click.option('--dialect',
               default='GEN3',

@@ -1,7 +1,6 @@
 import logging
 import pathlib
 import threading
-import uuid
 
 import click
 import yaml
@@ -12,14 +11,13 @@ from iceberg_tools.data.report import aggregate_edges
 from iceberg_tools.data.migrator import migrate_directory
 from iceberg_tools.data.pfb import SimplePFBWriter
 from iceberg_tools.data.simplifier import cli as simplifier
-from iceberg_tools.schema.gen3_validator import directory_reader as gen3_directory_reader
+from iceberg_tools.schema.simplified_validator import directory_reader as simplified_directory_reader
 from iceberg_tools.util import NaturalOrderGroup, directory_reader
 
 LINKS = threading.local()
 CLASSES = threading.local()
 IDENTIFIER_LIST_SIZE = 8
 
-ACED_NAMESPACE = uuid.uuid3(uuid.NAMESPACE_DNS, 'aced-ipd.org')
 logger = logging.getLogger(__name__)
 
 
@@ -54,21 +52,21 @@ def _validate(path, pattern):
         print('OK, all resources pass')
 
 
-@cli.command('validate-gen3')
+@cli.command('validate-simplified')
 @click.argument('path')
 @click.option('--schema_path', required=True,
-              default='iceberg/schemas/gen3/aced.json',
+              default='iceberg/schemas/simplified/simplified-fhir.json',
               show_default=True,
-              help='Path to gen3 schema json, a file path or url'
+              help='Path to simplified schema json, a file path or url'
               )
-def _validate_gen3(path, schema_path):
+def _validate_simplified(path, schema_path):
 
-    """Check Gen3 data for validity and ACED conventions.
+    """Check simplified data for validity and ACED conventions.
 
-    PATH: Path to Gen3 ndjson files.
+    PATH: Path to simplified ndjson files.
     """
     ok = True
-    for result in gen3_directory_reader(pathlib.Path(path), schema_path):
+    for result in simplified_directory_reader(pathlib.Path(path), schema_path):
         if result.exception:
             ok = False
             print('file:', result.path)
@@ -84,9 +82,9 @@ def _validate_gen3(path, schema_path):
 @click.argument('path')
 @click.argument('output_path')
 @click.option('--schema_path', required=True,
-              default='iceberg/schemas/gen3/aced.json',
+              default='iceberg/schemas/simplified/simplified-fhir.json',
               show_default=True,
-              help='Path to gen3 schema json, a file path or url'
+              help='Path to simplified schema json, a file path or url'
               )
 @click.option('--config_path',
               default='config.yaml',
