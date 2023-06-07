@@ -1,0 +1,193 @@
+class: sifter
+name: procedure_occurrence_omop_to_fhir
+outdir: ../output
+
+config:
+  procedure_occurrence:  ../data_used/redivis_procedure_occurrence.json
+  schema: ../iceberg/schemas/bmeg/
+  conceptData: ../data_used/MASTER_CONCEPT_TABLE_MODIFIED.json
+
+inputs:
+  Procedure_Occurance_Data:
+    plugin:
+      commandLine: python3 epochtime_convert.py {{config.procedure_occurrence}} ProcedureOccurrence
+  
+  conceptTheta:
+    jsonLoad:
+      input: "{{config.conceptData}}"
+  
+pipelines:
+  conceptTable:
+    - from: conceptTheta
+    - map:
+        method: fix
+        gpython: |
+          def fix(row):
+            return {
+              "concept_id": str(row["concept_id"]),
+              "vocabulary_id": str(row["vocabulary_id"]),
+              "concept_name": str(row["concept_name"]),
+              "concept_code": str(row["concept_code"])
+            }
+
+  Procedure:
+    - from: Procedure_Occurance_Data
+          
+    - lookup:
+        pipeline:
+          from: conceptTable
+          key: concept_id
+        lookup: "{{row.procedure_concept_id}}"
+        copy: 
+          CONCEPT_ID_NAME: concept_name
+          CONCEPT_ID_CODE: concept_code
+          CONCEPT_VOCAB_ID: vocabulary_id
+    
+    - lookup:
+        pipeline:
+          from: conceptTable
+          key: concept_id
+        lookup: "{{row.procedure_type_concept_id}}"
+        copy: 
+          CONCEPT_TYPE_ID_NAME: concept_name
+          CONCEPT_TYPE_ID_CODE: concept_code
+          CONCEPT_TYPE_VOCAB_ID: vocabulary_id
+    
+    - lookup:
+        pipeline:
+          from: conceptTable
+          key: concept_id
+        lookup: "{{row.modifier_concept_id}}"
+        copy: 
+          MODIFIER_CONCEPT_ID_NAME: concept_name
+          MODIFIER_CONCEPT__ID_CODE: concept_code
+          MODIFIER_CONCEPT_VOCAB_ID: vocabulary_id
+
+    - map:
+        method: fix
+        gpython: | 
+          def is_int(num):
+              try:
+                int(num)
+                return True
+              except ValueError:
+                return False
+
+          def fix(row):
+            vocab_code_to_display = {
+              "NUCC": "https://www.nucc.org/",
+              "CMS Place of Service": "https://www.cms.gov/Medicare/Coding/place-of-service-codes",
+              "SNOMED":"http://snomed.info/sct/",
+              "LOINC": "https://loinc.org/",
+              "Visit": "https://athena.ohdsi.org/search-terms/terms/",
+              "Type Concept": "https://athena.ohdsi.org/search-terms/terms/",
+              "ICD9CM": "https://www.cms.gov/Medicare/Coding/ICD9ProviderDiagnosticCodes/codes",
+              "ICD10CM": "https://icd10cmtool.cdc.gov/",
+              "SOPT": "https://www.nahdo.org/sopt",
+              "Relationship": "https://athena.ohdsi.org/search-terms/terms/",
+              "Vocabulary": "https://athena.ohdsi.org/search-terms/terms/",
+              "UCUM": "https://ucum.org/",
+              "MeSH": "https://www.nlm.nih.gov/research/umls/licensedcontent/umlsknowledgesources.html",
+              "NDFRT": 'https://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html',
+              "Condition Type": "https://athena.ohdsi.org/search-terms/terms/",
+              "NDC": "https://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html",
+              "RxNorm": "https://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html",
+              "RxNorm Extension": "https://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html", #note sure about this one
+              "Observation Type": "https://athena.ohdsi.org/search-terms/terms/",
+              "None": "https://athena.ohdsi.org/search-terms/terms/",
+              "CPT4": "https://www.nlm.nih.gov/research/umls/licensedcontent/umlsknowledgesources.html",
+              "ICD9Proc": "https://www.cms.gov/Medicare/Coding/ICD9ProviderDiagnosticCodes/codes",
+              "Procedure Type": "https://athena.ohdsi.org/search-terms/terms/",
+            }
+
+            out = {
+              "id": str(int(row["procedure_occurrence_id"])),
+              "resourceType":"Procedure",
+              "status": "completed",
+              "subject": {"reference":"Patient/" + str(row["person_id"])},
+              "code":{
+                "coding":[{
+                  "system": vocab_code_to_display[str(row["CONCEPT_VOCAB_ID"])],
+                  "display": str(row["CONCEPT_ID_NAME"]),
+                  "code": str(row["CONCEPT_ID_CODE"])
+                }],
+                "text": str(row["CONCEPT_ID_NAME"]),
+              },
+              "occurrenceDateTime": str(row["procedure_date"]),
+              # TODO don't hardcode this first entry base it off? what field?
+              "category":[{
+                "coding":[{
+                  "code": "387713003",
+                  "display": "Surgical procedure (procedure)",
+                  "system":"http://hl7.org/fhir/ValueSet/procedure-category"
+                },
+                {
+                  "code": str(row["CONCEPT_TYPE_ID_CODE"]),
+                  "display": str(row["CONCEPT_TYPE_ID_NAME"]),
+                  "system": vocab_code_to_display[str(row["CONCEPT_TYPE_VOCAB_ID"])]
+                }],
+                "text": str(row["CONCEPT_TYPE_ID_NAME"]),
+              }]
+            }
+            
+            if "procedure_datetime" in row and row["procedure_datetime"] is not None:
+              out["occurrenceDateTime"] = row["procedure_datetime"]
+            
+            # this should be a codeable concept it's just that I don't think there is an appropriate
+            # place to put it in a codeable concept slot in FHIR
+            if (("MODIFIER_CONCEPT_VOCAB_ID" in row and row["MODIFIER_CONCEPT_VOCAB_ID"] is not None) or\
+               ("quantity" in row and row["quantity"] is not None) or\
+               ("procedure_source_value" in row and row["procedure_source_value"] is not None) or\
+               ("modifier_source_value" in row and row["modifier_source_value"] is not None)):  
+              out["extension"] = []
+              if "MODIFIER_CONCEPT_VOCAB_ID" in row and row["MODIFIER_CONCEPT_VOCAB_ID"] is not None:
+                out["extension"].append({
+                  "url": vocab_code_to_display[str(row["MODIFIER_CONCEPT_VOCAB_ID"])],
+                  "value": row["MODIFIER_CONCEPT__ID_CODE"]
+                })
+              if "quantity" in row and row["quantity"] is not None:
+                out["extension"].append({
+                  "url": "not idea",
+                  "value": row["quantity"]
+                })
+              if "procedure_source_value" in row and row["procedure_source_value"] is not None:
+                out["extension"].append({
+                  "value": row["procedure_source_value"],
+                  "url":"unsure"
+                })
+              if "modifier_source_value" in row and row["modifier_source_value"] is not None:
+                out["extension"].append({
+                  "url": "not sure",
+                  "value": row["modifier_source_value"]
+                })
+
+            if "provider_id" in row and row["provider_id"] is not None:
+              if(is_int(row["provider_id"])):
+                out["performer"] = [{"reference":"Practitioner/" + str(int(row["provider_id"]))}]
+              else:
+                out["performer"] = [{"reference":"Practitioner/" + str(row["provider_id"])}]
+            
+            if "visit_occurrence_id" in row and row["visit_occurrence_id"] is not None:
+              out["encounter"] = [{"reference":"Encounter/" + str(row["visit_occurrence_id"])}]
+            
+            #  PROPERTY visit_detail_id:  like drug_exposure_omop_to_fhir.yaml not sure what to do with this 
+            # property just yet. Need to look at FHIR Encounter and OMOP visit detail see where it would hook in
+
+            if "procedure_source_concept_id" in row and row["procedure_source_concept_id"] is not None:
+              out["code"]["extension"] = []
+              out["code"]["extension"].append({
+                "url":"not sure",
+                "value":row["procedure_source_concept_id"]
+              })
+
+            return out
+            
+    # procedure not in iceberg at the moment
+    #- objectValidate:
+        #schema: "{{config.schema}}"
+        #title: Procedure
+        
+    #- debug: {}
+    - emit:
+        name: Procedure
+

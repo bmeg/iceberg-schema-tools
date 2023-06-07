@@ -1,20 +1,54 @@
 
 class: sifter
 name: observation_fhir_to_omop
-
 outdir: ../output
 
 config:
   observation_file : ../output/observation_omop_to_fhir.observation.Observation.json.gz
- 
+  conceptData: ../data_used/MASTER_CONCEPT_TABLE_MODIFIED.json
+
 inputs:
   observation_Data:
     plugin:
        commandLine: python3 readable_to_epoch_time.py {{config.observation_file}} Observation
+  
+  conceptData:
+    jsonLoad:
+      input: "{{config.conceptData}}"
 
 pipelines:
+  conceptTable:
+    - from: conceptData
+    - map:
+        method: fix
+        gpython: |
+          def fix(row):
+            return {
+              "concept_id": str(row["concept_id"]),
+              "vocabulary_id": str(row["vocabulary_id"]),
+              "concept_code": str(row["concept_code"]),
+              "concept_class_id": str(row["concept_class_id"]),
+              "concept_name": str(row["concept_name"])
+            }
+
   observation:
     - from: observation_Data
+    - lookup:
+        pipeline:
+          from: conceptTable
+          key: concept_code    
+        lookup: "{{row.category.[0].coding.[0].code}}"
+        copy: 
+          TYPE_CONCEPT_ID: concept_id
+
+    - lookup:
+        pipeline:
+          from: conceptTable
+          key: concept_code    
+        lookup: "{{row.code.coding.[0].code}}"
+        copy: 
+          CONCEPT_ID: concept_id
+
     - map:
         method: build_omop_observation
         gpython: |
@@ -36,23 +70,23 @@ pipelines:
             out = {
               "observation_id": int(row["identifier"][0]["value"]),
               "person_id": int(row["subject"]["reference"].split("/")[1]),
-              "observation_concept_id": int(row["code"]["coding"][0]["display"]),
-              "observation_date": int(row["effectiveDateTime"]),
-              "observation_type_concept_id": int(row["category"][0]["coding"][0]["code"])
+              "observation_concept_id": row["CONCEPT_ID"],
+              "observation_date": row["effectiveDateTime"],
+              "observation_type_concept_id": row["TYPE_CONCEPT_ID"]
             }
             non_req_vals = ["observation_source_value","unit_source_value","qualifier_source_value", "observation_datetime",
                             "value_as_number","value_as_string","value_as_concept_id","qualifier_concept_id","unit_concept_id","provider_id"]
            
             out = Nonefy(non_req_vals,out)
 
-            if row["category"][1]["coding"][0]["code"] is not None:
-              out["observation_source_concept_id"] = int(row["category"][1]["coding"][0]["code"])
+            if row["code"]["coding"][1]["code"] is not None:
+              out["observation_source_concept_id"] = row["code"]["coding"][1]["code"]
             
             if "performer" in row and row["performer"] is not None:
               out["provider_id"] = int(row["performer"][0]["reference"].split("Practitioner/")[1])
             
             if "note" in row and row["note"] is not None:
-              out["qualifier_concept_id"] = int(row["note"][0]["text"])
+              out["qualifier_concept_id"] = row["note"][0]["text"]
             
             if "encounter" in row and row["encounter"] is not None:
               out["visit_occurence_id"] = int(row["encounter"]["reference"].split("Encounter/")[1])
@@ -76,7 +110,7 @@ pipelines:
               out["unit_concept_id"] = row["valueQuantity"]
 
             elif "valueCodeableConcept" in row and row["valueCodeableConcept"] is not None:
-              out["value_as_concept_id"]= int(row["valueCodeableConcept"]["coding"][0]["code"])
+              out["value_as_concept_id"]= row["valueCodeableConcept"]["coding"][0]["code"]
 
             return out
 

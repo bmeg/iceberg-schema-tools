@@ -3,70 +3,47 @@ import sys
 import orjson
 import json
 import uuid
+import aiofiles
+import asyncio
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-# multiprocessing file IO adapted from https://stackoverflow.com/a/12293094
-# will probably replace this with polars because it's faster
-
 ACED_NAMESPACE = uuid.uuid3(uuid.NAMESPACE_DNS, 'aced-ipd.org')
-
 
 def body_structure_uuid(input_str):
     return str(uuid.uuid5(ACED_NAMESPACE, input_str))
 
-
-def build_concepts_from_observations(file_path):
-    # this concept table comes directly from
-    # https://athena.ohdsi.org/vocabulary/list
-    # and is a download of every single concept in every single vocabulary in
-
-    with open(file_path) as fp:
-        observation_lines = fp.readlines()
-
-        patient_ids = [str(orjson.loads(line)["person_id"])
-                       for line in observation_lines]
-        body_structure_ids = [str(orjson.loads(
-            line)["anatomic_site_concept_id"]) for line in observation_lines]
-        # print("THE VALUE OF BODY STRUCTURE IDS ",body_structure_ids)
-
-        dates = []
-        for line in observation_lines:
-            spliot = str(orjson.loads(line)["specimen_datetime"]).split(" ")
-            dates.append(spliot[0] + "T" + spliot[1] + "+00:00")
-
-        # print("THE VALUE OF DATES ",dates)
-
-        # not sure if intersections are needed since
-        # these codes are coming from OMOP
-        # intersections = set_values.intersection(body_structure_ids)
-        for i, value in enumerate(list(body_structure_ids)):
+async def build_anatomic_site_table(file_path):
+    async with aiofiles.open(file_path) as fp:
+        async for line in fp:
+            
+            augmented_line = orjson.loads(line)
+            person_id =  str(augmented_line["person_id"])
+            body_structure_id =  str(int(augmented_line["anatomic_site_concept_id"]))
+            spliot = str(augmented_line["specimen_datetime"]).split(" ")
+            date = spliot[0] + "T" + spliot[1] + "+00:00"
+    
             new_dict = {
                 # id probably not unique enough
-                "id": body_structure_uuid(str(patient_ids[body_structure_ids.index(
-                          value)]) + "-" + value + "-" + str(dates[i])),
+                "id": body_structure_uuid(person_id + "-" + body_structure_id + "-" + date),
                 "resourceType": "BodyStructure",
-                "patient": {"reference": "Patient/" + str(
-                             patient_ids[body_structure_ids.index(value)])},
+                "patient": {"reference": "Patient/" + person_id},
                 "includedStructure": [{
                     "structure": {
                         "coding": [{
-                            "system": "http://snomed.info/sct"
+                            "system": ""
                         }],
                     },
                 }],
-                "value":value
+                "value":body_structure_id
             }
 
-            if value != "None":
-                new_dict["includedStructure"][0]["structure"]["coding"][0]["code"] = str(
-                    value)
-                new_dict["includedStructure"][0]["structure"]["coding"][0]["display"] = str(
-                    value)
+            if body_structure_id != "None":
+                new_dict["includedStructure"][0]["structure"]["coding"][0]["code"] = ""
+                new_dict["includedStructure"][0]["structure"]["coding"][0]["display"] = ""
 
             print(json.dumps(new_dict))
 
 
 if __name__ == "__main__":
-    build_concepts_from_observations(sys.argv[1])
+    asyncio.run(build_anatomic_site_table(sys.argv[1]))

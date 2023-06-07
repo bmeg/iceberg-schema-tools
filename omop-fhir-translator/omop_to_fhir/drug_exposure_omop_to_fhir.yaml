@@ -4,7 +4,7 @@ name: drug_exposure_omop_to_fhir
 outdir: ../output
 
 config:
-  drug_exposure:  ../data_used/redivis_drug_exposure.json  #../r_script_data/visit_occurrence.json 
+  drug_exposure:  ../data_used/redivis_drug_exposure.json
   schema: ../iceberg/schemas/bmeg/
   conceptData: ../data_used/MASTER_CONCEPT_TABLE_MODIFIED.json
 
@@ -16,6 +16,10 @@ inputs:
   conceptTheta:
     jsonLoad:
       input: "{{config.conceptData}}"
+  
+  medicationRequests:
+    plugin:
+      commandLine: python3 construct_medication_request.py {{config.drug_exposure}}
 
 pipelines:
   conceptTable:
@@ -31,77 +35,12 @@ pipelines:
               "concept_code": str(row["concept_code"])
             }
 
-  MedicationRequest: #TODO get this all squared away
-    - from: drug_Exposure_Data
-    - map:
-        method: formulate_med_req
-        gpython: |
-          def formulate_med_req(row):
-            out = {
-             "id": str(int(row["drug_exposure_id"]+ "OFFSET")),
-             "resourceType": "MedicationRequest",
-             "status": "stopped", #don't think there is anything for this in the OMOP structure
-             "subject": {"reference":"Patient/" + str(row["person_id"])},]
-            }
 
-            if (("sig" in row and row["sig"] is not None) or  ("route_concept_id" in row and row["route_concept_id"] is not None)):
-               out["dosageInstruction"] = []
-               if (("sig" in row and row["sig"] is not None) and ("route_concept_id" in row and row["rout_concept_id"] is not None)):
-                out["dosageInstruction"].append({
-                  "text":row["sig"],
-                  "route":{
-                    "coding":[{
-                      "display":"filler",
-                      "code":row["route_concept_id"],
-                      "system":"filler"
-                    }],
-                    "text":"filler"
-                  }
-                })
-               elif ("sig" in row and row["sig"] is not None):
-                 out["dosageInstruction"].append({
-                  "text":row["sig"]
-                  })
-               elif ("route_concept_id" in row and row["route_concept_id"] is not None):
-                out["dosageInstruction"].append({
-                  "route":{
-                    "coding":[{
-                      "display":"filler",
-                      "code":row["route_concept_id"],
-                      "system":"filler"
-                    }],
-                    "text":"filler"
-                  }
-                })
-            if (("refils" in row and row["refils"] is not None) or ("quanitity" in row and row["quantity"] is not None) or ("days_supply" in row and row["days_supply"] is not None)):
-              if ("refils" in row and row["refils"] is not None):
-                out["dispenseRquest"]["numberOfRepeatsAllowed"] = int(row["refils"])
-              if ("quantity" in row and row["quantity"] is not None):
-                out["dispenseRequest"]["quantity"] = row["quantity"]
-              if ("days_supply" in row and row["days_supply"] is not None):
-                out["dispenseRequest"]["expectedSupplyDuration"] = row["days_supply"]
-            
-            if "provider_id" in row and row["provider_id"] is not None:
-              if(is_int(row["provider_id"])):
-                out["requester"] = [{"reference":"Practitioner/" + str(int(row["provider_id"]))}]
-              else:
-                out["requester"] = [{"reference":"Practitioner/" + str(row["provider_id"])}]
-
-
-
-
-
-
-            return out
-
-    #- objectValidate:
-        #schema: "{{config.schema}}"
-        #title: MedicationRequest
-        
-    #- debug: {}
+  MedicationRequest:
+    - from: medicationRequests
+    #no MedicationRequest in iceberg so no object validation at the moment
     - emit:
         name: MedicationRequest
-
 
   MedicationStatement:
     - from: drug_Exposure_Data
@@ -171,14 +110,14 @@ pipelines:
             out = {
               "id": str(int(row["drug_exposure_id"])),
               "resourceType":"MedicationStatement",
-              "status": "finished",
+              "status": "recorded",
               "subject": {"reference":"Patient/" + str(row["person_id"])},
-              "partOf": {"referejce": "MedicationStatement/" + str(row["medication_statement_id"])}, # pass this in downstream from medication statement
+              #"partOf": {"reference": "MedicationStatement/" + str(row["medication_statement_id"])}, # pass this in downstream from medication statement
               "medicationCodeableConcept":{
                 "coding":[{
                   "system": vocab_code_to_display[str(row["CONCEPT_VOCAB_ID"])],
-                  "display": str(row["CONCEPT_ID_CODE"]),
-                  "code": str(row["CONCEPT_ID_NAME"])
+                  "display": str(row["CONCEPT_ID_NAME"]),
+                  "code": str(row["CONCEPT_ID_CODE"])
                 }],
                 "text": str(row["CONCEPT_ID_NAME"]),
               },
@@ -214,9 +153,45 @@ pipelines:
               }]
             
             if "visit_occurrence_id" in row and row["visit_occurrence_id"] is not None:
-              out["context"] =  [{"reference":"Encounter/" + str(int(row["visit_occurrence_id"]))}]
+              out["encounter"] =  {"reference":"Encounter/" + str(int(row["visit_occurrence_id"]))}
 
-            ##VERBATIM END DATE
+            if (("drug_source_value" in row and row["drug_source_value"] is not None) or\
+                ("lot_number" in row and row["lot_number"] is not None) or\
+                ("drug_source_concept_id" in row and row["drug_source_concept_id"] is not None)):
+              out["medicationCodeableConcept"]["extension"] = []
+              if "drug_source_value" in row and row["drug_source_value"] is not None:
+                out["medicationCodeableConcept"]["extension"].append({
+                  "url": "filler",
+                  "value": row["drug_source_value"]
+                })
+              if "lot_number" in row and row["lot_number"] is not None:
+                out["medicationCodeableConcept"]["extension"].append({
+                  "url": "filler",
+                  "value": row["lot_number"]
+                })
+              if "drug_source_concept_id" in row and row["drug_source_concept_id"] is not None:
+                out["medicationCodeableConcept"]["extension"].append({
+                  "url":"filler",
+                  "value": row["drug_source_concept_id"]
+                })
+                
+            # TODO: visit_detail_id: since this field is a child of its encounter instance
+            # this probably maps to something in encounter and not here
+
+            if (("route_source_value" in row and row["route_source_value"] is not None) or\
+                ("dose_unit_source_value" in row and row["dose_unit_source_value"] is not None)):
+              out["extension"] = []
+              if "route_source_value" in row and row["route_source_value"] is not None:
+                out["extension"].append({
+                  "url":"filler",
+                  "value": row["route_source_value"]
+                })
+              if "dose_unit_source_value" in row and row["dose_unit_source_value"] is not None: 
+                out["extension"].append({
+                  "url":"filler",
+                  "value": row["dose_unit_source_value"]
+                })
+
             return out
     
     # Iceberg doesn't have medication statement currently

@@ -43,6 +43,27 @@ pipelines:
 
   observation:
     - from: observation_Data
+    - uuid:
+        value: "{{row.id}}"
+        field: id
+        namespace: 'aced-ipd.org'
+    - uuid:
+        value: "{{row.PERSON_ID}}"
+        field: patient_id
+        namespace: 'aced-ipd.org'
+    - uuid:
+        value: "{{row.VISIT_OCCURRENCE_ID}}"
+        field: encounter_id
+        namespace: 'aced-ipd.org'
+    - uuid:
+        value: "{{row.PROVIDER_ID}}"
+        field: practitioner_id
+        namespace: 'aced-ipd.org'
+    - uuid:
+        value: "{{row.VISIT_DETAIL_ID}}"
+        field: visit_detail_id
+        namespace: 'aced-ipd.org'
+
     - lookup:
         pipeline:
           from: conceptTable
@@ -80,11 +101,6 @@ pipelines:
     - map:
         method: populate_observation
         gpython : |
-          def is_url(string):
-            if string.startswith('http://') or string.startswith('https://'):
-              return True
-            return False
-            
           def is_int(num):
             try:
               int(num)
@@ -121,20 +137,26 @@ pipelines:
               "Morph Abnormality": "exam",
               "Event": "exam"
             }
-            #if "CONCEPT_CLASS" in row:
-              #print(row["CONCEPT_CLASS"])
+
             items = [val for val in row.items() if val[1] is not None]
             required_fields = ["OBSERVATION_ID", "PERSON_ID", "OBSERVATION_CONCEPT_ID", "OBSERVATION_DATE", "observation_type_concept_id"]      
-
             if (is_int(row["CONCEPT_CODE"])):
               row["CONCEPT_CODE"] = int(row["CONCEPT_CODE"])
             assert(not all(item in items for item in required_fields)),"Error, not all required fields are present in OMOP structures"
             out = {
-              "id": str(int(row["OBSERVATION_ID"])),
+              "id": row["id"],
+              "identifier": [{ 
+                "system": "https://github.com/OHDSI/Eunomia",
+                "value": "Observation/" + str(row["OBSERVATION_ID"])
+              },
+              {
+                "system": "https://github.com/OHDSI/Eunomia",
+                "value": "Patient/" + str(row["PERSON_ID"])
+              }],
               "status": "final",
               "effectiveDateTime": str(row["OBSERVATION_DATE"]),
               "resourceType": "Observation",
-              "subject": {"reference": "Patient/" + str(int(row["PERSON_ID"]))},
+              "subject": {"reference": "Patient/" + str(row["patient_id"])},
               "code":{
                 "coding":[{
                   "system":  str(vocab_code_to_display[row["NEW_VOCABULARY_ID"]]),
@@ -142,7 +164,6 @@ pipelines:
                   "display": str(row["CODE_CONCEPT_NAME"])
                 }],
                 "text": str(row["CODE_CONCEPT_NAME"])
-
               },
               "category":[{
                 "coding":[{
@@ -177,16 +198,18 @@ pipelines:
               }]
 
             if "PROVIDER_ID" in row and row["PROVIDER_ID"] is not None:
-              if(is_int(row["PROVIDER_ID"])):
-                out["performer"] = [{"reference":"Practitioner/" + str(int(row["PROVIDER_ID"]))}]
-              else:
-                out["performer"] = [{"reference":"Practitioner/" + str(row["PROVIDER_ID"])}]
+              out["performer"] = [{"reference":"Practitioner/" + str(row["practitioner_id"])}]
+              out["identifier"].append({
+                "system": "https://github.com/OHDSI/Eunomia",
+                "value": "Practitioner/" + str(row["PROVIDER_ID"])
+              })
 
             if "VISIT_OCCURRENCE_ID" in row and row["VISIT_OCCURRENCE_ID"] is not None:
-              if(is_int(row["VISIT_OCCURRENCE_ID"])):
-                out["encounter"] = {"reference": "Encounter/" + str(int(row["VISIT_OCCURRENCE_ID"]))}  
-              else:
-                out["encounter"] = {"reference": "Encounter/" + str(row["VISIT_OCCURRENCE_ID"])} 
+              out["encounter"] = {"reference": "Encounter/" + str(row["encounter_id"])} 
+              out["identifier"].append({
+                "system": "https://github.com/OHDSI/Eunomia",
+                "value": "Encounter/" + str(row["VISIT_OCCURRENCE_ID"])
+              })
 
             # I think VISIT_DETAIL_ID should be a reference to encounter but you can only have one of those
             # So going to make it an extension instead.
@@ -194,7 +217,11 @@ pipelines:
               if(is_int(row["VISIT_DETAIL_ID"])):
                 out["extension"].append({
                   "url":"http://hl7.org/fhir/StructureDefinition/#ENCOUNTER_Reference_id",
-                  "valueReference": {"reference": "Encounter/" + str(int(row["VISIT_DETAIL_ID"]))}}) 
+                  "valueReference": {"reference": "Encounter/" + str(int(row["visit_detail_id"]))}}) 
+                out["identifier"].append({
+                  "system": "https://github.com/OHDSI/Eunomia",
+                  "value": "VISIT_DETAIL/" + str(row["VISIT_DETAIL_ID"])
+                })
               else:
                 raise Exception("VISIT_DETAIL_ID should be an integer and it is not")
 
@@ -243,12 +270,6 @@ pipelines:
 
             return out
     
-    - project:
-        mapping:
-          identifier: [{ 
-                "system": "https://github.com/OHDSI/Eunomia",
-                "value": "{{row.id}}"
-            }]
     # this is disabled because the row ID does not match the regex [ \\r\\n\\t\\S]+
     # it will go away when the uuids are added
     #- objectValidate:

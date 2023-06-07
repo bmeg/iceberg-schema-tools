@@ -47,6 +47,19 @@ def convert_time(file_path, node_type):
                                  "VISIT_START_DATETIME", 
                                  "VIST_END_DATE", 
                                  "VISIT_END_DATETIME"]
+            elif(node_type == "ProcedureOccurrence"):
+                date_key_list = ["procedure_date", 
+                                 "procedure_datetime"]
+            elif(node_type == "Drug_Exposure"):
+                date_key_list = ["drug_exposure_start_date",
+                                "drug_exposure_start_datetime",
+                                "drug_exposure_end_date",
+                                "drug_exposure_end_datetime"]
+            elif(node_type == "Device_Exposure"):
+                date_key_list = ["device_exposure_start_date",
+                                 "device_exposure_start_datetime",
+                                 "device_exposure_end_date",
+                                 "device_exposure_end_datetime"]
 
             for date_convertible in date_key_list:
                 if date_convertible in line and str(

@@ -5,6 +5,7 @@ import click
 import pathlib
 import os
 import tqdm as tqdm
+import ndjson
 
 #should also write something that converts all fake floats like "876545676543.0" to ints 
 
@@ -72,6 +73,24 @@ def clean_json(input_path, output_path):
     input_path = pathlib.Path(input_path)
     assert input_path.is_file()
     run_lower_case_keys(input_path,output_path)
+
+
+@clean.command("JsonKeyUpper")
+@click.option('--input_path', required=True,
+              help='Path to input csv file')
+@click.option('--output_path', required=True,
+              help='Path to output ndjson file')
+def JsonKeyUpper(input_path,output_path):
+    with open(input_path, "r") as f:
+        data = ndjson.load(f)
+
+    for dictionary in data:
+        dictionary_uppercase = {key.upper(): value for key, value in dictionary.items()}
+        dictionary.clear()
+        dictionary.update(dictionary_uppercase)
+
+    with open(output_path, "w") as f:
+        ndjson.dump(data, f)
 
 
 @clean.command('directory')
