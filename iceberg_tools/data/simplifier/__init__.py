@@ -269,9 +269,6 @@ def _render_sub_resources(resource: FHIRAbstractModel) -> dict:
         is_array = nested_object_value is not None and isinstance(nested_object_value, list)
 
         if is_array and nested_object_value is not None:
-            limit = 1
-            if isinstance(path, dict):
-                limit = path['limit']
 
             count = 0
             for item in nested_object_value:
@@ -279,29 +276,22 @@ def _render_sub_resources(resource: FHIRAbstractModel) -> dict:
 
                 # only add index in name if > 0
                 separator = '_'
-                if count > 0:
-                    separator = f"_{count}_"
-                if '__value__' not in _:
-                    print("?")
+
                 value = _['__value__']
                 name = _.get('__name__', None)
                 if name:
                     name = separator + name
                 else:
                     name = ''
-                simplified[f"{nested_object_name}{name}"] = value
+
+                if f"{nested_object_name}{name}" not in simplified:
+                    simplified[f"{nested_object_name}{name}"] = []
+                simplified[f"{nested_object_name}{name}"].append(value)
 
                 count += 1
-                if count == limit:
-                    break
-
-                count += 1
-                if count == limit:
-                    break
 
         else:
             # scalar
-            # is_simple
             if nested_object_value is not None:
                 if hasattr(nested_object_value, 'dict'):
                     name_value_list = nested_object_value.dict()
@@ -314,68 +304,13 @@ def _render_sub_resources(resource: FHIRAbstractModel) -> dict:
                             name = '_' + name
                         else:
                             name = ''
+                        if isinstance(value, list):
+                            value = value[0]
                         simplified[f"{nested_object_name}{name}"] = value
                 else:
+                    if isinstance(nested_object_value, list):
+                        nested_object_value = nested_object_value[0]
                     simplified[f"{nested_object_name}"] = nested_object_value
-
-    # config = {
-    #     'DocumentReference': {
-    #         'lists': {
-    #             'content': {'limit': 1, 'properties': ['contentType', 'md5', 'size', 'url']}
-    #         },
-    #         'scalars': {}
-    #     },
-    #     'Patient': {
-    #         'lists': {
-    #             'address': {'limit': 1, 'properties': ['postalCode']}
-    #         },
-    #         'scalars': {}
-    #     }
-    # }
-
-    # if resource.resource_type not in config:
-    #     return simplified
-    #
-    # lists = config[resource.resource_type].get('lists', {})
-    # scalars = config[resource.resource_type].get('scalars', {})
-    #
-    # # add values to simplified resource
-    #
-    # # lists
-    # for resource_property_name in lists:  # sub_resource's property name
-    #     assert hasattr(resource, resource_property_name), f"{resource.resource_type} has no property named {resource_property_name}"
-    #     resource_property = getattr(resource, resource_property_name)
-    #     if not resource_property:
-    #         continue
-    #     limit = lists[resource_property_name].get('limit', 1)
-    #     properties = lists[resource_property_name].get('properties', [])
-    #     count = 0
-    #     for item in resource_property:
-    #         _ = item.dict()
-    #         # only add index in name if > 0
-    #         separator = '_'
-    #         if count > 0:
-    #             separator = f"_{count}_"
-    #         for k, v in _.items():
-    #             if k in properties:
-    #                 simplified[f"{resource_property_name}{separator}{k}"] = v
-    #         count += 1
-    #         if count == limit:
-    #             break
-    #         # warn if data had more than limit
-    #         if len(resource.content) > limit:
-    #             logger.warning(f"{resource.resource_type}/{resource.id} {resource_property_name}"
-    #                            f" had {len(resource.content)} items limit was {limit}")
-    #
-    # # scalars
-    # for resource_property_name in scalars:  # sub_resource's property name
-    #     assert hasattr(resource, resource_property_name), f"{resource.resource_type} has no property named {resource_property_name}"
-    #     resource_property = getattr(resource, resource_property_name)
-    #     if not resource_property:
-    #         continue
-    #     _ = resource_property.dict()
-    #     for k, v in _.items():
-    #         simplified[f"{resource_property_name}_{k}"] = v
 
     return simplified
 
@@ -644,7 +579,7 @@ def check_simplified_schemas(simplified: dict, schemas: dict):
 def _default_json_serializer(obj):
     """JSON Serializer, render decimal and bytes types."""
     if isinstance(obj, decimal.Decimal):
-        return str(obj)
+        return float(obj)
     if isinstance(obj, bytes):
         return obj.decode()
 

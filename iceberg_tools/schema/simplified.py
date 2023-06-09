@@ -25,7 +25,7 @@ FHIR_PRIMITIVES_TO_JSON_SCHEMA = {
     "base64Binary": 'string',
     "code": 'string',
     "id": 'string',
-    "decimal": 'string',
+    "decimal": 'number',
     "integer": 'number',
     "unsignedInt": 'number',
     "positiveInt": 'number',
