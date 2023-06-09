@@ -36,19 +36,19 @@ Dictionary form
 
 Object Link Extension Schema:
 ```yaml
-	properties:
-		targets:
-			type: array
-			items:
-			    type: object
-				properties:
-					type:
+    properties:
+        targets:
+            type: array
+            items:
+                type: object
+                properties:
+                    type:
                         type: object
-						properties:
-							$ref:
-								type: string
-					backref:
-						type: string
+                        properties:
+                            $ref:
+                                type: string
+                    backref:
+                        type: string
 ```
 
 The array of `targets` list the possible target types of the link field. The `$ref` field points to the object declaration in JSON
