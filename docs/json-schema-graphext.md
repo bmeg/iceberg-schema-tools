@@ -63,10 +63,6 @@ id: "sample"
 
 properties:
   case:
-    targets: 
-      - type: 
-          $ref: case.yaml
-        backref: samples
     type: object
         additionalProperties: True
         properties:
@@ -74,6 +70,37 @@ properties:
                 type: string
             submitter_id:
                 type: string
+    targets: 
+      - type: 
+          $ref: case.yaml
+        backref: samples
 ```
 
+# Edge declaration
+An edge object is a JSON object that is meant to be converted to an edge. Unlike an edge link, it is meant to be a 
+complete object, and not the child of a parent object that provides additional info. This means that there needs to 
+be both a `source` and `destination` link field, as well as a definition of what the edge label should be. 
+
+## Declaring Edge Object
+
+```yaml
+$schema: "https://json-schema.org/draft/2020-12/schema"
+
+id: "parentChildRelationship"
+
+properties:
+    parent_id:
+        type: string
+        edgeDest: true
+        targets:
+          - type: 
+                $ref: case.yaml
+    child_id:
+        type: string
+        edgeSource: true
+        targets:
+          - type: 
+                $ref: case.yaml
+
+```
 
