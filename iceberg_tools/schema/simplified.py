@@ -177,6 +177,8 @@ def _add_extensions(extensions, schemas):
 
                 _add_term_def(property_)
                 _add_enum(property_)
+
+                property_name = property_name.replace('_text', '')
                 schema['properties'][property_name] = property_
             logger.info(f"Added extension: {extension_name}")
 

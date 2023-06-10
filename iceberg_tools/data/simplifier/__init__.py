@@ -3,6 +3,7 @@ import importlib
 import logging
 import pathlib
 import threading
+import uuid
 from typing import Dict, List
 
 import click
@@ -37,6 +38,7 @@ logger = logging.getLogger(__name__)
 # create a local instance
 THREAD_LOCAL = threading.local()
 
+ICEBERG_NAMESPACE = uuid.uuid3(uuid.NAMESPACE_DNS, 'ICEBERG')
 
 class Getter:
     """A getter for a FHIR resource."""
@@ -361,37 +363,55 @@ def _render_extensions(self: FHIRAbstractModel, *args, **kwargs) -> Dict:
         for extension in self.extension:
             ext_dict = extension.dict()
             if ext_dict:
-                ext_val_as_list = ext_dict['__value__']
-                if not isinstance(ext_dict['__value__'], list):
-                    ext_val_as_list = [ext_dict['__value__']]
-                ext_name = ext_dict['__name__']
-                for item in ext_val_as_list:
-                    # more than one name
-                    compound_name = ext_name
+                _populate_extensions(ext_dict, extensions)
+            else:
+                parent_name = extension.url.split('/')[-1].replace('-', '_')
+                for child_extension in extension.extension:
+                    ext_dict = child_extension.dict()
+                    if ext_dict:
+                        _populate_extensions(ext_dict, extensions, parent_name)
 
-                    if not isinstance(item, dict):
-                        extensions[compound_name] = item
-                        continue
-
-                    if '__name__' in item:
-                        compound_name = f"{compound_name}_{item['__name__']}"
-                    compound_name = compound_name.replace('-', '_')
-
-                    if compound_name not in extensions:
-                        extensions[compound_name] = []
-
-                    if '__value__' in item:
-                        extensions[compound_name].extend(item['__value__'])
-                    else:
-                        for k, v in item.items():
-                            extensions[f"{compound_name}_{k}"] = v
-
-                    # if only one value, make it scalar
-                    if len(extensions[compound_name]) == 1:
-                        extensions[compound_name] = extensions[compound_name][0]
     # cleanup no data
     extensions = {k: v for k, v in extensions.items() if (v is not None and v != [])}
     return extensions
+
+
+def _populate_extensions(ext_dict, extensions, parent_name=None):
+    """Utility, populate extensions dict with values from a single extension."""
+    ext_val_as_list = ext_dict['__value__']
+    if not isinstance(ext_dict['__value__'], list):
+        ext_val_as_list = [ext_dict['__value__']]
+    ext_name = ext_dict['__name__']
+    if parent_name:
+        ext_name = f"{parent_name}_{ext_name}"
+
+    compound_name = None
+    for item in ext_val_as_list:
+        # more than one name
+        compound_name = ext_name
+
+        if not isinstance(item, dict):
+            extensions[compound_name] = item
+            continue
+
+        if '__name__' in item and item['__name__'] != ext_name:
+            compound_name = f"{compound_name}_{item['__name__']}"
+        compound_name = compound_name.replace('-', '_')
+
+        compound_name = compound_name.replace('_text', '')
+
+        if compound_name not in extensions:
+            extensions[compound_name] = []
+
+        if '__value__' in item:
+            extensions[compound_name].append(item['__value__'])
+        else:
+            for k, v in item.items():
+                extensions[f"{compound_name}_{k}"] = v
+
+    # if only one value, make it scalar
+    if isinstance(extensions[compound_name], list) and len(extensions[compound_name]) == 1:
+        extensions[compound_name] = extensions[compound_name][0]
 
 
 def _render_codings(self: FHIRAbstractModel, *args, **kwargs) -> Dict:
@@ -554,7 +574,13 @@ def _render_dialect(simplified: dict, references: List[str], dialect: str, schem
     return {'id': simplified['id'], 'name': inflection.underscore(simplified['resourceType']), 'relations': gen3_links, 'object': simplified}
 
 
-def simplify(resource: FHIRAbstractModel, dialect: str, nested_objects: dict = {}) -> (Dict, List[str]):
+def new_id(transform_ids, id_):
+    """Create a new UUID based on the original id and the seed."""
+    _study_uuid = uuid.uuid5(ICEBERG_NAMESPACE, transform_ids)
+    return str(uuid.uuid5(_study_uuid, id_))
+
+
+def simplify(resource: FHIRAbstractModel, dialect: str, nested_objects: dict = {}, transform_ids=None) -> (Dict, List[str]):
     """Create a PFB friendly resource. Returns simplified resource and associated references.
     Most of the heavy lifting done in dict() overrides of FHIRAbstractModel.dict()
     """
@@ -565,6 +591,14 @@ def simplify(resource: FHIRAbstractModel, dialect: str, nested_objects: dict = {
     simplified = resource.dict()
     # cleanup goes here...
     simplified = _ensure_dialect(simplified, resource, dialect)
+    if transform_ids:
+        simplified['id'] = new_id(transform_ids, simplified['id'])
+        transformed_references = []
+        for reference in THREAD_LOCAL.references:
+            type_, id_ = reference.split('/')
+            id_ = new_id(transform_ids, id_)
+            transformed_references.append(f"{type_}/{id_}")
+        THREAD_LOCAL.references = transformed_references
     return simplified, THREAD_LOCAL.references
 
 
@@ -638,7 +672,7 @@ class SimplifierContextManager:
         Task.dict = self.orig_task_dict
 
 
-def simplify_directory(input_path, pattern, output_path, schema_path, dialect, config_path):
+def simplify_directory(input_path, pattern, output_path, schema_path, dialect, config_path, transform_ids=None):
     """Reads directory of FHIR, renders simple, data frame friendly flattened records."""
 
     input_path = pathlib.Path(input_path)
@@ -667,7 +701,7 @@ def simplify_directory(input_path, pattern, output_path, schema_path, dialect, c
                     continue
                 resource = parse_result.resource
 
-                simplified, references = simplify(resource, dialect, nested_objects)
+                simplified, references = simplify(resource, dialect, nested_objects, transform_ids)
                 try:
                     check_simplified_schemas(simplified, schemas)
                 except (TypeError, AssertionError) as e:
@@ -717,13 +751,18 @@ def _assert_all_ok(all_ok, parse_result, resource, simplified):
               default='config.yaml',
               show_default=True,
               help='Path to config file.')
-def cli(path, pattern, output_path, schema_path, dialect, config_path):
+@click.option('--transform_ids',
+              default=None,
+              show_default=True,
+              help='Transform ids based on this seed')
+
+def cli(path, pattern, output_path, schema_path, dialect, config_path, transform_ids):
     """Renders PFB friendly flattened records.
 
     PATH: Path containing bundles (*.json) or resources (*.ndjson)
     OUTPUT_PATH: Path where simplified resources will be stored
     """
-    simplify_directory(path, pattern, output_path, schema_path, dialect, config_path)
+    simplify_directory(path, pattern, output_path, schema_path, dialect, config_path, transform_ids)
 
 
 if __name__ == '__main__':
