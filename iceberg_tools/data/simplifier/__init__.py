@@ -496,12 +496,12 @@ def _gen3_scaffolding_document_reference(simplified: dict, resource: FHIRAbstrac
     if simplified['resourceType'] != 'DocumentReference':
         return simplified
 
-    if 'content_url' not in simplified:
-        logger.warning(f"Missing content_url in simplified {simplified['resourceType']} {simplified['id']}")
+    if 'content_attachment_url' not in simplified:
+        logger.debug(f"Missing content_attachment_url in simplified {simplified['resourceType']} {simplified['id']}")
         suffix = None
         file_name = None
     else:
-        content_url = pathlib.Path(simplified['content_url'])
+        content_url = pathlib.Path(simplified['content_attachment_url'])
         suffix = content_url.suffix
         file_name = content_url.name
 
@@ -522,10 +522,10 @@ def _gen3_scaffolding_document_reference(simplified: dict, resource: FHIRAbstrac
         simplified['data_format'] = 'script'
 
     simplified['file_name'] = file_name
-    if 'content_md5' in simplified:
-        simplified['md5sum'] = simplified['content_md5']
+    if 'content_attachment_extension_md5' in simplified:
+        simplified['md5sum'] = simplified['content_attachment_extension_md5']
     if 'content_size' in simplified:
-        simplified['file_size'] = simplified['content_size']
+        simplified['file_size'] = simplified['content_attachment_size']
     simplified['object_id'] = simplified['id']
 
     return simplified
