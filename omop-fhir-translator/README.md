@@ -45,6 +45,8 @@ to get person.json files that are valid you need to run
 data_cleaner.py and take the outputed file and replace it with data/person.json
 
 ## Convert OMOP -> FHIR
+Run lathe plan commands from root of project
+
 Build Snakefile
 ```
 lathe plan plan_omop_to_fhir.yaml
@@ -69,4 +71,21 @@ snakemake -j -4
 You can do an individual file translation of the data with a
 ```
 sifter run [path to config.yaml file]
+```
+
+## Expected Directory Structure:
+omop-fhir-translator/
+```
+data_used/
+extract/
+fhir_to_omop/
+iceberg/
+omop_to_fhir/
+output/
+plan_fhir_to_omop.yaml
+plan_omop_to_fhir.yaml
+README.md
+requirements.txt
+Snakefile
+venv/
 ```
