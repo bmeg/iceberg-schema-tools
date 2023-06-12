@@ -1,0 +1,57 @@
+# CLI processor
+# Click==8.1.3
+click~=7.1.2
+pyjwt~=2.6.0
+mergedeep
+flatten_json
+
+# our fork of pelican that supports 3.9
+git+https://github.com/ACED-IDP/pelican.git@chore/python-version
+# to test:
+# python3 -c "from pelican.dictionary import init_dictionary, DataDictionaryTraversal; print('ok')"
+
+# postgres
+psycopg2-binary
+
+# fhirclient
+# https://github.com/bmeg/client-py/archive/feature/embedded-schema.zip
+
+fhir.resources
+# https://github.com/bmeg/fhir.resources/archive/feature/backref.zip
+
+# pluralization
+inflection~=0.5.1
+
+PyYAML<6.0
+
+pydantic~=1.9.2
+
+# "stock" gen3 - the version on https://pypi.org/project/gen3/ 4.14.0 does not have the bucket change
+# gen3
+
+# uchicago official repo - has the bucket change https://github.com/uc-cdis/gen3sdk-python/pull/160
+https://github.com/uc-cdis/gen3sdk-python/archive/master.zip
+
+# for load elastic (guppy)
+more_itertools
+# using old version of ES.
+# https://github.com/elastic/elasticsearch-py/issues/1933#issuecomment-1073830411#
+# elasticsearch==6.8.2
+
+# AWS version of ES curl http://$ELASTICSEARCH_SERVICE_HOST:$ELASTICSEARCH_SERVICE_PORT
+elasticsearch<7.14.0
+
+# faster json
+orjson~=3.8.3
+pytest~=7.1.2
+dictionaryutils~=3.4.4
+asyncio~=3.4.3
+requests>=2.31.0
+aiohttp~=3.8.1
+# gen3~=4.17.1
+fastavro~=1.4.1
+setuptools~=65.5.1
+
+
+# for mime types
+python-magic

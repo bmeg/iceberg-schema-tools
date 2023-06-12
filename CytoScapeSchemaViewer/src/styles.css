@@ -1,0 +1,15 @@
+.App {
+  font-family: sans-serif;
+}
+
+.parent {
+  padding: 15px;
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+}
+
+
+ul {
+  columns: 2;
+}
+
