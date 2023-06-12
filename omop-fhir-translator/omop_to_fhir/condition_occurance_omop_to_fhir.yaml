@@ -25,7 +25,7 @@ pipelines:
         gpython: |
           def fix(row):
             return {
-              "concept_id": str(int(row["concept_id"])),
+              "concept_id": str(row["concept_id"]),
               "vocabulary_id": str(row["vocabulary_id"]),
               "concept_name": str(row["concept_name"]),
               "concept_code": str(row["concept_code"])

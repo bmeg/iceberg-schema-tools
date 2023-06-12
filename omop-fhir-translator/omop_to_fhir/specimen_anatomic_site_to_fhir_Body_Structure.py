@@ -19,7 +19,7 @@ async def build_anatomic_site_table(file_path):
             
             augmented_line = orjson.loads(line)
             person_id =  str(augmented_line["person_id"])
-            body_structure_id =  str(int(augmented_line["anatomic_site_concept_id"]))
+            body_structure_id =  str(augmented_line["anatomic_site_concept_id"])
             spliot = str(augmented_line["specimen_datetime"]).split(" ")
             date = spliot[0] + "T" + spliot[1] + "+00:00"
     

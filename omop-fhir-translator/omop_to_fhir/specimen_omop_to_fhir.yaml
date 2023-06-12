@@ -212,7 +212,8 @@ pipelines:
               "RxNorm Extension": "https://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html", #note sure about this one
             }
 
-            if "value" in row:
+            #Half of these refs are None. I need to investigate why. Could be the source data
+            if "value" in row and row["value"] is not None and row["value"] != "None":
               row["includedStructure"][0]["structure"]["coding"][0]["code"] = row["specimen_vocab_concept_code"]
               row["includedStructure"][0]["structure"]["coding"][0]["display"] = row["specimen_anatomic_concept_name"]
               row["includedStructure"][0]["structure"]["coding"][0]["system"] = vocab_code_to_display[row["specimen_vocab_id"]]
@@ -220,6 +221,9 @@ pipelines:
               del(row["specimen_anatomic_concept_name"])
               del(row["specimen_vocab_concept_code"])
               del(row["specimen_vocab_id"])
+
+            if row["value"] == "None":
+              del(row["value"])
 
             return row
   
