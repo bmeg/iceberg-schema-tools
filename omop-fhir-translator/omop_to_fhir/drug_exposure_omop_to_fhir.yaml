@@ -35,15 +35,84 @@ pipelines:
               "concept_code": str(row["concept_code"])
             }
 
-
   MedicationRequest:
     - from: medicationRequests
-    #no MedicationRequest in iceberg so no object validation at the moment
+    - uuid:
+        value: "{{row.id}}"
+        field: id
+        namespace: 'aced-ipd.org'
+
+    - lookup:
+        pipeline:
+          from: conceptTable
+          key: concept_id
+        lookup: "{{row.drug_concept_id}}"
+        copy: 
+          CONCEPT_ID_NAME: concept_name
+          CONCEPT_ID_CODE: concept_code
+          CONCEPT_VOCAB_ID: vocabulary_id
+
+    - map:
+        method: cast
+        gpython: |
+          def cast(row):
+            vocab_code_to_display = {
+              "NUCC": "https://www.nucc.org/",
+              "CMS Place of Service": "https://www.cms.gov/Medicare/Coding/place-of-service-codes",
+              "SNOMED":"http://snomed.info/sct/",
+              "LOINC": "https://loinc.org/",
+              "Visit": "https://athena.ohdsi.org/search-terms/terms/",
+              "Type Concept": "https://athena.ohdsi.org/search-terms/terms/",
+              "ICD9CM": "https://www.cms.gov/Medicare/Coding/ICD9ProviderDiagnosticCodes/codes",
+              "ICD10CM": "https://icd10cmtool.cdc.gov/",
+              "SOPT": "https://www.nahdo.org/sopt",
+              "Relationship": "https://athena.ohdsi.org/search-terms/terms/",
+              "Vocabulary": "https://athena.ohdsi.org/search-terms/terms/",
+              "UCUM": "https://ucum.org/",
+              "MeSH": "https://www.nlm.nih.gov/research/umls/licensedcontent/umlsknowledgesources.html",
+              "NDFRT": 'https://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html',
+              "Condition Type": "https://athena.ohdsi.org/search-terms/terms/",
+              "NDC": "https://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html",
+              "RxNorm": "https://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html",
+              "RxNorm Extension": "https://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html", #note sure about this one
+              "Observation Type": "https://athena.ohdsi.org/search-terms/terms/",
+              "None": "https://athena.ohdsi.org/search-terms/terms/",
+              "CPT4": "https://www.nlm.nih.gov/research/umls/licensedcontent/umlsknowledgesources.html"
+            }
+
+            row["medication"] = {"concept":{
+                  "coding":[{
+                    "system": vocab_code_to_display[str(row["CONCEPT_VOCAB_ID"])],
+                    "display": str(row["CONCEPT_ID_NAME"]),
+                    "code": str(row["CONCEPT_ID_CODE"])
+                  }],
+                  "text": str(row["CONCEPT_ID_NAME"]),
+                },
+            }
+            del(row["CONCEPT_ID_NAME"])
+            del(row["CONCEPT_ID_CODE"])
+            del(row["CONCEPT_VOCAB_ID"])
+            del(row["drug_concept_id"])
+              
+            return row
     - emit:
         name: MedicationRequest
 
   MedicationStatement:
     - from: drug_Exposure_Data
+    - uuid:
+        value: "{{row.drug_exposure_id}}-MedicationStatement"
+        field: id
+        namespace: 'aced-idp.org'
+    - uuid:
+        value: "{{row.person_id}}"
+        field: person_id_uuid
+        namespace: 'aced-idp.org'
+    - uuid:
+        value: "{{row.visit_occurrence_id}}"
+        field: visit_occurrence_id_uuid
+        namespace: 'aced-idp.org'
+
     - map:
         method: cast
         gpython: |
@@ -108,18 +177,28 @@ pipelines:
             }
 
             out = {
-              "id": str(int(row["drug_exposure_id"])),
+              "id": str(row["id"]),
+              "identifier": [{ 
+                "system": "https://redivis.com/datasets/ye2v-6skh7wdr7/tables",
+                "value": "MedicationStatement/" + str(row["drug_exposure_id"])
+              },
+              {
+                "system": "https://redivis.com/datasets/ye2v-6skh7wdr7/tables",
+                "value": "Patient/" + str(row["person_id"])
+              }], 
               "resourceType":"MedicationStatement",
               "status": "recorded",
-              "subject": {"reference":"Patient/" + str(row["person_id"])},
+              "subject": {"reference":"Patient/" + str(row["person_id_uuid"])},
               #"partOf": {"reference": "MedicationStatement/" + str(row["medication_statement_id"])}, # pass this in downstream from medication statement
-              "medicationCodeableConcept":{
-                "coding":[{
-                  "system": vocab_code_to_display[str(row["CONCEPT_VOCAB_ID"])],
-                  "display": str(row["CONCEPT_ID_NAME"]),
-                  "code": str(row["CONCEPT_ID_CODE"])
-                }],
-                "text": str(row["CONCEPT_ID_NAME"]),
+              "medication":{
+                "concept":{
+                  "coding":[{
+                    "system": vocab_code_to_display[str(row["CONCEPT_VOCAB_ID"])],
+                    "display": str(row["CONCEPT_ID_NAME"]),
+                    "code": str(row["CONCEPT_ID_CODE"])
+                  }],
+                  "text": str(row["CONCEPT_ID_NAME"]),
+                },
               },
               "effectivePeriod":{
                 "start": row["drug_exposure_start_date"],
@@ -127,7 +206,7 @@ pipelines:
               },
               "extension":[{
                 "url": "https://ohdsi.github.io/CommonDataModel/cdm53.html#DRUG_EXPOSURE__TYPE_CONCEPT_ID",
-                "value": row["DRUG_TYPE_CONCEPT_ID_CODE"]
+                "valueString": str(row["DRUG_TYPE_CONCEPT_ID_CODE"])
               }]
             }
             
@@ -152,27 +231,31 @@ pipelines:
                 "text":"filler",
               }]
             
-            if "visit_occurrence_id" in row and row["visit_occurrence_id"] is not None:
-              out["encounter"] =  {"reference":"Encounter/" + str(int(row["visit_occurrence_id"]))}
+            if "visit_occurrence_id_uuid" in row and row["visit_occurrence_id_uuid"] is not None:
+              out["encounter"] =  {"reference":"Encounter/" + str(row["visit_occurrence_id_uuid"])}
+              out["identifier"].append(
+               {
+                "system": "https://redivis.com/datasets/ye2v-6skh7wdr7/tables",
+                "value": "Encounter/" + str(row["visit_occurrence_id"])
+               })
 
             if (("drug_source_value" in row and row["drug_source_value"] is not None) or\
                 ("lot_number" in row and row["lot_number"] is not None) or\
                 ("drug_source_concept_id" in row and row["drug_source_concept_id"] is not None)):
-              out["medicationCodeableConcept"]["extension"] = []
               if "drug_source_value" in row and row["drug_source_value"] is not None:
-                out["medicationCodeableConcept"]["extension"].append({
+                out["extension"].append({
                   "url": "filler",
-                  "value": row["drug_source_value"]
+                  "valueString": (row["drug_source_value"])
                 })
               if "lot_number" in row and row["lot_number"] is not None:
-                out["medicationCodeableConcept"]["extension"].append({
+                out["extension"].append({
                   "url": "filler",
-                  "value": row["lot_number"]
+                  "valueInteger": int(row["lot_number"])
                 })
               if "drug_source_concept_id" in row and row["drug_source_concept_id"] is not None:
-                out["medicationCodeableConcept"]["extension"].append({
+                out["extension"].append({
                   "url":"filler",
-                  "value": row["drug_source_concept_id"]
+                  "valueString": (row["drug_source_concept_id"])
                 })
                 
             # TODO: visit_detail_id: since this field is a child of its encounter instance
@@ -184,12 +267,12 @@ pipelines:
               if "route_source_value" in row and row["route_source_value"] is not None:
                 out["extension"].append({
                   "url":"filler",
-                  "value": row["route_source_value"]
+                  "valueString": (row["route_source_value"])
                 })
               if "dose_unit_source_value" in row and row["dose_unit_source_value"] is not None: 
                 out["extension"].append({
                   "url":"filler",
-                  "value": row["dose_unit_source_value"]
+                  "valueString": (row["dose_unit_source_value"])
                 })
 
             return out

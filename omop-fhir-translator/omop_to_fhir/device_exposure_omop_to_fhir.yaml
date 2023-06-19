@@ -32,6 +32,19 @@ pipelines:
 
   Procedure:
     - from: Device_Exposure_Data
+    - uuid:
+        value: "{{row.device_exposure_id}}"
+        field: id
+        namespace: 'aced-idp.org' 
+    - uuid:
+        value: "{{row.person_id}}"
+        field: person_id_uuid
+        namespace: 'aced-idp.org'
+    - uuid:
+        value: "{{row.visit_occurrence_id}}"
+        field: visit_occurrence_id_uuid
+        namespace: 'aced-idp.org'
+
 
     - map:
         method: cast
@@ -101,10 +114,18 @@ pipelines:
             }
 
             out = {
-              "id": str(int(row["device_exposure_id"])),
+              "id": str(row["id"]),
+              "identifier": [{ 
+                "system": "https://redivis.com/datasets/ye2v-6skh7wdr7/tables",
+                "value": "MedicationStatement/" + str(row["device_exposure_id"])
+              },
+              {
+                "system": "https://redivis.com/datasets/ye2v-6skh7wdr7/tables",
+                "value": "Patient/" + str(row["person_id"])
+              }],
               "resourceType":"Procedure",
               "status": "completed",
-              "subject": {"reference":"Patient/" + str(row["person_id"])},
+              "subject": {"reference":"Patient/" + str(row["person_id_uuid"])},
               "code":{
                 "coding":[{
                   "system": vocab_code_to_display[str(row["CONCEPT_VOCAB_ID"])],
@@ -168,22 +189,24 @@ pipelines:
                 })
 
             if "provider_id" in row and row["provider_id"] is not None:
-              if(is_int(row["provider_id"])):
-                out["performer"] = [{"reference":"Practitioner/" + str(int(row["provider_id"]))}]
-              else:
-                out["performer"] = [{"reference":"Practitioner/" + str(row["provider_id"])}]
-            
-            if "visit_occurrence_id" in row and row["visit_occurrence_id"] is not None:
-              out["encounter"] = [{"reference":"Encounter/" + str(row["visit_occurrence_id"])}]
+                out["performer"] = [{"actor":{"reference":"Practitioner/" + str(row["provider_id"])}}]
+             
+            if "visit_occurrence_id_uuid" in row and row["visit_occurrence_id_uuid"] is not None:
+              out["encounter"] = {"reference":"Encounter/" + str(row["visit_occurrence_id_uuid"])}
+              out["identifier"].append(
+               {
+                "system": "https://redivis.com/datasets/ye2v-6skh7wdr7/tables",
+                "value": "Encounter/" + str(row["visit_occurrence_id"])
+               })
             
             #  PROPERTY visit_detail_id:  like drug_exposure_omop_to_fhir.yaml not sure what to do with this 
             # property just yet. Need to look at FHIR Encounter and OMOP visit detail see where it would hook in
 
             if "device_source_concept_id" in row and row["device_source_concept_id"] is not None:
-              out["code"]["extension"] = []
-              out["code"]["extension"].append({
+              out["extension"] = []
+              out["extension"].append({
                 "url":"not sure",
-                "value":row["device_source_concept_id"]
+                "valueString": str(row["device_source_concept_id"])
               })
 
             return out

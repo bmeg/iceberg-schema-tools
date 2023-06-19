@@ -33,6 +33,8 @@ def convert_csv_to_ndjson(input_file_path,output_file_path):
         for row in reader_list:
             totalrows += 1
         print(f" TOTAL ROWS ARE {totalrows}")
+        f.seek(0)
+        reader_list = csv.DictReader(f, delimiter=",")
         for rorw in tqdm.tqdm(reader_list,total=totalrows):
             for elem in rorw.keys():
                 if rorw[elem] == '':
@@ -75,7 +77,7 @@ def clean_json(input_path, output_path):
     run_lower_case_keys(input_path,output_path)
 
 
-@clean.command("JsonKeyUpper")
+@clean.command("Jupper")
 @click.option('--input_path', required=True,
               help='Path to input csv file')
 @click.option('--output_path', required=True,

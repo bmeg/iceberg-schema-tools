@@ -5,7 +5,7 @@ name: patient_omop_to_fhir
 outdir: ../output
 
 config:
-  patient_data:  ../data_used/redivis_person.json #../mimic-iv-omop-data/person.json 
+  patient_data:  ../data_used/mimic-iv_person.json #../data_used/person.json #../data_used/redivis_person.json #../mimic-iv-omop-data/person.json 
   location_data: ../data_used/redivis_location.json #../mimic-iv-omop-data/location.json
   schema: ../iceberg/schemas/bmeg/
 
@@ -23,7 +23,13 @@ pipelines:
     - from: patient_Data   
     - map:
         method: fix
-        gpython: | 
+        gpython: |
+          def isfloat(num):
+            try:
+                float(num)
+                return True
+            except ValueError:
+                return False
           def mappings(item,value):
             if item == "location_id": value = int(value)
             if item == "gender_source_value":
@@ -46,12 +52,14 @@ pipelines:
             # test this ^^
 
           def fix(row):
-            # TODO: type checking on required fields to make sure errors
-            # from casting to different datatypes don't occur later
-
             items = [val for val in row.items() if val[1] is not None]
             required_fields = ['person_id','gender_concept_id','year_of_birth','race_concept_id','ethnicity_concept_id']
             assert(not all(item in items for item in required_fields)),"Error, not all required fields are present in OMOP structures"
+
+            for val in required_fields:
+              if isfloat(row[str(val)]):
+                row[str(val)] = int(row[str(val)])
+
             gender_mappings = {
               "8532":"female",
               "8507":"male",
@@ -67,13 +75,18 @@ pipelines:
               "8515":("2028-9","Asian"),
               "8516":("2054-5","Black or African American"),
               "8557":("2076-8","Native Hawaiian or Other Pacific Islander"),
-              "8527":("2106-3","White")
+              "8527":("2106-3","White"),
+              "None":("None","None")
             }
+
+            if (str(row["race_concept_id"]) == "None"):
+              print("Warning: required field race_concept_id is not populated")
+              #raise Exception("Your us_core_race code", str(row["race_concept_id"]), "does not comply with fhir standards.")
             
-            if (str(int(row["race_concept_id"])) not in race_mappings):
-              raise Exception("Your us_core_racec code does not comply with fhir standards.")
-            else:
-              us_core_race = race_mappings[str(int(row["race_concept_id"]))]
+            if (str(row["race_concept_id"]) not in race_mappings):
+              raise Exception("race_mappings does not contain race concept id: ",str(row["race_concept_id"]))
+            
+            us_core_race = race_mappings[str(row["race_concept_id"])]
 
             birthDate = str(int(row['year_of_birth']))
             day, month = "01", "01"
@@ -116,13 +129,13 @@ pipelines:
                   "url": "ombCategory",
                   "valueCoding": {
                     "system": "urn:oid:2.16.840.1.113883.6.238",
-                    "code": str(ethnicity_mappings[str(int(row["ethnicity_concept_id"]))][0]),
-                    "display": str(ethnicity_mappings[str(int(row["ethnicity_concept_id"]))][1])
+                    "code": str(ethnicity_mappings[str(row["ethnicity_concept_id"])][0]),
+                    "display": str(ethnicity_mappings[str(row["ethnicity_concept_id"])][1])
                   }
                 },
                 {
                   "url": "text",
-                  "valueString": str(ethnicity_mappings[str(int(row["ethnicity_concept_id"]))][1])
+                  "valueString": str(ethnicity_mappings[str(row["ethnicity_concept_id"])][1])
                 }
               ],
               "url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity"
@@ -144,14 +157,17 @@ pipelines:
                   })
             
             if(row["person_source_value"] is not None):
-              out["identifier"].append({"value": row["person_source_value"] })  
+              out["identifier"].append({
+                "value": row["person_source_value"],
+                "system": "https://redivis.com/datasets/ye2v-6skh7wdr7/tables"
+              })  
             else:
-              out["identifier"].append({"value": "None"})
+              out["identifier"].append({"value": "None", "system": "https://redivis.com/datasets/ye2v-6skh7wdr7/tables"})
             
             #not sure how person_source_value could have a system url
             # might by worth simplifying this code to make it more readable
             if (row["location_id"] is not None):
-              out["identifier"][1]["value"] =  out["identifier"][1]["value"] + "_" + str(int(row["location_id"]))
+              out["identifier"][1]["value"] =  out["identifier"][1]["value"] + "_" + str(row["location_id"])
             else:
               out["identifier"][1]["value"] =  str(out["identifier"][1]["value"]) + "_" + "None"
             
@@ -183,6 +199,10 @@ pipelines:
             }
   Patient:
     - from: patientDraft
+    - uuid:
+        value: "{{row.id}}"
+        field: id
+        namespace: 'aced-idp.org'
     - lookup:
         pipeline:
           from: locationTable

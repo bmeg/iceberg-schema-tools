@@ -18,14 +18,23 @@ async def build_anatomic_site_table(file_path):
         async for line in fp:
             
             augmented_line = orjson.loads(line)
-            person_id =  str(augmented_line["person_id"])
             body_structure_id =  str(augmented_line["anatomic_site_concept_id"])
+            if body_structure_id == "None":
+                continue
+                
+            person_id =  str(augmented_line["person_id"])
             spliot = str(augmented_line["specimen_datetime"]).split(" ")
             date = spliot[0] + "T" + spliot[1] + "+00:00"
     
             new_dict = {
                 # id probably not unique enough
                 "id": body_structure_uuid(person_id + "-" + body_structure_id + "-" + date),
+                "identifier":[
+                    { 
+                    "system": "https://redivis.com/datasets/ye2v-6skh7wdr7/tables",
+                    "value": "Procedure/" + str(person_id)
+                    }
+                ], 
                 "resourceType": "BodyStructure",
                 "patient": {"reference": "Patient/" + person_id},
                 "includedStructure": [{
@@ -37,10 +46,6 @@ async def build_anatomic_site_table(file_path):
                 }],
                 "value":body_structure_id
             }
-
-            if body_structure_id != "None":
-                new_dict["includedStructure"][0]["structure"]["coding"][0]["code"] = ""
-                new_dict["includedStructure"][0]["structure"]["coding"][0]["display"] = ""
 
             print(json.dumps(new_dict))
 

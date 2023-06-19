@@ -6,16 +6,8 @@ outdir: ../output
 
 config:
   schema: ../iceberg/schemas/bmeg/
-  observation_file: ../data_used/Eunomia_observation.json
+  observation_file: ../data_used/mimic-iv_observation.json #../data_used/Eunomia_observation.json
   conceptData: ../data_used/MASTER_CONCEPT_TABLE_MODIFIED.json
-
-#NOTE: when hooking up to other tables using a lookup the 
-# column names aren't always in the same case.
-# sometimes all caps somtimes camel case, snake case, etc.
-# There needs to be some script that cleans/reformats
-# the data into JSON and Standardizing the column names 
-# before running this. Current code clippings can be found in 
-# fhir_to_omop/helper-script.py
 
 inputs:
   observation_Data:
@@ -46,23 +38,23 @@ pipelines:
     - uuid:
         value: "{{row.id}}"
         field: id
-        namespace: 'aced-ipd.org'
+        namespace: 'aced-idp.org'
     - uuid:
         value: "{{row.PERSON_ID}}"
         field: patient_id
-        namespace: 'aced-ipd.org'
+        namespace: 'aced-idp.org'
     - uuid:
         value: "{{row.VISIT_OCCURRENCE_ID}}"
         field: encounter_id
-        namespace: 'aced-ipd.org'
+        namespace: 'aced-idp.org'
     - uuid:
         value: "{{row.PROVIDER_ID}}"
         field: practitioner_id
-        namespace: 'aced-ipd.org'
+        namespace: 'aced-idp.org'
     - uuid:
         value: "{{row.VISIT_DETAIL_ID}}"
         field: visit_detail_id
-        namespace: 'aced-ipd.org'
+        namespace: 'aced-idp.org'
 
     - lookup:
         pipeline:
@@ -73,8 +65,8 @@ pipelines:
           NEW_VOCABULARY_ID: vocabulary_id
           CONCEPT_CODE: concept_code
           CODE_CONCEPT_NAME: concept_name
-          
-    
+          CONCEPT_CLASS: concept_class_id
+             
     - lookup:
         pipeline:
           from: conceptTable
@@ -92,9 +84,9 @@ pipelines:
         lookup: "{{row.OBSERVATION_SOURCE_CONCEPT_ID}}"
         copy: 
           VOCABULARY_SOURCE_CONCEPT_ID: vocabulary_id
-          CONCEPT_CLASS: concept_class_id
+          SOURCE_CONCEPT_CLASS: concept_class_id
           CONCEPT_NAME: concept_name
-          
+          SOURCE_CONCEPT_CODE: concept_code
 
     # source concept IDS should be extensions because they hold the ID and not the code
     # so it doesn't make sense for them to be codeable concepts
@@ -109,6 +101,10 @@ pipelines:
               return False
           
           def populate_observation(row):
+            if "CONCEPT_CODE" not in row:
+              print(row["OBSERVATION_CONCEPT_ID"])
+              return
+            
             vocab_code_to_display = {
               "NUCC": "https://www.nucc.org/",
               "CMS Place of Service": "https://www.cms.gov/Medicare/Coding/place-of-service-codes",
@@ -128,18 +124,31 @@ pipelines:
               "NDC": "https://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html",
               "RxNorm": "https://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html",
               "RxNorm Extension": "https://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html", #note sure about this one
-              "Observation Type": "https://athena.ohdsi.org/search-terms/terms/"
+              "Observation Type": "https://athena.ohdsi.org/search-terms/terms/",
+              "None":"None",
+              "HCPCS": "https://www.nlm.nih.gov/research/umls/licensedcontent/umlsknowledgesources.html"
             }
 
+            # this doesn't seem right might be better to drop this mapping / field or rework it entirely
             observation_concept_class_mapper = {
               "Context-dependent":"survey", # <-- what would you even put for context dependant? 
               "Clinical Finding": "exam",
               "Morph Abnormality": "exam",
-              "Event": "exam"
+              "Event": "exam",
+              "HCPCS": "survey", # <-- not sure about this one
+              "5-dig billing code": "survey",
+              "4-dig nonbill V code": "survey",
+              "Clinical Observation": "exam",
+              "Observable Entity": "exam",
+              "Qualifier Value": "?",
+              "Survey": "survey",
+              "Procedure": "procedure",
+              "Location": "survey",
             }
 
             items = [val for val in row.items() if val[1] is not None]
             required_fields = ["OBSERVATION_ID", "PERSON_ID", "OBSERVATION_CONCEPT_ID", "OBSERVATION_DATE", "observation_type_concept_id"]      
+            # This if below might need to get deleted
             if (is_int(row["CONCEPT_CODE"])):
               row["CONCEPT_CODE"] = int(row["CONCEPT_CODE"])
             assert(not all(item in items for item in required_fields)),"Error, not all required fields are present in OMOP structures"
@@ -170,28 +179,31 @@ pipelines:
                   "system": str(vocab_code_to_display[row["VOCABULARY_TYPE_CONCEPT_ID"]]),
                   "code": str(row["TYPE_CONCEPT_ID_CODE"]),
                   "display": str(row["TYPE_CONCEPT_ID_NAME"])
-                }, 
-                {
-                  "system": "http://hl7.org/fhir/ValueSet/observation-category",
-                  "code": observation_concept_class_mapper[row["CONCEPT_CLASS"]],
-                  "display": observation_concept_class_mapper[row["CONCEPT_CLASS"]], #row["CONCEPT_NAME"]
                 }
                ],
-                "text": observation_concept_class_mapper[row["CONCEPT_CLASS"]],
+                "text": "Observation Type",
               }],
               "extension": [],
             }
 
-            if "OBSERVATION_SOURCE_CONCEPT_ID" in row and row["OBSERVATION_SOURCE_CONCEPT_ID"] is not None:
-              out["code"]["coding"].append(
-                {
-                  "system": "https://athena.ohdsi.org/search-terms/terms/", 
-                  # I think this will always be an OMOP code that is pointing to an actual code system. 
-                  # will probably end up changing this soon str(vocab_code_to_display[row["VOCABULARY_SOURCE_CONCEPT_ID"]]),
-                  "code": str(int(row["OBSERVATION_SOURCE_CONCEPT_ID"])),
-                  "display": str(row["CONCEPT_NAME"]),
-                })
-            
+            if "OBSERVATION_CONCEPT_ID" in row and row["OBSERVATION_CONCEPT_ID"] is not None and row["OBSERVATION_CONCEPT_ID"] != "0":
+              out["category"][0]["coding"].append({
+                  "system": "http://hl7.org/fhir/ValueSet/observation-category",
+                  "code": observation_concept_class_mapper[row["CONCEPT_CLASS"]],
+                  "display": observation_concept_class_mapper[row["CONCEPT_CLASS"]], 
+              })
+            elif "OBSERVATION_SOURCE_CONCEPT_ID" in row and row["OBSERVATION_SOURCE_CONCEPT_ID"] is not None:
+              out["category"][0]["coding"].append({
+                  "system": "http://hl7.org/fhir/ValueSet/observation-category",
+                  "code": observation_concept_class_mapper[row["SOURCE_CONCEPT_CLASS"]],
+                  "display":  observation_concept_class_mapper[row["SOURCE_CONCEPT_CLASS"]]
+              })
+
+            if "OBSERVATION_SOURCE_CONCEPT_ID" in row and row["OBSERVATION_SOURCE_CONCEPT_ID"] != "0" and row["OBSERVATION_SOURCE_CONCEPT_ID"] in vocab_code_to_display:
+              out["code"]["coding"][0]["system"] = str(vocab_code_to_display[row["VOCABULARY_SOURCE_CONCEPT_ID"]])
+              out["code"]["coding"][0]["code"] =  str(row["SOURCE_CONCEPT_CODE"])
+              out["code"]["coding"][0]["display"] = str(row["CONCEPT_NAME"])
+
             if "QUALIFIER_CONCEPT_ID" in row and row["QUALIFIER_CONCEPT_ID"] is not None:
               out["note"] = [{
                 "text": str(int(row["QUALIFIER_CONCEPT_ID"]))
@@ -211,19 +223,14 @@ pipelines:
                 "value": "Encounter/" + str(row["VISIT_OCCURRENCE_ID"])
               })
 
-            # I think VISIT_DETAIL_ID should be a reference to encounter but you can only have one of those
-            # So going to make it an extension instead.
-            if "VISIT_DETAIL_ID" in row and row["VISIT_DETAIL_ID"] is not None:
-              if(is_int(row["VISIT_DETAIL_ID"])):
-                out["extension"].append({
-                  "url":"http://hl7.org/fhir/StructureDefinition/#ENCOUNTER_Reference_id",
-                  "valueReference": {"reference": "Encounter/" + str(int(row["visit_detail_id"]))}}) 
+            # Just going to call visit_detail an encounter for now
+            # since encounters can reference other encounters
+            # TODO: This has to be an extension if there is already a visit occurrence id referenced
+            if "visit_detail_id" in row and row["visit_detail_id"] is not None:
                 out["identifier"].append({
                   "system": "https://github.com/OHDSI/Eunomia",
-                  "value": "VISIT_DETAIL/" + str(row["VISIT_DETAIL_ID"])
+                  "value": "Encounter/" + str(row["visit_detail_id"])
                 })
-              else:
-                raise Exception("VISIT_DETAIL_ID should be an integer and it is not")
 
             extensions = ["OBSERVATION_SOURCE_VALUE","UNIT_SOURCE_VALUE","QUALIFIER_SOURCE_VALUE"]
             for value in extensions:
@@ -265,8 +272,8 @@ pipelines:
             if hits > 1:
               raise Exception("value_as_string, value_as_concept_id and value_as_number as mutually exclusive fields yet there are multiple of them present in this row")
 
-            if "extension" in row and len(row["extension"]) == 0:
-              del(row["extension"])
+            if len(out["extension"]) == 0:
+              del(out["extension"])
 
             return out
     

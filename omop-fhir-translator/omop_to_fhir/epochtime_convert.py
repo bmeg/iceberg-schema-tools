@@ -65,7 +65,7 @@ def convert_time(file_path, node_type):
                 if date_convertible in line and str(
                         line[date_convertible]).isdigit():
                     new_time = datetime.datetime.fromtimestamp(
-                        line[date_convertible] / 1000).strftime(
+                        int(line[date_convertible]) / 1000).strftime(
                         '%Y-%m-%dT00:00:00+00:00')
                     line[date_convertible] = str(new_time)
 

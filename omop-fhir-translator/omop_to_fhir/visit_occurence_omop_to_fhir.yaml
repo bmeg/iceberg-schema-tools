@@ -29,7 +29,7 @@ pipelines:
         gpython: |
           def fix(row):
             return {
-              "concept_id": str(int(row["concept_id"])),
+              "concept_id": str(row["concept_id"]),
               "vocabulary_id": str(row["vocabulary_id"]),
               "concept_name": str(row["concept_name"]),
               "concept_code": str(row["concept_code"])
@@ -37,6 +37,28 @@ pipelines:
 
   Encounter:
     - from: visit_occurence_Data
+    - uuid:
+        value: "{{row.VISIT_OCCURRENCE_ID}}"
+        field: id
+        namespace: 'aced-idp.org'
+    - uuid:
+        value: "{{row.PRECEDING_VISIT_OCCURRENCE_ID}}"
+        field: PRECEDING_VISIT_OCCURRENCE_ID_uuid
+        namespace: 'aced-idp.org'
+    - uuid:
+        value: "{{row.PERSON_ID}}"
+        field: PERSON_ID_uuid
+        namespace: 'aced-idp.org'
+    - uuid:
+        value: "{{row.PROVIDER_ID}}"
+        field: PROVIDER_ID_uuid
+        namespace: 'aced-idp.org'
+  
+    - uuid:
+          value: "{{row.CARE_SITE_ID}}"
+          field: CARE_SITE_ID_uuid
+          namespace: 'aced-ipd.org'
+  
     # All 4 lookups take 30 seconss
     # Just one lookup takes 21 seconds for file:
     # ../data/MASTER_CONCEPT_TABLE.json
@@ -104,10 +126,18 @@ pipelines:
             }
 
             out = {
-              "id": str(int(row["VISIT_OCCURRENCE_ID"])),
               "resourceType":"Encounter",
+              "id": row["id"],
+              "identifier": [{ 
+                "system": "https://physionet.org/content/mimic-iv-demo-omop/0.9/",
+                "value": "Encounter/" + str(row["VISIT_OCCURRENCE_ID"])
+              },
+              {
+                "system": "https://github.com/OHDSI/Eunomia",
+                "value": "Patient/" + str(row["PERSON_ID"])
+              }], 
               "status": "finished",
-              "subject": {"reference":"Patient/" + str(row["PERSON_ID"])},
+              "subject": {"reference":"Patient/" + str(row["PERSON_ID_uuid"])},
               "class":[{
                 "coding":
                   [{
@@ -116,12 +146,15 @@ pipelines:
                   "display": str(row["visit_name"]).replace(" ", "")
                 }]
               }],
-              "period": {"start":row["VISIT_START_DATE"], "end":row["VISIT_END_DATE"]}
+              "actualPeriod": {
+                "start":row["VISIT_START_DATE"], 
+                "end":row["VISIT_END_DATE"]
+                }
             }
             if "VISIT_START_DATETIME" in row and row["VISIT_START_DATETIME"] is not None:
-              out["period"]["start"] = row["VISIT_START_DATETIME"]
+              out["actualPeriod"]["start"] = row["VISIT_START_DATETIME"]
             if "VISIT_END_DATETIME" in row and row["VISIT_END_DATETIME"] is not None:
-              out["period"]["end"] = row["VISIT_END_DATETIME"]
+              out["actualPeriod"]["end"] = row["VISIT_END_DATETIME"]
             
             if "VISIT_SOURCE_VALUE" in row and row["VISIT_SOURCE_VALUE"] is not None:
               out["type"] = [{
@@ -133,15 +166,12 @@ pipelines:
                 }]
               }]
             
-            if "PROVIDER_ID" in row and row["PROVIDER_ID"] is not None:
-              if(is_int(row["PROVIDER_ID"])):
-                out["performer"] = [{"reference":"Practitioner/" + str(int(row["PROVIDER_ID"]))}]
-              else:
-                out["performer"] = [{"reference":"Practitioner/" + str(row["PROVIDER_ID"])}]
+            if "PROVIDER_ID_uuid" in row and row["PROVIDER_ID_uuid"] is not None:
+                out["participant"] = [{"actor":{"reference":"Practitioner/" + str(row["PROVIDER_ID_uuid"])}}]
             
-            if "CARE_SITE_ID" in row and row["CARE_SITE_ID"] is not None:
+            if "CARE_SITE_ID_uuid" in row and row["CARE_SITE_ID_uuid"] is not None:
               out["location"] = [{
-                "location":{"reference":"Location/" + str(row["CARE_SITE_ID"])}
+                "location":{"reference":"Location/" + str(row["CARE_SITE_ID_uuid"])}
               }]
             
             if "VISIT_TYPE_CONCEPT_ID" in row and row["VISIT_TYPE_CONCEPT_ID"] is not None:
@@ -206,8 +236,8 @@ pipelines:
                   ]
                 }
 
-            if "PRECEDING_VISIT_OCCURRENCE_ID" in row and row["PRECEDING_VISIT_OCCURRENCE_ID"] is not None:
-              out["partOf"] = {"reference": "Encounter/" + str(row["PRECEDING_VISIT_OCCURRENCE_ID"])}
+            if "PRECEDING_VISIT_OCCURRENCE_ID_uuid" in row and row["PRECEDING_VISIT_OCCURRENCE_ID_uuid"] is not None:
+              out["partOf"] = {"reference": "Encounter/" + str(row["PRECEDING_VISIT_OCCURRENCE_ID_uuid"])}
 
             return out
 

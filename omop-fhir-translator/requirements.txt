@@ -6,3 +6,6 @@ polars
 ndjson
 click
 tqdm
+fhir.resources
+tqdm
+pytest

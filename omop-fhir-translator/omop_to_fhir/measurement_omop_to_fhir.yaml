@@ -26,7 +26,7 @@ pipelines:
         gpython: |
           def fix(row):
             return {
-              "concept_id": str(int(row["concept_id"])),
+              "concept_id": str(row["concept_id"]),
               "concept_code": str(row["concept_code"]),
               "vocabulary_id": str(row["vocabulary_id"]),
               "concept_name": str(row["concept_name"]),
@@ -35,6 +35,19 @@ pipelines:
 
   measurement:
     - from: measurement_Data
+    - uuid:
+        value: "{{row.measurement_id}}"
+        field: id
+        namespace: 'aced-idp.org'
+    - uuid:
+        value: "{{row.person_id}}"
+        field: person_id_uuid
+        namespace: 'aced-idp.org'
+    - uuid:
+        value: "{{row.visit_occurrence_id}}"
+        field: visit_occurrence_id_uuid
+        namespace: 'aced-idp.org'
+
     - lookup:
         pipeline:
           from: conceptTable
@@ -107,12 +120,20 @@ pipelines:
               #row["concept_code"] = ""
               #raise Exception("Concept table does not 100% map to measurement table. Check if measurement_source_concept_id maps to concept_id in the concept table")
             out = {
-              "id": str(int(row["measurement_id"])),
+              "id": str(row["id"]),
+              "identifier": [{ 
+                "system": "https://github.com/OHDSI/Eunomia",
+                "value": "Observation/" + str(row["measurement_id"])
+              },
+              {
+                "system": "https://github.com/OHDSI/Eunomia",
+                "value": "Patient/" + str(row["person_id"])
+              } 
+              ],
               "status": "final",
-              "identifier":[{"value":str(int(row["measurement_id"]))}],
               "effectiveDateTime": str(row["measurement_datetime"]),
               "resourceType": "Observation",
-              "subject": {"reference": "Patient/" + str(int(row["person_id"]))},
+              "subject": {"reference": "Patient/" + str(row["person_id_uuid"])},
 
               "code":{
                 "coding":[{
@@ -158,28 +179,25 @@ pipelines:
             
             if "provider_id" in row and row["provider_id"] is not None:
               if(isinstance(row["provider_id"]),int):
-                out["performer"] = [{"reference":"Practitioner/" + str(int(row["provider_id"]))}]
+                out["performer"] = [{"reference":"Practitioner/" + str(row["provider_id"])}]
               else:
                 out["performer"] = [{"reference":"Practitioner/" + str(row["provider_id"])}]
 
-            if "visit_occurrence_id" in row and row["visit_occurrence_id"] is not None:
-              if(is_int(row["visit_occurrence_id"])):
-                out["encounter"] = {"reference": "Encounter/" + str(int(row["visit_occurrence_id"]))}  
-              else:
-                out["encounter"] = {"reference": "Encounter/" + str(row["visit_occurrence_id"])} 
+            if "visit_occurrence_id_uuid" in row and row["visit_occurrence_id_uuid"] is not None:
+              out["encounter"] = {"reference": "Encounter/" + str(row["visit_occurrence_id_uuid"])} 
+              out["identifier"].append({"system": "https://github.com/OHDSI/Eunomia",
+                "value": "Encounter/" + str(row["visit_occurrence_id"])
+              })
 
             # I think visit_detail_id should be a reference to encounter but you can only have one of those
             # So going to make it an extension instead.
             if "visit_detail_id" in row and row["visit_detail_id"] is not None:
-              if(is_int(row["visit_detail_id"])):
-                if "extension" not in out:
-                  out["extension"] = []
-                out["extension"].append({
-                  "url":"http://hl7.org/fhir/StructureDefinition/#ENCOUNTER_Reference_id",
-                  "valueReference": {"reference": "Encounter/" + str(int(row["visit_detail_id"]))}}) 
-              else:
-                raise Exception("visit_detail_id should be an integer and it is not")
-
+              if "extension" not in out:
+                out["extension"] = []
+              out["extension"].append({
+                "url":"http://hl7.org/fhir/StructureDefinition/#ENCOUNTER_Reference_id",
+                "valueReference": {"reference": "Encounter/" + str(row["visit_detail_id"])}}) 
+            
             if ("range_high" in row and row["range_high"] is not None) or ("range_low" in row and row["range_low"] is not None):
               out["referenceRange"] = [{}]
               if "range_high" in row and row["range_high"] is not None:
@@ -226,13 +244,6 @@ pipelines:
               out["valueQuantity"] = {"value": int(float(row["unit_concept_id"]))}
 
             return out
-    
-    - project: 
-        mapping:
-          identifier: [{ 
-                "system": "https://physionet.org/content/mimic-iv-demo-omop/0.9/",
-                "value": "{{row.id}}"
-            }] 
 
     - objectValidate:
         schema: "{{config.schema}}"

@@ -33,6 +33,21 @@ pipelines:
 
   Condition :
     - from: Condition_Data
+    - uuid:
+        value: "{{row.condition_occurrence_id}}"
+        field: id
+        namespace: 'aced-idp.org'
+    
+    - uuid:
+        value: "{{row.person_id}}"
+        field: person_id_uuid
+        namespace: 'aced-idp.org'
+    
+    - uuid:
+        value: "{{row.visit_occurrence_id}}"
+        field: visit_occurrence_id_uuid
+        namespace: 'aced-idp.org'
+
     - lookup:
         pipeline:
           from: conceptTable
@@ -68,13 +83,6 @@ pipelines:
     - map:
         method: build_fhir_condition
         gpython: |
-          def is_int(num):
-            try:
-              int(num)
-              return True
-            except ValueError:
-              return False
-
           def build_fhir_condition(row):
           # most of these mappings came from lookup up an entry of the vocabulary 
           # on athena and seeing what the linked website asociated with the vocabulary was
@@ -102,7 +110,15 @@ pipelines:
             # If there is no condition end date, can 
             # it be assumed that the clinical status is active?
             out = {
-              "id": str(int(row["condition_occurrence_id"])),
+              "id": str(row["id"]),
+              "identifier": [{ 
+                "system": "https://github.com/OHDSI/Eunomia",
+                "value": "Condition/" + str(row["condition_occurrence_id"])
+              },
+              {
+                "system": "https://github.com/OHDSI/Eunomia",
+                "value": "Patient/" + str(row["person_id"])
+              }], 
               "resourceType":"Condition",
               "clinicalStatus":{
                 "coding":[{
@@ -119,7 +135,7 @@ pipelines:
                 }],
                 "text":row["condition_type_name"]
               }],
-              "subject":{"reference":"patient/"+ str(int(row["person_id"]))},
+              "subject":{"reference":"Patient/"+ str(row["person_id_uuid"])},
               "code":{
                 "coding":[{
                   "system": str(vocab_code_to_display[row["concept_vocabulary_id"]]),
@@ -162,7 +178,7 @@ pipelines:
             if "provider_id" in row and row["provider_id"] is not None:
               out["extension"].append({
                 "url":"https://ohdsi.github.io/CommonDataModel/cdm54.html#CONDITION_OCCURRENCE__provider_id",
-                "valueReference": {"reference":"Practitioner/"+  str(int(row["provider_id"]))}
+                "valueReference": {"reference":"Practitioner/"+  str(row["provider_id"])}
               })
 
             if "condition_source_value" in row and row["condition_source_value"] is not None:
@@ -181,7 +197,7 @@ pipelines:
               # don't do a lookup on a column that you know isn't 100% going to return a proper concept ID
               out["extension"].append({
                 "url": vocab_code_to_display[str(row["condition_source_vocabulary_id"])],
-                "valueString": str(int(row["condition_source_concept_id"]))
+                "valueString": str(row["condition_source_concept_id"])
               })
               
             # like in this style below could be done above.
@@ -191,24 +207,21 @@ pipelines:
                 "valueString": str(row["condition_status_source_value"])
               }]
             if "visit_occurrence_id" in row and row["visit_occurrence_id"] is not None:
-              out["encounter"] = {"reference": "Encounter/" + str(int(row["visit_occurrence_id"]))}
+              out["encounter"] = {"reference": "Encounter/" + str(row["visit_occurrence_id_uuid"])}
               if "visit_detail_id" in row and row["visit_detail_id"] is not None:       
                 out["encounter"]["extension"] = [{
                   "url":"https://ohdsi.github.io/CommonDataModel/cdm54.html#CONDITION_OCCURRENCE__visit_detail_id",
-                  "valueReference": {"reference": "Encounter/" + str(int(row["visit_detail_id"]))}
+                  "valueReference": {"reference": "Encounter/" + str(row["visit_detail_id"])}
                 }]
+              out["identifier"].append({
+                "system": "https://github.com/OHDSI/Eunomia",
+                "value": "Encounter/" + str(row["visit_occurrence_id"])
+              })
 
             if(len(out["extension"]) == 0):
              del(out["extension"])
             
             return out
-
-    - project: 
-        mapping:
-          identifier: [{ 
-                "system": "https://github.com/OHDSI/Eunomia",
-                "value": "{{row.id}}"
-            }] 
 
     - objectValidate:
         schema: "{{config.schema}}"

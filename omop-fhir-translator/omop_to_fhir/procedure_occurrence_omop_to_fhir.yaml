@@ -32,7 +32,18 @@ pipelines:
 
   Procedure:
     - from: Procedure_Occurance_Data
-          
+    - uuid:
+        value: "{{row.procedure_occurrence_id}}"
+        field: id
+        namespace: 'aced-idp.org'
+    - uuid:
+        value: "{{row.person_id}}"
+        field: person_id_uuid
+        namespace: 'aced-idp.org'
+    - uuid:
+        value: "{{row.visit_occurrence_id}}"
+        field: visit_occurrence_id_uuid
+        namespace: 'aced-idp.org'
     - lookup:
         pipeline:
           from: conceptTable
@@ -101,10 +112,18 @@ pipelines:
             }
 
             out = {
-              "id": str(int(row["procedure_occurrence_id"])),
+              "id": str(row["id"]),
+              "identifier": [{ 
+                "system": "https://redivis.com/datasets/ye2v-6skh7wdr7/tables",
+                "value": "Procedure/" + str(row["procedure_occurrence_id"])
+              },
+              {
+                "system": "https://github.com/OHDSI/Eunomia",
+                "value": "Patient/" + str(row["person_id"])
+              }], 
               "resourceType":"Procedure",
               "status": "completed",
-              "subject": {"reference":"Patient/" + str(row["person_id"])},
+              "subject": {"reference":"Patient/" + str(row["person_id_uuid"])},
               "code":{
                 "coding":[{
                   "system": vocab_code_to_display[str(row["CONCEPT_VOCAB_ID"])],
@@ -135,49 +154,46 @@ pipelines:
             
             # this should be a codeable concept it's just that I don't think there is an appropriate
             # place to put it in a codeable concept slot in FHIR
-            if (("MODIFIER_CONCEPT_VOCAB_ID" in row and row["MODIFIER_CONCEPT_VOCAB_ID"] is not None) or\
-               ("quantity" in row and row["quantity"] is not None) or\
-               ("procedure_source_value" in row and row["procedure_source_value"] is not None) or\
+            if (("MODIFIER_CONCEPT_VOCAB_ID" in row and row["MODIFIER_CONCEPT_VOCAB_ID"] is not None) or
+               ("quantity" in row and row["quantity"] is not None) or
+               ("procedure_source_value" in row and row["procedure_source_value"] is not None) or
                ("modifier_source_value" in row and row["modifier_source_value"] is not None)):  
               out["extension"] = []
               if "MODIFIER_CONCEPT_VOCAB_ID" in row and row["MODIFIER_CONCEPT_VOCAB_ID"] is not None:
                 out["extension"].append({
                   "url": vocab_code_to_display[str(row["MODIFIER_CONCEPT_VOCAB_ID"])],
-                  "value": row["MODIFIER_CONCEPT__ID_CODE"]
+                  "valueString": str(row["MODIFIER_CONCEPT__ID_CODE"])
                 })
               if "quantity" in row and row["quantity"] is not None:
                 out["extension"].append({
                   "url": "not idea",
-                  "value": row["quantity"]
+                  "valueString": str(row["quantity"])
                 })
               if "procedure_source_value" in row and row["procedure_source_value"] is not None:
                 out["extension"].append({
-                  "value": row["procedure_source_value"],
+                  "valueString": str(row["procedure_source_value"]),
                   "url":"unsure"
                 })
               if "modifier_source_value" in row and row["modifier_source_value"] is not None:
                 out["extension"].append({
                   "url": "not sure",
-                  "value": row["modifier_source_value"]
+                  "valueString": str(row["modifier_source_value"])
                 })
 
             if "provider_id" in row and row["provider_id"] is not None:
-              if(is_int(row["provider_id"])):
-                out["performer"] = [{"reference":"Practitioner/" + str(int(row["provider_id"]))}]
-              else:
-                out["performer"] = [{"reference":"Practitioner/" + str(row["provider_id"])}]
+                out["performer"] = [{ "actor": {"reference":"Practitioner/" + str(row["provider_id"])}}]
             
-            if "visit_occurrence_id" in row and row["visit_occurrence_id"] is not None:
-              out["encounter"] = [{"reference":"Encounter/" + str(row["visit_occurrence_id"])}]
+            if "visit_occurrence_id_uuid" in row and row["visit_occurrence_id_uuid"] is not None:
+              out["encounter"] = {"reference":"Encounter/" + str(row["visit_occurrence_id_uuid"])}
             
             #  PROPERTY visit_detail_id:  like drug_exposure_omop_to_fhir.yaml not sure what to do with this 
             # property just yet. Need to look at FHIR Encounter and OMOP visit detail see where it would hook in
 
             if "procedure_source_concept_id" in row and row["procedure_source_concept_id"] is not None:
-              out["code"]["extension"] = []
-              out["code"]["extension"].append({
+              out["extension"] = []
+              out["extension"].append({
                 "url":"not sure",
-                "value":row["procedure_source_concept_id"]
+                "valueString": str(row["procedure_source_concept_id"])
               })
 
             return out

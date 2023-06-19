@@ -3,6 +3,12 @@ import json
 import gzip
 import asyncio
 import sys
+import uuid 
+
+ACED_NAMESPACE = uuid.uuid3(uuid.NAMESPACE_DNS, 'aced-ipd.org')
+
+def person_uuid(input_str):
+    return str(uuid.uuid5(ACED_NAMESPACE, input_str))
 
 def is_int(num):
     try:
@@ -34,10 +40,25 @@ def formulate_med_req(row):
         return None
     
     out = {
-        "id": str(str(row["drug_exposure_id"])+ "OFFSET"), #this is for uuid setup later
+        "id": str(str(row["drug_exposure_id"])),
+        "identifier":[
+            { 
+            "system": "https://redivis.com/datasets/ye2v-6skh7wdr7/tables",
+            "value": "MedicationRequest/" + str(row["drug_exposure_id"])
+            },
+            { 
+            "system": "https://redivis.com/datasets/ye2v-6skh7wdr7/tables",
+            "value": "Patient/" + str(row["person_id"])
+            }
+
+        ],
+          #this is for uuid setup later
         "resourceType": "MedicationRequest",
         "status": "stopped", #don't think there is anything for this in the OMOP structure
-        "subject": {"reference":"Patient/" + str(row["person_id"])},
+        "subject": {"reference":"Patient/" + person_uuid(str(row["person_id"]))},
+        "intent": "order", # Not sure what to put here
+        "drug_concept_id":row["drug_concept_id"]
+
     }
 
     if (("sig" in row and row["sig"] is not None) or ("route_concept_id" in row and row["route_concept_id"] is not None)):
@@ -77,7 +98,7 @@ def formulate_med_req(row):
             out["dispenseRequest"]["quantity"] = row["quantity"]
         if ("days_supply" in row and row["days_supply"] is not None):
             out["dispenseRequest"] = {}
-            out["dispenseRequest"]["expectedSupplyDuration"] = row["days_supply"]
+            out["dispenseRequest"]["expectedSupplyDuration"] = {"value": row["days_supply"]}
     
     if "provider_id" in row and row["provider_id"] is not None:
         if(is_int(row["provider_id"])):

@@ -38,6 +38,14 @@ pipelines:
 
   Specimen:
     - from: specimen_Data
+    - uuid:
+        value: "{{row.specimen_id}}"
+        field: id
+        namespace: 'aced-idp.org'
+    - uuid:
+        value: "{{row.person_id}}"
+        field: patient_id_uuid
+        namespace: 'aced-idp.org'
     - lookup:
         pipeline:
           from: conceptTable
@@ -95,9 +103,17 @@ pipelines:
               row["unit_source_value"] = int(row["unit_source_value"])
 
             out = {
-              "id": str(int(row["specimen_id"])),
+              "id": row["id"],
+              "identifier": [{ 
+                "system": "https://physionet.org/content/mimic-iv-demo-omop/0.9/",
+                "value": "Specimen/" + str(row["specimen_id"])
+              },
+              {
+                "system": "https://github.com/OHDSI/Eunomia",
+                "value": "Patient/" + str(row["person_id"])
+              }], 
               "resourceType":"Specimen",
-              "subject": {"reference":"Patient/" + str(row["person_id"])},
+              "subject": {"reference":"Patient/" + str(row["patient_id_uuid"])},
               "type":{
                 "coding":[{
                   "system": vocab_code_to_display[row["specimen_vocab_concept_id"]],
@@ -124,7 +140,7 @@ pipelines:
             
             #probably not unique
             if "anatomic_site_concept_id" in row and row["anatomic_site_concept_id"] is not None:
-              out["collection"]["bodySite"] = {"reference":{"reference": str(row["person_id"]) + "-" + row["anatomic_site_concept_id"] + "-" + row["specimen_datetime"]}}
+              out["collection"]["bodySite"] = {"reference":{"reference": str(row["patient_id_uuid"]) + "-" + row["anatomic_site_concept_id"] + "-" + row["specimen_datetime"]}}
 
             if "anatomic_site_source_value" in row and row["anatomic_site_source_value"] is not None:
               out["collection"]["bodySite"]["extension"] = [{
@@ -141,7 +157,10 @@ pipelines:
               }]
             
             if "specimen_source_id" in row and row["specimen_source_id"] is not None:
-                out["identifier"] = [{"value": str(row["specimen_source_id"])}]
+                out["identifier"] = [{
+                  "system": "https://physionet.org/content/mimic-iv-demo-omop/0.9/",
+                  "value": str(row["specimen_source_id"])
+                }]
             
             if "specimen_source_value" in row and row["specimen_source_value"] is not None:
               if "extension" not in out:
@@ -190,7 +209,7 @@ pipelines:
         method: fix
         gpython: |
           def fix(row):
-            print(row["value"])
+
             vocab_code_to_display = {
               "NUCC": "https://www.nucc.org/",
               "CMS Place of Service": "https://www.cms.gov/Medicare/Coding/place-of-service-codes",
@@ -212,18 +231,15 @@ pipelines:
               "RxNorm Extension": "https://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html", #note sure about this one
             }
 
-            #Half of these refs are None. I need to investigate why. Could be the source data
-            if "value" in row and row["value"] is not None and row["value"] != "None":
-              row["includedStructure"][0]["structure"]["coding"][0]["code"] = row["specimen_vocab_concept_code"]
-              row["includedStructure"][0]["structure"]["coding"][0]["display"] = row["specimen_anatomic_concept_name"]
-              row["includedStructure"][0]["structure"]["coding"][0]["system"] = vocab_code_to_display[row["specimen_vocab_id"]]
+            row["includedStructure"][0]["structure"]["coding"][0]["code"] = row["specimen_vocab_concept_code"]
+            row["includedStructure"][0]["structure"]["coding"][0]["display"] = row["specimen_anatomic_concept_name"]
+            row["includedStructure"][0]["structure"]["coding"][0]["system"] = vocab_code_to_display[row["specimen_vocab_id"]]
 
-              del(row["specimen_anatomic_concept_name"])
-              del(row["specimen_vocab_concept_code"])
-              del(row["specimen_vocab_id"])
-
-            if row["value"] == "None":
-              del(row["value"])
+            del(row["specimen_anatomic_concept_name"])
+            del(row["specimen_vocab_concept_code"])
+            del(row["specimen_vocab_id"])
+            del(row["Anatomic_concept_id"])
+            del(row["value"])
 
             return row
   
