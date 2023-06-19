@@ -10,6 +10,8 @@ logger = logging.getLogger(__name__)
 os.environ['TZ'] = 'UTC'
 
 # I need to rework this to capture all possible time formats
+
+
 def convert_epoch_to_human_readable(file_path, node_type):
     if node_type == "Observation":
         with gzip.open(file_path, "rt") as fp:
@@ -64,14 +66,14 @@ def convert_epoch_to_human_readable(file_path, node_type):
                 line = json.loads(line)
                 line_time = line["collection"]["collectedDateTime"].split("T")
                 line_Date = line_time[0]
-                #(line_time[1] != "00:00:00+00:00")
+                # (line_time[1] != "00:00:00+00:00")
                 if line_time[1] != "00:00:00+00:00":
                     if line_time[1] == "00:00:00Z":
                         epoch_dateTime = int(
-                        time.mktime(
-                            time.strptime(
-                                line_time[0],
-                                "%Y-%m-%d")))
+                            time.mktime(
+                                time.strptime(
+                                    line_time[0],
+                                    "%Y-%m-%d")))
                         line["collection"]["collectedDateTime"] = str(
                             epoch_dateTime)
                     else:
@@ -98,7 +100,6 @@ def convert_epoch_to_human_readable(file_path, node_type):
 
                 print(json.dumps(line))
 
-
     elif node_type == "Measurement":
         with gzip.open(file_path, "rt") as fp:
             observation_lines = fp.readlines()
@@ -106,17 +107,17 @@ def convert_epoch_to_human_readable(file_path, node_type):
                 line = json.loads(line)
                 line_time = line["effectiveDateTime"].split("T")
                 line_Date = line_time[0]
-                #print("THE VLAUE OF LINE TIME", line_time[1])
+                # print("THE VLAUE OF LINE TIME", line_time[1])
                 if line_time[1] != "00:00:00+00:00":
                     if line_time[1] == "00:00:00Z":
                         epoch_dateTime = int(
-                        time.mktime(
-                            time.strptime(
-                                line_time[0],
-                                "%Y-%m-%d")))
+                            time.mktime(
+                                time.strptime(
+                                    line_time[0],
+                                    "%Y-%m-%d")))
                         line["collection"]["collectedDateTime"] = str(
                             epoch_dateTime)
-                        
+
                     line_time[1] = line_time[1].split("+")[0]
                     line_DateTime = line_time[0] + " " + line_time[1]
                     epoch_dateTime = int(
@@ -147,14 +148,14 @@ def convert_epoch_to_human_readable(file_path, node_type):
                 line = json.loads(line)
                 line_time = line["period"]["start"].split("T")
                 line_Date = line_time[0]
-                #print("THE VLAUE OF LINE TIME", line_time[1])
+                # print("THE VLAUE OF LINE TIME", line_time[1])
                 if line_time[1] != "00:00:00+00:00":
                     if line_time[1] == "00:00:00Z":
                         epoch_dateTime = int(
-                        time.mktime(
-                            time.strptime(
-                                line_time[0],
-                                "%Y-%m-%d")))
+                            time.mktime(
+                                time.strptime(
+                                    line_time[0],
+                                    "%Y-%m-%d")))
                         line["visit_start_datetime"] = str(
                             epoch_dateTime)
                     else:
@@ -180,14 +181,14 @@ def convert_epoch_to_human_readable(file_path, node_type):
 
                 line_time = line["period"]["end"].split("T")
                 line_Date = line_time[0]
-                #print("THE VLAUE OF LINE TIME", line_time[1])
+                # print("THE VLAUE OF LINE TIME", line_time[1])
                 if line_time[1] != "00:00:00+00:00":
                     if line_time[1] == "00:00:00Z":
                         epoch_dateTime = int(
-                        time.mktime(
-                            time.strptime(
-                                line_time[0],
-                                "%Y-%m-%d")))
+                            time.mktime(
+                                time.strptime(
+                                    line_time[0],
+                                    "%Y-%m-%d")))
                         line["visit_end_datetime"] = str(
                             epoch_dateTime)
                     else:

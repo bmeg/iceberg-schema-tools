@@ -15,22 +15,23 @@ logger = logging.getLogger(__name__)
 # will probably replace this with polars because it's faster
 
 GENDER_MAPPINGS = {
-    "female":"8532",
-    "male":"8507",
-    "unknown":"8551",
-    "other":"8521"
+    "female": "8532",
+    "male": "8507",
+    "unknown": "8551",
+    "other": "8521"
 }
 RACE_MAPPINGS = {
-    "1002-5":"8657",
-    "2028-9":"8515",
-    "2054-5":"8516",
-    "2076-8":"8557",
-    "2106-3":"8527"
+    "1002-5": "8657",
+    "2028-9": "8515",
+    "2054-5": "8516",
+    "2076-8": "8557",
+    "2106-3": "8527"
 }
 ETHNICITY_MAPPINGS = {
-    "2135-2":"38003563",
-    "2186-5":"38003564"
+    "2135-2": "38003563",
+    "2186-5": "38003564"
 }
+
 
 def processfile(file, start=0, stop=0):
     with open(file, 'r') as fh:
@@ -107,11 +108,11 @@ def build_concepts_from_observations(
         body_structure_lines = bl.readlines()
 
         set_values = driver("../data/MASTER_CONCEPT_TABLE.csv")
-        #print(len(set_values))
-        #print("SET VALUSE ",len(set_values))
-       # print("NEW LEN ",len(list(set(set_values))))
+        # print(len(set_values))
+        # print("SET VALUSE ",len(set_values))
+        # print("NEW LEN ",len(list(set(set_values))))
 
-        #pl.Config.set_tbl_rows(10000)
+        # pl.Config.set_tbl_rows(10000)
         """
         df = pl.scan_csv(
             "../data/MASTER_CONCEPT_TABLE.csv",
@@ -127,7 +128,7 @@ def build_concepts_from_observations(
                 "valid_start_date",
                 "valid_end_date",
                 "invalid_reason"])
-        
+
         #new_val = pl.col("concept_id").collect()
         val  = df.select("concept_name").collect()
         print("POLARS LEN ",len(val))
@@ -167,7 +168,7 @@ def build_concepts_from_observations(
         ethnicity_concept_ids = {str(orjson.loads(line.decode(
             'utf-8'))["extension"][1]["extension"][0]["valueCoding"]["code"]) for line in patient_lines}
         mapped_ethnicity_concept_ids = [ETHNICITY_MAPPINGS[value] for value in ethnicity_concept_ids]
-        
+
         race_concept_ids = {str(orjson.loads(line.decode(
             'utf-8'))["extension"][0]["extension"][0]["valueCoding"]["code"]) for line in patient_lines}
         mapped_race_concept_ids = [RACE_MAPPINGS[value] for value in race_concept_ids]
@@ -176,10 +177,7 @@ def build_concepts_from_observations(
             'utf-8'))["includedStructure"][0]["structure"]["coding"][0]["code"]
             for line in body_structure_lines}
 
-        #TODO: need to write codes for measurement table reconstructions
-
-        
-
+        # TODO: need to write codes for measurement table reconstructions
 
         aggregated_id_list = [
             body_structure_lines,
@@ -195,7 +193,7 @@ def build_concepts_from_observations(
 
         big_list = []
         for id_list in aggregated_id_list:
-            #print(len(id_list), len(list(set_values.intersection(id_list))))
+            # print(len(id_list), len(list(set_values.intersection(id_list))))
             big_list = big_list + list(set_values.intersection(id_list))
 
         df = pl.scan_csv(

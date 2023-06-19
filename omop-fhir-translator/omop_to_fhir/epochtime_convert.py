@@ -9,6 +9,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 os.environ['TZ'] = 'UTC'
 
+
 def date_validator(date):
     try:
         if (time.strptime(str(date), '%Y-%m-%d %H:%M:%S')):
@@ -16,12 +17,14 @@ def date_validator(date):
     except ValueError:
         return False
 
+
 def is_date(date):
     try:
         if (time.strptime(str(date), '%Y-%m-%d')):
             return True
     except ValueError:
         return False
+
 
 def convert_time(file_path, node_type):
     date_key_list = []
@@ -40,22 +43,22 @@ def convert_time(file_path, node_type):
                     "condition_end_datetime"]
             elif (node_type == "Specimen"):
                 date_key_list = ["specimen_date", "specimen_datetime"]
-            elif(node_type == "Measurement"):
+            elif (node_type == "Measurement"):
                 date_key_list = ["measurement_date", "measurement_datetime"]
-            elif(node_type =="Visit_Occurence"):
-                date_key_list = ["VISIT_START_DATE", 
-                                 "VISIT_START_DATETIME", 
-                                 "VIST_END_DATE", 
+            elif (node_type == "Visit_Occurence"):
+                date_key_list = ["VISIT_START_DATE",
+                                 "VISIT_START_DATETIME",
+                                 "VIST_END_DATE",
                                  "VISIT_END_DATETIME"]
-            elif(node_type == "ProcedureOccurrence"):
-                date_key_list = ["procedure_date", 
+            elif (node_type == "ProcedureOccurrence"):
+                date_key_list = ["procedure_date",
                                  "procedure_datetime"]
-            elif(node_type == "Drug_Exposure"):
+            elif (node_type == "Drug_Exposure"):
                 date_key_list = ["drug_exposure_start_date",
-                                "drug_exposure_start_datetime",
-                                "drug_exposure_end_date",
-                                "drug_exposure_end_datetime"]
-            elif(node_type == "Device_Exposure"):
+                                 "drug_exposure_start_datetime",
+                                 "drug_exposure_end_date",
+                                 "drug_exposure_end_datetime"]
+            elif (node_type == "Device_Exposure"):
                 date_key_list = ["device_exposure_start_date",
                                  "device_exposure_start_datetime",
                                  "device_exposure_end_date",
