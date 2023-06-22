@@ -156,7 +156,7 @@ specimens:
 
 ```
 
-## The Association Use Case - "source" and "target" links
+## The Association Use Case
 
 Association vertices are used for relationships between two objects. They consist of at least two foreign keys, each of which references one of the two objects.
 
@@ -164,17 +164,22 @@ Association vertices are used for relationships between two objects. They consis
 
 > The link's relation type identifies its semantics. It is the primary means of conveying how an application can interact with a resource.
 
-In the graph use case, the `rel` field is used to describe the `label` of edge between two nodes.
+In the graph use case:
 
-### Definition using hypermedia schema
+* the `rel` field is used to describe the `backref` of property in the target vertex.
+* the `title` field is used to describe the `label` of edge between two nodes.
 
-This
+
+### `base` schema property
+
+
+* Define a base schema
 
 ```yaml
 ---
 "$schema": https://json-schema.org/draft/2019-09/schema
 #
-# The `association` schema is used to describe a link between two JSON objects.
+# The `association` schema is a marker schema used to describe a link between two JSON objects.
 #
 "$id": https://bmeg.io/association
 type: object
@@ -187,12 +192,16 @@ properties:
 
 ```
 
-Example association schema:
+* Define a typed schema for a given association:
+   * The author can define an arbitrary set of properties
+   * Arbitrary `rel` values can be used to describe the `backref` of property in the target vertex.
 
 ```yaml
 ---
 "$schema": https://json-schema.org/draft/2019-09/hyper-schema
 "$id": https://bmeg.io/foo-bar-association
+base: https://bmeg.io/association
+title: FooBarAssociation
 properties:
   data:
     type: object
@@ -200,13 +209,13 @@ properties:
       fizz:
         type: string
 links:
-- rel: source
+- rel: bar
   href: urn:uuid:{id}
   targetSchema:
     "$ref": Foo
   templatePointers:
   - "/id"
-- rel: target
+- rel: foo
   href: Bar/{id}
   targetSchema:
     "$ref": Bar
@@ -214,18 +223,18 @@ links:
   - "/id"
 ```
 
-
 Example instance data:
 
 ```yaml
 ---
 data:
-- fizz: buzz
+  fizz: buzz
 links:
-- rel: source
-  href: urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6
-- rel: target
+- rel: foo
   href: Bar/9a652678-4616-475d-af12-aca21cfbe06d
+- rel: bar
+  href: urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6
+
 ```
 
 
@@ -234,49 +243,58 @@ Validating instance data:
 ```python
 import jsonschema
 
-schema = {
-    "$schema": "https://json-schema.org/draft/2019-09/hyper-schema",
-    "$id": "https://bmeg.io/foo-bar-association",
-    "properties": {
-        "data": {
-            "type": "object",
-            "properties": {
-                "fizz": {
-                    "type": "string"
-                }
-            }
-        },
-        "links": {
-            "type": "array",
-            "items": {
-                "$ref": "https://json-schema.org/draft/2019-09/links"
-            }
-        }
-    }
-}
+# validate schema, inherits schema validation: ie checks data.fizz.buzz
 
-instance = {
-    "data": {
-        "fizz": "buzz"
-    },
-    "links": [
-        {
-            "rel": "source",
-            "href": "urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6"
-        },
-        {
-            "rel": "target",
-            "href": "Bar/9a652678-4616-475d-af12-aca21cfbe06d"
-        }
-    ]
-}
+# load schema and instance from yaml above
 
-# validate schema, inherits schema validation: ie checks data[].fizz.buzz
 assert jsonschema.validate(schema=schema, instance=instance) is None, "Instance should have validated"
+print("Schema validation of instance: OK")
+```
 
-# validate our 'rel', extension relation types
-assert len([_ for _ in instance['links'] if _['rel'] == 'source']) == 1, "Instance should have one 'source' link"
-assert len([_ for _ in instance['links'] if _['rel'] == 'target']) == 1, "Instance should have one 'target' link"
-assert len([_ for _ in instance['links'] if _['rel'] not in ['source', 'target']]) == 0, "Instance has unknown `rel` value"
+Validating our association schema:
 
+```python
+# load schema and instance from yaml above
+
+assert schema['base'] == 'https://bmeg.io/association', "Schema should be an association"
+
+# validate links
+assert len(instance['links']) >= 2, "Association should have at least two links"
+
+# verify that all links in instance are found in schema
+schema_relationships = [_['rel'] for _ in schema['links']]
+for link in instance['links']:
+    assert link['rel'] in schema_relationships, f"Instance of this association should have links to {schema_relationships}"
+
+print("Validation of bmeg association: OK")
+```
+
+An edge writer would then read the `links` array and create edges between the two nodes.
+
+```python
+import re
+
+vertex_a = schema['links'][0]
+vertex_b = schema['links'][1]
+
+instance_link = next(iter([_ for _ in instance['links'] if _['rel'] == vertex_a['rel']]), None)
+rexp = re.compile(vertex_a['href'].replace('{id}', '(.*)')) # cache me
+m = rexp.match(instance_link['href'])
+assert m is not None, f"Unable to find id in instance link {instance_link['href']} given schema {vertex_a['href']}"
+vertex_a_msg = f"{vertex_a['targetSchema']['$ref']}({m.group(1)}).{vertex_a['rel']}"
+
+instance_link = next(iter([_ for _ in instance['links'] if _['rel'] == vertex_b['rel']]), None)
+rexp = re.compile(vertex_b['href'].replace('{id}', '(.*)')) # cache me
+m = rexp.match(instance_link['href'])
+assert m is not None, f"Unable to find id in instance link {instance_link['href']} given schema {vertex_b['href']}"
+vertex_b_msg = f"{vertex_b['targetSchema']['$ref']}({m.group(1)}).{vertex_b['rel']}"
+
+print(f"{vertex_a_msg}<-{schema['title']}->{vertex_b_msg}")
+
+```
+
+which would print:
+
+```
+Foo(f81d4fae-7dec-11d0-a765-00a0c91e6bf6).bar<-FooBarAssociation->Bar(9a652678-4616-475d-af12-aca21cfbe06d).foo
 ```
