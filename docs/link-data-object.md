@@ -8,7 +8,7 @@ Specifically, the use case described here centers around describing a `graph` us
 
 ## Background
 
-Readers are encouraged to read the following documents to understand the context of this document.
+Readers are encouraged to `read` the following documents to understand the context of this document.
 
 > A Link Description Object (LDO) is a serialization of the abstract link model defined in RFC 8288, section 2. As described in that document, a link consists of a context, a relation type, a target, and optionally target attributes. JSON Hyper-Schema's LDO provides all of these, along with additional features using JSON Schema to describe input for use with the links in various ways.   See https://json-schema.org/draft/2019-09/json-schema-hypermedia.html#ldo
 
@@ -25,7 +25,7 @@ The link data object can be used to describe and edge between the source vertex 
 In most cases, the link data object will be found in the `links` of the source JSON object.
 
 In some cases, there may be a need to describe a link between two JSON objects that have no implicit knowledge of each other.
-In this case, the link data object can be found in the `links` of a third JSON object that has implicit knowledge of both the source and target JSON objects.
+In this case, the link data object can be found in the `links` of a third JSON object that has implicit knowledge of both the source and target JSON objects. See `association` below.
 
 
 ## The `Link Data Object` Specification adapted for the `Graph` Use Case
@@ -59,7 +59,7 @@ Specimen:
 
 Ok, so we have a link between a Specimen and a Patient.
 
-But a specimen han come from other entities other than patient:  from a location (e.g., the source of an environmental sample), or a sampling of a substance, a biologically-derived product, or a device.
+But a specimen can come from other entities other than patient:  from a location (e.g., the source of an environmental sample), or a sampling of a substance, a biologically-derived product, or a device.
 
 How would we describe these relationships?
 
@@ -146,7 +146,7 @@ specimens:
     reference: Patient/1
   links:
     - rel: subject_Patient
-      href: Patient/{id}
+      href: Patient/1
 - id: s2
   subject:
     reference: Group/1
@@ -192,9 +192,13 @@ properties:
 
 ```
 
+The association use case satisfies the following requirements:
 * Define a typed schema for a given association:
-   * The author can define an arbitrary set of properties
-   * Arbitrary `rel` values can be used to describe the `backref` of property in the target vertex.
+* The association is an edge with data, the schema author can define an arbitrary set of properties
+* No naming constraints apply, the schema author can name `rel` values as they see fit to populate a the `backref` of property in the target vertex.
+* From the hypermedia spec: "The value of the "href" link description property is a template used to determine the target URI of the related resource."  In our example, we use two different `id` schemes to illustrate this.
+* The targetHints "multiplicity" label describes the expected `cardinality` of the relationship.  In our example, we use `one` and `many` to describe the cardinality of the relationship.  The convention is to use on of ['has_one', 'has_many'] defaults to 'has_many'.
+* The targetHints "directionality" label describes the expected `directionality` of the relationship.  In our example, we use `in` and `out` to describe the directionality of the relationship.  The convention is to use on of ['in', 'out'] defaults to 'out'.
 
 ```yaml
 ---
@@ -238,7 +242,7 @@ links:
 ```
 
 
-Validating instance data:
+Validating the instance data on the edge:
 
 ```python
 import jsonschema
