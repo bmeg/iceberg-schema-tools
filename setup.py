@@ -43,12 +43,12 @@ setup(
 
     # Versions should comply with PEP 440:
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.0.2rc1',  # Required
+    version='0.0.3',  # Required
 
     # This is a one-line description or tagline of what your project does. This
     # corresponds to the "Summary" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#summary
-    description='Maintain schemas',
+    description='FHIR schemas tools for bioinformatics.',
     # Optional
 
     # This field corresponds to the "Description" metadata field:
@@ -63,7 +63,7 @@ setup(
 
     # This should be your name or the name of the organization which owns the
     # project.
-    author='compbio',  # Optional
+    author='https://ellrottlab.org/',  # Optional
 
 
     # For a list of valid classifiers, see https://pypi.org/classifiers/
@@ -77,7 +77,7 @@ setup(
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Build Tools',
 
-        'License :: OSI Approved :: APACHE License',
+        'License :: OSI Approved :: MIT License',
 
         # Specify the Python versions you support here.
         'Programming Language :: Python :: 3.9',
@@ -87,7 +87,7 @@ setup(
     # project page. What does your project relate to?
     #
     # Note that this is a string of words separated by whitespace, not a list.
-    keywords='gen3 bioinformatics graph',  # Optional
+    keywords='FHIR PFB gen3 bioinformatics graph',  # Optional
 
     # You can just specify package directories manually here if your project is
     # simple. Or you can use find_packages().
@@ -99,7 +99,7 @@ setup(
     # and refuse to install the project if the version does not match. If you
     # do not support Python 2, you can simplify this to '>=3.5' or similar, see
     # https://packaging.python.org/guides/distributing-packages-using-setuptools/#python-requires
-    python_requires='>=3.6, <4',
+    python_requires='>=3.9, <4',
 
     # This field lists other packages that your project depends on to run.
     # Any package you put here will be installed by pip when your project is
@@ -123,7 +123,8 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'iceberg = tools.cli:cli'
+            'iceberg = iceberg_tools.cli:cli',
+            'pfb_fhir = iceberg_tools.cli:cli'
         ],
     },
 
@@ -140,6 +141,6 @@ setup(
     # what's used to render the link text on PyPI.
     project_urls={  # Optional
         'Bug Reports': 'https://github.com/bmeg/iceberg-schema-tools/issues',
-        'Source': 'https://github.com/bmeg/iceberg-schema-tools/data-etl',
+        'Source': 'https://github.com/bmeg/iceberg-schema-tools',
     },
 )

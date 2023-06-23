@@ -2,7 +2,7 @@ from fhir.resources.documentreference import DocumentReference
 from fhir.resources.patient import Patient, PatientLink, PatientCommunication
 from fhir.resources.task import Task
 
-from tools.schema import _find_fhir_classes, _extract_schemas, BASE_URI
+from iceberg_tools.schema import _find_fhir_classes, _extract_schemas, BASE_URI
 
 
 def test_find_fhir_classes():

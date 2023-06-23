@@ -133,3 +133,6 @@ dmypy.json
 
 # generated schemas
 iceberg/
+
+# work dir
+tmp/
