@@ -35,7 +35,7 @@ cli.add_command(simplifier)
 @click.option('--pattern', required=True, default="*.*", show_default=True,
               help='File name pattern')
 def _validate(path, pattern):
-    """Check FHIR data for validity and ACED conventions.
+    """Check FHIR data for validity and conventions.
 
     PATH: Path to FHIR files.
     """
@@ -61,7 +61,7 @@ def _validate(path, pattern):
               )
 def _validate_simplified(path, schema_path):
 
-    """Check simplified data for validity and ACED conventions.
+    """Check simplified data for validity and conventions.
 
     PATH: Path to simplified ndjson files.
     """
@@ -101,9 +101,8 @@ def pfb(path, output_path, schema_path, config_path):
     path = pathlib.Path(path)
     output_path = pathlib.Path(output_path)
     config_path = pathlib.Path(config_path)
-    assert output_path.is_dir(), f"Path {output_path} is not a directory"
     assert config_path.is_file(), f"Path {config_path} is not a file"
-    assert path.is_file(), f"Path {path} is not a file"
+    assert path.is_dir(), f"Path {path} is not a directory"
 
     with open(config_path) as fp:
         gen3_config = yaml.load(fp, SafeLoader)
@@ -162,7 +161,7 @@ def migrate(path, output_path, validate, pattern):
 @click.argument('output_path')
 @click.option('--pattern', default='**/*.avro', help='Search pattern', show_default=True)
 def report(path: str,  output_path: str,  pattern: str):
-    """Aggregate avro pfb files into a cytoscape friendly tsv.
+    """Aggregate avro pfb files into a cytoscape tsv.
 
     \b
     PATH: Directory path to search for pfb files

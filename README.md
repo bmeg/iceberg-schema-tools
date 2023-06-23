@@ -33,7 +33,6 @@ Options:
 Commands:
   generate  Generate from FHIR resources.
   compile   Create aggregated json file from individual yaml schemas
-  publish   Copy dictionary to s3 (note:aws cli dependency)
 
 $ iceberg data
 
@@ -45,11 +44,12 @@ Options:
   --help  Show this message and exit.
 
 Commands:
-  simplify       Renders Gen3 friendly flattened records.
-  validate       Check FHIR data for validity and ACED conventions.
-  validate-gen3  Check Gen3 data for validity and ACED conventions.
-  pfb            Write simplified FHIR files to a PFB.
-  migrate        Migrate from FHIR R4B to R5.0.
+  simplify             Renders PFB friendly flattened records.
+  validate             Check FHIR data for validity and conventions.
+  validate-simplified  Check simplified data for validity and conventions.
+  pfb                  Write simplified FHIR files to a PFB.
+  migrate              Migrate from FHIR R4B to R5.0.
+  report               Aggregate avro pfb files into a cytoscape tsv.
 
 ```
 
@@ -59,7 +59,8 @@ Commands:
 
 The commands:
 ```commandline
-pfb_fhir data simplify  tests/fixtures/simplify/study/ tmp/simplified
+pfb_fhir schema generate simplified
+pfb_fhir data simplify --schema_path  iceberg/schemas/simplified/simplified-fhir.json tests/fixtures/simplify/study/ tmp/simplified
 pfb_fhir data pfb tmp/simplified/ tmp/study.pfb
 tree tmp
 
