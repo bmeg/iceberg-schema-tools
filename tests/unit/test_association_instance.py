@@ -48,12 +48,12 @@ def test_init_bad_create_instance(schema: dict, bar: dict, bad_foo: dict):
 def test_write_edge(schema: dict, foo: dict, bar: dict):
     association_schema = AssociationSchema(schema=schema)
     association_instance = AssociationInstance(association_schema=association_schema, vertex_a=foo, vertex_b=bar)
-    edge = association_instance.write_edge()
+    edge = association_instance.edge_parts()
     expected = {"label": "FooBarAssociation",
                 "bar": {"id": "f81d4fae-7dec-11d0-a765-00a0c91e6bf6", "rel": "bar", "targetSchema": "Foo",
-                        "multiplicity": "has_many", "directionality": "out"},
+                        "multiplicity": "has_many", "directionality": "out", "id_name": "id"},
                 "foo": {"id": "9a652678-4616-475d-af12-aca21cfbe06d", "rel": "foo", "targetSchema": "Bar",
-                        "multiplicity": "has_many", "directionality": "out"}}
+                        "multiplicity": "has_many", "directionality": "out", "id_name": "id"}}
 
     print(json.dumps(edge))
     assert edge == expected

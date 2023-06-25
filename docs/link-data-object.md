@@ -167,6 +167,7 @@ Association vertices are used for relationships between two objects. They consis
 In the graph association use case satisfies the following requirements:
 * Defines a typed schema for a given association:
 * The association is a vertex, an edge with data, which the schema author can define an arbitrary set of properties on the edge.
+* When populating the href of an association link, the link writer retrieves the values of template variables from the target vertices.  This differs from [standard hypermedia template processing](https://json-schema.org/draft/2019-09/json-schema-hypermedia.html#rfc.section.7.2.1), where the template variables are retrieved from the instance.
 
 Implementation:
 * No new overrides of the link description schema apply.  The vocabulary for the edge association use case is defined in the The [targetHints object](https://json-schema.org/draft/2019-09/json-schema-hypermedia.html#rfc.section.6.5.5) .
@@ -226,7 +227,7 @@ links:
 
 Example instance data:
 
-* An association instance
+* An Association instance
 
 ```yaml
 ---
@@ -284,25 +285,27 @@ assert str(association_instance) == expected
 
 ```
 
-```python
 
-The `write_edge` method can be used to decompose the links and provide the caller with the composite parts for DB access.
+The `edge_parts` method can be used to decompose the links and provide the caller with the composite parts for DB access.  Note that the ['bar', 'foo', 'id'] fields are variable and depend on the schema author's choices for rel and href template names.  This allows for flexibility in the schema author's choice of naming conventions for both relationships and vertex identifiers.
+
+```python
 
 
 ```yaml
 ---
 label: FooBarAssociation
-vertex_a:
+bar:
   id: f81d4fae-7dec-11d0-a765-00a0c91e6bf6
   rel: bar
   targetSchema: Foo
   multiplicity: has_many
   directionality: out
-vertex_b:
+  id_name: id
+foo:
   id: 9a652678-4616-475d-af12-aca21cfbe06d
   rel: foo
   targetSchema: Bar
   multiplicity: has_many
   directionality: out
-
+  id_name: id
 ```

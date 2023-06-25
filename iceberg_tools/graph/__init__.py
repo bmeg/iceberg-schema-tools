@@ -1,9 +1,10 @@
+from string import Formatter
 from typing import Callable
 
 import fastjsonschema
 import requests
 import re
-
+from jsonpointer import resolve_pointer
 
 class AssociationSchema:
     """A JSON schema for an association."""
@@ -64,7 +65,7 @@ class AssociationSchema:
 
 def _extract_target_hints(schema_link):
     """Retrieve attributes from targetHints, using defaults."""
-    target_hints = schema_link.get('targetHints', None)
+    target_hints = schema_link.get('targetHints', {})
     multiplicity = next(iter(target_hints.get('multiplicity', [])), 'has_many')
     directionality = next(iter(target_hints.get('directionality', [])), 'one')
     association = next(iter(target_hints.get('association', [])), False)
@@ -79,19 +80,20 @@ class AssociationInstance:
         Parameters:
             association_schema: an AssociationSchema object
             instance: an instance of a JSON document that should conform to the association schema
-            vertex_a: a vertex that should be associated with vertex_b
-            vertex_b: a vertex that should be associated with vertex_a
+            vertex_a: a vertex that should be associated
+            vertex_b: a vertex that should be associated
         """
         self.instance = instance
         self.association_schema = association_schema
         self.regexp_cache = {}
+        self.href_keys_cache = {}
         if instance is None:
             assert vertex_a is not None and vertex_b is not None, "Must provide instance or vertex_a and vertex_b"
             self.instance = self._create_instance(vertex_a, vertex_b)
 
     def __repr__(self):
         """Return a string representation of the instance links of the form V(id).backref<--Title-->V(id).backref"""
-        parts = self.write_edge()
+        parts = self.edge_parts()
         label = parts['label']
 
         # formulate a representation of the edge's vertices
@@ -99,38 +101,49 @@ class AssociationInstance:
         msgs = []
         for rel in rels:
             _ = parts[rel]
-            msgs.append(f"{_['targetSchema']}({_['id']}).{rel}")
+            msgs.append(f"{_['targetSchema']}({_[_['id_name']]}).{rel}")
 
         return f"{msgs[0]}<-{label}->{msgs[1]}"
 
     def _create_instance(self, vertex_a, vertex_b):
         """Create an instance of an association from two vertices."""
-        vertex_a_link = self.association_schema.schema['links'][0]
-        vertex_b_link = self.association_schema.schema['links'][1]
-        return {
-            'links': [
+        links = []
+        for schema_link, vertex in list(zip(self.association_schema.schema['links'], [vertex_a, vertex_b])):
+            keys = self._extract_href_keys(schema_link['href'])
+            values = [resolve_pointer(vertex, _) for _ in schema_link['templatePointers']]
+            links.append(
                 {
-                    'rel': vertex_a_link['rel'],
-                    'href': vertex_a_link['href'].replace('{id}', vertex_a['id'])
-                },
-                {
-                    'rel': vertex_b_link['rel'],
-                    'href': vertex_b_link['href'].replace('{id}', vertex_b['id'])
+                    'rel': schema_link['rel'],
+                    'href': schema_link['href'].format(**dict(zip(keys, values))),
                 }
-            ]
+            )
+        return {
+            'links': links
         }
+
+    def _extract_href_keys(self, href):
+        """Extract the keys from the href template, cache the result."""
+        keys = self.href_keys_cache.get(href, None)
+        if not keys:
+            keys = [_[1] for _ in Formatter().parse(href)]
+            self.href_keys_cache[href] = keys
+        return keys
 
     def _extract_id(self, schema_href, instance_href) -> str:
         """Read the id from the href template."""
         rexp = self.regexp_cache.get(schema_href, None)
         if rexp is None:
-            rexp = re.compile(schema_href.replace('{id}', '(.*)'))
+            _ = schema_href
+            keys = self._extract_href_keys(schema_href)
+            for key in keys:
+                _ = _.replace(f"{{{key}}}", '(.*)')
+            rexp = re.compile(_)
             self.regexp_cache[schema_href] = rexp
         m = rexp.match(instance_href)
         assert m is not None, f"Unable to find id in instance link {instance_href} given schema {schema_href}"
-        return m.group(1)
+        return m.group(1), self._extract_href_keys(schema_href)[0]
 
-    def write_edge(self):
+    def edge_parts(self):
         """Decompose the edge into its parts."""
 
         title = self.association_schema.schema['title']
@@ -146,14 +159,15 @@ class AssociationInstance:
         """Extract the parts of a link from the schema and instance."""
         instance_link = next(iter([_ for _ in instance['links'] if _['rel'] == schema_link['rel']]), None)
 
-        id_ = self._extract_id(schema_link['href'], instance_link['href'])
+        id_, id_name = self._extract_id(schema_link['href'], instance_link['href'])
 
         directionality, multiplicity, _ = _extract_target_hints(schema_link)
 
         return {
-            'id': id_,
+            id_name: id_,
             'rel': schema_link['rel'],
             'targetSchema': schema_link['targetSchema']['$ref'],
             'multiplicity': multiplicity,
-            'directionality': directionality
+            'directionality': directionality,
+            'id_name': id_name,
         }
