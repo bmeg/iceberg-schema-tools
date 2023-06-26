@@ -37,3 +37,6 @@ fastjsonschema
 
 # json pointer
 jsonpointer
+
+# jq bindings
+pyjq

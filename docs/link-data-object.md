@@ -108,8 +108,19 @@ The `templatePointers` field is used to describe the location of the target node
 #### Example
 
 ```
-(Specimen{id:"s1")-subject->(Patient{id:p1})
+(Specimen{id:"s1")-subject_Patient->(Patient{id:1})
+(Specimen{id:"s2")-subject_Group->(Group{id:1})
 ```
+
+Implementation:
+* No new overrides of the link description schema apply.  The vocabulary for the edge association use case is defined in the The [targetHints object](https://json-schema.org/draft/2019-09/json-schema-hypermedia.html#rfc.section.6.5.5) .
+* By leveraging the template URI nature of href, we support a variety of vertex identifiers.  From the [hypermedia specification](https://json-schema.org/draft/2019-09/json-schema-hypermedia.html#href): "The value of the "href" link description property is a template used to determine the target URI of the related resource."  In our example, we use two different `id` schemes to illustrate this, a relative URL and an uuid.
+* The targetHints `multiplicity` label describes the expected `cardinality` of the relationship.  The convention is to use on of ['has_one', 'has_many'] defaults to 'has_many'.
+* The targetHints `directionality` label describes the expected `traversal` of the relationship.  The convention is to use one of ['in', 'out'] defaults to 'out'.
+
+Notes for `outbound` traversal:
+* the `rel` field is used to name property in the "source" vertex and the `backref` targetHint names the property in the target vertex.
+
 
 ```yaml
 Specimen:
@@ -117,15 +128,46 @@ Specimen:
     subject:
       reference:
   links:
-  - rel: subject_Patient
-    targetSchema:
-      $ref: Patient
-    href: Patient/{id}
-    templatePointers:
+    - rel: subject_Patient
+      href: Patient/{id}
+      templateRequired:
+      - id
+      templateHints:
+        multiplicity:
+        - has_one
+        direction:
+        - outbound
+        backref:
+        - specimen
+      templatePointers:
       - subject/reference
+      targetSchema:
+       $ref: Patient
+    - rel: subject_Group
+      href: Group/{id}
+      templateRequired:
+      - id
+      templateHints:
+        multiplicity:
+        - has_one
+        direction:
+        - outbound
+        backref:
+        - specimen
+      templatePointers:
+      - subject/reference
+      targetSchema:
+        $ref: Group
+    # - rel: subject_Device
+    # - rel: subject_BiologicallyDerivedProduct
+
 ```
 
-**Note**: JSON document writers must disambiguate polymorphic references.
+**Note**:
+
+* JSON document writers must disambiguate polymorphic references.
+* A FHIR specimen's full complement of links: ['additive', 'authorReference_Organization', 'authorReference_Patient', 'authorReference_Practitioner', 'authorReference_PractitionerRole', 'authorReference_RelatedPerson', 'collector_Patient', 'collector_Practitioner', 'collector_PractitionerRole', 'collector_RelatedPerson', 'device', 'location', 'parent', 'procedure', 'request', 'subject_BiologicallyDerivedProduct', 'subject_Device', 'subject_Group', 'subject_Location', 'subject_Patient', 'subject_Substance']
+
 
 ```yaml
 specimens:
@@ -169,13 +211,8 @@ In the graph association use case satisfies the following requirements:
 * The association is a vertex, an edge with data, which the schema author can define an arbitrary set of properties on the edge.
 * When populating the href of an association link, the link writer retrieves the values of template variables from the target vertices.  This differs from [standard hypermedia template processing](https://json-schema.org/draft/2019-09/json-schema-hypermedia.html#rfc.section.7.2.1), where the template variables are retrieved from the instance.
 
-Implementation:
-* No new overrides of the link description schema apply.  The vocabulary for the edge association use case is defined in the The [targetHints object](https://json-schema.org/draft/2019-09/json-schema-hypermedia.html#rfc.section.6.5.5) .
+Notes for association use case:
 * No naming constraints apply, the schema author can name `rel` values as they see fit to populate a the `backref` of properties in the target vertex.  Useful for graphql or code generation use cases
-* By leveraging the template URI nature of href, we support a variety of vertex identifiers.  From the [hypermedia specification](https://json-schema.org/draft/2019-09/json-schema-hypermedia.html#href): "The value of the "href" link description property is a template used to determine the target URI of the related resource."  In our example, we use two different `id` schemes to illustrate this, a relative URL and an uuid.
-* The targetHints `association` indicates that this schema describes an association.
-* The targetHints `multiplicity` label describes the expected `cardinality` of the relationship.  The convention is to use on of ['has_one', 'has_many'] defaults to 'has_many'.
-* The targetHints `directionality` label describes the expected `traversal` of the relationship.  The convention is to use one of ['in', 'out'] defaults to 'out'.
 * the `rel` field is used to describe the `backref` of property in the target vertex.
 * the `title` field of the schema is used to describe the `label` of edge between two nodes.
 
