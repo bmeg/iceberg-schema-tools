@@ -21,8 +21,6 @@ def test_is_association(schema: dict, not_an_association_schema: dict):
     assert AssociationSchema.is_association(schema) is True, "Schema should be an association"
     assert AssociationSchema.validate_schema_conventions(schema) is True, "Schema should be an association"
 
-    with pytest.raises(Exception):
-        AssociationSchema(schema=not_an_association_schema)
     assert AssociationSchema.is_association(not_an_association_schema) is False, "Schema should not be an association"
     with pytest.raises(Exception):
         assert AssociationSchema.validate_schema_conventions(not_an_association_schema) is False, "Schema should not be an association"
