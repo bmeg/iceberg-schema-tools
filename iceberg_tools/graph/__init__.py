@@ -1,4 +1,5 @@
 import importlib
+import json
 from string import Formatter
 from typing import List, Iterator
 
@@ -9,15 +10,146 @@ import requests
 import re
 from jsonpointer import resolve_pointer
 
-from iceberg_tools.schema import _extract_schemas, BASE_URI
+from iceberg_tools.schema import extract_schemas, BASE_URI
 
 NESTED_OBJECTS = pyjq.compile(
-    '( paths | select(.[-1] == "$ref")) as $p |   if getpath($p) != "Reference.yaml" then ( $p | join(".") ) else empty end')
+    '( paths | select(.[-1] == "$ref") ) as $p |   if getpath($p) != "Reference.yaml" then ( $p |  [.[] | tostring]  | join(".") ) else empty end')
 
 NESTED_OBJECTS_IGNORE = ['Identifier', 'Extension']
 
 REFERENCES = pyjq.compile(
     '( paths | select(.[-1] == "$ref")) as $p |   if getpath($p) == "Reference.yaml" then ( $p | join(".") ) else empty end')
+
+
+def _extract_target_hints(schema_link):
+    """Retrieve attributes from targetHints, using defaults."""
+    target_hints = schema_link.get('targetHints', {})
+    multiplicity = next(iter(target_hints.get('multiplicity', [])), 'has_many')
+    directionality = next(iter(target_hints.get('directionality', [])), 'one')
+    association = next(iter(target_hints.get('association', [])), False)
+    return directionality, multiplicity, association
+
+
+def _generate_links_from_fhir_references(schema) -> List[dict]:
+    """Generate links for a schema.
+
+    Returns:
+        tuple: (links, nested_links)
+    """
+
+    # Direct links from {schema['title']}"
+    links = []
+    links.extend(_extract_links(schema))
+
+    # Nested links
+    nested_links = []
+    for nested_schema, path in _extract_nested_schemas(schema):
+        if nested_schema['title'] in NESTED_OBJECTS_IGNORE:
+            continue
+        extracted_links = _extract_links(nested_schema)
+        if len(extracted_links) == 0:
+            continue
+
+        path_parts = path.split('.')
+        parent_path = '.'.join(path_parts[1:-1])
+
+        for _ in extracted_links:
+            _['$comment'] = f"From {nested_schema['title']}/{parent_path}"
+            _['templatePointers'] = [f"/{parent_path}{tp.replace('.', '/')}" for tp in _['templatePointers']]
+            _['rel'] = f"{parent_path.replace('.items','')}_{_['rel']}"
+        nested_links.extend(extracted_links)
+
+    return links, nested_links
+
+
+def _extract_nested_schemas(schema) -> Iterator[tuple[dict, str]]:
+    """Extract $ref from elements in schema that are not `References`.
+
+    Returns: (sub_schema, path) a tuple of the sub schema and the path to it in the passed schema
+    """
+    # print(json.dumps(schema))
+    matches = sorted(NESTED_OBJECTS.all(schema))
+
+    mod = importlib.import_module('fhir.resources')
+    for match in matches:
+        if match.startswith('properties.links') or match.startswith('links'):
+            continue
+        property_name = match.split('.')[1]
+        if property_name.startswith('_'):
+            continue
+
+        property_ = schema['properties'][property_name]
+
+        multiplicity = 'has_one'
+        if 'items' in property_:
+            multiplicity = 'has_many'
+
+        if multiplicity == 'has_many':
+            target = property_['items']['$ref'].split('.')[0]
+        else:
+            assert '$ref' in property_, ("TODO no $ref?", property_name, property_, match)
+            target = property_['$ref'].split('.')[0]
+
+        target_class = mod.get_fhir_model_class(target)
+        sub_schemas = extract_schemas([target_class], BASE_URI)
+        sub_schema = sub_schemas[target]
+
+        yield sub_schema, match
+
+
+def _extract_links(schema: dict) -> List[dict]:
+    """Extract Link Description Object (LDO) from a schema.
+
+    see https://json-schema.org/draft/2019-09/json-schema-hypermedia.html#rfc.section.6
+    """
+    matches = sorted(REFERENCES.all(schema))
+    links = []
+    for match in matches:
+        direction = 'outbound'
+        multiplicity = 'has_one'
+        if 'items' in match:
+            multiplicity = 'has_many'
+        property_name = match.split('.')[1]
+        property_ = schema['properties'][property_name]
+        if 'enum_reference_types' not in property_:
+            property_['enum_reference_types'] = ['__ANY__']
+        append_postscript = len(property_['enum_reference_types']) > 1
+        _path = '.'.join(match.split('.')[1:-1])
+        _path = _path + '.reference'
+
+        for enum_reference_type in property_['enum_reference_types']:
+            rel = f"{property_name}"
+            if append_postscript:
+                rel += f"_{enum_reference_type}"
+            links.append(
+                {
+                    "rel": rel,
+                    "href": f"{enum_reference_type}/{{id}}",
+                    "templateRequired": ["id"],
+                    "templateHints": {
+                        "multiplicity": [multiplicity],
+                        "direction": [direction],
+                        'backref': [property_['backref']],
+                    },
+                    "templatePointers": [
+                        "/" + _path.replace('.', '/')
+                    ],
+                    'targetSchema': {'$ref': enum_reference_type},
+                }
+            )
+    return links
+
+
+def _load_schema(schema) -> dict:
+    """Load JSON schema from dict or string."""
+    if isinstance(schema, str):
+        schema_ = requests.get(schema).json()
+    elif isinstance(schema, dict):
+        schema_ = schema
+    else:
+        raise ValueError("Schema must be a URL or a dict")
+    return schema_
+
 
 class AssociationSchema:
     """A JSON schema for an association."""
@@ -30,7 +162,6 @@ class AssociationSchema:
             self.schema = schema
         else:
             raise ValueError("Schema must be a URL or a dict")
-        self.validate_schema_conventions(self.schema)
         self.compiled_schema = fastjsonschema.compile(self.schema)
 
 
@@ -74,15 +205,6 @@ class AssociationSchema:
             assert link['rel'] in schema_relationships, f"Instance of this association should have links to {schema_relationships}"
 
         return instance
-
-
-def _extract_target_hints(schema_link):
-    """Retrieve attributes from targetHints, using defaults."""
-    target_hints = schema_link.get('targetHints', {})
-    multiplicity = next(iter(target_hints.get('multiplicity', [])), 'has_many')
-    directionality = next(iter(target_hints.get('directionality', [])), 'one')
-    association = next(iter(target_hints.get('association', [])), False)
-    return directionality, multiplicity, association
 
 
 class AssociationInstance:
@@ -186,124 +308,190 @@ class AssociationInstance:
         }
 
 
-class VertexSchemaLinks:
-    """Operate on the links of a vertex schema."""
+class VertexSchemaDecorator:
+    """Adds links to vertex schema."""
 
     def __init__(self, schema: dict):
         """Load and compile a JSON schema."""
-        if isinstance(schema, str):
-            self.schema = requests.get(schema).json()
-        elif isinstance(schema, dict):
-            self.schema = schema
-        else:
-            raise ValueError("Schema must be a URL or a dict")
-        links, nested_links = _generate_links(schema)
-        schema['links'] = links + nested_links
+        self.schema = _load_schema(schema)
+        # add links property
+        self.schema['properties']['links'] = {
+            'links': {
+                'type': 'array',
+                'items': {
+                    '$ref': 'https://json-schema.org/draft/2020-12/links'
+                }
+            }
+        }
+        # add links element
+        links, nested_links = _generate_links_from_fhir_references(schema)
+        self.schema['links'] = links + nested_links
+        # check schema
         jsonschema.Draft202012Validator.check_schema(schema)
 
 
-def _generate_links(schema) -> List[dict]:
-    """Generate links for a schema.
+class VertexLinkWriter:
+    """Context manager for inserting links into vertices."""
 
-    Returns:
-        List[dict]: List of links
-    """
+    def __init__(self, schema: dict):
+        """Initialize the context manager.
 
-    # Direct links from {schema['title']}"
-    links = []
-    links.extend(_extract_links(schema))
+        Parameters:
+            schema: a schema
+        """
+        self.vertex_schema = schema
+        self.href_keys_cache = {}
+        self.jq_cache = {}
+        self.regexp_cache = {}
 
-    # Nested links
-    nested_links = []
-    for nested_schema, path in _extract_nested_schemas(schema):
-        if nested_schema['title'] in NESTED_OBJECTS_IGNORE:
-            continue
-        extracted_links = _extract_links(nested_schema)
-        if len(extracted_links) == 0:
-            continue
+    def _extract_href_keys(self, href):
+        """Extract the keys from the href template, cache the result."""
+        keys = self.href_keys_cache.get(href, None)
+        if not keys:
+            keys = [_[1] for _ in Formatter().parse(href)]
+            self.href_keys_cache[href] = keys
+        return keys
 
-        path_parts = path.split('.')
-        parent_path = '.'.join(path_parts[1:-1]).replace('.items', '')
+    def __enter__(self):
+        """Enter the context."""
+        return self
 
-        for _ in extracted_links:
-            _['$comment'] = f"From {nested_schema['title']}/{parent_path}"
-            _['templatePointers'] = [f"{parent_path}/{tp.replace('.', '/')}" for tp in _['templatePointers']]
-        nested_links.extend(extracted_links)
+    def __exit__(self, exc_type, exc_value, exc_tb):
+        """Exit the context."""
+        pass
 
-    return links, nested_links
+    def insert_links(self, vertex: dict) -> dict:
+        """Insert links into a vertex.
+
+        Parameters:
+            vertex: a vertex
+        Returns:
+            dict: vertex with links inserted
+
+        """
+        links = []
+
+        for schema_link in self.vertex_schema.schema['links']:
+
+            keys = self._extract_href_keys(schema_link['href'])
+
+            values = self._extract_values(schema_link, vertex)
+
+            if None in values:
+                continue
+
+            for _ in values:
+                if not isinstance(_, list):
+                    _ = [_]
+                links.append(
+                    {
+                        'rel': schema_link['rel'],
+                        'href': schema_link['href'].format(**dict(zip(keys, _))),
+                    }
+                )
+
+        vertex['links'] = links
+        return vertex
+
+    def validate(self, vertex: dict):
+        """Validate a vertex.
+
+        Parameters:
+            vertex: a vertex
+        Returns:
+            jsonschema.ValidationError if the vertex is invalid, True otherwise
+
+        """
+        jsonschema.validate(vertex, self.schema)
+        return True
+
+    def _extract_values(self, schema_link, vertex) -> list:
+        """Extract values from a vertex given a link description object"""
+        values = []
+        for _ in schema_link['templatePointers']:
+            # turn the pointer into a jq expression, note the leading dot and .items[] for lists
+            if _ not in self.jq_cache:
+                jq = '.' + _.replace('/', '.').replace('.items', '.[]?').replace('.', ' | .')
+                self.jq_cache[_] = self.jq_cache.get(_, None) or pyjq.compile(jq)
+            values_ = self.jq_cache[_].all(vertex)
+
+            if None in values_:
+                #  Unable to resolve {schema_link['href']} {schema_link['templatePointers']}
+                return [None]
+
+            # disambiguate polymorphic references
+            if schema_link['targetSchema']['$ref'] not in "".join(values_):
+                # Polymorphic reference {schema_link['targetSchema']['$ref']} {values} skipping
+                return [None]
+
+            # Resolved {schema_link['href']} {schema_link['templatePointers']} {values_}
+            # strip the prefix for fhir references
+            values.extend([self._extract_id(schema_link['href'], _)[0] for _ in values_])
+        return values
+
+    def _extract_id(self, schema_href, instance_href) -> str:
+        """Read the id from the href template."""
+        rexp = self.regexp_cache.get(schema_href, None)
+        if rexp is None:
+            _ = schema_href
+            keys = self._extract_href_keys(schema_href)
+            for key in keys:
+                _ = _.replace(f"{{{key}}}", '(.*)')
+            rexp = re.compile(_)
+            self.regexp_cache[schema_href] = rexp
+        m = rexp.match(instance_href)
+        assert m is not None, f"Unable to find id in instance link {instance_href} given schema {schema_href}"
+        return m.group(1), self._extract_href_keys(schema_href)[0]
 
 
-def _extract_nested_schemas(schema) -> Iterator[tuple[dict, str]]:
-    """Extract $ref from elements in schema that are not `References`.
+class SchemaLinkWriter:
+    """Context manager for inserting links into schemas."""
 
-    Returns: (sub_schema, path) a tuple of the sub schema and the path to it in the passed schema
-    """
-    matches = sorted(NESTED_OBJECTS.all(schema))
-    mod = importlib.import_module('fhir.resources')
-    for match in matches:
-        property_name = match.split('.')[1]
-        if property_name.startswith('_'):
-            continue
+    def __init__(self):
+        """Initialize the context manager.
+        """
+        pass
 
-        property_ = schema['properties'][property_name]
+    def __enter__(self):
+        """Enter the context."""
+        return self
 
-        multiplicity = 'has_one'
-        if 'items' in match:
-            multiplicity = 'has_many'
+    def __exit__(self, exc_type, exc_value, exc_tb):
+        """Exit the context."""
+        pass
 
-        if multiplicity == 'has_many':
-            target = property_['items']['$ref'].split('.')[0]
-        else:
-            target = property_['$ref'].split('.')[0]
-        # print(f"  target: {target}")
+    @staticmethod
+    def insert_links(schema) -> dict:
+        """Insert links into a schema.
 
-        target_class = mod.get_fhir_model_class(target)
-        sub_schemas = _extract_schemas([target_class], BASE_URI)
-        sub_schema = sub_schemas[target]
-        # print(f"  sub_schema: {sub_schema['title']}")
-        yield sub_schema, match
+        Parameters:
+            schema: a schema dict or url
+        Returns:
+            dict: schema with links inserted
 
-
-def _extract_links(schema: dict) -> List[dict]:
-    """Extract Link Description Object (LDO) from a schema.
-
-    see https://json-schema.org/draft/2019-09/json-schema-hypermedia.html#rfc.section.6
-    """
-    matches = sorted(REFERENCES.all(schema))
-    links = []
-    for match in matches:
-        direction = 'outbound'
-        multiplicity = 'has_one'
-        if 'items' in match:
-            multiplicity = 'has_many'
-        property_name = match.split('.')[1]
-        property_ = schema['properties'][property_name]
-        if 'enum_reference_types' not in property_:
-            property_['enum_reference_types'] = ['__ANY__']
-        append_postscript = len(property_['enum_reference_types']) > 1
-        _path = '.'.join(match.split('.')[1:-1])
-        if _path.endswith('.items'):
-            _path = _path + '[].reference'
-        else:
-            _path = _path + '.reference'
-        for enum_reference_type in property_['enum_reference_types']:
-            rel = f"{property_name}"
-            if append_postscript:
-                rel += f"_{enum_reference_type}"
-            links.append(
-                {
-                    "rel": rel,
-                    "href": f"{enum_reference_type}/{{id}}",
-                    "templateRequired": ["id"],
-                    "templateHints": {
-                        "multiplicity": [multiplicity],
-                        "direction": [direction],
-                        'backref': [property_['backref']],
-                    },
-                    "templatePointers": [
-                        _path.replace('.', '/')
-                    ],
-                    'targetSchema': {'$ref': enum_reference_type},
+        """
+        schema = _load_schema(schema)
+        links, nested_links = _generate_links_from_fhir_references(schema)
+        schema['links'] = links + nested_links
+        schema['properties']['links'] = {
+            'links': {
+                'type': 'array',
+                'items': {
+                    '$ref': 'https://json-schema.org/draft/2020-12/links'
                 }
-            )
-    return links
+            }
+        }
+        return schema
+
+    @staticmethod
+    def validate(schema: dict):
+        """Validate a schema.
+
+        Parameters:
+            schema: a schema
+        Returns:
+            jsonschema.ValidationError if the schema is invalid, True otherwise
+
+        """
+        jsonschema.Draft202012Validator.check_schema(schema)
+        return True
