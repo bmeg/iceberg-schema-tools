@@ -51,12 +51,12 @@ def _generate_links_from_fhir_references(schema) -> List[dict]:
             continue
 
         path_parts = path.split('.')
-        parent_path = '.'.join(path_parts[1:-1])
+        parent_path = '.'.join(path_parts[1:-1]).replace('.items', '.-')
 
         for _ in extracted_links:
             _['$comment'] = f"From {nested_schema['title']}/{parent_path}"
             _['templatePointers'] = [f"/{parent_path}{tp.replace('.', '/')}" for tp in _['templatePointers']]
-            _['rel'] = f"{parent_path.replace('.items','')}_{_['rel']}"
+            _['rel'] = f"{parent_path.replace('.-','')}_{_['rel']}"
         nested_links.extend(extracted_links)
 
     return links, nested_links
@@ -116,6 +116,7 @@ def _extract_links(schema: dict) -> List[dict]:
         append_postscript = len(property_['enum_reference_types']) > 1
         _path = '.'.join(match.split('.')[1:-1])
         _path = _path + '.reference'
+        _path = _path.replace('.items', '.-')
 
         for enum_reference_type in property_['enum_reference_types']:
             rel = f"{property_name}"
@@ -330,6 +331,11 @@ class VertexSchemaDecorator:
         jsonschema.Draft202012Validator.check_schema(schema)
 
 
+def cast_json_pointer_to_jq(_):
+    """Convert a JSON pointer to a jq query."""
+    return '.' + _.replace('/', '.').replace('.-', '.[]?').replace('.', ' | .')
+
+
 class VertexLinkWriter:
     """Context manager for inserting links into vertices."""
 
@@ -409,9 +415,9 @@ class VertexLinkWriter:
         """Extract values from a vertex given a link description object"""
         values = []
         for _ in schema_link['templatePointers']:
-            # turn the pointer into a jq expression, note the leading dot and .items[] for lists
+            # turn the pointer into a jq expression, note the leading dot and `-` for lists
             if _ not in self.jq_cache:
-                jq = '.' + _.replace('/', '.').replace('.items', '.[]?').replace('.', ' | .')
+                jq = cast_json_pointer_to_jq(_)
                 self.jq_cache[_] = self.jq_cache.get(_, None) or pyjq.compile(jq)
             values_ = self.jq_cache[_].all(vertex)
 

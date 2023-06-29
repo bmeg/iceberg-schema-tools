@@ -113,7 +113,7 @@ The `templatePointers` field is used to describe the location of the target node
 ```
 
 Implementation:
-* No new overrides of the link description schema apply.  The vocabulary for the edge association use case is defined in the The [targetHints object](https://json-schema.org/draft/2019-09/json-schema-hypermedia.html#rfc.section.6.5.5) .
+* No new overrides of the link description schema apply.  The vocabulary for the edge association use case is defined in the [targetHints object](https://json-schema.org/draft/2019-09/json-schema-hypermedia.html#rfc.section.6.5.5) .
 * By leveraging the template URI nature of href, we support a variety of vertex identifiers.  From the [hypermedia specification](https://json-schema.org/draft/2019-09/json-schema-hypermedia.html#href): "The value of the "href" link description property is a template used to determine the target URI of the related resource."  In our example, we use two different `id` schemes to illustrate this, a relative URL and an uuid.
 * The targetHints `multiplicity` label describes the expected `cardinality` of the relationship.  The convention is to use on of ['has_one', 'has_many'] defaults to 'has_many'.
 * The targetHints `directionality` label describes the expected `traversal` of the relationship.  The convention is to use one of ['in', 'out'] defaults to 'out'.
@@ -294,7 +294,7 @@ id: 9a652678-4616-475d-af12-aca21cfbe06d
 
 ### Validation
 
-See tests/unit/test_link_data_object.py for examples of validating the schema and instance data.
+See tests/unit/link-description-object/test_link_description_object_schema.py for examples of validating the schema and instance data.
 
 ### Usage
 
@@ -322,10 +322,12 @@ assert str(association_instance) == expected
 
 ```
 
+For applications that need to combine the instance and schema data,
+the `AssociationInstance` class provides a `edge_parts` method that can be used to decompose the links
+and provide the caller with the composite parts for DB access.
 
-The `edge_parts` method can be used to decompose the links and provide the caller with the composite parts for DB access.  Note that the ['bar', 'foo', 'id'] fields are variable and depend on the schema author's choices for rel and href template names.  This allows for flexibility in the schema author's choice of naming conventions for both relationships and vertex identifiers.
-
-```python
+Note that the ['bar', 'foo', 'id'] fields are variable and depend on the schema author's choices for rel and href template names.
+This allows for flexibility in the schema author's choice of naming conventions for both relationships and vertex identifiers.
 
 
 ```yaml
@@ -346,3 +348,108 @@ foo:
   directionality: out
   id_name: id
 ```
+
+### Edge cases and limitations
+
+JSON Pointer is used to identify the [template variables in the href](https://json-schema.org/draft/2019-09/relative-json-pointer.html#rfc.section.5.1) [RFC](https://www.rfc-editor.org/rfc/rfc6901).
+Unfortunately, the JSON Pointer spec does not support iteration.
+
+```text
+If the currently referenced value is a JSON array, the reference
+      token MUST contain either:
+
+      *  characters comprised of digits (see ABNF below; note that
+         leading zeros are not allowed) that represent an unsigned
+         base-10 integer value, making the new referenced value the
+         array element with the zero-based index identified by the
+         token, or
+
+      *  exactly the single character "-", making the new referenced
+         value the (nonexistent) member after the last array element.
+```
+
+What does that mean for link processing?  It means that the schema author must know the number of template variables in the href.
+
+For example, given this Specimen instance:
+
+```yaml
+---
+id: s-processing-1
+resourceType: Specimen
+processing:
+- additive:
+  - reference: Substance/sub-1
+```
+
+The json pointer path for the additive reference is `/processing/0/additive/0/reference`.
+The schema author must know that there are two template variables in the path, and that the first variable is the id of the Specimen, and the second variable is the id of the Substance.
+
+What if there are two processing steps?
+
+```yaml
+---
+id: s-processing-2
+resourceType: Specimen
+processing:
+- additive:
+  - reference: Substance/sub-1
+- additive:
+  - reference: Substance/sub-2
+
+```
+
+The json pointer path for the additive reference is `/processing/0/additive/0/reference` and `/processing/1/additive/0/reference`.
+
+What if there is one processing step with two additives?
+
+```yaml
+---
+id: s-processing-3
+resourceType: Specimen
+processing:
+- additive:
+  - reference: Substance/sub-1
+  - reference: Substance/sub-2
+
+```
+
+The json pointer path for the additive reference is `/processing/0/additive/0/reference` and `/processing/0/additive/1/reference`.
+
+### Solution
+
+**How can the schema author provide a consistent way to identify the template pointers?**
+
+Reading further in the json pointer spec we find:
+
+```text
+Note that the use of the "-" character to index an array will always
+result in such an error condition because by definition it refers to
+a nonexistent array element.  Thus, applications of JSON Pointer need
+to specify how that character is to be handled, if it is to be
+useful.
+
+```
+
+Key phrase: `applications of JSON Pointer need to specify how that character is to be handled`
+
+
+* We can leverage this to provide a consistent way to identify the template pointers.
+* We can consolidate the template pointers into a single pointer, and use the `-` character to indicate an `iterable of unknown length`.
+
+i.e. `/processing/-/additive/-/reference`
+
+In english, this means that the `processing` array is an iterable of unknown length, and the `additive` array is an iterable of unknown length.
+
+#### Implementation
+
+This method will convert a json pointer path into a jq query that can be used to extract the template pointers from the instance data.
+
+```python
+def cast_json_pointer_to_jq(_):
+    """Convert a JSON pointer to a jq query."""
+    return '.' + _.replace('/', '.').replace('.-', '.[]?').replace('.', ' | .')
+```
+
+See tests/unit/link-description-object/test_nested_references.py for examples of how this works.
+
+Bindings exist for [GO](https://pkg.go.dev/github.com/itchyny/gojq) and [python](https://pypi.org/project/pyjq/).

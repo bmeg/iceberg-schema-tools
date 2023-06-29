@@ -14,10 +14,10 @@ def test_validate_edge_properties_fastjsonschema(compiled_schema: Callable,
                                                  bad_links: dict):
     """Ensures schema validates using the fastjsonschema library."""
 
-    # validate schema, checks valid nested object data.fizz.buzz
+    # validate schema, checks `valid` nested object data.fizz.buzz
     compiled_schema(instance)
 
-    # validate schema, checks invalid nested object data.fizz.buzz
+    # validate schema, checks `invalid` nested object data.fizz.buzz
     with pytest.raises(fastjsonschema.exceptions.JsonSchemaException):
         compiled_schema(bad_instance)
 
@@ -32,14 +32,14 @@ def test_validate_edge_properties(schema: dict,
                                   bad_links: dict):
     """Ensures schema validates using the jsonschema library."""
 
-    # validate schema, checks nested object data.fizz.buzz
+    # validate schema, checks `valid` nested object data.fizz.buzz
     assert jsonschema.validate(schema=schema, instance=instance) is None, "Instance should have validated"
 
-    # validate schema, checks invalid nested object data.fizz.buzz
+    # validate schema, checks `invalid` nested object data.fizz.buzz
     with pytest.raises(jsonschema.exceptions.ValidationError):
         assert jsonschema.validate(schema=schema, instance=bad_instance) is not None, "Instance should not have validated"
 
-    # validate schema, test missing link required properties
+    # validate schema, test `missing link` required properties
     with pytest.raises(jsonschema.exceptions.ValidationError):
         assert jsonschema.validate(schema=schema, instance=bad_links) is not None, "Instance should not have validated"
 
