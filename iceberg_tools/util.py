@@ -117,7 +117,8 @@ def directory_reader(
         directory_path: pathlib.Path,
         pattern: str = '*.*',
         parse=True,
-        validate=True) -> Iterator[ParseResult]:
+        validate=True,
+        ignore_path:str =None) -> Iterator[ParseResult]:
     """Extract FHIR resources from directory
 
     Args:
@@ -125,12 +126,15 @@ def directory_reader(
         pattern (str, optional): glob pattern. Defaults to '*.*'.
         parse (bool, optional): parse FHIR resources. Defaults to True.
         validate (bool, optional): validate FHIR resources. Defaults to True.
+        ignore_path (str, optional): ignore files with this string in path. Defaults to None.
     """
 
     assert directory_path.is_dir(), f"{directory_path.name} is not a directory"
 
     input_files = [_ for _ in directory_path.glob(pattern) if _is_json_file(_.name)]
     for input_file in input_files:
+        if ignore_path is not None and ignore_path in str(input_file):
+            continue
         logger.info(input_file)
         if not input_file.is_file():
             continue
