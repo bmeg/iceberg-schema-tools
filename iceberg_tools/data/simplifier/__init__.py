@@ -694,7 +694,7 @@ def simplify_directory(input_path, pattern, output_path, schema_path, dialect, c
     with SimplifierContextManager():
         with EmitterContextManager(output_path) as emitter:
             for parse_result in directory_reader(directory_path=input_path, pattern=pattern,
-                                                 validate=False):
+                                                 validate=False, ignore_path=output_path):
                 if parse_result.exception is not None:
                     if 'resourceType' not in str(parse_result.exception):
                         logger.error(f"{parse_result.path} has exception {parse_result.exception}")
