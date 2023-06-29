@@ -52,7 +52,7 @@ def test_vertex_link_writer_nested():
     with VertexLinkWriter(specimen_schema) as mgr:
 
         for specimen in [
-            {'id': 's-processing-1', 'resourceType': 'Specimen', "processing": [{"additive": [{"reference": "Substance/sub-1"}]}]},
+            {"id": "s-processing-1", "resourceType": "Specimen", "processing": [{"additive": [{"reference": "Substance/sub-1"}]}]},
         ]:
             specimen = mgr.insert_links(specimen)
 
