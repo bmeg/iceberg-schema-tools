@@ -19,7 +19,9 @@ python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
+
 ## Python schema generation commands
+Commands only tested with FHIR schema data.
 
 The below command will generate a FHIR graph from 1 aggregated FHIR schema file
 ```
@@ -37,7 +39,7 @@ rm -rf iceberg-feature-itemize-gen3
 rm -f itemize-gen3.zip
 ```
 
-The below command will generate a FHIR graph from however many schema.yaml files are in hte director that you point to it:
+The below command will generate a FHIR graph from however many schema.yaml files are in the directory specified:
 ```
 python3 schema.py yaml_dir --input_path yaml_schemas
 ```
