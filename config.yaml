@@ -14,27 +14,27 @@ dependency_order:
   #
   # FHIR objects
   #
-  - Organization
-  - Location
-  - Practitioner
-  - PractitionerRole
+#  - Organization
+#  - Location
+#  - Practitioner
+#  - PractitionerRole
   - ResearchStudy
   - Patient
   - ResearchSubject
   - Substance
   - Specimen
-  - Encounter
+#  - Encounter
   - Observation
-  - DiagnosticReport
+#  - DiagnosticReport
   - Condition
   - Medication
   - MedicationAdministration
-  - Procedure
+#  - Procedure
   - DocumentReference
   - Task
   - FamilyMemberHistory
-  - BodyStructure
-  - Immunization
+#  - BodyStructure
+#  - Immunization
 
 
 # Properties to 'pluck' from nested objects and render in the parent object
@@ -78,6 +78,7 @@ limit_links:
   DocumentReference:
     - Patient
     - Specimen
+    - ResearchStudy
 
 # Add these extra properties to the simplified schema
 # These may be used to add extra scalar properties to the simplified schema as well as constrain edge destination types.
