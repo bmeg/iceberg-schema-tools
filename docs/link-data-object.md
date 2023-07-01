@@ -103,7 +103,8 @@ So now we know the type of the target node, but we don't know where to find it.
 
 The `href` field is used to describe the location of the target node [see more.](https://json-schema.org/draft/2019-09/json-schema-hypermedia.html#href)
 
-The `templatePointers` field is used to describe the location of the target node within the source node.
+The `templatePointers` field is used to describe the location of the target node within the source node.  The schema writer can use this json pointer to retrieve the template variables from the vertext body.
+See [more](https://json-schema.org/draft/2019-09/json-schema-hypermedia.html#rfc.section.6.4.1)
 
 #### Example
 
@@ -132,10 +133,10 @@ Specimen:
       href: Patient/{id}
       templateRequired:
       - id
-      templateHints:
+      targetHints:
         multiplicity:
         - has_one
-        direction:
+        directionality:
         - outbound
         backref:
         - specimen
@@ -147,10 +148,10 @@ Specimen:
       href: Group/{id}
       templateRequired:
       - id
-      templateHints:
+      targetHints:
         multiplicity:
         - has_one
-        direction:
+        directionality:
         - outbound
         backref:
         - specimen
@@ -213,8 +214,11 @@ In the graph association use case satisfies the following requirements:
 
 Notes for association use case:
 * No naming constraints apply, the schema author can name `rel` values as they see fit to populate a the `backref` of properties in the target vertex.  Useful for graphql or code generation use cases
+
+The targetHints fields that apply to the association use case are:
 * the `rel` field is used to describe the `backref` of property in the target vertex.
 * the `title` field of the schema is used to describe the `label` of edge between two nodes.
+* the `association` indicates that the link is part of an association relationship. Links without this field are "standard" links, that is, they are derived from properties within the vertex
 
 
 ```yaml
