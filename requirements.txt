@@ -32,6 +32,9 @@ joblib
 # html parsing (urn:oid lookups)
 beautifulsoup4
 
+# json schema
+jsonschema==4.17.3
+
 # faster json schema
 fastjsonschema
 

@@ -1,0 +1,1166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "http://bmeg-swapi/0.0.1",
+  "$defs": {
+    "vehicle": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "http://bmeg-swapi/0.0.1/vehicle",
+      "title": "vehicle",
+      "type": "object",
+      "required": [
+        "gid",
+        "id",
+        "label"
+      ],
+      "uniqueKeys": [
+        [
+          "gid"
+        ],
+        [
+          "label",
+          "id"
+        ]
+      ],
+      "links": [
+        {
+          "rel": "films",
+          "href": "film/{id}",
+          "templateRequired": [
+            "id"
+          ],
+          "targetSchema": {
+            "$ref": "http://bmeg-swapi/0.0.1/film"
+          },
+          "templatePointers": {
+            "id": "/films/-/id"
+          },
+          "targetHints": {
+            "directionality": "outbound",
+            "multiplicity": "has_many",
+            "backref": "vehicles"
+          }
+        }
+      ],
+      "properties": {
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "https://json-schema.org/draft/2020-12/links"
+          }
+        },
+        "gid": {
+          "type": [
+            "string"
+          ]
+        },
+        "label": {
+          "type": [
+            "string"
+          ]
+        },
+        "id": {
+          "type": [
+            "string"
+          ]
+        },
+        "created_datetime": {
+          "type": [
+            "string"
+          ]
+        },
+        "edited_datetime": {
+          "type": [
+            "string"
+          ]
+        },
+        "name": {
+          "type": [
+            "string"
+          ]
+        },
+        "model": {
+          "type": [
+            "string"
+          ]
+        },
+        "manufacturer": {
+          "type": [
+            "string"
+          ]
+        },
+        "cost_in_credits": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "length": {
+          "type": [
+            "number"
+          ]
+        },
+        "max_atmosphering_speed": {
+          "type": [
+            "integer"
+          ]
+        },
+        "crew": {
+          "type": [
+            "integer"
+          ]
+        },
+        "passengers": {
+          "type": [
+            "integer"
+          ]
+        },
+        "cargo_capacity": {
+          "type": [
+            "integer"
+          ]
+        },
+        "consumables": {
+          "type": [
+            "string"
+          ]
+        },
+        "vehicle_class": {
+          "type": [
+            "string"
+          ]
+        },
+        "url": {
+          "type": [
+            "string"
+          ]
+        },
+        "films": {
+          "type": [
+            "array"
+          ],
+          "items": {
+            "$ref": "http://bmeg-swapi/0.0.1/reference"
+          }
+        }
+      }
+    },
+    "species": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "http://bmeg-swapi/0.0.1/species",
+      "title": "species",
+      "type": "object",
+      "required": [
+        "gid",
+        "id",
+        "label"
+      ],
+      "uniqueKeys": [
+        [
+          "gid"
+        ],
+        [
+          "label",
+          "id"
+        ]
+      ],
+      "links": [
+        {
+          "rel": "films",
+          "href": "film/{id}",
+          "templateRequired": [
+            "id"
+          ],
+          "targetSchema": {
+            "$ref": "http://bmeg-swapi/0.0.1/film"
+          },
+          "templatePointers": {
+            "id": "/films/-/id"
+          },
+          "targetHints": {
+            "directionality": "outbound",
+            "multiplicity": "has_many",
+            "backref": "species"
+          }
+        },
+        {
+          "rel": "people",
+          "href": "character/{id}",
+          "templateRequired": [
+            "id"
+          ],
+          "targetSchema": {
+            "$ref": "http://bmeg-swapi/0.0.1/character"
+          },
+          "templatePointers": {
+            "id": "/people/-/id"
+          },
+          "targetHints": {
+            "directionality": "outbound",
+            "multiplicity": "has_many",
+            "backref": "species"
+          }
+        }
+      ],
+      "properties": {
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "https://json-schema.org/draft/2020-12/links"
+          }
+        },
+        "gid": {
+          "type": [
+            "string"
+          ]
+        },
+        "label": {
+          "type": [
+            "string"
+          ]
+        },
+        "id": {
+          "type": [
+            "string"
+          ]
+        },
+        "created_datetime": {
+          "type": [
+            "string"
+          ]
+        },
+        "edited_datetime": {
+          "type": [
+            "string"
+          ]
+        },
+        "name": {
+          "type": [
+            "string"
+          ]
+        },
+        "classification": {
+          "type": [
+            "string"
+          ]
+        },
+        "designation": {
+          "type": [
+            "string"
+          ]
+        },
+        "average_height": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "skin_colors": {
+          "type": [
+            "array"
+          ]
+        },
+        "hair_colors": {
+          "type": [
+            "array"
+          ]
+        },
+        "eye_colors": {
+          "type": [
+            "array"
+          ]
+        },
+        "average_lifespan": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "language": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "url": {
+          "type": [
+            "string"
+          ]
+        },
+        "people": {
+          "type": [
+            "array"
+          ],
+          "items": {
+            "$ref": "http://bmeg-swapi/0.0.1/reference"
+          }
+        },
+        "films": {
+          "type": [
+            "array"
+          ],
+          "items": {
+            "$ref": "http://bmeg-swapi/0.0.1/reference"
+          }
+        }
+      }
+    },
+    "character": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "http://bmeg-swapi/0.0.1/character",
+      "title": "character",
+      "type": "object",
+      "required": [
+        "gid",
+        "id",
+        "label"
+      ],
+      "uniqueKeys": [
+        [
+          "gid"
+        ],
+        [
+          "label",
+          "id"
+        ]
+      ],
+      "links": [
+        {
+          "rel": "homeworld",
+          "href": "planet/{id}",
+          "templateRequired": [
+            "id"
+          ],
+          "targetSchema": {
+            "$ref": "http://bmeg-swapi/0.0.1/planet"
+          },
+          "templatePointers": {
+            "id": "/homeworld/id"
+          },
+          "targetHints": {
+            "directionality": "outbound",
+            "multiplicity": "has_one",
+            "backref": "characters"
+          }
+        },
+        {
+          "rel": "films",
+          "href": "film/{id}",
+          "templateRequired": [
+            "id"
+          ],
+          "targetSchema": {
+            "$ref": "http://bmeg-swapi/0.0.1/film"
+          },
+          "templatePointers": {
+            "id": "/films/-/id"
+          },
+          "targetHints": {
+            "directionality": "outbound",
+            "multiplicity": "has_many",
+            "backref": "characters"
+          }
+        },
+        {
+          "rel": "starships",
+          "href": "starship/{id}",
+          "templateRequired": [
+            "id"
+          ],
+          "targetSchema": {
+            "$ref": "http://bmeg-swapi/0.0.1/starship"
+          },
+          "templatePointers": {
+            "id": "/starships/-/id"
+          },
+          "targetHints": {
+            "directionality": "outbound",
+            "multiplicity": "has_many",
+            "backref": "characters"
+          }
+        },
+        {
+          "rel": "species",
+          "href": "species/{id}",
+          "templateRequired": [
+            "id"
+          ],
+          "targetSchema": {
+            "$ref": "http://bmeg-swapi/0.0.1/species"
+          },
+          "templatePointers": {
+            "id": "/species/-/id"
+          },
+          "targetHints": {
+            "directionality": "outbound",
+            "multiplicity": "has_many",
+            "backref": "characters"
+          }
+        }
+      ],
+      "properties": {
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "https://json-schema.org/draft/2020-12/links"
+          }
+        },
+        "gid": {
+          "type": [
+            "string"
+          ]
+        },
+        "label": {
+          "type": [
+            "string"
+          ]
+        },
+        "id": {
+          "type": [
+            "string"
+          ]
+        },
+        "created_datetime": {
+          "type": [
+            "string"
+          ]
+        },
+        "edited_datetime": {
+          "type": [
+            "string"
+          ]
+        },
+        "name": {
+          "type": [
+            "string"
+          ]
+        },
+        "height": {
+          "type": [
+            "integer"
+          ]
+        },
+        "mass": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "hair_color": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "skin_color": {
+          "type": [
+            "string"
+          ]
+        },
+        "eye_color": {
+          "type": [
+            "string"
+          ]
+        },
+        "birth_year": {
+          "type": [
+            "string"
+          ]
+        },
+        "gender": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "url": {
+          "type": [
+            "string"
+          ]
+        },
+        "homeworld": {
+          "$ref": "http://bmeg-swapi/0.0.1/reference"
+        },
+        "films": {
+          "type": [
+            "array"
+          ],
+          "items": {
+            "$ref": "http://bmeg-swapi/0.0.1/reference"
+          }
+        },
+        "species": {
+          "type": [
+            "array"
+          ],
+          "items": {
+            "$ref": "http://bmeg-swapi/0.0.1/reference"
+          }
+        },
+        "starships": {
+          "type": [
+            "array"
+          ],
+          "items": {
+            "$ref": "http://bmeg-swapi/0.0.1/reference"
+          }
+        }
+      }
+    },
+    "planet": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "http://bmeg-swapi/0.0.1/planet",
+      "title": "planet",
+      "type": "object",
+      "required": [
+        "gid",
+        "id",
+        "label"
+      ],
+      "uniqueKeys": [
+        [
+          "gid"
+        ],
+        [
+          "label",
+          "id"
+        ]
+      ],
+      "links": [
+        {
+          "rel": "residents",
+          "href": "character/{id}",
+          "templateRequired": [
+            "id"
+          ],
+          "targetSchema": {
+            "$ref": "http://bmeg-swapi/0.0.1/character"
+          },
+          "templatePointers": {
+            "id": "/residents/-/id"
+          },
+          "targetHints": {
+            "directionality": "outbound",
+            "multiplicity": "has_many",
+            "backref": "planet"
+          }
+        },
+        {
+          "rel": "films",
+          "href": "film/{id}",
+          "templateRequired": [
+            "id"
+          ],
+          "targetSchema": {
+            "$ref": "http://bmeg-swapi/0.0.1/film"
+          },
+          "templatePointers": {
+            "id": "/films/-/id"
+          },
+          "targetHints": {
+            "directionality": "outbound",
+            "multiplicity": "has_many",
+            "backref": "planets"
+          }
+        }
+      ],
+      "properties": {
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "https://json-schema.org/draft/2020-12/links"
+          }
+        },
+        "gid": {
+          "type": [
+            "string"
+          ]
+        },
+        "label": {
+          "type": [
+            "string"
+          ]
+        },
+        "id": {
+          "type": [
+            "string"
+          ]
+        },
+        "created_datetime": {
+          "type": [
+            "string"
+          ]
+        },
+        "edited_datetime": {
+          "type": [
+            "string"
+          ]
+        },
+        "name": {
+          "type": [
+            "string"
+          ]
+        },
+        "rotation_period": {
+          "type": [
+            "integer"
+          ]
+        },
+        "orbital_period": {
+          "type": [
+            "integer"
+          ]
+        },
+        "diameter": {
+          "type": [
+            "integer"
+          ]
+        },
+        "climate": {
+          "type": [
+            "string"
+          ]
+        },
+        "gravity": {
+          "type": [
+            "null"
+          ]
+        },
+        "terrain": {
+          "type": [
+            "array"
+          ]
+        },
+        "surface_water": {
+          "type": [
+            "integer"
+          ]
+        },
+        "population": {
+          "type": [
+            "integer"
+          ]
+        },
+        "url": {
+          "type": [
+            "string"
+          ]
+        },
+        "residents": {
+          "type": [
+            "array"
+          ],
+          "items": {
+            "$ref": "http://bmeg-swapi/0.0.1/reference"
+          }
+        },
+        "films": {
+          "type": [
+            "array"
+          ],
+          "items": {
+            "$ref": "http://bmeg-swapi/0.0.1/reference"
+          }
+        }
+      }
+    },
+    "reference": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "http://bmeg-swapi/0.0.1/reference",
+      "title": "reference",
+      "type": "object",
+      "description": "A reference to another entity in the graph.\nThe id of the entity is required.\n",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": [
+            "string"
+          ]
+        }
+      }
+    },
+    "planets": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "http://bmeg-swapi/0.0.1/planets",
+      "title": "planets",
+      "type": "object",
+      "links": [
+        {
+          "rel": "film",
+          "href": "film/{id}",
+          "templateRequired": [
+            "id"
+          ],
+          "targetSchema": {
+            "$ref": "http://bmeg-swapi/0.0.1/film"
+          },
+          "templatePointers": {
+            "id": "film"
+          },
+          "targetHints": {
+            "directionality": "outbound",
+            "multiplicity": "has_one",
+            "association": true
+          }
+        },
+        {
+          "rel": "planet",
+          "href": "planet/{id}",
+          "templateRequired": [
+            "id"
+          ],
+          "targetSchema": {
+            "$ref": "http://bmeg-swapi/0.0.1/planet"
+          },
+          "templatePointers": {
+            "id": "planet"
+          },
+          "targetHints": {
+            "directionality": "outbound",
+            "multiplicity": "has_one",
+            "association": true
+          }
+        }
+      ],
+      "properties": {
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "https://json-schema.org/draft/2020-12/links"
+          }
+        },
+        "film": {
+          "type": "string"
+        },
+        "planet": {
+          "type": "string"
+        }
+      }
+    },
+    "starship": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "http://bmeg-swapi/0.0.1/starship",
+      "title": "starship",
+      "type": "object",
+      "required": [
+        "gid",
+        "id",
+        "label"
+      ],
+      "uniqueKeys": [
+        [
+          "gid"
+        ],
+        [
+          "label",
+          "id"
+        ]
+      ],
+      "links": [
+        {
+          "rel": "pilots",
+          "href": "character/{id}",
+          "templateRequired": [
+            "id"
+          ],
+          "targetSchema": {
+            "$ref": "http://bmeg-swapi/0.0.1/character"
+          },
+          "templatePointers": {
+            "id": "/pilots/-/id"
+          },
+          "targetHints": {
+            "directionality": "outbound",
+            "multiplicity": "has_many",
+            "backref": "starship"
+          }
+        },
+        {
+          "rel": "films",
+          "href": "film/{id}",
+          "templateRequired": [
+            "id"
+          ],
+          "targetSchema": {
+            "$ref": "http://bmeg-swapi/0.0.1/film"
+          },
+          "templatePointers": {
+            "id": "/films/-/id"
+          },
+          "targetHints": {
+            "directionality": "outbound",
+            "multiplicity": "has_many",
+            "backref": "starships"
+          }
+        }
+      ],
+      "properties": {
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "https://json-schema.org/draft/2020-12/links"
+          }
+        },
+        "gid": {
+          "type": [
+            "string"
+          ]
+        },
+        "label": {
+          "type": [
+            "string"
+          ]
+        },
+        "id": {
+          "type": [
+            "string"
+          ]
+        },
+        "created_datetime": {
+          "type": [
+            "string"
+          ]
+        },
+        "edited_datetime": {
+          "type": [
+            "string"
+          ]
+        },
+        "name": {
+          "type": [
+            "string"
+          ]
+        },
+        "model": {
+          "type": [
+            "string"
+          ]
+        },
+        "manufacturer": {
+          "type": [
+            "string"
+          ]
+        },
+        "cost_in_credits": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "length": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "max_atmosphering_speed": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "crew": {
+          "type": [
+            "integer"
+          ]
+        },
+        "passengers": {
+          "type": [
+            "integer"
+          ]
+        },
+        "cargo_capacity": {
+          "type": [
+            "integer"
+          ]
+        },
+        "consumables": {
+          "type": [
+            "string"
+          ]
+        },
+        "hyperdrive_rating": {
+          "type": [
+            "number"
+          ]
+        },
+        "MGLT": {
+          "type": [
+            "string"
+          ]
+        },
+        "starship_class": {
+          "type": [
+            "string"
+          ]
+        },
+        "url": {
+          "type": [
+            "string"
+          ]
+        },
+        "films": {
+          "type": [
+            "array"
+          ],
+          "items": {
+            "$ref": "http://bmeg-swapi/0.0.1/reference"
+          }
+        },
+        "pilots": {
+          "type": [
+            "array"
+          ],
+          "items": {
+            "$ref": "http://bmeg-swapi/0.0.1/reference"
+          }
+        }
+      }
+    },
+    "film": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "http://bmeg-swapi/0.0.1/film",
+      "title": "film",
+      "type": "object",
+      "required": [
+        "gid",
+        "id",
+        "label"
+      ],
+      "uniqueKeys": [
+        [
+          "gid"
+        ],
+        [
+          "label",
+          "id"
+        ]
+      ],
+      "links": [
+        {
+          "rel": "species",
+          "href": "species/{id}",
+          "templateRequired": [
+            "id"
+          ],
+          "targetSchema": {
+            "$ref": "http://bmeg-swapi/0.0.1/species"
+          },
+          "templatePointers": {
+            "id": "/species/-/id"
+          },
+          "targetHints": {
+            "directionality": "outbound",
+            "multiplicity": "has_many",
+            "backref": "film"
+          }
+        },
+        {
+          "rel": "starships",
+          "href": "starship/{id}",
+          "templateRequired": [
+            "id"
+          ],
+          "targetSchema": {
+            "$ref": "http://bmeg-swapi/0.0.1/starship"
+          },
+          "templatePointers": {
+            "id": "/starships/-/id"
+          },
+          "targetHints": {
+            "directionality": "outbound",
+            "multiplicity": "has_many",
+            "backref": "film"
+          }
+        },
+        {
+          "rel": "characters",
+          "href": "character/{id}",
+          "templateRequired": [
+            "id"
+          ],
+          "targetSchema": {
+            "$ref": "http://bmeg-swapi/0.0.1/character"
+          },
+          "templatePointers": {
+            "id": "/characters/-/id"
+          },
+          "targetHints": {
+            "directionality": "outbound",
+            "multiplicity": "has_many",
+            "backref": "film"
+          }
+        },
+        {
+          "rel": "planets",
+          "href": "planet/{id}",
+          "templateRequired": [
+            "id"
+          ],
+          "targetSchema": {
+            "$ref": "http://bmeg-swapi/0.0.1/planet"
+          },
+          "templatePointers": {
+            "id": "/planets/-/id"
+          },
+          "targetHints": {
+            "directionality": "outbound",
+            "multiplicity": "has_many",
+            "backref": "film"
+          }
+        },
+        {
+          "rel": "vehicles",
+          "href": "vehicle/{id}",
+          "templateRequired": [
+            "id"
+          ],
+          "targetSchema": {
+            "$ref": "http://bmeg-swapi/0.0.1/vehicle"
+          },
+          "templatePointers": {
+            "id": "/vehicles/-/id"
+          },
+          "targetHints": {
+            "directionality": "outbound",
+            "multiplicity": "has_many",
+            "backref": "film"
+          }
+        }
+      ],
+      "properties": {
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "https://json-schema.org/draft/2020-12/links"
+          }
+        },
+        "gid": {
+          "type": [
+            "string"
+          ]
+        },
+        "label": {
+          "type": [
+            "string"
+          ]
+        },
+        "id": {
+          "type": [
+            "string"
+          ]
+        },
+        "created_datetime": {
+          "type": [
+            "string"
+          ]
+        },
+        "edited_datetime": {
+          "type": [
+            "string"
+          ]
+        },
+        "title": {
+          "type": [
+            "string"
+          ]
+        },
+        "episode_id": {
+          "type": [
+            "integer"
+          ]
+        },
+        "opening_crawl": {
+          "type": [
+            "string"
+          ]
+        },
+        "director": {
+          "type": [
+            "string"
+          ]
+        },
+        "producer": {
+          "type": [
+            "array"
+          ]
+        },
+        "release_date": {
+          "type": [
+            "string"
+          ]
+        },
+        "url": {
+          "type": [
+            "string"
+          ]
+        },
+        "characters": {
+          "type": [
+            "array"
+          ]
+        },
+        "starships": {
+          "type": [
+            "array"
+          ],
+          "items": {
+            "$ref": "http://bmeg-swapi/0.0.1/reference"
+          }
+        },
+        "vehicles": {
+          "type": [
+            "array"
+          ],
+          "items": {
+            "$ref": "http://bmeg-swapi/0.0.1/reference"
+          }
+        },
+        "species": {
+          "type": [
+            "array"
+          ],
+          "items": {
+            "$ref": "http://bmeg-swapi/0.0.1/reference"
+          }
+        },
+        "planets": {
+          "description": "The planet resources featured within this film.",
+          "type": [
+            "array"
+          ],
+          "items": {
+            "$ref": "http://bmeg-swapi/0.0.1/reference"
+          }
+        }
+      }
+    }
+  },
+  "anyOf": [
+    {
+      "$ref": "http://bmeg-swapi/0.0.1/vehicle"
+    },
+    {
+      "$ref": "http://bmeg-swapi/0.0.1/species"
+    },
+    {
+      "$ref": "http://bmeg-swapi/0.0.1/character"
+    },
+    {
+      "$ref": "http://bmeg-swapi/0.0.1/planet"
+    },
+    {
+      "$ref": "http://bmeg-swapi/0.0.1/reference"
+    },
+    {
+      "$ref": "http://bmeg-swapi/0.0.1/planets"
+    },
+    {
+      "$ref": "http://bmeg-swapi/0.0.1/starship"
+    },
+    {
+      "$ref": "http://bmeg-swapi/0.0.1/film"
+    }
+  ]
+}

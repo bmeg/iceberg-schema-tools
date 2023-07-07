@@ -33,7 +33,7 @@ links:
   targetSchema:
     "$ref": Foo
   templatePointers:
-    id: /id
+    id: "/id"
   targetHints:
     multiplicity:
         - has_many
@@ -47,7 +47,7 @@ links:
   targetSchema:
     "$ref": Bar
   templatePointers:
-    id: /id
+    id: "/id"
   targetHints:
     multiplicity:
         - has_many

@@ -1,0 +1,126 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: film
+title: film
+type: object
+required:
+- gid
+- id
+- label
+uniqueKeys:
+- - gid
+- - label
+  - id
+links:
+- rel: starships
+  href: starship/{id}
+  templateRequired:
+  - id
+  targetSchema:
+    $ref: starship.yaml
+  templatePointers:
+    id: /starships/-/id
+  targetHints:
+    directionality: outbound
+    multiplicity: has_many
+    backref: film
+- rel: characters
+  href: character/{id}
+  templateRequired:
+  - id
+  targetSchema:
+    $ref: character.yaml
+  templatePointers:
+    id: /characters/-/id
+  targetHints:
+    directionality: outbound
+    multiplicity: has_many
+    backref: films
+- rel: vehicles
+  href: vehicle/{id}
+  templateRequired:
+  - id
+  targetSchema:
+    $ref: planet.yaml
+  templatePointers:
+    id: /planets/-/id
+  targetHints:
+    directionality: outbound
+    multiplicity: has_many
+    backref: films
+- rel: species
+  href: species/{id}
+  templateRequired:
+  - id
+  targetSchema:
+    $ref: vehicle.yaml
+  templatePointers:
+    id: /vehicles/-/id
+  targetHints:
+    directionality: outbound
+    multiplicity: has_many
+    backref: films
+properties:
+  links:
+    type: array
+    items:
+      $ref: https://json-schema.org/draft/2020-12/links
+  gid:
+    type:
+    - string
+  label:
+    type:
+    - string
+  id:
+    type:
+    - string
+  created_datetime:
+    type:
+    - string
+  edited_datetime:
+    type:
+    - string
+  title:
+    type:
+    - string
+  episode_id:
+    type:
+    - integer
+  opening_crawl:
+    type:
+    - string
+  director:
+    type:
+    - string
+  producer:
+    type:
+    - array
+  release_date:
+    type:
+    - string
+  url:
+    type:
+    - string
+  characters:
+    type:
+    - array
+  starships:
+    type:
+    - array
+    items:
+      $ref: reference.yaml
+  vehicles:
+    type:
+    - array
+    items:
+      $ref: reference.yaml
+  species:
+    type:
+    - array
+    items:
+      $ref: reference.yaml
+  planets:
+    description: The planet resources featured within this film.
+    type:
+    - array
+    items:
+      $ref: reference.yaml

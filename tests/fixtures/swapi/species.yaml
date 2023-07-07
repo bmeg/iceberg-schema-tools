@@ -1,0 +1,100 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: species
+title: species
+type: object
+required:
+- gid
+- id
+- label
+uniqueKeys:
+- - gid
+- - label
+  - id
+links:
+- rel: people
+  href: character/{id}
+  templateRequired:
+  - id
+  targetSchema:
+    $ref: film.yaml
+  templatePointers:
+    id: /films/-/id
+  targetHints:
+    directionality: outbound
+    multiplicity: has_many
+    backref: species
+- rel: films
+  href: film/{id}
+  templateRequired:
+  - id
+  targetSchema:
+    $ref: character.yaml
+  templatePointers:
+    id: /people/-/id
+  targetHints:
+    directionality: outbound
+    multiplicity: has_many
+    backref: species
+properties:
+  links:
+    type: array
+    items:
+      $ref: https://json-schema.org/draft/2020-12/links
+  gid:
+    type:
+    - string
+  label:
+    type:
+    - string
+  id:
+    type:
+    - string
+  created_datetime:
+    type:
+    - string
+  edited_datetime:
+    type:
+    - string
+  name:
+    type:
+    - string
+  classification:
+    type:
+    - string
+  designation:
+    type:
+    - string
+  average_height:
+    type:
+    - string
+    - "null"
+  skin_colors:
+    type:
+    - array
+  hair_colors:
+    type:
+    - array
+  eye_colors:
+    type:
+    - array
+  average_lifespan:
+    type:
+    - integer
+    - "null"
+  language:
+    type:
+    - string
+    - "null"
+  url:
+    type:
+    - string
+  people:
+    type:
+    - array
+    items:
+      $ref: reference.yaml
+  films:
+    type:
+    - array
+    items:
+      $ref: reference.yaml
