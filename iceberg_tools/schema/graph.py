@@ -6,7 +6,7 @@ import yaml
 logger = logging.getLogger(__name__)
 
 
-def _bundle_schemas(output_path, base_uri) -> pathlib.Path:
+def bundle_schemas(output_path, base_uri, file_name="graph-fhir.json") -> pathlib.Path:
     """Create a single uber schema in json with all """
     schemas = {
         '$schema': 'https://json-schema.org/draft/2020-12/schema',
@@ -22,7 +22,7 @@ def _bundle_schemas(output_path, base_uri) -> pathlib.Path:
 
         with open(input_file) as fp:
             schema_str = fp.read()
-            schema_str = schema_str.replace('.yaml', '').replace('$ref: ', f'$ref: {base_uri}/')
+            schema_str = schema_str.replace('.yaml', '').replace('$ref: ', f'$ref: {base_uri}/').replace(f'$ref: {base_uri}/http', '$ref: http')
             schema = yaml.safe_load(schema_str)
 
             if 'title' not in schema:
@@ -37,7 +37,7 @@ def _bundle_schemas(output_path, base_uri) -> pathlib.Path:
             schemas['$defs'][schema['title']] = schema
             schemas['anyOf'].append({'$ref': f"{base_uri}/{schema['title']}"})
 
-    path = output_path / pathlib.Path("graph-fhir.json")
+    path = output_path / pathlib.Path(file_name)
     with open(path, "w") as fp:
         json.dump(schemas, fp, indent=2)
 

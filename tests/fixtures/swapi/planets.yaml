@@ -1,0 +1,38 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: planets
+title: planets
+type: object
+links:
+- rel: film
+  href: film/{id}
+  templateRequired:
+  - id
+  targetSchema:
+    $ref: film.yaml
+  templatePointers:
+    id: film
+  targetHints:
+    directionality: outbound
+    multiplicity: has_one
+    association: true
+- rel: planet
+  href: planet/{id}
+  templateRequired:
+  - id
+  targetSchema:
+    $ref: planet.yaml
+  templatePointers:
+    id: planet
+  targetHints:
+    directionality: outbound
+    multiplicity: has_one
+    association: true
+properties:
+  links:
+    type: array
+    items:
+      $ref: https://json-schema.org/draft/2020-12/links
+  film:
+    type: string
+  planet:
+    type: string

@@ -54,8 +54,8 @@ def _generate_links_from_fhir_references(schema) -> List[dict]:
         parent_path = '.'.join(path_parts[1:-1]).replace('.items', '.-')
 
         for _ in extracted_links:
-            _['$comment'] = f"From {nested_schema['title']}/{parent_path}"
-            _['templatePointers'] = [f"/{parent_path}{tp.replace('.', '/')}" for tp in _['templatePointers']]
+            _['$comment'] = f"From {nested_schema['title']}/{parent_path.replace('.-','')}"
+            _['templatePointers'] = {"id": f"/{parent_path.replace('.', '/')}{_['templatePointers'][tp]}" for tp in _['templatePointers']}
             _['rel'] = f"{parent_path.replace('.-','')}_{_['rel']}"
         nested_links.extend(extracted_links)
 
@@ -132,9 +132,9 @@ def _extract_links(schema: dict) -> List[dict]:
                         "direction": [direction],
                         'backref': [property_['backref']],
                     },
-                    "templatePointers": [
-                        "/" + _path.replace('.', '/')
-                    ],
+                    "templatePointers": {
+                        'id': "/" + _path.replace('.', '/')
+                    },
                     'targetSchema': {'$ref': enum_reference_type},
                 }
             )
@@ -377,7 +377,11 @@ class VertexLinkWriter:
         """
         links = []
 
-        for schema_link in self.vertex_schema.schema['links']:
+        _schema = self.vertex_schema
+        if isinstance(self.vertex_schema, VertexSchemaDecorator):
+            _schema = self.vertex_schema.schema
+
+        for schema_link in _schema['links']:
 
             keys = self._extract_href_keys(schema_link['href'])
 
@@ -414,19 +418,21 @@ class VertexLinkWriter:
     def _extract_values(self, schema_link, vertex) -> list:
         """Extract values from a vertex given a link description object"""
         values = []
-        for _ in schema_link['templatePointers']:
+        for k, v in schema_link['templatePointers'].items():
             # turn the pointer into a jq expression, note the leading dot and `-` for lists
-            if _ not in self.jq_cache:
-                jq = cast_json_pointer_to_jq(_)
-                self.jq_cache[_] = self.jq_cache.get(_, None) or pyjq.compile(jq)
-            values_ = self.jq_cache[_].all(vertex)
+            if v not in self.jq_cache:
+                jq = cast_json_pointer_to_jq(v)
+                self.jq_cache[v] = self.jq_cache.get(v, None) or pyjq.compile(jq)
+            values_ = self.jq_cache[v].all(vertex)
 
             if None in values_:
                 #  Unable to resolve {schema_link['href']} {schema_link['templatePointers']}
                 return [None]
 
             # disambiguate polymorphic references
-            if schema_link['targetSchema']['$ref'] not in "".join(values_):
+            # if we have a polymorphic reference, we need to check that the target schema is in the list of values
+            _ = "".join(values_)
+            if '/' in _ and schema_link['targetSchema']['$ref'] not in _:
                 # Polymorphic reference {schema_link['targetSchema']['$ref']} {values} skipping
                 return [None]
 
@@ -436,7 +442,11 @@ class VertexLinkWriter:
         return values
 
     def _extract_id(self, schema_href, instance_href) -> str:
-        """Read the id from the href template."""
+        """Read the id from instance href, strips fhir relative references."""
+        # not a fhir relative reference
+        if '/' not in instance_href:
+            return instance_href, self._extract_href_keys(schema_href)[0]
+
         rexp = self.regexp_cache.get(schema_href, None)
         if rexp is None:
             _ = schema_href

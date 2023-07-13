@@ -1,0 +1,87 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: vehicle
+title: vehicle
+type: object
+required:
+- gid
+- id
+- label
+uniqueKeys:
+- - gid
+- - label
+  - id
+links:
+- rel: films
+  href: film/{id}
+  templateRequired:
+  - id
+  targetSchema:
+    $ref: film.yaml
+  templatePointers:
+    id: /films/-/id
+  targetHints:
+    directionality: outbound
+    multiplicity: has_many
+    backref: vehicles
+properties:
+  links:
+    type: array
+    items:
+      $ref: https://json-schema.org/draft/2020-12/links
+  gid:
+    type:
+    - string
+  label:
+    type:
+    - string
+  id:
+    type:
+    - string
+  created_datetime:
+    type:
+    - string
+  edited_datetime:
+    type:
+    - string
+  name:
+    type:
+    - string
+  model:
+    type:
+    - string
+  manufacturer:
+    type:
+    - string
+  cost_in_credits:
+    type:
+    - integer
+    - "null"
+  length:
+    type:
+    - number
+  max_atmosphering_speed:
+    type:
+    - integer
+  crew:
+    type:
+    - integer
+  passengers:
+    type:
+    - integer
+  cargo_capacity:
+    type:
+    - integer
+  consumables:
+    type:
+    - string
+  vehicle_class:
+    type:
+    - string
+  url:
+    type:
+    - string
+  films:
+    type:
+    - array
+    items:
+      $ref: reference.yaml

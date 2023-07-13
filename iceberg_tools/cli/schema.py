@@ -7,7 +7,7 @@ import yaml
 from yaml import SafeLoader
 
 from iceberg_tools.schema import _find_fhir_classes, BASE_URI, extract_schemas
-from iceberg_tools.schema.graph import _bundle_schemas
+from iceberg_tools.schema.graph import bundle_schemas
 from iceberg_tools.schema.simplified import _simplify_schemas
 from iceberg_tools.util import NaturalOrderGroup
 
@@ -59,7 +59,7 @@ def generate_bmeg(output_path, config_path, stats):
             yaml.dump(schema, fp)
     logger.info(f"Individual yaml schemas written to {output_path}/*.yaml")
 
-    path = _bundle_schemas(output_path, BASE_URI)
+    path = bundle_schemas(output_path, BASE_URI)
     logger.info(f"Aggregated json schema written to {path}")
 
 
