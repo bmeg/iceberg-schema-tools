@@ -246,7 +246,7 @@ class AssociationInstance:
         links = []
         for schema_link, vertex in list(zip(self.association_schema.schema['links'], [vertex_a, vertex_b])):
             keys = self._extract_href_keys(schema_link['href'])
-            values = [resolve_pointer(vertex, _) for _ in schema_link['templatePointers']]
+            values = [resolve_pointer(vertex, _) for _ in schema_link['templatePointers'].values()]
             links.append(
                 {
                     'rel': schema_link['rel'],

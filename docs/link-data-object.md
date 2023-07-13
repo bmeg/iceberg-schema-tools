@@ -103,7 +103,13 @@ So now we know the type of the target node, but we don't know where to find it.
 
 The `href` field is used to describe the location of the target node [see more.](https://json-schema.org/draft/2019-09/json-schema-hypermedia.html#href)
 
-The `templatePointers` field is used to describe the location of the target node within the source node.  The schema writer can use this json pointer to retrieve the template variables from the vertext body.
+### `templatePointers`
+
+The `templatePointers` field is used to describe the location of the target node within the source node.  The schema writer can use this json pointer to retrieve the template variables from the vertex body.
+
+> * The value of the "templatePointers" link description property MUST be an object.
+> * Each property value in the object MUST be a valid JSON Pointer
+
 See [more](https://json-schema.org/draft/2019-09/json-schema-hypermedia.html#rfc.section.6.4.1)
 
 #### Example
@@ -141,7 +147,7 @@ Specimen:
         backref:
         - specimen
       templatePointers:
-      - subject/reference
+        id: subject/reference
       targetSchema:
        $ref: Patient
     - rel: subject_Group
@@ -156,7 +162,7 @@ Specimen:
         backref:
         - specimen
       templatePointers:
-      - subject/reference
+        id: subject/reference
       targetSchema:
         $ref: Group
     # - rel: subject_Device
@@ -242,7 +248,7 @@ links:
   targetSchema:
     "$ref": Foo
   templatePointers:
-  - "/id"
+    id: /id
   targetHints:
     multiplicity:
       - has_many
@@ -255,7 +261,7 @@ links:
   targetSchema:
     "$ref": Bar
   templatePointers:
-  - "/id"
+    id: /id
   targetHints:
     multiplicity:
       - has_many
