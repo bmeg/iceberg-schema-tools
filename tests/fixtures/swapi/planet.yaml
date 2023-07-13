@@ -1,0 +1,97 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: planet
+title: planet
+type: object
+required:
+- gid
+- id
+- label
+uniqueKeys:
+- - gid
+- - label
+  - id
+links:
+- rel: residents
+  href: character/{id}
+  templateRequired:
+  - id
+  targetSchema:
+    $ref: character.yaml
+  templatePointers:
+    id: /residents/-/id
+  targetHints:
+    directionality: outbound
+    multiplicity: has_many
+    backref: planet
+- rel: films
+  href: film/{id}
+  templateRequired:
+  - id
+  targetSchema:
+    $ref: film.yaml
+  templatePointers:
+    id: /films/-/id
+  targetHints:
+    directionality: outbound
+    multiplicity: has_many
+    backref: planets
+properties:
+  links:
+    type: array
+    items:
+      $ref: https://json-schema.org/draft/2020-12/links
+  gid:
+    type:
+    - string
+  label:
+    type:
+    - string
+  id:
+    type:
+    - string
+  created_datetime:
+    type:
+    - string
+  edited_datetime:
+    type:
+    - string
+  name:
+    type:
+    - string
+  rotation_period:
+    type:
+    - integer
+  orbital_period:
+    type:
+    - integer
+  diameter:
+    type:
+    - integer
+  climate:
+    type:
+    - string
+  gravity:
+    type:
+    - "null"
+  terrain:
+    type:
+    - array
+  surface_water:
+    type:
+    - integer
+  population:
+    type:
+    - integer
+  url:
+    type:
+    - string
+  residents:
+    type:
+    - array
+    items:
+      $ref: reference.yaml
+  films:
+    type:
+    - array
+    items:
+      $ref: reference.yaml
