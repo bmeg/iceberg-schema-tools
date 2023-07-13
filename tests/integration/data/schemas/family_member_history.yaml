@@ -1,0 +1,488 @@
+$schema: http://json-schema.org/draft-04/schema#
+additionalProperties: true
+category: Clinical
+description: Information about patient's relatives, relevant for patient. Significant
+  health conditions for a person related to the patient relevant in the context of
+  care for the patient. [See https://hl7.org/fhir/R5/FamilyMemberHistory.html]
+id: family_member_history
+links:
+- backref: family_member_history
+  label: FamilyMemberHistory_patient_Patient_family_member_history
+  multiplicity: many_to_many
+  name: patient
+  required: false
+  target_type: patient
+- backref: reason_family_member_history
+  label: FamilyMemberHistory_reason_Condition_reason_family_member_history
+  multiplicity: many_to_many
+  name: reason_Condition
+  required: false
+  target_type: condition
+- backref: reason_family_member_history
+  label: FamilyMemberHistory_reason_Observation_reason_family_member_history
+  multiplicity: many_to_many
+  name: reason_Observation
+  required: false
+  target_type: observation
+- backref: reason_family_member_history
+  label: FamilyMemberHistory_reason_DiagnosticReport_reason_family_member_history
+  multiplicity: many_to_many
+  name: reason_DiagnosticReport
+  required: false
+  target_type: diagnostic_report
+- backref: reason_family_member_history
+  label: FamilyMemberHistory_reason_DocumentReference_reason_family_member_history
+  multiplicity: many_to_many
+  name: reason_DocumentReference
+  required: false
+  target_type: document_reference
+program: '*'
+project: '*'
+properties:
+  ageAge:
+    description: '[Text representation of Age] The age of the relative at the time
+      the family member history is recorded.'
+    element_property: true
+    one_of_many: age
+    one_of_many_required: false
+    title: (approximate) age
+    type: string
+  ageRange:
+    description: '[Text representation of Range] The age of the relative at the time
+      the family member history is recorded.'
+    element_property: true
+    one_of_many: age
+    one_of_many_required: false
+    title: (approximate) age
+    type: string
+  ageString:
+    description: The age of the relative at the time the family member history is
+      recorded.
+    element_property: true
+    one_of_many: age
+    one_of_many_required: false
+    pattern: '[ \r\n\t\S]+'
+    title: (approximate) age
+    type: string
+  bornDate:
+    description: The actual or approximate date of birth of the relative.
+    element_property: true
+    format: date
+    one_of_many: born
+    one_of_many_required: false
+    title: (approximate) date of birth
+    type: string
+  bornPeriod:
+    description: '[Text representation of Period] The actual or approximate date of
+      birth of the relative.'
+    element_property: true
+    one_of_many: born
+    one_of_many_required: false
+    title: (approximate) date of birth
+    type: string
+  bornString:
+    description: The actual or approximate date of birth of the relative.
+    element_property: true
+    one_of_many: born
+    one_of_many_required: false
+    pattern: '[ \r\n\t\S]+'
+    title: (approximate) date of birth
+    type: string
+  condition:
+    description: '[Text representation of FamilyMemberHistoryCondition] The significant
+      Conditions (or condition) that the family member had. This is a repeating section
+      to allow a system to represent more than one condition per resource, though
+      there is nothing stopping multiple resources - one per condition.'
+    element_property: true
+    items:
+      type: string
+    title: Condition that the related person had
+    type: array
+  dataAbsentReason:
+    binding_description: Codes describing the reason why a family member's history
+      is not available.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/history-absent-reason
+    binding_version: null
+    description: text representation. Describes why the family member's history is
+      not available.
+    element_property: true
+    term:
+      description: Codes describing the reason why a family member's history is not
+        available.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/history-absent-reason
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/history-absent-reason
+        term_url: http://hl7.org/fhir/ValueSet/history-absent-reason
+    title: subject-unknown | withheld | unable-to-obtain | deferred
+    type: string
+  dataAbsentReason_coding: &id001
+    binding_description: Codes describing the reason why a family member's history
+      is not available.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/history-absent-reason
+    binding_version: null
+    description: '[system#code representation.] Describes why the family member''s
+      history is not available.'
+    element_property: true
+    term:
+      description: Codes describing the reason why a family member's history is not
+        available.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/history-absent-reason
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/history-absent-reason
+        term_url: http://hl7.org/fhir/ValueSet/history-absent-reason
+    title: subject-unknown | withheld | unable-to-obtain | deferred
+    type: string
+  dataAbsentReason_text: *id001
+  date:
+    description: The date (and possibly time) when the family member history was recorded
+      or last updated.
+    element_property: true
+    format: date-time
+    title: When history was recorded or last updated
+    type: string
+  deceasedAge:
+    description: '[Text representation of Age] Deceased flag or the actual or approximate
+      age of the relative at the time of death for the family member history record.'
+    element_property: true
+    one_of_many: deceased
+    one_of_many_required: false
+    title: Dead? How old/when?
+    type: string
+  deceasedBoolean:
+    description: Deceased flag or the actual or approximate age of the relative at
+      the time of death for the family member history record.
+    element_property: true
+    one_of_many: deceased
+    one_of_many_required: false
+    title: Dead? How old/when?
+    type: boolean
+  deceasedDate:
+    description: Deceased flag or the actual or approximate age of the relative at
+      the time of death for the family member history record.
+    element_property: true
+    format: date
+    one_of_many: deceased
+    one_of_many_required: false
+    title: Dead? How old/when?
+    type: string
+  deceasedRange:
+    description: '[Text representation of Range] Deceased flag or the actual or approximate
+      age of the relative at the time of death for the family member history record.'
+    element_property: true
+    one_of_many: deceased
+    one_of_many_required: false
+    title: Dead? How old/when?
+    type: string
+  deceasedString:
+    description: Deceased flag or the actual or approximate age of the relative at
+      the time of death for the family member history record.
+    element_property: true
+    one_of_many: deceased
+    one_of_many_required: false
+    pattern: '[ \r\n\t\S]+'
+    title: Dead? How old/when?
+    type: string
+  estimatedAge:
+    description: If true, indicates that the age value specified is an estimated value.
+    element_property: true
+    title: Age is estimated?
+    type: boolean
+  extension:
+    description: '[Text representation of Extension] May be used to represent additional
+      information that is not part of the basic definition of the resource. To make
+      the use of extensions safe and managable, there is a strict set of governance
+      applied to the definition and use of extensions. Though any implementer can
+      define an extension, there is a set of requirements that SHALL be met as part
+      of the definition of the extension.'
+    element_property: true
+    items:
+      type: string
+    title: Additional content defined by implementations
+    type: array
+  id:
+    description: The logical id of the resource, as used in the URL for the resource.
+      Once assigned, this value never changes.
+    element_property: true
+    maxLength: 64
+    minLength: 1
+    pattern: ^[A-Za-z0-9\-.]+$
+    title: Logical id of this artifact
+    type: string
+  identifier:
+    description: Business identifiers assigned to this family member history by the
+      performer or other systems which remain constant as the resource is updated
+      and propagates from server to server.
+    element_property: true
+    items:
+      type: string
+    title: External Id(s) for this record
+    type: array
+  identifier_coding:
+    description: '[system#code representation of identifier] Business identifiers
+      assigned to this family member history by the performer or other systems which
+      remain constant as the resource is updated and propagates from server to server.'
+    element_property: true
+    items:
+      type: string
+    title: External Id(s) for this record
+    type: array
+  identifier_text_coding:
+    description: '[system#code representation of identifier.text] Business identifiers
+      assigned to this family member history by the performer or other systems which
+      remain constant as the resource is updated and propagates from server to server.'
+    element_property: true
+    items:
+      type: string
+    title: External Id(s) for this record
+    type: array
+  instantiatesCanonical:
+    description: The URL pointing to a FHIR-defined protocol, guideline, orderset
+      or other definition that is adhered to in whole or in part by this FamilyMemberHistory.
+    element_property: true
+    enum_reference_types:
+    - PlanDefinition
+    - Questionnaire
+    - ActivityDefinition
+    - Measure
+    - OperationDefinition
+    items:
+      pattern: \S*
+      type: string
+    title: Instantiates FHIR protocol or definition
+    type: array
+  instantiatesUri:
+    description: The URL pointing to an externally maintained protocol, guideline,
+      orderset or other definition that is adhered to in whole or in part by this
+      FamilyMemberHistory.
+    element_property: true
+    items:
+      pattern: \S*
+      type: string
+    title: Instantiates external protocol or definition
+    type: array
+  name:
+    description: This will either be a name or a description; e.g. "Aunt Susan", "my
+      cousin with the red hair".
+    element_property: true
+    pattern: '[ \r\n\t\S]+'
+    title: The family member described
+    type: string
+  note:
+    description: '[Text representation of Annotation] This property allows a non condition-specific
+      note to the made about the related person. Ideally, the note would be in the
+      condition property, but this is not always possible.'
+    element_property: true
+    items:
+      type: string
+    title: General note about related person
+    type: array
+  participant:
+    description: '[Text representation of FamilyMemberHistoryParticipant] Indicates
+      who or what participated in the activities related to the family member history
+      and how they were involved.'
+    element_property: true
+    items:
+      type: string
+    title: Who or what participated in the activities related to the family member
+      history and how they were involved
+    type: array
+  patient:
+    backref: family_member_history
+    description: '[Text representation of Reference] The person who this history concerns.'
+    element_property: true
+    enum_reference_types:
+    - Patient
+    title: Patient history is about
+    type: string
+  procedure:
+    description: '[Text representation of FamilyMemberHistoryProcedure] The significant
+      Procedures (or procedure) that the family member had. This is a repeating section
+      to allow a system to represent more than one procedure per resource, though
+      there is nothing stopping multiple resources - one per procedure.'
+    element_property: true
+    items:
+      type: string
+    title: Procedures that the related person had
+    type: array
+  project_id:
+    term:
+      $ref: _terms.yaml#/project_id
+    type: string
+  reason:
+    backref: reason_family_member_history
+    binding_description: Codes indicating why the family member history was done.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/clinical-findings
+    binding_version: null
+    description: text representation. Describes why the family member history occurred
+      in coded or textual form, or Indicates a Condition, Observation, AllergyIntolerance,
+      or QuestionnaireResponse that justifies this family member history event.
+    element_property: true
+    enum_reference_types:
+    - Condition
+    - Observation
+    - AllergyIntolerance
+    - QuestionnaireResponse
+    - DiagnosticReport
+    - DocumentReference
+    items:
+      type: string
+    term:
+      description: Codes indicating why the family member history was done.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/clinical-findings
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/clinical-findings
+        term_url: http://hl7.org/fhir/ValueSet/clinical-findings
+    title: Why was family member history performed?
+    type: array
+  reason_coding: &id002
+    backref: reason_family_member_history
+    binding_description: Codes indicating why the family member history was done.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/clinical-findings
+    binding_version: null
+    description: '[system#code representation.] Describes why the family member history
+      occurred in coded or textual form, or Indicates a Condition, Observation, AllergyIntolerance,
+      or QuestionnaireResponse that justifies this family member history event.'
+    element_property: true
+    enum_reference_types:
+    - Condition
+    - Observation
+    - AllergyIntolerance
+    - QuestionnaireResponse
+    - DiagnosticReport
+    - DocumentReference
+    items:
+      type: string
+    term:
+      description: Codes indicating why the family member history was done.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/clinical-findings
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/clinical-findings
+        term_url: http://hl7.org/fhir/ValueSet/clinical-findings
+    title: Why was family member history performed?
+    type: array
+  reason_text: *id002
+  relationship:
+    binding_description: The nature of the relationship between the patient and the
+      related person being described in the family member history.
+    binding_strength: example
+    binding_uri: http://terminology.hl7.org/ValueSet/v3-FamilyMember
+    binding_version: null
+    description: text representation. The type of relationship this person has to
+      the patient (father, mother, brother etc.).
+    element_property: true
+    term:
+      description: The nature of the relationship between the patient and the related
+        person being described in the family member history.
+      termDef:
+        cde_id: http://terminology.hl7.org/ValueSet/v3-FamilyMember
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://terminology.hl7.org/ValueSet/v3-FamilyMember
+        term_url: http://terminology.hl7.org/ValueSet/v3-FamilyMember
+    title: Relationship to the subject
+    type: string
+  relationship_coding: &id003
+    binding_description: The nature of the relationship between the patient and the
+      related person being described in the family member history.
+    binding_strength: example
+    binding_uri: http://terminology.hl7.org/ValueSet/v3-FamilyMember
+    binding_version: null
+    description: '[system#code representation.] The type of relationship this person
+      has to the patient (father, mother, brother etc.).'
+    element_property: true
+    term:
+      description: The nature of the relationship between the patient and the related
+        person being described in the family member history.
+      termDef:
+        cde_id: http://terminology.hl7.org/ValueSet/v3-FamilyMember
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://terminology.hl7.org/ValueSet/v3-FamilyMember
+        term_url: http://terminology.hl7.org/ValueSet/v3-FamilyMember
+    title: Relationship to the subject
+    type: string
+  relationship_text: *id003
+  resourceType:
+    const: FamilyMemberHistory
+    default: FamilyMemberHistory
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+  sex:
+    binding_description: Codes describing the sex assigned at birth as documented
+      on the birth registration.
+    binding_strength: extensible
+    binding_uri: http://hl7.org/fhir/ValueSet/administrative-gender
+    binding_version: null
+    description: text representation. The birth sex of the family member.
+    element_property: true
+    term:
+      description: Codes describing the sex assigned at birth as documented on the
+        birth registration.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/administrative-gender
+        cde_version: null
+        source: fhir
+        strength: extensible
+        term: http://hl7.org/fhir/ValueSet/administrative-gender
+        term_url: http://hl7.org/fhir/ValueSet/administrative-gender
+    title: male | female | other | unknown
+    type: string
+  sex_coding: &id004
+    binding_description: Codes describing the sex assigned at birth as documented
+      on the birth registration.
+    binding_strength: extensible
+    binding_uri: http://hl7.org/fhir/ValueSet/administrative-gender
+    binding_version: null
+    description: '[system#code representation.] The birth sex of the family member.'
+    element_property: true
+    term:
+      description: Codes describing the sex assigned at birth as documented on the
+        birth registration.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/administrative-gender
+        cde_version: null
+        source: fhir
+        strength: extensible
+        term: http://hl7.org/fhir/ValueSet/administrative-gender
+        term_url: http://hl7.org/fhir/ValueSet/administrative-gender
+    title: male | female | other | unknown
+    type: string
+  sex_text: *id004
+  status:
+    binding_description: A code that identifies the status of the family history record.
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/history-status
+    binding_version: 5.0.0
+    description: A code specifying the status of the record of the family history
+      of a specific family member.
+    element_property: true
+    element_required: true
+    enum_values:
+    - partial
+    - completed
+    - entered-in-error
+    - health-unknown
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: partial | completed | entered-in-error | health-unknown
+    type: string
+title: FamilyMemberHistory
+type: object

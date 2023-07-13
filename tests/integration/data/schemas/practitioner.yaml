@@ -1,0 +1,166 @@
+$schema: http://json-schema.org/draft-04/schema#
+additionalProperties: true
+category: Administrative
+description: A person with a  formal responsibility in the provisioning of healthcare
+  or related services. A person who is directly or indirectly involved in the provisioning
+  of healthcare or related services. [See https://hl7.org/fhir/R5/Practitioner.html]
+id: practitioner
+links: []
+program: '*'
+project: '*'
+properties:
+  active:
+    description: Whether this practitioner's record is in active use
+    element_property: true
+    title: Whether this practitioner's record is in active use
+    type: boolean
+  address:
+    description: '[Text representation of Address] Address(es) of the practitioner
+      that are not role specific (typically home address).  Work addresses are not
+      typically entered in this property as they are usually role dependent.'
+    element_property: true
+    items:
+      type: string
+    title: Address(es) of the practitioner that are not role specific (typically home
+      address)
+    type: array
+  birthDate:
+    description: The date of birth for the practitioner.
+    element_property: true
+    format: date
+    title: The date  on which the practitioner was born
+    type: string
+  communication:
+    description: '[Text representation of PractitionerCommunication] A language which
+      may be used to communicate with the practitioner, often for correspondence/administrative
+      purposes.  The `PractitionerRole.communication` property should be used for
+      publishing the languages that a practitioner is able to communicate with patients
+      (on a per Organization/Role basis).'
+    element_property: true
+    items:
+      type: string
+    title: A language which may be used to communicate with the practitioner
+    type: array
+  deceasedBoolean:
+    description: Indicates if the practitioner is deceased or not
+    element_property: true
+    one_of_many: deceased
+    one_of_many_required: false
+    title: Indicates if the practitioner is deceased or not
+    type: boolean
+  deceasedDateTime:
+    description: Indicates if the practitioner is deceased or not
+    element_property: true
+    format: date-time
+    one_of_many: deceased
+    one_of_many_required: false
+    title: Indicates if the practitioner is deceased or not
+    type: string
+  extension:
+    description: '[Text representation of Extension] May be used to represent additional
+      information that is not part of the basic definition of the resource. To make
+      the use of extensions safe and managable, there is a strict set of governance
+      applied to the definition and use of extensions. Though any implementer can
+      define an extension, there is a set of requirements that SHALL be met as part
+      of the definition of the extension.'
+    element_property: true
+    items:
+      type: string
+    title: Additional content defined by implementations
+    type: array
+  gender:
+    binding_description: The gender of a person used for administrative purposes.
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/administrative-gender
+    binding_version: 5.0.0
+    description: Administrative Gender - the gender that the person is considered
+      to have for administration and record keeping purposes.
+    element_property: true
+    enum_values:
+    - male
+    - female
+    - other
+    - unknown
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: male | female | other | unknown
+    type: string
+  id:
+    description: The logical id of the resource, as used in the URL for the resource.
+      Once assigned, this value never changes.
+    element_property: true
+    maxLength: 64
+    minLength: 1
+    pattern: ^[A-Za-z0-9\-.]+$
+    title: Logical id of this artifact
+    type: string
+  identifier:
+    description: An identifier that applies to this person in this role.
+    element_property: true
+    items:
+      type: string
+    title: An identifier for the person as this agent
+    type: array
+  identifier_coding:
+    description: '[system#code representation of identifier] An identifier that applies
+      to this person in this role.'
+    element_property: true
+    items:
+      type: string
+    title: An identifier for the person as this agent
+    type: array
+  identifier_text_coding:
+    description: '[system#code representation of identifier.text] An identifier that
+      applies to this person in this role.'
+    element_property: true
+    items:
+      type: string
+    title: An identifier for the person as this agent
+    type: array
+  name:
+    description: '[Text representation of HumanName] The name(s) associated with the
+      practitioner'
+    element_property: true
+    items:
+      type: string
+    title: The name(s) associated with the practitioner
+    type: array
+  photo:
+    description: '[Text representation of Attachment] Image of the person'
+    element_property: true
+    items:
+      type: string
+    title: Image of the person
+    type: array
+  project_id:
+    term:
+      $ref: _terms.yaml#/project_id
+    type: string
+  qualification:
+    description: '[Text representation of PractitionerQualification] The official
+      qualifications, certifications, accreditations, training, licenses (and other
+      types of educations/skills/capabilities) that authorize or otherwise pertain
+      to the provision of care by the practitioner.  For example, a medical license
+      issued by a medical board of licensure authorizing the practitioner to practice
+      medicine within a certain locality.'
+    element_property: true
+    items:
+      type: string
+    title: Qualifications, certifications, accreditations, licenses, training, etc.
+      pertaining to the provision of care
+    type: array
+  resourceType:
+    const: Practitioner
+    default: Practitioner
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+  telecom:
+    description: '[Text representation of ContactPoint] A contact detail for the practitioner,
+      e.g. a telephone number or an email address.'
+    element_property: true
+    items:
+      type: string
+    title: A contact detail for the practitioner (that apply to all roles)
+    type: array
+title: Practitioner
+type: object

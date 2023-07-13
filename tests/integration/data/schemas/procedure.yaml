@@ -1,0 +1,883 @@
+$schema: http://json-schema.org/draft-04/schema#
+additionalProperties: true
+category: Clinical
+description: An action that is being or was performed on an individual or entity.
+  An action that is or was performed on or for a patient, practitioner, device, organization,
+  or location. For example, this can be a physical intervention on a patient like
+  an operation, or less invasive like long term services, counseling, or hypnotherapy.  This
+  can be a quality or safety inspection for a location, organization, or device.  This
+  can be an accreditation procedure on a practitioner for licensing. [See https://hl7.org/fhir/R5/Procedure.html]
+id: procedure
+links:
+- backref: subject_procedure
+  label: Procedure_subject_Patient_subject_procedure
+  multiplicity: many_to_many
+  name: subject_Patient
+  required: false
+  target_type: patient
+- backref: subject_procedure
+  label: Procedure_subject_Practitioner_subject_procedure
+  multiplicity: many_to_many
+  name: subject_Practitioner
+  required: false
+  target_type: practitioner
+- backref: subject_procedure
+  label: Procedure_subject_Organization_subject_procedure
+  multiplicity: many_to_many
+  name: subject_Organization
+  required: false
+  target_type: organization
+- backref: subject_procedure
+  label: Procedure_subject_Location_subject_procedure
+  multiplicity: many_to_many
+  name: subject_Location
+  required: false
+  target_type: location
+- backref: complication_procedure
+  label: Procedure_complication_Condition_complication_procedure
+  multiplicity: many_to_many
+  name: complication
+  required: false
+  target_type: condition
+- backref: procedure
+  label: Procedure_encounter_Encounter_procedure
+  multiplicity: many_to_many
+  name: encounter
+  required: false
+  target_type: encounter
+- backref: focus_procedure
+  label: Procedure_focus_PractitionerRole_focus_procedure
+  multiplicity: many_to_many
+  name: focus_PractitionerRole
+  required: false
+  target_type: practitioner_role
+- backref: focus_procedure
+  label: Procedure_focus_Specimen_focus_procedure
+  multiplicity: many_to_many
+  name: focus_Specimen
+  required: false
+  target_type: specimen
+- backref: partOf_procedure
+  label: Procedure_partOf_Procedure_partOf_procedure
+  multiplicity: many_to_many
+  name: partOf_Procedure
+  required: false
+  target_type: procedure
+- backref: partOf_procedure
+  label: Procedure_partOf_Observation_partOf_procedure
+  multiplicity: many_to_many
+  name: partOf_Observation
+  required: false
+  target_type: observation
+- backref: partOf_procedure
+  label: Procedure_partOf_MedicationAdministration_partOf_procedure
+  multiplicity: many_to_many
+  name: partOf_MedicationAdministration
+  required: false
+  target_type: medication_administration
+- backref: reason_procedure
+  label: Procedure_reason_DiagnosticReport_reason_procedure
+  multiplicity: many_to_many
+  name: reason_DiagnosticReport
+  required: false
+  target_type: diagnostic_report
+- backref: reason_procedure
+  label: Procedure_reason_DocumentReference_reason_procedure
+  multiplicity: many_to_many
+  name: reason_DocumentReference
+  required: false
+  target_type: document_reference
+- backref: used_procedure
+  label: Procedure_used_Medication_used_procedure
+  multiplicity: many_to_many
+  name: used_Medication
+  required: false
+  target_type: medication
+- backref: used_procedure
+  label: Procedure_used_Substance_used_procedure
+  multiplicity: many_to_many
+  name: used_Substance
+  required: false
+  target_type: substance
+program: '*'
+project: '*'
+properties:
+  basedOn:
+    backref: basedOn_procedure
+    description: '[Text representation of Reference] A reference to a resource that
+      contains details of the request for this procedure.'
+    element_property: true
+    enum_reference_types:
+    - CarePlan
+    - ServiceRequest
+    items:
+      type: string
+    title: A request for this procedure
+    type: array
+  bodySite:
+    binding_description: SNOMED CT Body site concepts
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/body-site
+    binding_version: null
+    description: text representation. Detailed and structured anatomical location
+      information. Multiple locations are allowed - e.g. multiple punch biopsies of
+      a lesion.
+    element_property: true
+    items:
+      type: string
+    term:
+      description: SNOMED CT Body site concepts
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/body-site
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/body-site
+        term_url: http://hl7.org/fhir/ValueSet/body-site
+    title: Target body sites
+    type: array
+  bodySite_coding: &id001
+    binding_description: SNOMED CT Body site concepts
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/body-site
+    binding_version: null
+    description: '[system#code representation.] Detailed and structured anatomical
+      location information. Multiple locations are allowed - e.g. multiple punch biopsies
+      of a lesion.'
+    element_property: true
+    items:
+      type: string
+    term:
+      description: SNOMED CT Body site concepts
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/body-site
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/body-site
+        term_url: http://hl7.org/fhir/ValueSet/body-site
+    title: Target body sites
+    type: array
+  bodySite_text: *id001
+  category:
+    binding_description: A code that classifies a procedure for searching, sorting
+      and display purposes.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/procedure-category
+    binding_version: null
+    description: text representation. A code that classifies the procedure for searching,
+      sorting and display purposes (e.g. "Surgical Procedure").
+    element_property: true
+    items:
+      type: string
+    term:
+      description: A code that classifies a procedure for searching, sorting and display
+        purposes.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/procedure-category
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/procedure-category
+        term_url: http://hl7.org/fhir/ValueSet/procedure-category
+    title: Classification of the procedure
+    type: array
+  category_coding: &id002
+    binding_description: A code that classifies a procedure for searching, sorting
+      and display purposes.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/procedure-category
+    binding_version: null
+    description: '[system#code representation.] A code that classifies the procedure
+      for searching, sorting and display purposes (e.g. "Surgical Procedure").'
+    element_property: true
+    items:
+      type: string
+    term:
+      description: A code that classifies a procedure for searching, sorting and display
+        purposes.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/procedure-category
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/procedure-category
+        term_url: http://hl7.org/fhir/ValueSet/procedure-category
+    title: Classification of the procedure
+    type: array
+  category_text: *id002
+  code:
+    binding_description: A code to identify a specific procedure .
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/procedure-code
+    binding_version: null
+    description: text representation. The specific procedure that is performed. Use
+      text if the exact nature of the procedure cannot be coded (e.g. "Laparoscopic
+      Appendectomy").
+    element_property: true
+    term:
+      description: A code to identify a specific procedure .
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/procedure-code
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/procedure-code
+        term_url: http://hl7.org/fhir/ValueSet/procedure-code
+    title: Identification of the procedure
+    type: string
+  code_coding: &id003
+    binding_description: A code to identify a specific procedure .
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/procedure-code
+    binding_version: null
+    description: '[system#code representation.] The specific procedure that is performed.
+      Use text if the exact nature of the procedure cannot be coded (e.g. "Laparoscopic
+      Appendectomy").'
+    element_property: true
+    term:
+      description: A code to identify a specific procedure .
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/procedure-code
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/procedure-code
+        term_url: http://hl7.org/fhir/ValueSet/procedure-code
+    title: Identification of the procedure
+    type: string
+  code_text: *id003
+  complication:
+    backref: complication_procedure
+    binding_description: Codes describing complications that resulted from a procedure.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/condition-code
+    binding_version: null
+    description: text representation. Any complications that occurred during the procedure,
+      or in the immediate post-performance period. These are generally tracked separately
+      from the notes, which will typically describe the procedure itself rather than
+      any 'post procedure' issues.
+    element_property: true
+    enum_reference_types:
+    - Condition
+    items:
+      type: string
+    term:
+      description: Codes describing complications that resulted from a procedure.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/condition-code
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/condition-code
+        term_url: http://hl7.org/fhir/ValueSet/condition-code
+    title: Complication following the procedure
+    type: array
+  complication_coding: &id004
+    backref: complication_procedure
+    binding_description: Codes describing complications that resulted from a procedure.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/condition-code
+    binding_version: null
+    description: '[system#code representation.] Any complications that occurred during
+      the procedure, or in the immediate post-performance period. These are generally
+      tracked separately from the notes, which will typically describe the procedure
+      itself rather than any ''post procedure'' issues.'
+    element_property: true
+    enum_reference_types:
+    - Condition
+    items:
+      type: string
+    term:
+      description: Codes describing complications that resulted from a procedure.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/condition-code
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/condition-code
+        term_url: http://hl7.org/fhir/ValueSet/condition-code
+    title: Complication following the procedure
+    type: array
+  complication_text: *id004
+  encounter:
+    backref: procedure
+    description: '[Text representation of Reference] The Encounter during which this
+      Procedure was created or performed or to which the creation of this record is
+      tightly associated.'
+    element_property: true
+    enum_reference_types:
+    - Encounter
+    title: The Encounter during which this Procedure was created
+    type: string
+  extension:
+    description: '[Text representation of Extension] May be used to represent additional
+      information that is not part of the basic definition of the resource. To make
+      the use of extensions safe and managable, there is a strict set of governance
+      applied to the definition and use of extensions. Though any implementer can
+      define an extension, there is a set of requirements that SHALL be met as part
+      of the definition of the extension.'
+    element_property: true
+    items:
+      type: string
+    title: Additional content defined by implementations
+    type: array
+  focalDevice:
+    description: '[Text representation of ProcedureFocalDevice] A device that is implanted,
+      removed or otherwise manipulated (calibration, battery replacement, fitting
+      a prosthesis, attaching a wound-vac, etc.) as a focal portion of the Procedure.'
+    element_property: true
+    items:
+      type: string
+    title: Manipulated, implanted, or removed device
+    type: array
+  focus:
+    backref: focus_procedure
+    description: '[Text representation of Reference] Who is the target of the procedure
+      when it is not the subject of record only.  If focus is not present, then subject
+      is the focus.  If focus is present and the subject is one of the targets of
+      the procedure, include subject as a focus as well. If focus is present and the
+      subject is not included in focus, it implies that the procedure was only targeted
+      on the focus. For example, when a caregiver is given education for a patient,
+      the caregiver would be the focus and the procedure record is associated with
+      the subject (e.g. patient).  For example, use focus when recording the target
+      of the education, training, or counseling is the parent or relative of a patient.'
+    element_property: true
+    enum_reference_types:
+    - Patient
+    - Group
+    - RelatedPerson
+    - Practitioner
+    - Organization
+    - CareTeam
+    - PractitionerRole
+    - Specimen
+    title: Who is the target of the procedure when it is not the subject of record
+      only
+    type: string
+  followUp:
+    binding_description: Specific follow up required for a procedure e.g. removal
+      of sutures.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/procedure-followup
+    binding_version: null
+    description: text representation. If the procedure required specific follow up
+      - e.g. removal of sutures. The follow up may be represented as a simple note
+      or could potentially be more complex, in which case the CarePlan resource can
+      be used.
+    element_property: true
+    items:
+      type: string
+    term:
+      description: Specific follow up required for a procedure e.g. removal of sutures.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/procedure-followup
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/procedure-followup
+        term_url: http://hl7.org/fhir/ValueSet/procedure-followup
+    title: Instructions for follow up
+    type: array
+  followUp_coding: &id005
+    binding_description: Specific follow up required for a procedure e.g. removal
+      of sutures.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/procedure-followup
+    binding_version: null
+    description: '[system#code representation.] If the procedure required specific
+      follow up - e.g. removal of sutures. The follow up may be represented as a simple
+      note or could potentially be more complex, in which case the CarePlan resource
+      can be used.'
+    element_property: true
+    items:
+      type: string
+    term:
+      description: Specific follow up required for a procedure e.g. removal of sutures.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/procedure-followup
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/procedure-followup
+        term_url: http://hl7.org/fhir/ValueSet/procedure-followup
+    title: Instructions for follow up
+    type: array
+  followUp_text: *id005
+  id:
+    description: The logical id of the resource, as used in the URL for the resource.
+      Once assigned, this value never changes.
+    element_property: true
+    maxLength: 64
+    minLength: 1
+    pattern: ^[A-Za-z0-9\-.]+$
+    title: Logical id of this artifact
+    type: string
+  identifier:
+    description: Business identifiers assigned to this procedure by the performer
+      or other systems which remain constant as the resource is updated and is propagated
+      from server to server.
+    element_property: true
+    items:
+      type: string
+    title: External Identifiers for this procedure
+    type: array
+  identifier_coding:
+    description: '[system#code representation of identifier] Business identifiers
+      assigned to this procedure by the performer or other systems which remain constant
+      as the resource is updated and is propagated from server to server.'
+    element_property: true
+    items:
+      type: string
+    title: External Identifiers for this procedure
+    type: array
+  identifier_text_coding:
+    description: '[system#code representation of identifier.text] Business identifiers
+      assigned to this procedure by the performer or other systems which remain constant
+      as the resource is updated and is propagated from server to server.'
+    element_property: true
+    items:
+      type: string
+    title: External Identifiers for this procedure
+    type: array
+  instantiatesCanonical:
+    description: The URL pointing to a FHIR-defined protocol, guideline, order set
+      or other definition that is adhered to in whole or in part by this Procedure.
+    element_property: true
+    enum_reference_types:
+    - PlanDefinition
+    - ActivityDefinition
+    - Measure
+    - OperationDefinition
+    - Questionnaire
+    items:
+      pattern: \S*
+      type: string
+    title: Instantiates FHIR protocol or definition
+    type: array
+  instantiatesUri:
+    description: The URL pointing to an externally maintained protocol, guideline,
+      order set or other definition that is adhered to in whole or in part by this
+      Procedure.
+    element_property: true
+    items:
+      pattern: \S*
+      type: string
+    title: Instantiates external protocol or definition
+    type: array
+  location:
+    backref: location_procedure
+    description: '[Text representation of Reference] The location where the procedure
+      actually happened.  E.g. a newborn at home, a tracheostomy at a restaurant.'
+    element_property: true
+    enum_reference_types:
+    - Location
+    title: Where the procedure happened
+    type: string
+  note:
+    description: '[Text representation of Annotation] Any other notes and comments
+      about the procedure.'
+    element_property: true
+    items:
+      type: string
+    title: Additional information about the procedure
+    type: array
+  occurrenceAge:
+    description: '[Text representation of Age] Estimated or actual date, date-time,
+      period, or age when the procedure did occur or is occurring.  Allows a period
+      to support complex procedures that span more than one date, and also allows
+      for the length of the procedure to be captured.'
+    element_property: true
+    one_of_many: occurrence
+    one_of_many_required: false
+    title: When the procedure occurred or is occurring
+    type: string
+  occurrenceDateTime:
+    description: Estimated or actual date, date-time, period, or age when the procedure
+      did occur or is occurring.  Allows a period to support complex procedures that
+      span more than one date, and also allows for the length of the procedure to
+      be captured.
+    element_property: true
+    format: date-time
+    one_of_many: occurrence
+    one_of_many_required: false
+    title: When the procedure occurred or is occurring
+    type: string
+  occurrencePeriod:
+    description: '[Text representation of Period] Estimated or actual date, date-time,
+      period, or age when the procedure did occur or is occurring.  Allows a period
+      to support complex procedures that span more than one date, and also allows
+      for the length of the procedure to be captured.'
+    element_property: true
+    one_of_many: occurrence
+    one_of_many_required: false
+    title: When the procedure occurred or is occurring
+    type: string
+  occurrenceRange:
+    description: '[Text representation of Range] Estimated or actual date, date-time,
+      period, or age when the procedure did occur or is occurring.  Allows a period
+      to support complex procedures that span more than one date, and also allows
+      for the length of the procedure to be captured.'
+    element_property: true
+    one_of_many: occurrence
+    one_of_many_required: false
+    title: When the procedure occurred or is occurring
+    type: string
+  occurrenceString:
+    description: Estimated or actual date, date-time, period, or age when the procedure
+      did occur or is occurring.  Allows a period to support complex procedures that
+      span more than one date, and also allows for the length of the procedure to
+      be captured.
+    element_property: true
+    one_of_many: occurrence
+    one_of_many_required: false
+    pattern: '[ \r\n\t\S]+'
+    title: When the procedure occurred or is occurring
+    type: string
+  occurrenceTiming:
+    description: '[Text representation of Timing] Estimated or actual date, date-time,
+      period, or age when the procedure did occur or is occurring.  Allows a period
+      to support complex procedures that span more than one date, and also allows
+      for the length of the procedure to be captured.'
+    element_property: true
+    one_of_many: occurrence
+    one_of_many_required: false
+    title: When the procedure occurred or is occurring
+    type: string
+  outcome:
+    binding_description: An outcome of a procedure - whether it was resolved or otherwise.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/procedure-outcome
+    binding_version: null
+    description: text representation. The outcome of the procedure - did it resolve
+      the reasons for the procedure being performed?
+    element_property: true
+    term:
+      description: An outcome of a procedure - whether it was resolved or otherwise.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/procedure-outcome
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/procedure-outcome
+        term_url: http://hl7.org/fhir/ValueSet/procedure-outcome
+    title: The result of procedure
+    type: string
+  outcome_coding: &id006
+    binding_description: An outcome of a procedure - whether it was resolved or otherwise.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/procedure-outcome
+    binding_version: null
+    description: '[system#code representation.] The outcome of the procedure - did
+      it resolve the reasons for the procedure being performed?'
+    element_property: true
+    term:
+      description: An outcome of a procedure - whether it was resolved or otherwise.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/procedure-outcome
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/procedure-outcome
+        term_url: http://hl7.org/fhir/ValueSet/procedure-outcome
+    title: The result of procedure
+    type: string
+  outcome_text: *id006
+  partOf:
+    backref: partOf_procedure
+    description: '[Text representation of Reference] A larger event of which this
+      particular procedure is a component or step.'
+    element_property: true
+    enum_reference_types:
+    - Procedure
+    - Observation
+    - MedicationAdministration
+    items:
+      type: string
+    title: Part of referenced event
+    type: array
+  performer:
+    description: '[Text representation of ProcedurePerformer] Indicates who or what
+      performed the procedure and how they were involved.'
+    element_property: true
+    items:
+      type: string
+    title: Who performed the procedure and what they did
+    type: array
+  project_id:
+    term:
+      $ref: _terms.yaml#/project_id
+    type: string
+  reason:
+    backref: reason_procedure
+    binding_description: A code that identifies the reason a procedure is  required.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/procedure-reason
+    binding_version: null
+    description: text representation. The coded reason or reference why the procedure
+      was performed. This may be a coded entity of some type, be present as text,
+      or be a reference to one of several resources that justify the procedure.
+    element_property: true
+    enum_reference_types:
+    - Condition
+    - Observation
+    - Procedure
+    - DiagnosticReport
+    - DocumentReference
+    items:
+      type: string
+    term:
+      description: A code that identifies the reason a procedure is  required.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/procedure-reason
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/procedure-reason
+        term_url: http://hl7.org/fhir/ValueSet/procedure-reason
+    title: The justification that the procedure was performed
+    type: array
+  reason_coding: &id007
+    backref: reason_procedure
+    binding_description: A code that identifies the reason a procedure is  required.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/procedure-reason
+    binding_version: null
+    description: '[system#code representation.] The coded reason or reference why
+      the procedure was performed. This may be a coded entity of some type, be present
+      as text, or be a reference to one of several resources that justify the procedure.'
+    element_property: true
+    enum_reference_types:
+    - Condition
+    - Observation
+    - Procedure
+    - DiagnosticReport
+    - DocumentReference
+    items:
+      type: string
+    term:
+      description: A code that identifies the reason a procedure is  required.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/procedure-reason
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/procedure-reason
+        term_url: http://hl7.org/fhir/ValueSet/procedure-reason
+    title: The justification that the procedure was performed
+    type: array
+  reason_text: *id007
+  recorded:
+    description: The date the occurrence of the procedure was first captured in the
+      record regardless of Procedure.status (potentially after the occurrence of the
+      event).
+    element_property: true
+    format: date-time
+    title: When the procedure was first captured in the subject's record
+    type: string
+  recorder:
+    backref: recorder_procedure
+    description: '[Text representation of Reference] Individual who recorded the record
+      and takes responsibility for its content.'
+    element_property: true
+    enum_reference_types:
+    - Patient
+    - RelatedPerson
+    - Practitioner
+    - PractitionerRole
+    title: Who recorded the procedure
+    type: string
+  report:
+    backref: report_procedure
+    description: '[Text representation of Reference] This could be a histology result,
+      pathology report, surgical report, etc.'
+    element_property: true
+    enum_reference_types:
+    - DiagnosticReport
+    - DocumentReference
+    - Composition
+    items:
+      type: string
+    title: Any report resulting from the procedure
+    type: array
+  reportedBoolean:
+    description: Indicates if this record was captured as a secondary 'reported' record
+      rather than as an original primary source-of-truth record.  It may also indicate
+      the source of the report.
+    element_property: true
+    one_of_many: reported
+    one_of_many_required: false
+    title: Reported rather than primary record
+    type: boolean
+  reportedReference:
+    backref: reportedReference_procedure
+    description: '[Text representation of Reference] Indicates if this record was
+      captured as a secondary ''reported'' record rather than as an original primary
+      source-of-truth record.  It may also indicate the source of the report.'
+    element_property: true
+    enum_reference_types:
+    - Patient
+    - RelatedPerson
+    - Practitioner
+    - PractitionerRole
+    - Organization
+    one_of_many: reported
+    one_of_many_required: false
+    title: Reported rather than primary record
+    type: string
+  resourceType:
+    const: Procedure
+    default: Procedure
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+  status:
+    binding_description: A code specifying the state of the procedure.
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/event-status
+    binding_version: 5.0.0
+    description: A code specifying the state of the procedure. Generally, this will
+      be the in-progress or completed state.
+    element_property: true
+    element_required: true
+    enum_values:
+    - preparation
+    - in-progress
+    - not-done
+    - on-hold
+    - stopped
+    - completed
+    - entered-in-error
+    - unknown
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: preparation | in-progress | not-done | on-hold | stopped | completed |
+      entered-in-error | unknown
+    type: string
+  statusReason:
+    binding_description: A code that identifies the reason a procedure was not performed.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/procedure-not-performed-reason
+    binding_version: null
+    description: text representation. Captures the reason for the current state of
+      the procedure.
+    element_property: true
+    term:
+      description: A code that identifies the reason a procedure was not performed.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/procedure-not-performed-reason
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/procedure-not-performed-reason
+        term_url: http://hl7.org/fhir/ValueSet/procedure-not-performed-reason
+    title: Reason for current status
+    type: string
+  statusReason_coding: &id008
+    binding_description: A code that identifies the reason a procedure was not performed.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/procedure-not-performed-reason
+    binding_version: null
+    description: '[system#code representation.] Captures the reason for the current
+      state of the procedure.'
+    element_property: true
+    term:
+      description: A code that identifies the reason a procedure was not performed.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/procedure-not-performed-reason
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/procedure-not-performed-reason
+        term_url: http://hl7.org/fhir/ValueSet/procedure-not-performed-reason
+    title: Reason for current status
+    type: string
+  statusReason_text: *id008
+  subject:
+    backref: subject_procedure
+    description: '[Text representation of Reference] On whom or on what the procedure
+      was performed. This is usually an individual human, but can also be performed
+      on animals, groups of humans or animals, organizations or practitioners (for
+      licensing), locations or devices (for safety inspections or regulatory authorizations).  If
+      the actual focus of the procedure is different from the subject, the focus element
+      specifies the actual focus of the procedure.'
+    element_property: true
+    enum_reference_types:
+    - Patient
+    - Group
+    - Device
+    - Practitioner
+    - Organization
+    - Location
+    title: Individual or entity the procedure was performed on
+    type: string
+  supportingInfo:
+    backref: supportingInfo_procedure
+    description: '[Text representation of Reference] Other resources from the patient
+      record that may be relevant to the procedure.  The information from these resources
+      was either used to create the instance or is provided to help with its interpretation.
+      This extension should not be used if more specific inline elements or extensions
+      are available.'
+    element_property: true
+    enum_reference_types:
+    - Resource
+    items:
+      type: string
+    title: Extra information relevant to the procedure
+    type: array
+  used:
+    backref: used_procedure
+    binding_description: Codes describing items used during a procedure.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/device-type
+    binding_version: null
+    description: text representation. Identifies medications, devices and any other
+      substance used as part of the procedure.
+    element_property: true
+    enum_reference_types:
+    - Device
+    - Medication
+    - Substance
+    - BiologicallyDerivedProduct
+    items:
+      type: string
+    term:
+      description: Codes describing items used during a procedure.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/device-type
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/device-type
+        term_url: http://hl7.org/fhir/ValueSet/device-type
+    title: Items used during procedure
+    type: array
+  used_coding: &id009
+    backref: used_procedure
+    binding_description: Codes describing items used during a procedure.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/device-type
+    binding_version: null
+    description: '[system#code representation.] Identifies medications, devices and
+      any other substance used as part of the procedure.'
+    element_property: true
+    enum_reference_types:
+    - Device
+    - Medication
+    - Substance
+    - BiologicallyDerivedProduct
+    items:
+      type: string
+    term:
+      description: Codes describing items used during a procedure.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/device-type
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/device-type
+        term_url: http://hl7.org/fhir/ValueSet/device-type
+    title: Items used during procedure
+    type: array
+  used_text: *id009
+title: Procedure
+type: object
