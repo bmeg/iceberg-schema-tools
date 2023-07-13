@@ -1,0 +1,227 @@
+$schema: http://json-schema.org/draft-04/schema#
+additionalProperties: true
+category: Clinical
+description: Definition of a Medication. This resource is primarily used for the identification
+  and definition of a medication, including ingredients, for the purposes of prescribing,
+  dispensing, and administering a medication as well as for making statements about
+  medication use. [See https://hl7.org/fhir/R5/Medication.html]
+id: medication
+links:
+- backref: medication
+  label: Medication_marketingAuthorizationHolder_Organization_medication
+  multiplicity: many_to_many
+  name: marketingAuthorizationHolder
+  required: false
+  target_type: organization
+program: '*'
+project: '*'
+properties:
+  batch:
+    description: '[Text representation of MedicationBatch] Information that only applies
+      to packages (not products).'
+    element_property: true
+    title: Details about packaged medications
+    type: string
+  code:
+    binding_description: A coded concept that defines the type of a medication.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/medication-codes
+    binding_version: null
+    description: 'text representation. A code (or set of codes) that specify this
+      medication, or a textual description if no code is available. Usage note: This
+      could be a standard medication code such as a code from RxNorm, SNOMED CT, IDMP
+      etc. It could also be a national or local formulary code, optionally with translations
+      to other code systems.'
+    element_property: true
+    term:
+      description: A coded concept that defines the type of a medication.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/medication-codes
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/medication-codes
+        term_url: http://hl7.org/fhir/ValueSet/medication-codes
+    title: Codes that identify this medication
+    type: string
+  code_coding: &id001
+    binding_description: A coded concept that defines the type of a medication.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/medication-codes
+    binding_version: null
+    description: '[system#code representation.] A code (or set of codes) that specify
+      this medication, or a textual description if no code is available. Usage note:
+      This could be a standard medication code such as a code from RxNorm, SNOMED
+      CT, IDMP etc. It could also be a national or local formulary code, optionally
+      with translations to other code systems.'
+    element_property: true
+    term:
+      description: A coded concept that defines the type of a medication.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/medication-codes
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/medication-codes
+        term_url: http://hl7.org/fhir/ValueSet/medication-codes
+    title: Codes that identify this medication
+    type: string
+  code_text: *id001
+  definition:
+    backref: medication
+    description: '[Text representation of Reference] A reference to a knowledge resource
+      that provides more information about this medication.'
+    element_property: true
+    enum_reference_types:
+    - MedicationKnowledge
+    title: Knowledge about this medication
+    type: string
+  doseForm:
+    binding_description: A coded concept defining the form of a medication.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/medication-form-codes
+    binding_version: null
+    description: text representation. Describes the form of the item.  Powder; tablets;
+      capsule.
+    element_property: true
+    term:
+      description: A coded concept defining the form of a medication.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/medication-form-codes
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/medication-form-codes
+        term_url: http://hl7.org/fhir/ValueSet/medication-form-codes
+    title: powder | tablets | capsule +
+    type: string
+  doseForm_coding: &id002
+    binding_description: A coded concept defining the form of a medication.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/medication-form-codes
+    binding_version: null
+    description: '[system#code representation.] Describes the form of the item.  Powder;
+      tablets; capsule.'
+    element_property: true
+    term:
+      description: A coded concept defining the form of a medication.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/medication-form-codes
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/medication-form-codes
+        term_url: http://hl7.org/fhir/ValueSet/medication-form-codes
+    title: powder | tablets | capsule +
+    type: string
+  doseForm_text: *id002
+  extension:
+    description: '[Text representation of Extension] May be used to represent additional
+      information that is not part of the basic definition of the resource. To make
+      the use of extensions safe and managable, there is a strict set of governance
+      applied to the definition and use of extensions. Though any implementer can
+      define an extension, there is a set of requirements that SHALL be met as part
+      of the definition of the extension.'
+    element_property: true
+    items:
+      type: string
+    title: Additional content defined by implementations
+    type: array
+  id:
+    description: The logical id of the resource, as used in the URL for the resource.
+      Once assigned, this value never changes.
+    element_property: true
+    maxLength: 64
+    minLength: 1
+    pattern: ^[A-Za-z0-9\-.]+$
+    title: Logical id of this artifact
+    type: string
+  identifier:
+    description: Business identifier for this medication
+    element_property: true
+    items:
+      type: string
+    title: Business identifier for this medication
+    type: array
+  identifier_coding:
+    description: '[system#code representation of identifier] Business identifier for
+      this medication'
+    element_property: true
+    items:
+      type: string
+    title: Business identifier for this medication
+    type: array
+  identifier_text_coding:
+    description: '[system#code representation of identifier.text] Business identifier
+      for this medication'
+    element_property: true
+    items:
+      type: string
+    title: Business identifier for this medication
+    type: array
+  ingredient:
+    description: '[Text representation of MedicationIngredient] Identifies a particular
+      constituent of interest in the product.'
+    element_property: true
+    items:
+      type: string
+    title: Active or inactive ingredient
+    type: array
+  marketingAuthorizationHolder:
+    backref: medication
+    description: '[Text representation of Reference] The company or other legal entity
+      that has authorization, from the appropriate drug regulatory authority,  to
+      market a medicine in one or more jurisdictions.  Typically abbreviated MAH.Note:  The
+      MAH may manufacture the product and may also contract the manufacturing of the
+      product to one or more companies (organizations).'
+    element_property: true
+    enum_reference_types:
+    - Organization
+    title: Organization that has authorization to market medication
+    type: string
+  project_id:
+    term:
+      $ref: _terms.yaml#/project_id
+    type: string
+  resourceType:
+    const: Medication
+    default: Medication
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+  status:
+    binding_description: A coded concept defining if the medication is in active use.
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/medication-status
+    binding_version: 5.0.0
+    description: A code to indicate if the medication is in active use.
+    element_property: true
+    enum_values:
+    - active
+    - inactive
+    - entered-in-error
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: active | inactive | entered-in-error
+    type: string
+  totalVolume:
+    description: '[Text representation of Quantity] text representation. When the
+      specified product code does not infer a package size, this is the specific amount
+      of drug in the product.  For example, when specifying a product that has the
+      same strength (For example, Insulin glargine 100 unit per mL solution for injection),
+      this attribute provides additional clarification of the package amount (For
+      example, 3 mL, 10mL, etc.).'
+    element_property: true
+    title: When the specified product code does not infer a package size, this is
+      the specific amount of drug in the product
+    type: string
+  totalVolume_unit:
+    title: Unit representation. When the specified product code does not infer a package
+      size, this is the specific amount of drug in the product
+    type: string
+  totalVolume_value:
+    title: Numerical value (with implicit precision) representation. When the specified
+      product code does not infer a package size, this is the specific amount of drug
+      in the product
+    type: number
+title: Medication
+type: object

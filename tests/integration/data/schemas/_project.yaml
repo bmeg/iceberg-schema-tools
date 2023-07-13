@@ -1,0 +1,113 @@
+$schema: http://json-schema.org/draft-04/schema#
+additionalProperties: false
+category: administrative
+constraints: null
+description: 'Any specifically defined piece of work that is undertaken or attempted
+  to meet a single requirement. (NCIt C47885)
+
+  '
+id: project
+links:
+- backref: projects
+  label: member_of
+  multiplicity: many_to_one
+  name: programs
+  required: true
+  target_type: program
+program: '*'
+project: '*'
+properties:
+  availability_mechanism:
+    description: Mechanism by which the project will be made avilable.
+    type: string
+  availability_type:
+    description: Is the project open or restricted?
+    enum:
+    - Open
+    - Restricted
+  code:
+    description: Unique identifier for the project.
+    type: string
+  date_collected:
+    description: The date or date range in which the project data was collected.
+    type: string
+  dbgap_accession_number:
+    description: The dbgap accession number provided for the project.
+    type: string
+  id:
+    $ref: _definitions.yaml#/UUID
+    description: UUID for the project.
+    systemAlias: node_id
+  intended_release_date:
+    description: Tracks a Project's intended release date.
+    format: date-time
+    type: string
+  investigator_affiliation:
+    description: The investigator's affiliation with respect to a research institution.
+    type: string
+  investigator_name:
+    description: Name of the principal investigator for the project.
+    type: string
+  name:
+    description: Display name/brief description for the project.
+    type: string
+  programs:
+    $ref: _definitions.yaml#/to_one
+    description: 'Indicates that the project is logically part of the indicated project.
+
+      '
+  releasable:
+    default: false
+    description: 'A project can only be released by the user when `releasable` is
+      true.
+
+      '
+    type: boolean
+  released:
+    default: false
+    description: 'To release a project is to tell the GDC to include all submitted
+
+      entities in the next GDC index.
+
+      '
+    type: boolean
+  state:
+    default: open
+    description: 'The possible states a project can be in.  All but `open` are
+
+      equivalent to some type of locked state.
+
+      '
+    enum:
+    - open
+    - review
+    - submitted
+    - processing
+    - closed
+    - legacy
+  support_id:
+    description: The ID of the source providing support/grant resources.
+    type: string
+  support_source:
+    description: The name of source providing support/grant resources.
+    type: string
+  type:
+    type: string
+required:
+- code
+- name
+- dbgap_accession_number
+- programs
+submittable: true
+systemProperties:
+- id
+- state
+- released
+- releasable
+- intended_release_date
+title: Project
+type: object
+uniqueKeys:
+- - id
+- - code
+validators: null

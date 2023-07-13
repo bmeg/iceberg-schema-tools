@@ -1,0 +1,212 @@
+$schema: http://json-schema.org/draft-04/schema#
+additionalProperties: true
+category: Clinical
+description: A homogeneous material with a definite composition. [See https://hl7.org/fhir/R5/Substance.html]
+id: substance
+links: []
+program: '*'
+project: '*'
+properties:
+  category:
+    binding_description: Category or classification of substance.
+    binding_strength: extensible
+    binding_uri: http://hl7.org/fhir/ValueSet/substance-category
+    binding_version: null
+    description: text representation. A code that classifies the general type of substance.  This
+      is used  for searching, sorting and display purposes.
+    element_property: true
+    items:
+      type: string
+    term:
+      description: Category or classification of substance.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/substance-category
+        cde_version: null
+        source: fhir
+        strength: extensible
+        term: http://hl7.org/fhir/ValueSet/substance-category
+        term_url: http://hl7.org/fhir/ValueSet/substance-category
+    title: What class/type of substance this is
+    type: array
+  category_coding: &id001
+    binding_description: Category or classification of substance.
+    binding_strength: extensible
+    binding_uri: http://hl7.org/fhir/ValueSet/substance-category
+    binding_version: null
+    description: '[system#code representation.] A code that classifies the general
+      type of substance.  This is used  for searching, sorting and display purposes.'
+    element_property: true
+    items:
+      type: string
+    term:
+      description: Category or classification of substance.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/substance-category
+        cde_version: null
+        source: fhir
+        strength: extensible
+        term: http://hl7.org/fhir/ValueSet/substance-category
+        term_url: http://hl7.org/fhir/ValueSet/substance-category
+    title: What class/type of substance this is
+    type: array
+  category_text: *id001
+  code:
+    backref: substance
+    binding_description: Substance codes.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/substance-code
+    binding_version: null
+    description: text representation. A code (or set of codes) that identify this
+      substance.
+    element_property: true
+    enum_reference_types:
+    - SubstanceDefinition
+    term:
+      description: Substance codes.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/substance-code
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/substance-code
+        term_url: http://hl7.org/fhir/ValueSet/substance-code
+    title: What substance this is
+    type: string
+  code_coding: &id002
+    backref: substance
+    binding_description: Substance codes.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/substance-code
+    binding_version: null
+    description: '[system#code representation.] A code (or set of codes) that identify
+      this substance.'
+    element_property: true
+    enum_reference_types:
+    - SubstanceDefinition
+    term:
+      description: Substance codes.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/substance-code
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/substance-code
+        term_url: http://hl7.org/fhir/ValueSet/substance-code
+    title: What substance this is
+    type: string
+  code_text: *id002
+  description:
+    description: A description of the substance - its appearance, handling requirements,
+      and other usage notes.
+    element_property: true
+    pattern: \s*(\S|\s)*
+    title: Textual description of the substance, comments
+    type: string
+  expiry:
+    description: When the substance is no longer valid to use. For some substances,
+      a single arbitrary date is used for expiry.
+    element_property: true
+    format: date-time
+    title: When no longer valid to use
+    type: string
+  extension:
+    description: '[Text representation of Extension] May be used to represent additional
+      information that is not part of the basic definition of the resource. To make
+      the use of extensions safe and managable, there is a strict set of governance
+      applied to the definition and use of extensions. Though any implementer can
+      define an extension, there is a set of requirements that SHALL be met as part
+      of the definition of the extension.'
+    element_property: true
+    items:
+      type: string
+    title: Additional content defined by implementations
+    type: array
+  id:
+    description: The logical id of the resource, as used in the URL for the resource.
+      Once assigned, this value never changes.
+    element_property: true
+    maxLength: 64
+    minLength: 1
+    pattern: ^[A-Za-z0-9\-.]+$
+    title: Logical id of this artifact
+    type: string
+  identifier:
+    description: Unique identifier for the substance. For an instance, an identifier
+      associated with the package/container (usually a label affixed directly).
+    element_property: true
+    items:
+      type: string
+    title: Unique identifier
+    type: array
+  identifier_coding:
+    description: '[system#code representation of identifier] Unique identifier for
+      the substance. For an instance, an identifier associated with the package/container
+      (usually a label affixed directly).'
+    element_property: true
+    items:
+      type: string
+    title: Unique identifier
+    type: array
+  identifier_text_coding:
+    description: '[system#code representation of identifier.text] Unique identifier
+      for the substance. For an instance, an identifier associated with the package/container
+      (usually a label affixed directly).'
+    element_property: true
+    items:
+      type: string
+    title: Unique identifier
+    type: array
+  ingredient:
+    description: '[Text representation of SubstanceIngredient] A substance can be
+      composed of other substances.'
+    element_property: true
+    items:
+      type: string
+    title: Composition information about the substance
+    type: array
+  instance:
+    description: A boolean to indicate if this an instance of a substance or a kind
+      of one (a definition).
+    element_property: true
+    element_required: true
+    title: Is this an instance of a substance or a kind of one
+    type: boolean
+  project_id:
+    term:
+      $ref: _terms.yaml#/project_id
+    type: string
+  quantity:
+    description: '[Text representation of Quantity] text representation. The amount
+      of the substance.'
+    element_property: true
+    title: Amount of substance in the package
+    type: string
+  quantity_unit:
+    title: Unit representation. Amount of substance in the package
+    type: string
+  quantity_value:
+    title: Numerical value (with implicit precision) representation. Amount of substance
+      in the package
+    type: number
+  resourceType:
+    const: Substance
+    default: Substance
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+  status:
+    binding_description: A code to indicate if the substance is actively used.
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/substance-status
+    binding_version: 5.0.0
+    description: A code to indicate if the substance is actively used.
+    element_property: true
+    enum_values:
+    - active
+    - inactive
+    - entered-in-error
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: active | inactive | entered-in-error
+    type: string
+title: Substance
+type: object

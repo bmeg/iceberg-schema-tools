@@ -1,0 +1,704 @@
+$schema: http://json-schema.org/draft-04/schema#
+additionalProperties: true
+category: Administrative
+description: Investigation to increase healthcare-related patient-independent knowledge.
+  A scientific study of nature that sometimes includes processes involved in health
+  and disease. For example, clinical trials are research studies that involve people.
+  These studies may be related to new ways to screen, prevent, diagnose, and treat
+  disease. They may also study certain outcomes and certain groups of people by looking
+  at data collected in the past or future. [See https://hl7.org/fhir/R5/ResearchStudy.html]
+id: research_study
+links:
+- backref: focus_research_study
+  label: ResearchStudy_focus_Medication_focus_research_study
+  multiplicity: many_to_many
+  name: focus_Medication
+  required: false
+  target_type: medication
+- backref: partOf_research_study
+  label: ResearchStudy_partOf_ResearchStudy_partOf_research_study
+  multiplicity: many_to_many
+  name: partOf
+  required: false
+  target_type: research_study
+- backref: result_research_study
+  label: ResearchStudy_result_DiagnosticReport_result_research_study
+  multiplicity: many_to_many
+  name: result_DiagnosticReport
+  required: false
+  target_type: diagnostic_report
+- backref: site_research_study
+  label: ResearchStudy_site_Location_site_research_study
+  multiplicity: many_to_many
+  name: site_Location
+  required: false
+  target_type: location
+- backref: site_research_study
+  label: ResearchStudy_site_Organization_site_research_study
+  multiplicity: many_to_many
+  name: site_Organization
+  required: false
+  target_type: organization
+- backref: research_study
+  label: ResearchStudy_gen3_project_Project_research_study
+  multiplicity: many_to_many
+  name: gen3_project
+  required: false
+  target_type: project
+program: '*'
+project: '*'
+properties:
+  associatedParty:
+    description: '[Text representation of ResearchStudyAssociatedParty] Sponsors,
+      collaborators, and other parties'
+    element_property: true
+    items:
+      type: string
+    title: Sponsors, collaborators, and other parties
+    type: array
+  classifier:
+    binding_description: desc.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/research-study-classifiers
+    binding_version: null
+    description: 'text representation. Additional grouping mechanism or categorization
+      of a research study. Example: FDA regulated device, FDA regulated drug, MPG
+      Paragraph 23b (a German legal requirement), IRB-exempt, etc. Implementation
+      Note: do not use the classifier element to support existing semantics that are
+      already supported thru explicit elements in the resource.'
+    element_property: true
+    items:
+      type: string
+    term:
+      description: desc.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/research-study-classifiers
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/research-study-classifiers
+        term_url: http://hl7.org/fhir/ValueSet/research-study-classifiers
+    title: Classification for the study
+    type: array
+  classifier_coding: &id001
+    binding_description: desc.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/research-study-classifiers
+    binding_version: null
+    description: '[system#code representation.] Additional grouping mechanism or categorization
+      of a research study. Example: FDA regulated device, FDA regulated drug, MPG
+      Paragraph 23b (a German legal requirement), IRB-exempt, etc. Implementation
+      Note: do not use the classifier element to support existing semantics that are
+      already supported thru explicit elements in the resource.'
+    element_property: true
+    items:
+      type: string
+    term:
+      description: desc.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/research-study-classifiers
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/research-study-classifiers
+        term_url: http://hl7.org/fhir/ValueSet/research-study-classifiers
+    title: Classification for the study
+    type: array
+  classifier_text: *id001
+  comparisonGroup:
+    description: '[Text representation of ResearchStudyComparisonGroup] Describes
+      an expected event or sequence of events for one of the subjects of a study.
+      E.g. for a living subject: exposure to drug A, wash-out, exposure to drug B,
+      wash-out, follow-up. E.g. for a stability study: {store sample from lot A at
+      25 degrees for 1 month}, {store sample from lot A at 40 degrees for 1 month}.'
+    element_property: true
+    items:
+      type: string
+    title: Defined path through the study for a subject
+    type: array
+  condition:
+    binding_description: Identification of the condition or diagnosis.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/condition-code
+    binding_version: null
+    description: text representation. The condition that is the focus of the study.  For
+      example, In a study to examine risk factors for Lupus, might have as an inclusion
+      criterion "healthy volunteer", but the target condition code would be a Lupus
+      SNOMED code.
+    element_property: true
+    items:
+      type: string
+    term:
+      description: Identification of the condition or diagnosis.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/condition-code
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/condition-code
+        term_url: http://hl7.org/fhir/ValueSet/condition-code
+    title: Condition being studied
+    type: array
+  condition_coding: &id002
+    binding_description: Identification of the condition or diagnosis.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/condition-code
+    binding_version: null
+    description: '[system#code representation.] The condition that is the focus of
+      the study.  For example, In a study to examine risk factors for Lupus, might
+      have as an inclusion criterion "healthy volunteer", but the target condition
+      code would be a Lupus SNOMED code.'
+    element_property: true
+    items:
+      type: string
+    term:
+      description: Identification of the condition or diagnosis.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/condition-code
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/condition-code
+        term_url: http://hl7.org/fhir/ValueSet/condition-code
+    title: Condition being studied
+    type: array
+  condition_text: *id002
+  date:
+    description: The date (and optionally time) when the ResearchStudy Resource was
+      last significantly changed. The date must change when the business version changes
+      and it must change if the status code changes. In addition, it should change
+      when the substantive content of the ResearchStudy Resource changes.
+    element_property: true
+    format: date-time
+    title: Date the resource last changed
+    type: string
+  description:
+    description: A detailed and human-readable narrative of the study. E.g., study
+      abstract.
+    element_property: true
+    pattern: \s*(\S|\s)*
+    title: Detailed narrative of the study
+    type: string
+  descriptionSummary:
+    description: A brief text for explaining the study.
+    element_property: true
+    pattern: \s*(\S|\s)*
+    title: Brief text explaining the study
+    type: string
+  extension:
+    description: '[Text representation of Extension] May be used to represent additional
+      information that is not part of the basic definition of the resource. To make
+      the use of extensions safe and managable, there is a strict set of governance
+      applied to the definition and use of extensions. Though any implementer can
+      define an extension, there is a set of requirements that SHALL be met as part
+      of the definition of the extension.'
+    element_property: true
+    items:
+      type: string
+    title: Additional content defined by implementations
+    type: array
+  focus:
+    backref: focus_research_study
+    binding_description: Common codes of research study focus
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/research-study-focus-type
+    binding_version: null
+    description: text representation. The medication(s), food(s), therapy(ies), device(s)
+      or other concerns or interventions that the study is seeking to gain more information
+      about.
+    element_property: true
+    enum_reference_types:
+    - Medication
+    - MedicinalProductDefinition
+    - SubstanceDefinition
+    - EvidenceVariable
+    items:
+      type: string
+    term:
+      description: Common codes of research study focus
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/research-study-focus-type
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/research-study-focus-type
+        term_url: http://hl7.org/fhir/ValueSet/research-study-focus-type
+    title: Drugs, devices, etc. under study
+    type: array
+  focus_coding: &id003
+    backref: focus_research_study
+    binding_description: Common codes of research study focus
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/research-study-focus-type
+    binding_version: null
+    description: '[system#code representation.] The medication(s), food(s), therapy(ies),
+      device(s) or other concerns or interventions that the study is seeking to gain
+      more information about.'
+    element_property: true
+    enum_reference_types:
+    - Medication
+    - MedicinalProductDefinition
+    - SubstanceDefinition
+    - EvidenceVariable
+    items:
+      type: string
+    term:
+      description: Common codes of research study focus
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/research-study-focus-type
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/research-study-focus-type
+        term_url: http://hl7.org/fhir/ValueSet/research-study-focus-type
+    title: Drugs, devices, etc. under study
+    type: array
+  focus_text: *id003
+  gen3_project:
+    backref: research_study
+    description: '[Text representation of Reference] The Gen3 project this study belongs
+      to.  Used to generate link.'
+    enum_reference_types:
+    - Project
+    title: The Gen3 project this study belongs to.
+    type: string
+  id:
+    description: The logical id of the resource, as used in the URL for the resource.
+      Once assigned, this value never changes.
+    element_property: true
+    maxLength: 64
+    minLength: 1
+    pattern: ^[A-Za-z0-9\-.]+$
+    title: Logical id of this artifact
+    type: string
+  identifier:
+    description: Identifiers assigned to this research study by the sponsor or other
+      systems.
+    element_property: true
+    items:
+      type: string
+    title: Business Identifier for study
+    type: array
+  identifier_coding:
+    description: '[system#code representation of identifier] Identifiers assigned
+      to this research study by the sponsor or other systems.'
+    element_property: true
+    items:
+      type: string
+    title: Business Identifier for study
+    type: array
+  identifier_text_coding:
+    description: '[system#code representation of identifier.text] Identifiers assigned
+      to this research study by the sponsor or other systems.'
+    element_property: true
+    items:
+      type: string
+    title: Business Identifier for study
+    type: array
+  keyword:
+    description: text representation. Key terms to aid in searching for or filtering
+      the study.
+    element_property: true
+    items:
+      type: string
+    title: Used to search for the study
+    type: array
+  keyword_coding: &id004
+    description: '[system#code representation.] Key terms to aid in searching for
+      or filtering the study.'
+    element_property: true
+    items:
+      type: string
+    title: Used to search for the study
+    type: array
+  keyword_text: *id004
+  label_:
+    description: '[Text representation of ResearchStudyLabel] Additional names for
+      the study'
+    element_property: true
+    items:
+      type: string
+    title: Additional names for the study
+    type: array
+  name:
+    description: Name for this study (computer friendly)
+    element_property: true
+    pattern: '[ \r\n\t\S]+'
+    title: Name for this study (computer friendly)
+    type: string
+  note:
+    description: '[Text representation of Annotation] Comments made about the study
+      by the performer, subject or other participants.'
+    element_property: true
+    items:
+      type: string
+    title: Comments made about the study
+    type: array
+  objective:
+    description: '[Text representation of ResearchStudyObjective] A goal that the
+      study is aiming to achieve in terms of a scientific question to be answered
+      by the analysis of data collected during the study.'
+    element_property: true
+    items:
+      type: string
+    title: A goal for the study
+    type: array
+  outcomeMeasure:
+    description: '[Text representation of ResearchStudyOutcomeMeasure] An "outcome
+      measure", "endpoint", "effect measure" or "measure of effect" is a specific
+      measurement or observation used to quantify the effect of experimental variables
+      on the participants in a study, or for observational studies, to describe patterns
+      of diseases or traits or associations with exposures, risk factors or treatment.'
+    element_property: true
+    items:
+      type: string
+    title: A variable measured during the study
+    type: array
+  partOf:
+    backref: partOf_research_study
+    description: '[Text representation of Reference] A larger research study of which
+      this particular study is a component or step.'
+    element_property: true
+    enum_reference_types:
+    - ResearchStudy
+    items:
+      type: string
+    title: Part of larger study
+    type: array
+  period:
+    description: '[Text representation of Period] Identifies the start date and the
+      expected (or actual, depending on status) end date for the study.'
+    element_property: true
+    title: When the study began and ended
+    type: string
+  phase:
+    binding_description: Codes for the stage in the progression of a therapy from
+      initial experimental use in humans in clinical trials to post-market evaluation.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/research-study-phase
+    binding_version: null
+    description: text representation. The stage in the progression of a therapy from
+      initial experimental use in humans in clinical trials to post-market evaluation.
+    element_property: true
+    term:
+      description: Codes for the stage in the progression of a therapy from initial
+        experimental use in humans in clinical trials to post-market evaluation.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/research-study-phase
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/research-study-phase
+        term_url: http://hl7.org/fhir/ValueSet/research-study-phase
+    title: n-a | early-phase-1 | phase-1 | phase-1-phase-2 | phase-2 | phase-2-phase-3
+      | phase-3 | phase-4
+    type: string
+  phase_coding: &id005
+    binding_description: Codes for the stage in the progression of a therapy from
+      initial experimental use in humans in clinical trials to post-market evaluation.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/research-study-phase
+    binding_version: null
+    description: '[system#code representation.] The stage in the progression of a
+      therapy from initial experimental use in humans in clinical trials to post-market
+      evaluation.'
+    element_property: true
+    term:
+      description: Codes for the stage in the progression of a therapy from initial
+        experimental use in humans in clinical trials to post-market evaluation.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/research-study-phase
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/research-study-phase
+        term_url: http://hl7.org/fhir/ValueSet/research-study-phase
+    title: n-a | early-phase-1 | phase-1 | phase-1-phase-2 | phase-2 | phase-2-phase-3
+      | phase-3 | phase-4
+    type: string
+  phase_text: *id005
+  primaryPurposeType:
+    binding_description: Codes for the main intent of the study.
+    binding_strength: preferred
+    binding_uri: http://hl7.org/fhir/ValueSet/research-study-prim-purp-type
+    binding_version: null
+    description: text representation. The type of study based upon the intent of the
+      study activities. A classification of the intent of the study.
+    element_property: true
+    term:
+      description: Codes for the main intent of the study.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/research-study-prim-purp-type
+        cde_version: null
+        source: fhir
+        strength: preferred
+        term: http://hl7.org/fhir/ValueSet/research-study-prim-purp-type
+        term_url: http://hl7.org/fhir/ValueSet/research-study-prim-purp-type
+    title: treatment | prevention | diagnostic | supportive-care | screening | health-services-research
+      | basic-science | device-feasibility
+    type: string
+  primaryPurposeType_coding: &id006
+    binding_description: Codes for the main intent of the study.
+    binding_strength: preferred
+    binding_uri: http://hl7.org/fhir/ValueSet/research-study-prim-purp-type
+    binding_version: null
+    description: '[system#code representation.] The type of study based upon the intent
+      of the study activities. A classification of the intent of the study.'
+    element_property: true
+    term:
+      description: Codes for the main intent of the study.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/research-study-prim-purp-type
+        cde_version: null
+        source: fhir
+        strength: preferred
+        term: http://hl7.org/fhir/ValueSet/research-study-prim-purp-type
+        term_url: http://hl7.org/fhir/ValueSet/research-study-prim-purp-type
+    title: treatment | prevention | diagnostic | supportive-care | screening | health-services-research
+      | basic-science | device-feasibility
+    type: string
+  primaryPurposeType_text: *id006
+  progressStatus:
+    description: '[Text representation of ResearchStudyProgressStatus] Status of study
+      with time for that status'
+    element_property: true
+    items:
+      type: string
+    title: Status of study with time for that status
+    type: array
+  project_id:
+    term:
+      $ref: _terms.yaml#/project_id
+    type: string
+  protocol:
+    backref: protocol_research_study
+    description: '[Text representation of Reference] The set of steps expected to
+      be performed as part of the execution of the study.'
+    element_property: true
+    enum_reference_types:
+    - PlanDefinition
+    items:
+      type: string
+    title: Steps followed in executing study
+    type: array
+  recruitment:
+    description: '[Text representation of ResearchStudyRecruitment] Target or actual
+      group of participants enrolled in study'
+    element_property: true
+    title: Target or actual group of participants enrolled in study
+    type: string
+  region:
+    binding_description: Countries and regions within which this artifact is targeted
+      for use.
+    binding_strength: extensible
+    binding_uri: http://hl7.org/fhir/ValueSet/jurisdiction
+    binding_version: null
+    description: text representation. A country, state or other area where the study
+      is taking place rather than its precise geographic location or address.
+    element_property: true
+    items:
+      type: string
+    term:
+      description: Countries and regions within which this artifact is targeted for
+        use.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/jurisdiction
+        cde_version: null
+        source: fhir
+        strength: extensible
+        term: http://hl7.org/fhir/ValueSet/jurisdiction
+        term_url: http://hl7.org/fhir/ValueSet/jurisdiction
+    title: Geographic area for the study
+    type: array
+  region_coding: &id007
+    binding_description: Countries and regions within which this artifact is targeted
+      for use.
+    binding_strength: extensible
+    binding_uri: http://hl7.org/fhir/ValueSet/jurisdiction
+    binding_version: null
+    description: '[system#code representation.] A country, state or other area where
+      the study is taking place rather than its precise geographic location or address.'
+    element_property: true
+    items:
+      type: string
+    term:
+      description: Countries and regions within which this artifact is targeted for
+        use.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/jurisdiction
+        cde_version: null
+        source: fhir
+        strength: extensible
+        term: http://hl7.org/fhir/ValueSet/jurisdiction
+        term_url: http://hl7.org/fhir/ValueSet/jurisdiction
+    title: Geographic area for the study
+    type: array
+  region_text: *id007
+  relatedArtifact:
+    description: '[Text representation of RelatedArtifact] Citations, references,
+      URLs and other related documents.  When using relatedArtifact to share URLs,
+      the relatedArtifact.type will often be set to one of "documentation" or "supported-with"
+      and the URL value will often be in relatedArtifact.document.url but another
+      possible location is relatedArtifact.resource when it is a canonical URL.'
+    element_property: true
+    items:
+      type: string
+    title: References, URLs, and attachments
+    type: array
+  resourceType:
+    const: ResearchStudy
+    default: ResearchStudy
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+  result:
+    backref: result_research_study
+    description: '[Text representation of Reference] Link to one or more sets of results
+      generated by the study.  Could also link to a research registry holding the
+      results such as ClinicalTrials.gov.'
+    element_property: true
+    enum_reference_types:
+    - EvidenceReport
+    - Citation
+    - DiagnosticReport
+    items:
+      type: string
+    title: Link to results generated during the study
+    type: array
+  site:
+    backref: site_research_study
+    description: '[Text representation of Reference] A facility in which study activities
+      are conducted.'
+    element_property: true
+    enum_reference_types:
+    - Location
+    - ResearchStudy
+    - Organization
+    items:
+      type: string
+    title: Facility where study activities are conducted
+    type: array
+  status:
+    binding_description: Codes that convey the current publication status of the research
+      study resource.
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/publication-status
+    binding_version: 5.0.0
+    description: The publication state of the resource (not of the study).
+    element_property: true
+    element_required: true
+    enum_values:
+    - draft
+    - active
+    - retired
+    - unknown
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: draft | active | retired | unknown
+    type: string
+  studyDesign:
+    binding_description: This is a set of terms for study design characteristics.
+    binding_strength: preferred
+    binding_uri: http://hl7.org/fhir/ValueSet/study-design
+    binding_version: null
+    description: text representation. Codes categorizing the type of study such as
+      investigational vs. observational, type of blinding, type of randomization,
+      safety vs. efficacy, etc.
+    element_property: true
+    items:
+      type: string
+    term:
+      description: This is a set of terms for study design characteristics.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/study-design
+        cde_version: null
+        source: fhir
+        strength: preferred
+        term: http://hl7.org/fhir/ValueSet/study-design
+        term_url: http://hl7.org/fhir/ValueSet/study-design
+    title: Classifications of the study design characteristics
+    type: array
+  studyDesign_coding: &id008
+    binding_description: This is a set of terms for study design characteristics.
+    binding_strength: preferred
+    binding_uri: http://hl7.org/fhir/ValueSet/study-design
+    binding_version: null
+    description: '[system#code representation.] Codes categorizing the type of study
+      such as investigational vs. observational, type of blinding, type of randomization,
+      safety vs. efficacy, etc.'
+    element_property: true
+    items:
+      type: string
+    term:
+      description: This is a set of terms for study design characteristics.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/study-design
+        cde_version: null
+        source: fhir
+        strength: preferred
+        term: http://hl7.org/fhir/ValueSet/study-design
+        term_url: http://hl7.org/fhir/ValueSet/study-design
+    title: Classifications of the study design characteristics
+    type: array
+  studyDesign_text: *id008
+  title:
+    description: The human readable name of the research study.
+    element_property: true
+    pattern: '[ \r\n\t\S]+'
+    title: Human readable name of the study
+    type: string
+  url:
+    description: Canonical identifier for this study resource, represented as a globally
+      unique URI.
+    element_property: true
+    pattern: \S*
+    title: Canonical identifier for this study resource
+    type: string
+  version:
+    description: The business version for the study record
+    element_property: true
+    pattern: '[ \r\n\t\S]+'
+    title: The business version for the study record
+    type: string
+  whyStopped:
+    binding_description: Codes for why the study ended prematurely.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/research-study-reason-stopped
+    binding_version: null
+    description: text representation. A description and/or code explaining the premature
+      termination of the study.
+    element_property: true
+    term:
+      description: Codes for why the study ended prematurely.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/research-study-reason-stopped
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/research-study-reason-stopped
+        term_url: http://hl7.org/fhir/ValueSet/research-study-reason-stopped
+    title: accrual-goal-met | closed-due-to-toxicity | closed-due-to-lack-of-study-progress
+      | temporarily-closed-per-study-design
+    type: string
+  whyStopped_coding: &id009
+    binding_description: Codes for why the study ended prematurely.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/research-study-reason-stopped
+    binding_version: null
+    description: '[system#code representation.] A description and/or code explaining
+      the premature termination of the study.'
+    element_property: true
+    term:
+      description: Codes for why the study ended prematurely.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/research-study-reason-stopped
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/research-study-reason-stopped
+        term_url: http://hl7.org/fhir/ValueSet/research-study-reason-stopped
+    title: accrual-goal-met | closed-due-to-toxicity | closed-due-to-lack-of-study-progress
+      | temporarily-closed-per-study-design
+    type: string
+  whyStopped_text: *id009
+title: ResearchStudy
+type: object

@@ -1,0 +1,218 @@
+# subclass_depth: 3  # default is 3 uncomment to override for fhir json schema
+
+
+# This limits the top level objects the system will render
+# For some output targets, e.g. PFB order of output is important, parents must be rendered before children
+dependency_order:
+  #
+  # gen3 scaffolding required objects
+  #
+  - _definitions.yaml
+  - _terms.yaml
+  - Program
+  - Project
+  #
+  # FHIR objects
+  #
+  - Organization
+  - Location
+  - Practitioner
+  - PractitionerRole
+  - ResearchStudy
+  - Patient
+  - ResearchSubject
+  - Substance
+  - Specimen
+  - Encounter
+  - Observation
+  - DiagnosticReport
+  - Condition
+  - Medication
+  - MedicationAdministration
+  - Procedure
+  - DocumentReference
+  - Task
+  - FamilyMemberHistory
+  - BodyStructure
+  - Immunization
+
+
+# Properties to 'pluck' from nested objects and render in the parent object
+nested_objects:
+  Patient:
+    - address.postalCode
+  Specimen:
+    - processing.additive
+    - processing.method
+  DocumentReference:
+    - content.attachment.contentType
+    - content.attachment.extension.md5
+    - content.attachment.size
+    - content.attachment.url
+  Task:
+    - input.valueReference
+    - output.valueReference
+
+# Specify which entities you want to add to a FHIR entities model
+extensions:
+  Patient:
+  - http://hl7.org/fhir/us/core/STU6/StructureDefinition-us-core-race.json
+  - http://hl7.org/fhir/us/core/STU6/StructureDefinition-us-core-ethnicity.json
+  - http://hl7.org/fhir/us/core/STU6/StructureDefinition-us-core-tribal-affiliation.json
+  - http://hl7.org/fhir/us/core/STU6/StructureDefinition-us-core-birthsex.json
+  - http://hl7.org/fhir/us/core/STU6/StructureDefinition-us-core-genderIdentity.json
+  - http://synthetichealth.github.io/synthea/disability-adjusted-life-years
+  - http://synthetichealth.github.io/synthea/quality-adjusted-life-years
+  - https://hl7.org/fhir/extensions/StructureDefinition-patient-birthPlace.json
+  - https://hl7.org/fhir/extensions/StructureDefinition-patient-mothersMaidenName.json
+
+
+# Constrain the parent destination links from a Node for the Simplified Model.
+limit_links:
+  Observation:
+    - ResearchStudy
+    - Patient
+    - Specimen
+  Encounter:
+    - Patient
+  DocumentReference:
+    - Patient
+    - Specimen
+
+# Add these extra properties to the simplified schema
+# These may be used to add extra scalar properties to the simplified schema as well as constrain edge destination types.
+extra_properties:
+
+  # Add gen3 file scaffolding expected properties
+  DocumentReference:
+    $ref: "_definitions.yaml#/data_file_properties"
+    data_category:
+      term:
+        $ref: "_terms.yaml#/data_category"
+      type: string
+    data_type:
+      term:
+        $ref: "_terms.yaml#/data_type"
+      type: string
+    data_format:
+      term:
+        $ref: "_terms.yaml#/data_format"
+      type: string
+    auth_resource_path:
+        type: string
+        description: Gen3 scaffolding
+#    # from content attachment
+#    content_url:
+#        type: string
+#        description: from content attachment
+#    content_contentType:
+#        type: string
+#        description: from content attachment
+#    content_size:
+#        type: number
+#        description: from content attachment
+#    content_md5:
+#        type: string
+#        description: from content attachment
+    # from denormalization
+    patient_id:
+        type: string
+        description: Denormalized patient id
+
+  # a link that does not exist in the FHIR schema, in this case from ResearchStudy to Project
+  ResearchStudy:
+    gen3_project:
+      description: The Gen3 project this study belongs to.  Used to generate link.
+      $ref: Reference.yaml
+      backref: research_study
+      enum_reference_types:
+      - Project
+      title: The Gen3 project this study belongs to.
+
+  # Create edges from references typed as ANY
+  # In this case Task we hint that Task inputs will point to Specimen and outputs point to DocumentReferences
+  # see:
+  # * https://build.fhir.org/task-definitions.html#Task.input.value_x_
+  # * https://build.fhir.org/task-definitions.html#Task.output.value_x_
+
+  Task:
+    specimen:
+      description: The specimen input to this task.  Used to generate link.
+      $ref: Reference.yaml
+      backref: task
+      enum_reference_types:
+      - Specimen
+      title: The specimen input to this task.
+    document_reference:
+      description: The output from this task.  Used to generate link.
+      $ref: Reference.yaml
+      backref: task
+      enum_reference_types:
+      - DocumentReference
+      title: The output from this task.
+
+  # explicitly limit edge `focus` to ResearchStudy
+  Observation:
+    focus:
+      backref: focus_observation
+      description: The actual focus of an observation when it is not the patient of
+        record representing something or someone associated with the patient such as
+        a spouse, parent, fetus, or donor.
+      element_property: true
+      enum_reference_types:
+      - ResearchStudy
+      items:
+        $ref: Reference.yaml
+      title: What the observation is about, when it is not about the subject of record
+      type: array
+
+  # add a link from a sub-object collection.bodySite
+  Specimen:
+    bodySite:
+      backref: specimen
+      $ref: CodeableReference.yaml
+      binding_description: SNOMED CT Body site concepts
+      binding_strength: example
+      binding_uri: http://hl7.org/fhir/ValueSet/body-site
+      binding_version: null
+      description: Anatomical location from which the specimen was collected (if subject
+        is a patient). This is the target site.  This element is not used for environmental
+        specimens.
+      element_property: true
+      enum_reference_types:
+      - BodyStructure
+      title: Anatomical collection site
+
+
+# Add a `category` field to the simplified schema: defaults to Clinical
+categories:
+  DocumentReference: data_file
+  Location: Administrative
+  Organization: Administrative
+  Patient: Administrative
+  Practitioner: Administrative
+  PractitionerRole: Administrative
+  ResearchStudy: Administrative
+  ResearchSubject: Administrative
+  Specimen: Biospecimen
+  Task: Analysis
+
+
+# Ignore these properties in all objects
+ignored_properties:
+  - contained
+  - meta
+  - implicitRules
+  - language
+  - contained
+  - modifierExtension
+  - assigner
+  - fhir_comments
+  - text
+
+
+# Rename these properties
+renamed_properties:
+  label: label_ # https://cdis.slack.com/archives/CDDPLU1NU/p1682393064223499
+  for: for_fhir  # https://github.com/nazrulworld/fhir.resources/blob/main/fhir/resources/task.py#L145
+  class: class_fhir

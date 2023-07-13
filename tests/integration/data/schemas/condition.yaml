@@ -1,0 +1,533 @@
+$schema: http://json-schema.org/draft-04/schema#
+additionalProperties: true
+category: Clinical
+description: Detailed information about conditions, problems or diagnoses. A clinical
+  condition, problem, diagnosis, or other event, situation, issue, or clinical concept
+  that has risen to a level of concern. [See https://hl7.org/fhir/R5/Condition.html]
+id: condition
+links:
+- backref: condition
+  label: Condition_subject_Patient_condition
+  multiplicity: many_to_many
+  name: subject_Patient
+  required: false
+  target_type: patient
+- backref: condition
+  label: Condition_encounter_Encounter_condition
+  multiplicity: many_to_many
+  name: encounter
+  required: false
+  target_type: encounter
+program: '*'
+project: '*'
+properties:
+  abatementAge:
+    description: '[Text representation of Age] The date or estimated date that the
+      condition resolved or went into remission. This is called "abatement" because
+      of the many overloaded connotations associated with "remission" or "resolution"
+      - Some conditions, such as chronic conditions, are never really resolved, but
+      they can abate.'
+    element_property: true
+    one_of_many: abatement
+    one_of_many_required: false
+    title: When in resolution/remission
+    type: string
+  abatementDateTime:
+    description: The date or estimated date that the condition resolved or went into
+      remission. This is called "abatement" because of the many overloaded connotations
+      associated with "remission" or "resolution" - Some conditions, such as chronic
+      conditions, are never really resolved, but they can abate.
+    element_property: true
+    format: date-time
+    one_of_many: abatement
+    one_of_many_required: false
+    title: When in resolution/remission
+    type: string
+  abatementPeriod:
+    description: '[Text representation of Period] The date or estimated date that
+      the condition resolved or went into remission. This is called "abatement" because
+      of the many overloaded connotations associated with "remission" or "resolution"
+      - Some conditions, such as chronic conditions, are never really resolved, but
+      they can abate.'
+    element_property: true
+    one_of_many: abatement
+    one_of_many_required: false
+    title: When in resolution/remission
+    type: string
+  abatementRange:
+    description: '[Text representation of Range] The date or estimated date that the
+      condition resolved or went into remission. This is called "abatement" because
+      of the many overloaded connotations associated with "remission" or "resolution"
+      - Some conditions, such as chronic conditions, are never really resolved, but
+      they can abate.'
+    element_property: true
+    one_of_many: abatement
+    one_of_many_required: false
+    title: When in resolution/remission
+    type: string
+  abatementString:
+    description: The date or estimated date that the condition resolved or went into
+      remission. This is called "abatement" because of the many overloaded connotations
+      associated with "remission" or "resolution" - Some conditions, such as chronic
+      conditions, are never really resolved, but they can abate.
+    element_property: true
+    one_of_many: abatement
+    one_of_many_required: false
+    pattern: '[ \r\n\t\S]+'
+    title: When in resolution/remission
+    type: string
+  bodySite:
+    binding_description: SNOMED CT Body site concepts
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/body-site
+    binding_version: null
+    description: text representation. The anatomical location where this condition
+      manifests itself.
+    element_property: true
+    items:
+      type: string
+    term:
+      description: SNOMED CT Body site concepts
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/body-site
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/body-site
+        term_url: http://hl7.org/fhir/ValueSet/body-site
+    title: Anatomical location, if relevant
+    type: array
+  bodySite_coding: &id001
+    binding_description: SNOMED CT Body site concepts
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/body-site
+    binding_version: null
+    description: '[system#code representation.] The anatomical location where this
+      condition manifests itself.'
+    element_property: true
+    items:
+      type: string
+    term:
+      description: SNOMED CT Body site concepts
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/body-site
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/body-site
+        term_url: http://hl7.org/fhir/ValueSet/body-site
+    title: Anatomical location, if relevant
+    type: array
+  bodySite_text: *id001
+  category:
+    binding_description: A category assigned to the condition.
+    binding_strength: preferred
+    binding_uri: http://hl7.org/fhir/ValueSet/condition-category
+    binding_version: null
+    description: text representation. A category assigned to the condition.
+    element_property: true
+    items:
+      type: string
+    term:
+      description: A category assigned to the condition.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/condition-category
+        cde_version: null
+        source: fhir
+        strength: preferred
+        term: http://hl7.org/fhir/ValueSet/condition-category
+        term_url: http://hl7.org/fhir/ValueSet/condition-category
+    title: problem-list-item | encounter-diagnosis
+    type: array
+  category_coding: &id002
+    binding_description: A category assigned to the condition.
+    binding_strength: preferred
+    binding_uri: http://hl7.org/fhir/ValueSet/condition-category
+    binding_version: null
+    description: '[system#code representation.] A category assigned to the condition.'
+    element_property: true
+    items:
+      type: string
+    term:
+      description: A category assigned to the condition.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/condition-category
+        cde_version: null
+        source: fhir
+        strength: preferred
+        term: http://hl7.org/fhir/ValueSet/condition-category
+        term_url: http://hl7.org/fhir/ValueSet/condition-category
+    title: problem-list-item | encounter-diagnosis
+    type: array
+  category_text: *id002
+  clinicalStatus:
+    binding_description: The clinical status of the condition or diagnosis.
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/condition-clinical
+    binding_version: 5.0.0
+    description: text representation. The clinical status of the condition.
+    element_property: true
+    term:
+      description: The clinical status of the condition or diagnosis.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/condition-clinical
+        cde_version: null
+        source: fhir
+        strength: required
+        term: http://hl7.org/fhir/ValueSet/condition-clinical
+        term_url: http://hl7.org/fhir/ValueSet/condition-clinical
+    title: active | recurrence | relapse | inactive | remission | resolved | unknown
+    type: string
+  clinicalStatus_coding: &id003
+    binding_description: The clinical status of the condition or diagnosis.
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/condition-clinical
+    binding_version: 5.0.0
+    description: '[system#code representation.] The clinical status of the condition.'
+    element_property: true
+    term:
+      description: The clinical status of the condition or diagnosis.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/condition-clinical
+        cde_version: null
+        source: fhir
+        strength: required
+        term: http://hl7.org/fhir/ValueSet/condition-clinical
+        term_url: http://hl7.org/fhir/ValueSet/condition-clinical
+    title: active | recurrence | relapse | inactive | remission | resolved | unknown
+    type: string
+  clinicalStatus_text: *id003
+  code:
+    binding_description: Identification of the condition or diagnosis.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/condition-code
+    binding_version: null
+    description: text representation. Identification of the condition, problem or
+      diagnosis
+    element_property: true
+    term:
+      description: Identification of the condition or diagnosis.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/condition-code
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/condition-code
+        term_url: http://hl7.org/fhir/ValueSet/condition-code
+    title: Identification of the condition, problem or diagnosis
+    type: string
+  code_coding: &id004
+    binding_description: Identification of the condition or diagnosis.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/condition-code
+    binding_version: null
+    description: '[system#code representation.] Identification of the condition, problem
+      or diagnosis'
+    element_property: true
+    term:
+      description: Identification of the condition or diagnosis.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/condition-code
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/condition-code
+        term_url: http://hl7.org/fhir/ValueSet/condition-code
+    title: Identification of the condition, problem or diagnosis
+    type: string
+  code_text: *id004
+  encounter:
+    backref: condition
+    description: '[Text representation of Reference] The Encounter during which this
+      Condition was created or to which the creation of this record is tightly associated.'
+    element_property: true
+    enum_reference_types:
+    - Encounter
+    title: The Encounter during which this Condition was created
+    type: string
+  evidence:
+    backref: evidence_condition
+    binding_description: null
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/clinical-findings
+    binding_version: null
+    description: text representation. Supporting evidence / manifestations that are
+      the basis of the Condition's verification status, such as evidence that confirmed
+      or refuted the condition.
+    element_property: true
+    enum_reference_types:
+    - Resource
+    items:
+      type: string
+    term:
+      description: null
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/clinical-findings
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/clinical-findings
+        term_url: http://hl7.org/fhir/ValueSet/clinical-findings
+    title: Supporting evidence for the verification status
+    type: array
+  evidence_coding: &id005
+    backref: evidence_condition
+    binding_description: null
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/clinical-findings
+    binding_version: null
+    description: '[system#code representation.] Supporting evidence / manifestations
+      that are the basis of the Condition''s verification status, such as evidence
+      that confirmed or refuted the condition.'
+    element_property: true
+    enum_reference_types:
+    - Resource
+    items:
+      type: string
+    term:
+      description: null
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/clinical-findings
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/clinical-findings
+        term_url: http://hl7.org/fhir/ValueSet/clinical-findings
+    title: Supporting evidence for the verification status
+    type: array
+  evidence_text: *id005
+  extension:
+    description: '[Text representation of Extension] May be used to represent additional
+      information that is not part of the basic definition of the resource. To make
+      the use of extensions safe and managable, there is a strict set of governance
+      applied to the definition and use of extensions. Though any implementer can
+      define an extension, there is a set of requirements that SHALL be met as part
+      of the definition of the extension.'
+    element_property: true
+    items:
+      type: string
+    title: Additional content defined by implementations
+    type: array
+  id:
+    description: The logical id of the resource, as used in the URL for the resource.
+      Once assigned, this value never changes.
+    element_property: true
+    maxLength: 64
+    minLength: 1
+    pattern: ^[A-Za-z0-9\-.]+$
+    title: Logical id of this artifact
+    type: string
+  identifier:
+    description: Business identifiers assigned to this condition by the performer
+      or other systems which remain constant as the resource is updated and propagates
+      from server to server.
+    element_property: true
+    items:
+      type: string
+    title: External Ids for this condition
+    type: array
+  identifier_coding:
+    description: '[system#code representation of identifier] Business identifiers
+      assigned to this condition by the performer or other systems which remain constant
+      as the resource is updated and propagates from server to server.'
+    element_property: true
+    items:
+      type: string
+    title: External Ids for this condition
+    type: array
+  identifier_text_coding:
+    description: '[system#code representation of identifier.text] Business identifiers
+      assigned to this condition by the performer or other systems which remain constant
+      as the resource is updated and propagates from server to server.'
+    element_property: true
+    items:
+      type: string
+    title: External Ids for this condition
+    type: array
+  note:
+    description: '[Text representation of Annotation] Additional information about
+      the Condition. This is a general notes/comments entry  for description of the
+      Condition, its diagnosis and prognosis.'
+    element_property: true
+    items:
+      type: string
+    title: Additional information about the Condition
+    type: array
+  onsetAge:
+    description: '[Text representation of Age] Estimated or actual date or date-time  the
+      condition began, in the opinion of the clinician.'
+    element_property: true
+    one_of_many: onset
+    one_of_many_required: false
+    title: Estimated or actual date,  date-time, or age
+    type: string
+  onsetDateTime:
+    description: Estimated or actual date or date-time  the condition began, in the
+      opinion of the clinician.
+    element_property: true
+    format: date-time
+    one_of_many: onset
+    one_of_many_required: false
+    title: Estimated or actual date,  date-time, or age
+    type: string
+  onsetPeriod:
+    description: '[Text representation of Period] Estimated or actual date or date-time  the
+      condition began, in the opinion of the clinician.'
+    element_property: true
+    one_of_many: onset
+    one_of_many_required: false
+    title: Estimated or actual date,  date-time, or age
+    type: string
+  onsetRange:
+    description: '[Text representation of Range] Estimated or actual date or date-time  the
+      condition began, in the opinion of the clinician.'
+    element_property: true
+    one_of_many: onset
+    one_of_many_required: false
+    title: Estimated or actual date,  date-time, or age
+    type: string
+  onsetString:
+    description: Estimated or actual date or date-time  the condition began, in the
+      opinion of the clinician.
+    element_property: true
+    one_of_many: onset
+    one_of_many_required: false
+    pattern: '[ \r\n\t\S]+'
+    title: Estimated or actual date,  date-time, or age
+    type: string
+  participant:
+    description: '[Text representation of ConditionParticipant] Indicates who or what
+      participated in the activities related to the condition and how they were involved.'
+    element_property: true
+    items:
+      type: string
+    title: Who or what participated in the activities related to the condition and
+      how they were involved
+    type: array
+  project_id:
+    term:
+      $ref: _terms.yaml#/project_id
+    type: string
+  recordedDate:
+    description: The recordedDate represents when this particular Condition record
+      was created in the system, which is often a system-generated date.
+    element_property: true
+    format: date-time
+    title: Date condition was first recorded
+    type: string
+  resourceType:
+    const: Condition
+    default: Condition
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+  severity:
+    binding_description: A subjective assessment of the severity of the condition
+      as evaluated by the clinician.
+    binding_strength: preferred
+    binding_uri: http://hl7.org/fhir/ValueSet/condition-severity
+    binding_version: null
+    description: text representation. A subjective assessment of the severity of the
+      condition as evaluated by the clinician.
+    element_property: true
+    term:
+      description: A subjective assessment of the severity of the condition as evaluated
+        by the clinician.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/condition-severity
+        cde_version: null
+        source: fhir
+        strength: preferred
+        term: http://hl7.org/fhir/ValueSet/condition-severity
+        term_url: http://hl7.org/fhir/ValueSet/condition-severity
+    title: Subjective severity of condition
+    type: string
+  severity_coding: &id006
+    binding_description: A subjective assessment of the severity of the condition
+      as evaluated by the clinician.
+    binding_strength: preferred
+    binding_uri: http://hl7.org/fhir/ValueSet/condition-severity
+    binding_version: null
+    description: '[system#code representation.] A subjective assessment of the severity
+      of the condition as evaluated by the clinician.'
+    element_property: true
+    term:
+      description: A subjective assessment of the severity of the condition as evaluated
+        by the clinician.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/condition-severity
+        cde_version: null
+        source: fhir
+        strength: preferred
+        term: http://hl7.org/fhir/ValueSet/condition-severity
+        term_url: http://hl7.org/fhir/ValueSet/condition-severity
+    title: Subjective severity of condition
+    type: string
+  severity_text: *id006
+  stage:
+    description: '[Text representation of ConditionStage] A simple summary of the
+      stage such as "Stage 3" or "Early Onset". The determination of the stage is
+      disease-specific, such as cancer, retinopathy of prematurity, kidney diseases,
+      Alzheimer''s, or Parkinson disease.'
+    element_property: true
+    items:
+      type: string
+    title: Stage/grade, usually assessed formally
+    type: array
+  subject:
+    backref: condition
+    description: '[Text representation of Reference] Indicates the patient or group
+      who the condition record is associated with.'
+    element_property: true
+    enum_reference_types:
+    - Patient
+    - Group
+    title: Who has the condition?
+    type: string
+  verificationStatus:
+    binding_description: The verification status to support or decline the clinical
+      status of the condition or diagnosis.
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/condition-ver-status
+    binding_version: 5.0.0
+    description: text representation. The verification status to support the clinical
+      status of the condition.  The verification status pertains to the condition,
+      itself, not to any specific condition attribute.
+    element_property: true
+    term:
+      description: The verification status to support or decline the clinical status
+        of the condition or diagnosis.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/condition-ver-status
+        cde_version: null
+        source: fhir
+        strength: required
+        term: http://hl7.org/fhir/ValueSet/condition-ver-status
+        term_url: http://hl7.org/fhir/ValueSet/condition-ver-status
+    title: unconfirmed | provisional | differential | confirmed | refuted | entered-in-error
+    type: string
+  verificationStatus_coding: &id007
+    binding_description: The verification status to support or decline the clinical
+      status of the condition or diagnosis.
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/condition-ver-status
+    binding_version: 5.0.0
+    description: '[system#code representation.] The verification status to support
+      the clinical status of the condition.  The verification status pertains to the
+      condition, itself, not to any specific condition attribute.'
+    element_property: true
+    term:
+      description: The verification status to support or decline the clinical status
+        of the condition or diagnosis.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/condition-ver-status
+        cde_version: null
+        source: fhir
+        strength: required
+        term: http://hl7.org/fhir/ValueSet/condition-ver-status
+        term_url: http://hl7.org/fhir/ValueSet/condition-ver-status
+    title: unconfirmed | provisional | differential | confirmed | refuted | entered-in-error
+    type: string
+  verificationStatus_text: *id007
+title: Condition
+type: object
