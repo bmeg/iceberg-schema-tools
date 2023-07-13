@@ -1,0 +1,181 @@
+$schema: http://json-schema.org/draft-04/schema#
+additionalProperties: true
+category: Administrative
+description: Participant or object which is the recipient of investigative activities
+  in a study. A ResearchSubject is a participant or object which is the recipient
+  of investigative activities in a research study. [See https://hl7.org/fhir/R5/ResearchSubject.html]
+id: research_subject
+links:
+- backref: research_subject
+  label: ResearchSubject_subject_Patient_research_subject
+  multiplicity: many_to_many
+  name: subject_Patient
+  required: false
+  target_type: patient
+- backref: research_subject
+  label: ResearchSubject_subject_Specimen_research_subject
+  multiplicity: many_to_many
+  name: subject_Specimen
+  required: false
+  target_type: specimen
+- backref: research_subject
+  label: ResearchSubject_subject_Medication_research_subject
+  multiplicity: many_to_many
+  name: subject_Medication
+  required: false
+  target_type: medication
+- backref: research_subject
+  label: ResearchSubject_subject_Substance_research_subject
+  multiplicity: many_to_many
+  name: subject_Substance
+  required: false
+  target_type: substance
+- backref: research_subject
+  label: ResearchSubject_study_ResearchStudy_research_subject
+  multiplicity: many_to_many
+  name: study
+  required: false
+  target_type: research_study
+program: '*'
+project: '*'
+properties:
+  actualComparisonGroup:
+    description: The name of the arm in the study the subject actually followed as
+      part of this study.
+    element_property: true
+    maxLength: 64
+    minLength: 1
+    pattern: ^[A-Za-z0-9\-.]+$
+    title: What path was followed
+    type: string
+  assignedComparisonGroup:
+    description: The name of the arm in the study the subject is expected to follow
+      as part of this study.
+    element_property: true
+    maxLength: 64
+    minLength: 1
+    pattern: ^[A-Za-z0-9\-.]+$
+    title: What path should be followed
+    type: string
+  consent:
+    backref: consent_research_subject
+    description: '[Text representation of Reference] A record of the patient''s informed
+      agreement to participate in the study.'
+    element_property: true
+    enum_reference_types:
+    - Consent
+    items:
+      type: string
+    title: Agreement to participate in study
+    type: array
+  extension:
+    description: '[Text representation of Extension] May be used to represent additional
+      information that is not part of the basic definition of the resource. To make
+      the use of extensions safe and managable, there is a strict set of governance
+      applied to the definition and use of extensions. Though any implementer can
+      define an extension, there is a set of requirements that SHALL be met as part
+      of the definition of the extension.'
+    element_property: true
+    items:
+      type: string
+    title: Additional content defined by implementations
+    type: array
+  id:
+    description: The logical id of the resource, as used in the URL for the resource.
+      Once assigned, this value never changes.
+    element_property: true
+    maxLength: 64
+    minLength: 1
+    pattern: ^[A-Za-z0-9\-.]+$
+    title: Logical id of this artifact
+    type: string
+  identifier:
+    description: Identifiers assigned to this research subject for a study.
+    element_property: true
+    items:
+      type: string
+    title: Business Identifier for research subject in a study
+    type: array
+  identifier_coding:
+    description: '[system#code representation of identifier] Identifiers assigned
+      to this research subject for a study.'
+    element_property: true
+    items:
+      type: string
+    title: Business Identifier for research subject in a study
+    type: array
+  identifier_text_coding:
+    description: '[system#code representation of identifier.text] Identifiers assigned
+      to this research subject for a study.'
+    element_property: true
+    items:
+      type: string
+    title: Business Identifier for research subject in a study
+    type: array
+  period:
+    description: '[Text representation of Period] The dates the subject began and
+      ended their participation in the study.'
+    element_property: true
+    title: Start and end of participation
+    type: string
+  progress:
+    description: '[Text representation of ResearchSubjectProgress] The current state
+      (status) of the subject and resons for status change where appropriate.'
+    element_property: true
+    items:
+      type: string
+    title: Subject status
+    type: array
+  project_id:
+    term:
+      $ref: _terms.yaml#/project_id
+    type: string
+  resourceType:
+    const: ResearchSubject
+    default: ResearchSubject
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+  status:
+    binding_description: Codes that convey the current publication status of the research
+      study resource.
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/publication-status
+    binding_version: 5.0.0
+    description: The publication state of the resource (not of the subject).
+    element_property: true
+    element_required: true
+    enum_values:
+    - draft
+    - active
+    - retired
+    - unknown
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: draft | active | retired | unknown
+    type: string
+  study:
+    backref: research_subject
+    description: '[Text representation of Reference] Reference to the study the subject
+      is participating in.'
+    element_property: true
+    enum_reference_types:
+    - ResearchStudy
+    title: Study subject is part of
+    type: string
+  subject:
+    backref: research_subject
+    description: '[Text representation of Reference] The record of the person, animal
+      or other entity involved in the study.'
+    element_property: true
+    enum_reference_types:
+    - Patient
+    - Group
+    - Specimen
+    - Device
+    - Medication
+    - Substance
+    - BiologicallyDerivedProduct
+    title: Who or what is part of study
+    type: string
+title: ResearchSubject
+type: object

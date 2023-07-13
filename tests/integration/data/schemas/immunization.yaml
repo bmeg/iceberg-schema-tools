@@ -1,0 +1,687 @@
+$schema: http://json-schema.org/draft-04/schema#
+additionalProperties: true
+category: Clinical
+description: Immunization event information. Describes the event of a patient being
+  administered a vaccine or a record of an immunization as reported by a patient,
+  a clinician or another party. [See https://hl7.org/fhir/R5/Immunization.html]
+id: immunization
+links:
+- backref: immunization
+  label: Immunization_administeredProduct_Medication_immunization
+  multiplicity: many_to_many
+  name: administeredProduct
+  required: false
+  target_type: medication
+- backref: immunization
+  label: Immunization_encounter_Encounter_immunization
+  multiplicity: many_to_many
+  name: encounter
+  required: false
+  target_type: encounter
+- backref: informationSource_immunization
+  label: Immunization_informationSource_Patient_informationSource_immunization
+  multiplicity: many_to_many
+  name: informationSource_Patient
+  required: false
+  target_type: patient
+- backref: informationSource_immunization
+  label: Immunization_informationSource_Practitioner_informationSource_immunization
+  multiplicity: many_to_many
+  name: informationSource_Practitioner
+  required: false
+  target_type: practitioner
+- backref: informationSource_immunization
+  label: Immunization_informationSource_PractitionerRole_informationSource_immunization
+  multiplicity: many_to_many
+  name: informationSource_PractitionerRole
+  required: false
+  target_type: practitioner_role
+- backref: informationSource_immunization
+  label: Immunization_informationSource_Organization_informationSource_immunization
+  multiplicity: many_to_many
+  name: informationSource_Organization
+  required: false
+  target_type: organization
+- backref: immunization
+  label: Immunization_location_Location_immunization
+  multiplicity: many_to_many
+  name: location
+  required: false
+  target_type: location
+- backref: reason_immunization
+  label: Immunization_reason_Condition_reason_immunization
+  multiplicity: many_to_many
+  name: reason_Condition
+  required: false
+  target_type: condition
+- backref: reason_immunization
+  label: Immunization_reason_Observation_reason_immunization
+  multiplicity: many_to_many
+  name: reason_Observation
+  required: false
+  target_type: observation
+- backref: reason_immunization
+  label: Immunization_reason_DiagnosticReport_reason_immunization
+  multiplicity: many_to_many
+  name: reason_DiagnosticReport
+  required: false
+  target_type: diagnostic_report
+program: '*'
+project: '*'
+properties:
+  administeredProduct:
+    backref: immunization
+    description: text representation. An indication of which product was administered
+      to the patient. This is typically a more detailed representation of the concept
+      conveyed by the vaccineCode data element. If a Medication resource is referenced,
+      it may be to a stand-alone resource or a contained resource within the Immunization
+      resource.
+    element_property: true
+    enum_reference_types:
+    - Medication
+    title: Product that was administered
+    type: string
+  administeredProduct_coding: &id001
+    backref: immunization
+    description: '[system#code representation.] An indication of which product was
+      administered to the patient. This is typically a more detailed representation
+      of the concept conveyed by the vaccineCode data element. If a Medication resource
+      is referenced, it may be to a stand-alone resource or a contained resource within
+      the Immunization resource.'
+    element_property: true
+    enum_reference_types:
+    - Medication
+    title: Product that was administered
+    type: string
+  administeredProduct_text: *id001
+  basedOn:
+    backref: basedOn_immunization
+    description: '[Text representation of Reference] A plan, order or recommendation
+      fulfilled in whole or in part by this immunization.'
+    element_property: true
+    enum_reference_types:
+    - CarePlan
+    - MedicationRequest
+    - ServiceRequest
+    - ImmunizationRecommendation
+    items:
+      type: string
+    title: Authority that the immunization event is based on
+    type: array
+  doseQuantity:
+    description: '[Text representation of Quantity] text representation. The quantity
+      of vaccine product that was administered.'
+    element_property: true
+    title: Amount of vaccine administered
+    type: string
+  doseQuantity_unit:
+    title: Unit representation. Amount of vaccine administered
+    type: string
+  doseQuantity_value:
+    title: Numerical value (with implicit precision) representation. Amount of vaccine
+      administered
+    type: number
+  encounter:
+    backref: immunization
+    description: '[Text representation of Reference] The visit or admission or other
+      contact between patient and health care provider the immunization was performed
+      as part of.'
+    element_property: true
+    enum_reference_types:
+    - Encounter
+    title: Encounter immunization was part of
+    type: string
+  expirationDate:
+    description: Date vaccine batch expires.
+    element_property: true
+    format: date
+    title: Vaccine expiration date
+    type: string
+  extension:
+    description: '[Text representation of Extension] May be used to represent additional
+      information that is not part of the basic definition of the resource. To make
+      the use of extensions safe and managable, there is a strict set of governance
+      applied to the definition and use of extensions. Though any implementer can
+      define an extension, there is a set of requirements that SHALL be met as part
+      of the definition of the extension.'
+    element_property: true
+    items:
+      type: string
+    title: Additional content defined by implementations
+    type: array
+  fundingSource:
+    binding_description: x
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/immunization-funding-source
+    binding_version: null
+    description: text representation. Indicates the source of the vaccine actually
+      administered. This may be different than the patient eligibility (e.g. the patient
+      may be eligible for a publically purchased vaccine but due to inventory issues,
+      vaccine purchased with private funds was actually administered).
+    element_property: true
+    term:
+      description: x
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/immunization-funding-source
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/immunization-funding-source
+        term_url: http://hl7.org/fhir/ValueSet/immunization-funding-source
+    title: Funding source for the vaccine
+    type: string
+  fundingSource_coding: &id002
+    binding_description: x
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/immunization-funding-source
+    binding_version: null
+    description: '[system#code representation.] Indicates the source of the vaccine
+      actually administered. This may be different than the patient eligibility (e.g.
+      the patient may be eligible for a publically purchased vaccine but due to inventory
+      issues, vaccine purchased with private funds was actually administered).'
+    element_property: true
+    term:
+      description: x
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/immunization-funding-source
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/immunization-funding-source
+        term_url: http://hl7.org/fhir/ValueSet/immunization-funding-source
+    title: Funding source for the vaccine
+    type: string
+  fundingSource_text: *id002
+  id:
+    description: The logical id of the resource, as used in the URL for the resource.
+      Once assigned, this value never changes.
+    element_property: true
+    maxLength: 64
+    minLength: 1
+    pattern: ^[A-Za-z0-9\-.]+$
+    title: Logical id of this artifact
+    type: string
+  identifier:
+    description: A unique identifier assigned to this immunization record.
+    element_property: true
+    items:
+      type: string
+    title: Business identifier
+    type: array
+  identifier_coding:
+    description: '[system#code representation of identifier] A unique identifier assigned
+      to this immunization record.'
+    element_property: true
+    items:
+      type: string
+    title: Business identifier
+    type: array
+  identifier_text_coding:
+    description: '[system#code representation of identifier.text] A unique identifier
+      assigned to this immunization record.'
+    element_property: true
+    items:
+      type: string
+    title: Business identifier
+    type: array
+  informationSource:
+    backref: informationSource_immunization
+    binding_description: x
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/immunization-origin
+    binding_version: null
+    description: text representation. Typically the source of the data when the report
+      of the immunization event is not based on information from the person who administered
+      the vaccine.
+    element_property: true
+    enum_reference_types:
+    - Patient
+    - Practitioner
+    - PractitionerRole
+    - RelatedPerson
+    - Organization
+    term:
+      description: x
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/immunization-origin
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/immunization-origin
+        term_url: http://hl7.org/fhir/ValueSet/immunization-origin
+    title: Indicates the source of a  reported record
+    type: string
+  informationSource_coding: &id003
+    backref: informationSource_immunization
+    binding_description: x
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/immunization-origin
+    binding_version: null
+    description: '[system#code representation.] Typically the source of the data when
+      the report of the immunization event is not based on information from the person
+      who administered the vaccine.'
+    element_property: true
+    enum_reference_types:
+    - Patient
+    - Practitioner
+    - PractitionerRole
+    - RelatedPerson
+    - Organization
+    term:
+      description: x
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/immunization-origin
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/immunization-origin
+        term_url: http://hl7.org/fhir/ValueSet/immunization-origin
+    title: Indicates the source of a  reported record
+    type: string
+  informationSource_text: *id003
+  isSubpotent:
+    description: Indication if a dose is considered to be subpotent. By default, a
+      dose should be considered to be potent.
+    element_property: true
+    title: Dose potency
+    type: boolean
+  location:
+    backref: immunization
+    description: '[Text representation of Reference] The service delivery location
+      where the vaccine administration occurred.'
+    element_property: true
+    enum_reference_types:
+    - Location
+    title: Where immunization occurred
+    type: string
+  lotNumber:
+    description: Lot number of the  vaccine product.
+    element_property: true
+    pattern: '[ \r\n\t\S]+'
+    title: Vaccine lot number
+    type: string
+  manufacturer:
+    backref: manufacturer_immunization
+    description: text representation. Name of vaccine manufacturer.
+    element_property: true
+    enum_reference_types:
+    - Organization
+    title: Vaccine manufacturer
+    type: string
+  manufacturer_coding: &id004
+    backref: manufacturer_immunization
+    description: '[system#code representation.] Name of vaccine manufacturer.'
+    element_property: true
+    enum_reference_types:
+    - Organization
+    title: Vaccine manufacturer
+    type: string
+  manufacturer_text: *id004
+  note:
+    description: '[Text representation of Annotation] Extra information about the
+      immunization that is not conveyed by the other attributes.'
+    element_property: true
+    items:
+      type: string
+    title: Additional immunization notes
+    type: array
+  occurrenceDateTime:
+    description: Date vaccine administered or was to be administered.
+    element_property: true
+    format: date-time
+    one_of_many: occurrence
+    one_of_many_required: true
+    title: Vaccine administration date
+    type: string
+  occurrenceString:
+    description: Date vaccine administered or was to be administered.
+    element_property: true
+    one_of_many: occurrence
+    one_of_many_required: true
+    pattern: '[ \r\n\t\S]+'
+    title: Vaccine administration date
+    type: string
+  patient:
+    backref: patient_immunization
+    description: '[Text representation of Reference] The patient who either received
+      or did not receive the immunization.'
+    element_property: true
+    enum_reference_types:
+    - Patient
+    title: Who was immunized
+    type: string
+  performer:
+    description: '[Text representation of ImmunizationPerformer] Indicates who performed
+      the immunization event.'
+    element_property: true
+    items:
+      type: string
+    title: Who performed event
+    type: array
+  primarySource:
+    description: Indicates whether the data contained in the resource was captured
+      by the individual/organization which was responsible for the administration
+      of the vaccine rather than as 'secondary reported' data documented by a third
+      party. A value of 'true' means this data originated with the individual/organization
+      which was responsible for the administration of the vaccine.
+    element_property: true
+    title: Indicates context the data was captured in
+    type: boolean
+  programEligibility:
+    description: '[Text representation of ImmunizationProgramEligibility] Indicates
+      a patient''s eligibility for a funding program.'
+    element_property: true
+    items:
+      type: string
+    title: Patient eligibility for a specific vaccination program
+    type: array
+  project_id:
+    term:
+      $ref: _terms.yaml#/project_id
+    type: string
+  protocolApplied:
+    description: '[Text representation of ImmunizationProtocolApplied] The protocol
+      (set of recommendations) being followed by the provider who administered the
+      dose.'
+    element_property: true
+    items:
+      type: string
+    title: Protocol followed by the provider
+    type: array
+  reaction:
+    description: '[Text representation of ImmunizationReaction] Categorical data indicating
+      that an adverse event is associated in time to an immunization.'
+    element_property: true
+    items:
+      type: string
+    title: Details of a reaction that follows immunization
+    type: array
+  reason:
+    backref: reason_immunization
+    binding_description: x
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/immunization-reason
+    binding_version: null
+    description: text representation. Describes why the immunization occurred in coded
+      or textual form, or Indicates another resource (Condition, Observation or DiagnosticReport)
+      whose existence justifies this immunization.
+    element_property: true
+    enum_reference_types:
+    - Condition
+    - Observation
+    - DiagnosticReport
+    items:
+      type: string
+    term:
+      description: x
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/immunization-reason
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/immunization-reason
+        term_url: http://hl7.org/fhir/ValueSet/immunization-reason
+    title: Why immunization occurred
+    type: array
+  reason_coding: &id005
+    backref: reason_immunization
+    binding_description: x
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/immunization-reason
+    binding_version: null
+    description: '[system#code representation.] Describes why the immunization occurred
+      in coded or textual form, or Indicates another resource (Condition, Observation
+      or DiagnosticReport) whose existence justifies this immunization.'
+    element_property: true
+    enum_reference_types:
+    - Condition
+    - Observation
+    - DiagnosticReport
+    items:
+      type: string
+    term:
+      description: x
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/immunization-reason
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/immunization-reason
+        term_url: http://hl7.org/fhir/ValueSet/immunization-reason
+    title: Why immunization occurred
+    type: array
+  reason_text: *id005
+  resourceType:
+    const: Immunization
+    default: Immunization
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+  route:
+    binding_description: x
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/immunization-route
+    binding_version: null
+    description: text representation. The path by which the vaccine product is taken
+      into the body.
+    element_property: true
+    term:
+      description: x
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/immunization-route
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/immunization-route
+        term_url: http://hl7.org/fhir/ValueSet/immunization-route
+    title: How vaccine entered body
+    type: string
+  route_coding: &id006
+    binding_description: x
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/immunization-route
+    binding_version: null
+    description: '[system#code representation.] The path by which the vaccine product
+      is taken into the body.'
+    element_property: true
+    term:
+      description: x
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/immunization-route
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/immunization-route
+        term_url: http://hl7.org/fhir/ValueSet/immunization-route
+    title: How vaccine entered body
+    type: string
+  route_text: *id006
+  site:
+    binding_description: x
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/immunization-site
+    binding_version: null
+    description: text representation. Body site where vaccine was administered.
+    element_property: true
+    term:
+      description: x
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/immunization-site
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/immunization-site
+        term_url: http://hl7.org/fhir/ValueSet/immunization-site
+    title: Body site vaccine  was administered
+    type: string
+  site_coding: &id007
+    binding_description: x
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/immunization-site
+    binding_version: null
+    description: '[system#code representation.] Body site where vaccine was administered.'
+    element_property: true
+    term:
+      description: x
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/immunization-site
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/immunization-site
+        term_url: http://hl7.org/fhir/ValueSet/immunization-site
+    title: Body site vaccine  was administered
+    type: string
+  site_text: *id007
+  status:
+    binding_description: x
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/immunization-status
+    binding_version: 5.0.0
+    description: Indicates the current status of the immunization event.
+    element_property: true
+    element_required: true
+    enum_values:
+    - completed
+    - entered-in-error
+    - not-done
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: completed | entered-in-error | not-done
+    type: string
+  statusReason:
+    binding_description: x
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/immunization-status-reason
+    binding_version: null
+    description: text representation. Indicates the reason the immunization event
+      was not performed.
+    element_property: true
+    term:
+      description: x
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/immunization-status-reason
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/immunization-status-reason
+        term_url: http://hl7.org/fhir/ValueSet/immunization-status-reason
+    title: Reason for current status
+    type: string
+  statusReason_coding: &id008
+    binding_description: x
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/immunization-status-reason
+    binding_version: null
+    description: '[system#code representation.] Indicates the reason the immunization
+      event was not performed.'
+    element_property: true
+    term:
+      description: x
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/immunization-status-reason
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/immunization-status-reason
+        term_url: http://hl7.org/fhir/ValueSet/immunization-status-reason
+    title: Reason for current status
+    type: string
+  statusReason_text: *id008
+  subpotentReason:
+    binding_description: The reason why a dose is considered to be subpotent.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/immunization-subpotent-reason
+    binding_version: null
+    description: text representation. Reason why a dose is considered to be subpotent.
+    element_property: true
+    items:
+      type: string
+    term:
+      description: The reason why a dose is considered to be subpotent.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/immunization-subpotent-reason
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/immunization-subpotent-reason
+        term_url: http://hl7.org/fhir/ValueSet/immunization-subpotent-reason
+    title: Reason for being subpotent
+    type: array
+  subpotentReason_coding: &id009
+    binding_description: The reason why a dose is considered to be subpotent.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/immunization-subpotent-reason
+    binding_version: null
+    description: '[system#code representation.] Reason why a dose is considered to
+      be subpotent.'
+    element_property: true
+    items:
+      type: string
+    term:
+      description: The reason why a dose is considered to be subpotent.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/immunization-subpotent-reason
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/immunization-subpotent-reason
+        term_url: http://hl7.org/fhir/ValueSet/immunization-subpotent-reason
+    title: Reason for being subpotent
+    type: array
+  subpotentReason_text: *id009
+  supportingInformation:
+    backref: supportingInformation_immunization
+    description: '[Text representation of Reference] Additional information that is
+      relevant to the immunization (e.g. for a vaccine recipient who is pregnant,
+      the gestational age of the fetus). The reason why a vaccine was given (e.g.
+      occupation, underlying medical condition) should be conveyed in Immunization.reason,
+      not as supporting information. The reason why a vaccine was not given (e.g.
+      contraindication) should be conveyed in Immunization.statusReason, not as supporting
+      information.'
+    element_property: true
+    enum_reference_types:
+    - Resource
+    items:
+      type: string
+    title: Additional information in support of the immunization
+    type: array
+  vaccineCode:
+    binding_description: x
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/vaccine-code
+    binding_version: null
+    description: text representation. Vaccine that was administered or was to be administered.
+    element_property: true
+    term:
+      description: x
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/vaccine-code
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/vaccine-code
+        term_url: http://hl7.org/fhir/ValueSet/vaccine-code
+    title: Vaccine administered
+    type: string
+  vaccineCode_coding: &id010
+    binding_description: x
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/vaccine-code
+    binding_version: null
+    description: '[system#code representation.] Vaccine that was administered or was
+      to be administered.'
+    element_property: true
+    term:
+      description: x
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/vaccine-code
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/vaccine-code
+        term_url: http://hl7.org/fhir/ValueSet/vaccine-code
+    title: Vaccine administered
+    type: string
+  vaccineCode_text: *id010
+title: Immunization
+type: object

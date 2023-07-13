@@ -1,0 +1,190 @@
+$schema: http://json-schema.org/draft-04/schema#
+additionalProperties: true
+category: Administrative
+description: A grouping of people or organizations with a common purpose. A formally
+  or informally recognized grouping of people or organizations formed for the purpose
+  of achieving some form of collective action. Includes companies, institutions, corporations,
+  departments, community groups, healthcare practice groups, payer/insurer, etc. [See
+  https://hl7.org/fhir/R5/Organization.html]
+id: organization
+links:
+- backref: organization
+  label: Organization_partOf_Organization_organization
+  multiplicity: many_to_many
+  name: partOf
+  required: false
+  target_type: organization
+program: '*'
+project: '*'
+properties:
+  active:
+    description: Whether the organization's record is still in active use
+    element_property: true
+    title: Whether the organization's record is still in active use
+    type: boolean
+  alias:
+    description: A list of alternate names that the organization is known as, or was
+      known as in the past
+    element_property: true
+    items:
+      pattern: '[ \r\n\t\S]+'
+      type: string
+    title: A list of alternate names that the organization is known as, or was known
+      as in the past
+    type: array
+  contact:
+    description: '[Text representation of ExtendedContactDetail] The contact details
+      of communication devices available relevant to the specific Organization. This
+      can include addresses, phone numbers, fax numbers, mobile numbers, email addresses
+      and web sites.'
+    element_property: true
+    items:
+      type: string
+    title: Official contact details for the Organization
+    type: array
+  description:
+    description: Description of the organization, which helps provide additional general
+      context on the organization to ensure that the correct organization is selected.
+    element_property: true
+    pattern: \s*(\S|\s)*
+    title: Additional details about the Organization that could be displayed as further
+      information to identify the Organization beyond its name
+    type: string
+  endpoint:
+    backref: endpoint_organization
+    description: '[Text representation of Reference] Technical endpoints providing
+      access to services operated for the organization'
+    element_property: true
+    enum_reference_types:
+    - Endpoint
+    items:
+      type: string
+    title: Technical endpoints providing access to services operated for the organization
+    type: array
+  extension:
+    description: '[Text representation of Extension] May be used to represent additional
+      information that is not part of the basic definition of the resource. To make
+      the use of extensions safe and managable, there is a strict set of governance
+      applied to the definition and use of extensions. Though any implementer can
+      define an extension, there is a set of requirements that SHALL be met as part
+      of the definition of the extension.'
+    element_property: true
+    items:
+      type: string
+    title: Additional content defined by implementations
+    type: array
+  id:
+    description: The logical id of the resource, as used in the URL for the resource.
+      Once assigned, this value never changes.
+    element_property: true
+    maxLength: 64
+    minLength: 1
+    pattern: ^[A-Za-z0-9\-.]+$
+    title: Logical id of this artifact
+    type: string
+  identifier:
+    description: Identifier for the organization that is used to identify the organization
+      across multiple disparate systems.
+    element_property: true
+    items:
+      type: string
+    title: Identifies this organization  across multiple systems
+    type: array
+  identifier_coding:
+    description: '[system#code representation of identifier] Identifier for the organization
+      that is used to identify the organization across multiple disparate systems.'
+    element_property: true
+    items:
+      type: string
+    title: Identifies this organization  across multiple systems
+    type: array
+  identifier_text_coding:
+    description: '[system#code representation of identifier.text] Identifier for the
+      organization that is used to identify the organization across multiple disparate
+      systems.'
+    element_property: true
+    items:
+      type: string
+    title: Identifies this organization  across multiple systems
+    type: array
+  name:
+    description: A name associated with the organization.
+    element_property: true
+    pattern: '[ \r\n\t\S]+'
+    title: Name used for the organization
+    type: string
+  partOf:
+    backref: organization
+    description: '[Text representation of Reference] The organization of which this
+      organization forms a part'
+    element_property: true
+    enum_reference_types:
+    - Organization
+    title: The organization of which this organization forms a part
+    type: string
+  project_id:
+    term:
+      $ref: _terms.yaml#/project_id
+    type: string
+  qualification:
+    description: '[Text representation of OrganizationQualification] The official
+      certifications, accreditations, training, designations and licenses that authorize
+      and/or otherwise endorse the provision of care by the organization.  For example,
+      an approval to provide a type of services issued by a certifying body (such
+      as the US Joint Commission) to an organization.'
+    element_property: true
+    items:
+      type: string
+    title: Qualifications, certifications, accreditations, licenses, training, etc.
+      pertaining to the provision of care
+    type: array
+  resourceType:
+    const: Organization
+    default: Organization
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+  type:
+    binding_description: Used to categorize the organization.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/organization-type
+    binding_version: null
+    description: text representation. The kind(s) of organization that this is.
+    element_property: true
+    items:
+      type: string
+    term:
+      description: Used to categorize the organization.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/organization-type
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/organization-type
+        term_url: http://hl7.org/fhir/ValueSet/organization-type
+    title: Kind of organization
+    type: array
+  type_coding: &id001
+    binding_description: Used to categorize the organization.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/organization-type
+    binding_version: null
+    description: '[system#code representation.] The kind(s) of organization that this
+      is.'
+    element_property: true
+    items:
+      type: string
+    term:
+      description: Used to categorize the organization.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/organization-type
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/organization-type
+        term_url: http://hl7.org/fhir/ValueSet/organization-type
+    title: Kind of organization
+    type: array
+  type_text: *id001
+title: Organization
+type: object

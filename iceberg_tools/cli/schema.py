@@ -6,7 +6,7 @@ import click
 import yaml
 from yaml import SafeLoader
 
-from iceberg_tools.schema import _find_fhir_classes, BASE_URI, _extract_schemas
+from iceberg_tools.schema import _find_fhir_classes, BASE_URI, extract_schemas
 from iceberg_tools.schema.graph import _bundle_schemas
 from iceberg_tools.schema.simplified import _simplify_schemas
 from iceberg_tools.util import NaturalOrderGroup
@@ -50,7 +50,7 @@ def generate_bmeg(output_path, config_path, stats):
         gen3_config = yaml.load(fp, SafeLoader)
 
     classes = _find_fhir_classes(gen3_config, log_stats=stats)
-    schemas = _extract_schemas(classes, BASE_URI)
+    schemas = extract_schemas(classes, BASE_URI)
 
     output_path.mkdir(parents=True, exist_ok=True)
 
@@ -93,7 +93,7 @@ def generate_simplified(output_path, config_path, gen3_fixtures, stats):
         gen3_config = yaml.load(fp, SafeLoader)
 
     classes = _find_fhir_classes(gen3_config, log_stats=stats)
-    schemas = _extract_schemas(classes, BASE_URI)
+    schemas = extract_schemas(classes, BASE_URI)
     schemas = _simplify_schemas(gen3_config, gen3_fixtures, schemas, log_stats=stats)
 
     # also write out yaml files

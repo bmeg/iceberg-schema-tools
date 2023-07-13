@@ -34,3 +34,9 @@ beautifulsoup4
 
 # faster json schema
 fastjsonschema
+
+# json pointer
+jsonpointer
+
+# jq bindings
+pyjq

@@ -1,0 +1,598 @@
+$schema: http://json-schema.org/draft-04/schema#
+additionalProperties: true
+category: Analysis
+description: A task to be performed. [See https://hl7.org/fhir/R5/Task.html]
+id: task
+links:
+- backref: task
+  label: Task_encounter_Encounter_task
+  multiplicity: many_to_many
+  name: encounter
+  required: false
+  target_type: encounter
+- backref: task
+  label: Task_location_Location_task
+  multiplicity: many_to_many
+  name: location
+  required: false
+  target_type: location
+- backref: owner_task
+  label: Task_owner_Practitioner_owner_task
+  multiplicity: many_to_many
+  name: owner_Practitioner
+  required: false
+  target_type: practitioner
+- backref: owner_task
+  label: Task_owner_PractitionerRole_owner_task
+  multiplicity: many_to_many
+  name: owner_PractitionerRole
+  required: false
+  target_type: practitioner_role
+- backref: owner_task
+  label: Task_owner_Organization_owner_task
+  multiplicity: many_to_many
+  name: owner_Organization
+  required: false
+  target_type: organization
+- backref: owner_task
+  label: Task_owner_Patient_owner_task
+  multiplicity: many_to_many
+  name: owner_Patient
+  required: false
+  target_type: patient
+- backref: partOf_task
+  label: Task_partOf_Task_partOf_task
+  multiplicity: many_to_many
+  name: partOf
+  required: false
+  target_type: task
+- backref: task
+  label: Task_specimen_Specimen_task
+  multiplicity: many_to_many
+  name: specimen
+  required: false
+  target_type: specimen
+- backref: task
+  label: Task_document_reference_DocumentReference_task
+  multiplicity: many_to_many
+  name: document_reference
+  required: false
+  target_type: document_reference
+program: '*'
+project: '*'
+properties:
+  authoredOn:
+    description: The date and time this task was created.
+    element_property: true
+    format: date-time
+    title: Task Creation Date
+    type: string
+  basedOn:
+    backref: basedOn_task
+    description: '[Text representation of Reference] BasedOn refers to a higher-level
+      authorization that triggered the creation of the task.  It references a "request"
+      resource such as a ServiceRequest, MedicationRequest, CarePlan, etc. which is
+      distinct from the "request" resource the task is seeking to fulfill.  This latter
+      resource is referenced by focus.  For example, based on a CarePlan (= basedOn),
+      a task is created to fulfill a ServiceRequest ( = focus ) to collect a specimen
+      from a patient.'
+    element_property: true
+    enum_reference_types:
+    - Resource
+    items:
+      type: string
+    title: Request fulfilled by this task
+    type: array
+  businessStatus:
+    description: text representation. Contains business-specific nuances of the business
+      state.
+    element_property: true
+    title: E.g. "Specimen collected", "IV prepped"
+    type: string
+  businessStatus_coding: &id001
+    description: '[system#code representation.] Contains business-specific nuances
+      of the business state.'
+    element_property: true
+    title: E.g. "Specimen collected", "IV prepped"
+    type: string
+  businessStatus_text: *id001
+  code:
+    binding_description: Codes to identify what the task involves.  These will typically
+      be specific to a particular workflow.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/task-code
+    binding_version: null
+    description: text representation. A name or code (or both) briefly describing
+      what the task involves.
+    element_property: true
+    term:
+      description: Codes to identify what the task involves.  These will typically
+        be specific to a particular workflow.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/task-code
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/task-code
+        term_url: http://hl7.org/fhir/ValueSet/task-code
+    title: Task Type
+    type: string
+  code_coding: &id002
+    binding_description: Codes to identify what the task involves.  These will typically
+      be specific to a particular workflow.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/task-code
+    binding_version: null
+    description: '[system#code representation.] A name or code (or both) briefly describing
+      what the task involves.'
+    element_property: true
+    term:
+      description: Codes to identify what the task involves.  These will typically
+        be specific to a particular workflow.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/task-code
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/task-code
+        term_url: http://hl7.org/fhir/ValueSet/task-code
+    title: Task Type
+    type: string
+  code_text: *id002
+  description:
+    description: A free-text description of what is to be performed.
+    element_property: true
+    pattern: '[ \r\n\t\S]+'
+    title: Human-readable explanation of task
+    type: string
+  doNotPerform:
+    description: If true indicates that the Task is asking for the specified action
+      to *not* occur.
+    element_property: true
+    title: True if Task is prohibiting action
+    type: boolean
+  document_reference:
+    backref: task
+    description: '[Text representation of Reference] The output from this task.  Used
+      to generate link.'
+    enum_reference_types:
+    - DocumentReference
+    title: The output from this task.
+    type: string
+  encounter:
+    backref: task
+    description: '[Text representation of Reference] The healthcare event  (e.g. a
+      patient and healthcare provider interaction) during which this task was created.'
+    element_property: true
+    enum_reference_types:
+    - Encounter
+    title: Healthcare event during which this task originated
+    type: string
+  executionPeriod:
+    description: '[Text representation of Period] Identifies the time action was first
+      taken against the task (start) and/or the time final action was taken against
+      the task prior to marking it as completed (end).'
+    element_property: true
+    title: Start and end time of execution
+    type: string
+  extension:
+    description: '[Text representation of Extension] May be used to represent additional
+      information that is not part of the basic definition of the resource. To make
+      the use of extensions safe and managable, there is a strict set of governance
+      applied to the definition and use of extensions. Though any implementer can
+      define an extension, there is a set of requirements that SHALL be met as part
+      of the definition of the extension.'
+    element_property: true
+    items:
+      type: string
+    title: Additional content defined by implementations
+    type: array
+  focus:
+    backref: focus_task
+    description: '[Text representation of Reference] The request being fulfilled or
+      the resource being manipulated (changed, suspended, etc.) by this task.'
+    element_property: true
+    enum_reference_types:
+    - Resource
+    title: What task is acting on
+    type: string
+  for_fhir:
+    backref: for_task
+    description: '[Text representation of Reference] [Reserved word `for` renamed
+      to `for_fhir`] The entity who benefits from the performance of the service specified
+      in the task (e.g., the patient).'
+    element_property: true
+    enum_reference_types:
+    - Resource
+    title: Beneficiary of the Task
+    type: string
+  groupIdentifier:
+    description: '[Text representation of Identifier] A shared identifier common to
+      multiple independent Task and Request instances that were activated/authorized
+      more or less simultaneously by a single author.  The presence of the same identifier
+      on each request ties those requests together and may have business ramifications
+      in terms of reporting of results, billing, etc.  E.g. a requisition number shared
+      by a set of lab tests ordered together, or a prescription number shared by all
+      meds ordered at one time.'
+    element_property: true
+    title: Requisition or grouper id
+    type: string
+  id:
+    description: The logical id of the resource, as used in the URL for the resource.
+      Once assigned, this value never changes.
+    element_property: true
+    maxLength: 64
+    minLength: 1
+    pattern: ^[A-Za-z0-9\-.]+$
+    title: Logical id of this artifact
+    type: string
+  identifier:
+    description: The business identifier for this task.
+    element_property: true
+    items:
+      type: string
+    title: Task Instance Identifier
+    type: array
+  identifier_coding:
+    description: '[system#code representation of identifier] The business identifier
+      for this task.'
+    element_property: true
+    items:
+      type: string
+    title: Task Instance Identifier
+    type: array
+  identifier_text_coding:
+    description: '[system#code representation of identifier.text] The business identifier
+      for this task.'
+    element_property: true
+    items:
+      type: string
+    title: Task Instance Identifier
+    type: array
+  input_valueReference:
+    backref: task_input
+    description: '[Text representation of Reference] [Plucked from Task.input] The
+      value of the input parameter as a basic type.'
+    element_property: true
+    one_of_many: value
+    one_of_many_required: true
+    title: Content to use in performing the task
+    type: string
+  instantiatesCanonical:
+    description: The URL pointing to a *FHIR*-defined protocol, guideline, orderset
+      or other definition that is adhered to in whole or in part by this Task.
+    element_property: true
+    enum_reference_types:
+    - ActivityDefinition
+    pattern: \S*
+    title: Formal definition of task
+    type: string
+  instantiatesUri:
+    description: The URL pointing to an *externally* maintained  protocol, guideline,
+      orderset or other definition that is adhered to in whole or in part by this
+      Task.
+    element_property: true
+    pattern: \S*
+    title: Formal definition of task
+    type: string
+  insurance:
+    backref: insurance_task
+    description: '[Text representation of Reference] Insurance plans, coverage extensions,
+      pre-authorizations and/or pre-determinations that may be relevant to the Task.'
+    element_property: true
+    enum_reference_types:
+    - Coverage
+    - ClaimResponse
+    items:
+      type: string
+    title: Associated insurance coverage
+    type: array
+  intent:
+    binding_description: Distinguishes whether the task is a proposal, plan or full
+      order.
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/task-intent
+    binding_version: 5.0.0
+    description: Indicates the "level" of actionability associated with the Task,
+      i.e. i+R[9]Cs this a proposed task, a planned task, an actionable task, etc.
+    element_property: true
+    element_required: true
+    enum_values:
+    - unknown
+    - proposal
+    - plan
+    - order
+    - original-order
+    - reflex-order
+    - filler-order
+    - instance-order
+    - option
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: unknown | proposal | plan | order | original-order | reflex-order | filler-order
+      | instance-order | option
+    type: string
+  lastModified:
+    description: The date and time of last modification to this task.
+    element_property: true
+    format: date-time
+    title: Task Last Modified Date
+    type: string
+  location:
+    backref: task
+    description: '[Text representation of Reference] Principal physical location where
+      this task is performed.'
+    element_property: true
+    enum_reference_types:
+    - Location
+    title: Where task occurs
+    type: string
+  note:
+    description: '[Text representation of Annotation] Free-text information captured
+      about the task as it progresses.'
+    element_property: true
+    items:
+      type: string
+    title: Comments made about the task
+    type: array
+  output_valueReference:
+    backref: task_output
+    description: '[Text representation of Reference] [Plucked from Task.output] The
+      value of the Output parameter as a basic type.'
+    element_property: true
+    one_of_many: value
+    one_of_many_required: true
+    title: Result of output
+    type: string
+  owner:
+    backref: owner_task
+    description: '[Text representation of Reference] Party responsible for managing
+      task execution.'
+    element_property: true
+    enum_reference_types:
+    - Practitioner
+    - PractitionerRole
+    - Organization
+    - CareTeam
+    - Patient
+    - RelatedPerson
+    title: Responsible individual
+    type: string
+  partOf:
+    backref: partOf_task
+    description: '[Text representation of Reference] Task that this particular task
+      is part of.'
+    element_property: true
+    enum_reference_types:
+    - Task
+    items:
+      type: string
+    title: Composite task
+    type: array
+  performer:
+    description: '[Text representation of TaskPerformer] The entity who performed
+      the requested task.'
+    element_property: true
+    items:
+      type: string
+    title: Who or what performed the task
+    type: array
+  priority:
+    binding_description: The priority of a task (may affect service level applied
+      to the task).
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/request-priority
+    binding_version: 5.0.0
+    description: Indicates how quickly the Task should be addressed with respect to
+      other requests.
+    element_property: true
+    enum_values:
+    - routine
+    - urgent
+    - asap
+    - stat
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: routine | urgent | asap | stat
+    type: string
+  project_id:
+    term:
+      $ref: _terms.yaml#/project_id
+    type: string
+  reason:
+    backref: reason_task
+    description: text representation. A description, code, or reference indicating
+      why this task needs to be performed.
+    element_property: true
+    items:
+      type: string
+    title: Why task is needed
+    type: array
+  reason_coding: &id003
+    backref: reason_task
+    description: '[system#code representation.] A description, code, or reference
+      indicating why this task needs to be performed.'
+    element_property: true
+    items:
+      type: string
+    title: Why task is needed
+    type: array
+  reason_text: *id003
+  relevantHistory:
+    backref: relevantHistory_task
+    description: '[Text representation of Reference] Links to Provenance records for
+      past versions of this Task that identify key state transitions or updates that
+      are likely to be relevant to a user looking at the current version of the task.'
+    element_property: true
+    enum_reference_types:
+    - Provenance
+    items:
+      type: string
+    title: Key events in history of the Task
+    type: array
+  requestedPerformer:
+    backref: requestedPerformer_task
+    binding_description: The type(s) of task performers allowed.
+    binding_strength: preferred
+    binding_uri: http://hl7.org/fhir/ValueSet/performer-role
+    binding_version: null
+    description: text representation. The kind of participant or specific participant
+      that should perform the task.
+    element_property: true
+    enum_reference_types:
+    - Practitioner
+    - PractitionerRole
+    - Organization
+    - CareTeam
+    - HealthcareService
+    - Patient
+    - Device
+    - RelatedPerson
+    items:
+      type: string
+    term:
+      description: The type(s) of task performers allowed.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/performer-role
+        cde_version: null
+        source: fhir
+        strength: preferred
+        term: http://hl7.org/fhir/ValueSet/performer-role
+        term_url: http://hl7.org/fhir/ValueSet/performer-role
+    title: Who should perform Task
+    type: array
+  requestedPerformer_coding: &id004
+    backref: requestedPerformer_task
+    binding_description: The type(s) of task performers allowed.
+    binding_strength: preferred
+    binding_uri: http://hl7.org/fhir/ValueSet/performer-role
+    binding_version: null
+    description: '[system#code representation.] The kind of participant or specific
+      participant that should perform the task.'
+    element_property: true
+    enum_reference_types:
+    - Practitioner
+    - PractitionerRole
+    - Organization
+    - CareTeam
+    - HealthcareService
+    - Patient
+    - Device
+    - RelatedPerson
+    items:
+      type: string
+    term:
+      description: The type(s) of task performers allowed.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/performer-role
+        cde_version: null
+        source: fhir
+        strength: preferred
+        term: http://hl7.org/fhir/ValueSet/performer-role
+        term_url: http://hl7.org/fhir/ValueSet/performer-role
+    title: Who should perform Task
+    type: array
+  requestedPerformer_text: *id004
+  requestedPeriod:
+    description: '[Text representation of Period] Indicates the start and/or end of
+      the period of time when completion of the task is desired to take place.'
+    element_property: true
+    title: When the task should be performed
+    type: string
+  requester:
+    backref: requester_task
+    description: '[Text representation of Reference] The creator of the task.'
+    element_property: true
+    enum_reference_types:
+    - Device
+    - Organization
+    - Patient
+    - Practitioner
+    - PractitionerRole
+    - RelatedPerson
+    title: Who is asking for task to be done
+    type: string
+  resourceType:
+    const: Task
+    default: Task
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+  restriction:
+    description: '[Text representation of TaskRestriction] If the Task.focus is a
+      request resource and the task is seeking fulfillment (i.e. is asking for the
+      request to be actioned), this element identifies any limitations on what parts
+      of the referenced request should be actioned.'
+    element_property: true
+    title: Constraints on fulfillment tasks
+    type: string
+  specimen:
+    backref: task
+    description: '[Text representation of Reference] The specimen input to this task.  Used
+      to generate link.'
+    enum_reference_types:
+    - Specimen
+    title: The specimen input to this task.
+    type: string
+  status:
+    binding_description: The current status of the task.
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/task-status
+    binding_version: 5.0.0
+    description: The current status of the task.
+    element_property: true
+    element_required: true
+    enum_values:
+    - draft
+    - requested
+    - received
+    - accepted
+    - +
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: draft | requested | received | accepted | +
+    type: string
+  statusReason:
+    backref: task
+    binding_description: Codes to identify the reason for current status.  These will
+      typically be specific to a particular workflow.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/task-status-reason
+    binding_version: null
+    description: text representation. An explanation as to why this task is held,
+      failed, was refused, etc.
+    element_property: true
+    term:
+      description: Codes to identify the reason for current status.  These will typically
+        be specific to a particular workflow.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/task-status-reason
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/task-status-reason
+        term_url: http://hl7.org/fhir/ValueSet/task-status-reason
+    title: Reason for current status
+    type: string
+  statusReason_coding: &id005
+    backref: task
+    binding_description: Codes to identify the reason for current status.  These will
+      typically be specific to a particular workflow.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/task-status-reason
+    binding_version: null
+    description: '[system#code representation.] An explanation as to why this task
+      is held, failed, was refused, etc.'
+    element_property: true
+    term:
+      description: Codes to identify the reason for current status.  These will typically
+        be specific to a particular workflow.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/task-status-reason
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/task-status-reason
+        term_url: http://hl7.org/fhir/ValueSet/task-status-reason
+    title: Reason for current status
+    type: string
+  statusReason_text: *id005
+title: Task
+type: object

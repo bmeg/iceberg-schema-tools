@@ -1,0 +1,159 @@
+$schema: http://json-schema.org/draft-04/schema#
+additionalProperties: true
+category: Clinical
+description: Specific and identified anatomical structure. Record details about an
+  anatomical structure.  This resource may be used when a coded concept does not provide
+  the necessary detail needed for the use case. [See https://hl7.org/fhir/R5/BodyStructure.html]
+id: body_structure
+links:
+- backref: body_structure
+  label: BodyStructure_patient_Patient_body_structure
+  multiplicity: many_to_many
+  name: patient
+  required: false
+  target_type: patient
+program: '*'
+project: '*'
+properties:
+  active:
+    description: Whether this body site is in active use.
+    element_property: true
+    title: Whether this record is in active use
+    type: boolean
+  description:
+    description: A summary, characterization or explanation of the body structure.
+    element_property: true
+    pattern: \s*(\S|\s)*
+    title: Text description
+    type: string
+  excludedStructure:
+    description: '[Text representation of BodyStructureIncludedStructure] The anatomical
+      location(s) or region(s) not occupied or represented by the specimen, lesion,
+      or body structure.'
+    element_property: true
+    items:
+      type: string
+    title: Excluded anatomic locations(s)
+    type: array
+  extension:
+    description: '[Text representation of Extension] May be used to represent additional
+      information that is not part of the basic definition of the resource. To make
+      the use of extensions safe and managable, there is a strict set of governance
+      applied to the definition and use of extensions. Though any implementer can
+      define an extension, there is a set of requirements that SHALL be met as part
+      of the definition of the extension.'
+    element_property: true
+    items:
+      type: string
+    title: Additional content defined by implementations
+    type: array
+  id:
+    description: The logical id of the resource, as used in the URL for the resource.
+      Once assigned, this value never changes.
+    element_property: true
+    maxLength: 64
+    minLength: 1
+    pattern: ^[A-Za-z0-9\-.]+$
+    title: Logical id of this artifact
+    type: string
+  identifier:
+    description: Identifier for this instance of the anatomical structure.
+    element_property: true
+    items:
+      type: string
+    title: Bodystructure identifier
+    type: array
+  identifier_coding:
+    description: '[system#code representation of identifier] Identifier for this instance
+      of the anatomical structure.'
+    element_property: true
+    items:
+      type: string
+    title: Bodystructure identifier
+    type: array
+  identifier_text_coding:
+    description: '[system#code representation of identifier.text] Identifier for this
+      instance of the anatomical structure.'
+    element_property: true
+    items:
+      type: string
+    title: Bodystructure identifier
+    type: array
+  image:
+    description: '[Text representation of Attachment] Image or images used to identify
+      a location.'
+    element_property: true
+    items:
+      type: string
+    title: Attached images
+    type: array
+  includedStructure:
+    description: '[Text representation of BodyStructureIncludedStructure] The anatomical
+      location(s) or region(s) of the specimen, lesion, or body structure.'
+    element_property: true
+    items:
+      type: string
+    title: Included anatomic location(s)
+    type: array
+  morphology:
+    binding_description: Codes describing anatomic morphology.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/bodystructure-code
+    binding_version: null
+    description: text representation. The kind of structure being represented by the
+      body structure at `BodyStructure.location`.  This can define both normal and
+      abnormal morphologies.
+    element_property: true
+    term:
+      description: Codes describing anatomic morphology.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/bodystructure-code
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/bodystructure-code
+        term_url: http://hl7.org/fhir/ValueSet/bodystructure-code
+    title: Kind of Structure
+    type: string
+  morphology_coding: &id001
+    binding_description: Codes describing anatomic morphology.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/bodystructure-code
+    binding_version: null
+    description: '[system#code representation.] The kind of structure being represented
+      by the body structure at `BodyStructure.location`.  This can define both normal
+      and abnormal morphologies.'
+    element_property: true
+    term:
+      description: Codes describing anatomic morphology.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/bodystructure-code
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/bodystructure-code
+        term_url: http://hl7.org/fhir/ValueSet/bodystructure-code
+    title: Kind of Structure
+    type: string
+  morphology_text: *id001
+  patient:
+    backref: body_structure
+    description: '[Text representation of Reference] The person to which the body
+      site belongs.'
+    element_property: true
+    enum_reference_types:
+    - Patient
+    title: Who this is about
+    type: string
+  project_id:
+    term:
+      $ref: _terms.yaml#/project_id
+    type: string
+  resourceType:
+    const: BodyStructure
+    default: BodyStructure
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+title: BodyStructure
+type: object

@@ -2,7 +2,7 @@ from fhir.resources.documentreference import DocumentReference
 from fhir.resources.patient import Patient, PatientLink, PatientCommunication
 from fhir.resources.task import Task
 
-from iceberg_tools.schema import _find_fhir_classes, _extract_schemas, BASE_URI
+from iceberg_tools.schema import _find_fhir_classes, extract_schemas, BASE_URI
 
 
 def test_find_fhir_classes():
@@ -16,7 +16,7 @@ def test_find_fhir_classes():
 def test_schemas():
     """Assert we find schemas descending from Patient."""
     classes = _find_fhir_classes({'dependency_order': ['Patient']})
-    schemas = _extract_schemas(classes, BASE_URI)
+    schemas = extract_schemas(classes, BASE_URI)
     expected_classes = ['Patient', 'PatientLink', 'PatientCommunication']
     for _ in expected_classes:
         assert _ in schemas, ('No find expected class', _)
@@ -28,7 +28,7 @@ def test_schemas():
 
 def test_bindings():
     """Ensure bindings are attached to expected properties."""
-    schemas = _extract_schemas([Patient], BASE_URI)
+    schemas = extract_schemas([Patient], BASE_URI)
     patient = schemas['Patient']
     gender = patient['properties']['gender']
     expected_property_attributes = ['type', 'binding_strength', 'binding_description', 'binding_uri', 'enum_values']
@@ -38,7 +38,7 @@ def test_bindings():
 
 def test_backref():
     """Test simple and itemized backref."""
-    schemas = _extract_schemas([Task], BASE_URI)
+    schemas = extract_schemas([Task], BASE_URI)
     assert 'Task' in schemas, "Should have found Task"
 
     task = schemas['Task']
@@ -53,7 +53,7 @@ def test_backref():
 
 def test_backref_array():
     """Test simple and itemized backref."""
-    schemas = _extract_schemas([DocumentReference], BASE_URI)
+    schemas = extract_schemas([DocumentReference], BASE_URI)
     assert 'DocumentReference' in schemas, "Should have found DocumentReference"
 
     document_reference = schemas['DocumentReference']
@@ -65,7 +65,7 @@ def test_backref_array():
 
 def test_task():
     """Test CodeableReference."""
-    schemas = _extract_schemas([Task], BASE_URI)
+    schemas = extract_schemas([Task], BASE_URI)
     assert 'Task' in schemas, "Should have found Task"
 
     task = schemas['Task']

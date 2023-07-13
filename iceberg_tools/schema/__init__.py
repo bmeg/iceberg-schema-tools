@@ -102,7 +102,7 @@ def _update_stats(stats: dict, klass, embedded_class):
         stats[stat_property] += 1
 
 
-def _extract_schemas(classes: List[type], base_uri: str) -> dict:
+def extract_schemas(classes: List[type], base_uri: str) -> dict:
     """Get json schema for all classes."""
     schemas = {}
     for klass in classes:
