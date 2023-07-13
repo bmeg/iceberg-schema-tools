@@ -1,0 +1,349 @@
+$schema: http://json-schema.org/draft-04/schema#
+additionalProperties: true
+category: Administrative
+description: Roles/organizations the practitioner is associated with. A specific set
+  of Roles/Locations/specialties/services that a practitioner may perform at an organization
+  for a period of time. [See https://hl7.org/fhir/R5/PractitionerRole.html]
+id: practitioner_role
+links:
+- backref: location_practitioner_role
+  label: PractitionerRole_location_Location_location_practitioner_role
+  multiplicity: many_to_many
+  name: location
+  required: false
+  target_type: location
+- backref: practitioner_role
+  label: PractitionerRole_organization_Organization_practitioner_role
+  multiplicity: many_to_many
+  name: organization
+  required: false
+  target_type: organization
+- backref: practitioner_role
+  label: PractitionerRole_practitioner_Practitioner_practitioner_role
+  multiplicity: many_to_many
+  name: practitioner
+  required: false
+  target_type: practitioner
+program: '*'
+project: '*'
+properties:
+  active:
+    description: ' Whether this practitioner role record is in active use. Some systems
+      may use this property to mark non-active practitioners, such as those that are
+      not currently employed.'
+    element_property: true
+    title: Whether this practitioner role record is in active use
+    type: boolean
+  availability:
+    description: '[Text representation of Availability] A collection of times the
+      practitioner is available or performing this role at the location and/or healthcareservice.'
+    element_property: true
+    items:
+      type: string
+    title: Times the Practitioner is available at this location and/or healthcare
+      service (including exceptions)
+    type: array
+  characteristic:
+    binding_description: A custom attribute that could be provided at a service (e.g.
+      Wheelchair accessibility).
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/service-mode
+    binding_version: null
+    description: text representation. Collection of characteristics (attributes)
+    element_property: true
+    items:
+      type: string
+    term:
+      description: A custom attribute that could be provided at a service (e.g. Wheelchair
+        accessibility).
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/service-mode
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/service-mode
+        term_url: http://hl7.org/fhir/ValueSet/service-mode
+    title: Collection of characteristics (attributes)
+    type: array
+  characteristic_coding: &id001
+    binding_description: A custom attribute that could be provided at a service (e.g.
+      Wheelchair accessibility).
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/service-mode
+    binding_version: null
+    description: '[system#code representation.] Collection of characteristics (attributes)'
+    element_property: true
+    items:
+      type: string
+    term:
+      description: A custom attribute that could be provided at a service (e.g. Wheelchair
+        accessibility).
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/service-mode
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/service-mode
+        term_url: http://hl7.org/fhir/ValueSet/service-mode
+    title: Collection of characteristics (attributes)
+    type: array
+  characteristic_text: *id001
+  code:
+    binding_description: The role a person plays representing an organization.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/practitioner-role
+    binding_version: null
+    description: text representation. Roles which this practitioner is authorized
+      to perform for the organization.
+    element_property: true
+    items:
+      type: string
+    term:
+      description: The role a person plays representing an organization.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/practitioner-role
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/practitioner-role
+        term_url: http://hl7.org/fhir/ValueSet/practitioner-role
+    title: Roles which this practitioner may perform
+    type: array
+  code_coding: &id002
+    binding_description: The role a person plays representing an organization.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/practitioner-role
+    binding_version: null
+    description: '[system#code representation.] Roles which this practitioner is authorized
+      to perform for the organization.'
+    element_property: true
+    items:
+      type: string
+    term:
+      description: The role a person plays representing an organization.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/practitioner-role
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/practitioner-role
+        term_url: http://hl7.org/fhir/ValueSet/practitioner-role
+    title: Roles which this practitioner may perform
+    type: array
+  code_text: *id002
+  communication:
+    binding_description: IETF language tag for a human language
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/all-languages
+    binding_version: 5.0.0
+    description: text representation. A language the practitioner can use in patient
+      communication. The practitioner may know several languages (listed in practitioner.communication),
+      however these are the languages that could be advertised in a directory for
+      a patient to search.
+    element_property: true
+    items:
+      type: string
+    term:
+      description: IETF language tag for a human language
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/all-languages
+        cde_version: null
+        source: fhir
+        strength: required
+        term: http://hl7.org/fhir/ValueSet/all-languages
+        term_url: http://hl7.org/fhir/ValueSet/all-languages
+    title: A language the practitioner (in this role) can use in patient communication
+    type: array
+  communication_coding: &id003
+    binding_description: IETF language tag for a human language
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/all-languages
+    binding_version: 5.0.0
+    description: '[system#code representation.] A language the practitioner can use
+      in patient communication. The practitioner may know several languages (listed
+      in practitioner.communication), however these are the languages that could be
+      advertised in a directory for a patient to search.'
+    element_property: true
+    items:
+      type: string
+    term:
+      description: IETF language tag for a human language
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/all-languages
+        cde_version: null
+        source: fhir
+        strength: required
+        term: http://hl7.org/fhir/ValueSet/all-languages
+        term_url: http://hl7.org/fhir/ValueSet/all-languages
+    title: A language the practitioner (in this role) can use in patient communication
+    type: array
+  communication_text: *id003
+  contact:
+    description: '[Text representation of ExtendedContactDetail] The contact details
+      of communication devices available relevant to the specific PractitionerRole.
+      This can include addresses, phone numbers, fax numbers, mobile numbers, email
+      addresses and web sites.'
+    element_property: true
+    items:
+      type: string
+    title: Official contact details relating to this PractitionerRole
+    type: array
+  endpoint:
+    backref: endpoint_practitioner_role
+    description: '[Text representation of Reference]  Technical endpoints providing
+      access to services operated for the practitioner with this role. Commonly used
+      for locating scheduling services, or identifying where to send referrals electronically.'
+    element_property: true
+    enum_reference_types:
+    - Endpoint
+    items:
+      type: string
+    title: Endpoints for interacting with the practitioner in this role
+    type: array
+  extension:
+    description: '[Text representation of Extension] May be used to represent additional
+      information that is not part of the basic definition of the resource. To make
+      the use of extensions safe and managable, there is a strict set of governance
+      applied to the definition and use of extensions. Though any implementer can
+      define an extension, there is a set of requirements that SHALL be met as part
+      of the definition of the extension.'
+    element_property: true
+    items:
+      type: string
+    title: Additional content defined by implementations
+    type: array
+  healthcareService:
+    backref: healthcareService_practitioner_role
+    description: '[Text representation of Reference] The list of healthcare services
+      that this worker provides for this role''s Organization/Location(s).'
+    element_property: true
+    enum_reference_types:
+    - HealthcareService
+    items:
+      type: string
+    title: Healthcare services provided for this role's Organization/Location(s)
+    type: array
+  id:
+    description: The logical id of the resource, as used in the URL for the resource.
+      Once assigned, this value never changes.
+    element_property: true
+    maxLength: 64
+    minLength: 1
+    pattern: ^[A-Za-z0-9\-.]+$
+    title: Logical id of this artifact
+    type: string
+  identifier:
+    description: Business Identifiers that are specific to a role/location.
+    element_property: true
+    items:
+      type: string
+    title: Identifiers for a role/location
+    type: array
+  identifier_coding:
+    description: '[system#code representation of identifier] Business Identifiers
+      that are specific to a role/location.'
+    element_property: true
+    items:
+      type: string
+    title: Identifiers for a role/location
+    type: array
+  identifier_text_coding:
+    description: '[system#code representation of identifier.text] Business Identifiers
+      that are specific to a role/location.'
+    element_property: true
+    items:
+      type: string
+    title: Identifiers for a role/location
+    type: array
+  location:
+    backref: location_practitioner_role
+    description: '[Text representation of Reference] The location(s) at which this
+      practitioner provides care.'
+    element_property: true
+    enum_reference_types:
+    - Location
+    items:
+      type: string
+    title: Location(s) where the practitioner provides care
+    type: array
+  organization:
+    backref: practitioner_role
+    description: '[Text representation of Reference] The organization where the Practitioner
+      performs the roles associated.'
+    element_property: true
+    enum_reference_types:
+    - Organization
+    title: Organization where the roles are available
+    type: string
+  period:
+    description: '[Text representation of Period] The period during which the person
+      is authorized to act as a practitioner in these role(s) for the organization.'
+    element_property: true
+    title: The period during which the practitioner is authorized to perform in these
+      role(s)
+    type: string
+  practitioner:
+    backref: practitioner_role
+    description: '[Text representation of Reference] Practitioner that is able to
+      provide the defined services for the organization.'
+    element_property: true
+    enum_reference_types:
+    - Practitioner
+    title: Practitioner that provides services for the organization
+    type: string
+  project_id:
+    term:
+      $ref: _terms.yaml#/project_id
+    type: string
+  resourceType:
+    const: PractitionerRole
+    default: PractitionerRole
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+  specialty:
+    binding_description: Specific specialty associated with the agency.
+    binding_strength: preferred
+    binding_uri: http://hl7.org/fhir/ValueSet/c80-practice-codes
+    binding_version: null
+    description: text representation. The specialty of a practitioner that describes
+      the functional role they are practicing at a given organization or location.
+    element_property: true
+    items:
+      type: string
+    term:
+      description: Specific specialty associated with the agency.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/c80-practice-codes
+        cde_version: null
+        source: fhir
+        strength: preferred
+        term: http://hl7.org/fhir/ValueSet/c80-practice-codes
+        term_url: http://hl7.org/fhir/ValueSet/c80-practice-codes
+    title: Specific specialty of the practitioner
+    type: array
+  specialty_coding: &id004
+    binding_description: Specific specialty associated with the agency.
+    binding_strength: preferred
+    binding_uri: http://hl7.org/fhir/ValueSet/c80-practice-codes
+    binding_version: null
+    description: '[system#code representation.] The specialty of a practitioner that
+      describes the functional role they are practicing at a given organization or
+      location.'
+    element_property: true
+    items:
+      type: string
+    term:
+      description: Specific specialty associated with the agency.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/c80-practice-codes
+        cde_version: null
+        source: fhir
+        strength: preferred
+        term: http://hl7.org/fhir/ValueSet/c80-practice-codes
+        term_url: http://hl7.org/fhir/ValueSet/c80-practice-codes
+    title: Specific specialty of the practitioner
+    type: array
+  specialty_text: *id004
+title: PractitionerRole
+type: object

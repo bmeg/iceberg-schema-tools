@@ -1,0 +1,342 @@
+$schema: http://json-schema.org/draft-04/schema#
+additionalProperties: true
+category: Administrative
+description: Details and position information for a place. Details and position information
+  for a place where services are provided and resources and participants may be stored,
+  found, contained, or accommodated. [See https://hl7.org/fhir/R5/Location.html]
+id: location
+links:
+- backref: location
+  label: Location_managingOrganization_Organization_location
+  multiplicity: many_to_many
+  name: managingOrganization
+  required: false
+  target_type: organization
+- backref: location
+  label: Location_partOf_Location_location
+  multiplicity: many_to_many
+  name: partOf
+  required: false
+  target_type: location
+program: '*'
+project: '*'
+properties:
+  address:
+    description: '[Text representation of Address] Physical location'
+    element_property: true
+    title: Physical location
+    type: string
+  alias:
+    description: A list of alternate names that the location is known as, or was known
+      as, in the past
+    element_property: true
+    items:
+      pattern: '[ \r\n\t\S]+'
+      type: string
+    title: A list of alternate names that the location is known as, or was known as,
+      in the past
+    type: array
+  characteristic:
+    binding_description: A custom attribute that could be provided at a service (e.g.
+      Wheelchair accessibiliy).
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/location-characteristic
+    binding_version: null
+    description: text representation. Collection of characteristics (attributes)
+    element_property: true
+    items:
+      type: string
+    term:
+      description: A custom attribute that could be provided at a service (e.g. Wheelchair
+        accessibiliy).
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/location-characteristic
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/location-characteristic
+        term_url: http://hl7.org/fhir/ValueSet/location-characteristic
+    title: Collection of characteristics (attributes)
+    type: array
+  characteristic_coding: &id001
+    binding_description: A custom attribute that could be provided at a service (e.g.
+      Wheelchair accessibiliy).
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/location-characteristic
+    binding_version: null
+    description: '[system#code representation.] Collection of characteristics (attributes)'
+    element_property: true
+    items:
+      type: string
+    term:
+      description: A custom attribute that could be provided at a service (e.g. Wheelchair
+        accessibiliy).
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/location-characteristic
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/location-characteristic
+        term_url: http://hl7.org/fhir/ValueSet/location-characteristic
+    title: Collection of characteristics (attributes)
+    type: array
+  characteristic_text: *id001
+  contact:
+    description: '[Text representation of ExtendedContactDetail] The contact details
+      of communication devices available at the location. This can include addresses,
+      phone numbers, fax numbers, mobile numbers, email addresses and web sites.'
+    element_property: true
+    items:
+      type: string
+    title: Official contact details for the location
+    type: array
+  description:
+    description: Description of the Location, which helps in finding or referencing
+      the place.
+    element_property: true
+    pattern: \s*(\S|\s)*
+    title: Additional details about the location that could be displayed as further
+      information to identify the location beyond its name
+    type: string
+  endpoint:
+    backref: endpoint_location
+    description: '[Text representation of Reference] Technical endpoints providing
+      access to services operated for the location'
+    element_property: true
+    enum_reference_types:
+    - Endpoint
+    items:
+      type: string
+    title: Technical endpoints providing access to services operated for the location
+    type: array
+  extension:
+    description: '[Text representation of Extension] May be used to represent additional
+      information that is not part of the basic definition of the resource. To make
+      the use of extensions safe and managable, there is a strict set of governance
+      applied to the definition and use of extensions. Though any implementer can
+      define an extension, there is a set of requirements that SHALL be met as part
+      of the definition of the extension.'
+    element_property: true
+    items:
+      type: string
+    title: Additional content defined by implementations
+    type: array
+  form:
+    binding_description: Physical form of the location.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/location-form
+    binding_version: null
+    description: text representation. Physical form of the location, e.g. building,
+      room, vehicle, road, virtual.
+    element_property: true
+    term:
+      description: Physical form of the location.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/location-form
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/location-form
+        term_url: http://hl7.org/fhir/ValueSet/location-form
+    title: Physical form of the location
+    type: string
+  form_coding: &id002
+    binding_description: Physical form of the location.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/location-form
+    binding_version: null
+    description: '[system#code representation.] Physical form of the location, e.g.
+      building, room, vehicle, road, virtual.'
+    element_property: true
+    term:
+      description: Physical form of the location.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/location-form
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/location-form
+        term_url: http://hl7.org/fhir/ValueSet/location-form
+    title: Physical form of the location
+    type: string
+  form_text: *id002
+  hoursOfOperation:
+    description: '[Text representation of Availability] What days/times during a week
+      is this location usually open, and any exceptions where the location is not
+      available.'
+    element_property: true
+    items:
+      type: string
+    title: What days/times during a week is this location usually open (including
+      exceptions)
+    type: array
+  id:
+    description: The logical id of the resource, as used in the URL for the resource.
+      Once assigned, this value never changes.
+    element_property: true
+    maxLength: 64
+    minLength: 1
+    pattern: ^[A-Za-z0-9\-.]+$
+    title: Logical id of this artifact
+    type: string
+  identifier:
+    description: Unique code or number identifying the location to its users
+    element_property: true
+    items:
+      type: string
+    title: Unique code or number identifying the location to its users
+    type: array
+  identifier_coding:
+    description: '[system#code representation of identifier] Unique code or number
+      identifying the location to its users'
+    element_property: true
+    items:
+      type: string
+    title: Unique code or number identifying the location to its users
+    type: array
+  identifier_text_coding:
+    description: '[system#code representation of identifier.text] Unique code or number
+      identifying the location to its users'
+    element_property: true
+    items:
+      type: string
+    title: Unique code or number identifying the location to its users
+    type: array
+  managingOrganization:
+    backref: location
+    description: '[Text representation of Reference] The organization responsible
+      for the provisioning and upkeep of the location.'
+    element_property: true
+    enum_reference_types:
+    - Organization
+    title: Organization responsible for provisioning and upkeep
+    type: string
+  mode:
+    binding_description: Indicates whether a resource instance represents a specific
+      location or a class of locations.
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/location-mode
+    binding_version: 5.0.0
+    description: Indicates whether a resource instance represents a specific location
+      or a class of locations.
+    element_property: true
+    enum_values:
+    - instance
+    - kind
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: instance | kind
+    type: string
+  name:
+    description: Name of the location as used by humans. Does not need to be unique.
+    element_property: true
+    pattern: '[ \r\n\t\S]+'
+    title: Name of the location as used by humans
+    type: string
+  operationalStatus:
+    binding_description: The operational status if the location (where typically a
+      bed/room).
+    binding_strength: preferred
+    binding_uri: http://terminology.hl7.org/ValueSet/v2-0116
+    binding_version: null
+    description: '[Text representation of Coding] The operational status covers operation
+      values most relevant to beds (but can also apply to rooms/units/chairs/etc.
+      such as an isolation unit/dialysis chair). This typically covers concepts such
+      as contamination, housekeeping, and other activities like maintenance.'
+    element_property: true
+    title: The operational status of the location (typically only for a bed/room)
+    type: string
+  partOf:
+    backref: location
+    description: '[Text representation of Reference] Another Location of which this
+      Location is physically a part of.'
+    element_property: true
+    enum_reference_types:
+    - Location
+    title: Another Location this one is physically a part of
+    type: string
+  position:
+    description: '[Text representation of LocationPosition] The absolute geographic
+      location of the Location, expressed using the WGS84 datum (This is the same
+      co-ordinate system used in KML).'
+    element_property: true
+    title: The absolute geographic location
+    type: string
+  project_id:
+    term:
+      $ref: _terms.yaml#/project_id
+    type: string
+  resourceType:
+    const: Location
+    default: Location
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+  status:
+    binding_description: Indicates whether the location is still in use.
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/location-status
+    binding_version: 5.0.0
+    description: The status property covers the general availability of the resource,
+      not the current value which may be covered by the operationStatus, or by a schedule/slots
+      if they are configured for the location.
+    element_property: true
+    enum_values:
+    - active
+    - suspended
+    - inactive
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: active | suspended | inactive
+    type: string
+  type:
+    binding_description: Indicates the type of function performed at the location.
+    binding_strength: extensible
+    binding_uri: http://terminology.hl7.org/ValueSet/v3-ServiceDeliveryLocationRoleType
+    binding_version: null
+    description: text representation. Indicates the type of function performed at
+      the location.
+    element_property: true
+    items:
+      type: string
+    term:
+      description: Indicates the type of function performed at the location.
+      termDef:
+        cde_id: http://terminology.hl7.org/ValueSet/v3-ServiceDeliveryLocationRoleType
+        cde_version: null
+        source: fhir
+        strength: extensible
+        term: http://terminology.hl7.org/ValueSet/v3-ServiceDeliveryLocationRoleType
+        term_url: http://terminology.hl7.org/ValueSet/v3-ServiceDeliveryLocationRoleType
+    title: Type of function performed
+    type: array
+  type_coding: &id003
+    binding_description: Indicates the type of function performed at the location.
+    binding_strength: extensible
+    binding_uri: http://terminology.hl7.org/ValueSet/v3-ServiceDeliveryLocationRoleType
+    binding_version: null
+    description: '[system#code representation.] Indicates the type of function performed
+      at the location.'
+    element_property: true
+    items:
+      type: string
+    term:
+      description: Indicates the type of function performed at the location.
+      termDef:
+        cde_id: http://terminology.hl7.org/ValueSet/v3-ServiceDeliveryLocationRoleType
+        cde_version: null
+        source: fhir
+        strength: extensible
+        term: http://terminology.hl7.org/ValueSet/v3-ServiceDeliveryLocationRoleType
+        term_url: http://terminology.hl7.org/ValueSet/v3-ServiceDeliveryLocationRoleType
+    title: Type of function performed
+    type: array
+  type_text: *id003
+  virtualService:
+    description: '[Text representation of VirtualServiceDetail] Connection details
+      of a virtual service (e.g. shared conference call facility with dedicated number/details).'
+    element_property: true
+    items:
+      type: string
+    title: Connection details of a virtual service (e.g. conference call)
+    type: array
+title: Location
+type: object

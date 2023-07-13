@@ -1,0 +1,621 @@
+$schema: http://json-schema.org/draft-04/schema#
+additionalProperties: true
+category: Clinical
+description: An interaction during which services are provided to the patient. An
+  interaction between a patient and healthcare provider(s) for the purpose of providing
+  healthcare service(s) or assessing the health status of a patient.  Encounter is
+  primarily used to record information about the actual activities that occurred,
+  where Appointment is used to record planned activities. [See https://hl7.org/fhir/R5/Encounter.html]
+id: encounter
+links:
+- backref: encounter
+  label: Encounter_subject_Patient_encounter
+  multiplicity: many_to_many
+  name: subject_Patient
+  required: false
+  target_type: patient
+program: '*'
+project: '*'
+properties:
+  account:
+    backref: account_encounter
+    description: '[Text representation of Reference] The set of accounts that may
+      be used for billing for this Encounter'
+    element_property: true
+    enum_reference_types:
+    - Account
+    items:
+      type: string
+    title: The set of accounts that may be used for billing for this Encounter
+    type: array
+  actualPeriod:
+    description: '[Text representation of Period] The actual start and end time of
+      the encounter'
+    element_property: true
+    title: The actual start and end time of the encounter
+    type: string
+  admission:
+    description: '[Text representation of EncounterAdmission] Details about the stay
+      during which a healthcare service is provided.  This does not describe the event
+      of admitting the patient, but rather any information that is relevant from the
+      time of admittance until the time of discharge.'
+    element_property: true
+    title: Details about the admission to a healthcare service
+    type: string
+  appointment:
+    backref: appointment_encounter
+    description: '[Text representation of Reference] The appointment that scheduled
+      this encounter'
+    element_property: true
+    enum_reference_types:
+    - Appointment
+    items:
+      type: string
+    title: The appointment that scheduled this encounter
+    type: array
+  basedOn:
+    backref: basedOn_encounter
+    description: '[Text representation of Reference] The request this encounter satisfies
+      (e.g. incoming referral or procedure request).'
+    element_property: true
+    enum_reference_types:
+    - CarePlan
+    - DeviceRequest
+    - MedicationRequest
+    - ServiceRequest
+    items:
+      type: string
+    title: The request that initiated this encounter
+    type: array
+  careTeam:
+    backref: careTeam_encounter
+    description: '[Text representation of Reference] The group(s) of individuals,
+      organizations that are allocated to participate in this encounter. The participants
+      backbone will record the actuals of when these individuals participated during
+      the encounter.'
+    element_property: true
+    enum_reference_types:
+    - CareTeam
+    items:
+      type: string
+    title: The group(s) that are allocated to participate in this encounter
+    type: array
+  class_fhir:
+    binding_description: Classification of the encounter.
+    binding_strength: preferred
+    binding_uri: http://terminology.hl7.org/ValueSet/encounter-class
+    binding_version: null
+    description: text representation. Concepts representing classification of patient
+      encounter such as ambulatory (outpatient), inpatient, emergency, home health
+      or others due to local variations.
+    element_property: true
+    items:
+      type: string
+    term:
+      description: Classification of the encounter.
+      termDef:
+        cde_id: http://terminology.hl7.org/ValueSet/encounter-class
+        cde_version: null
+        source: fhir
+        strength: preferred
+        term: http://terminology.hl7.org/ValueSet/encounter-class
+        term_url: http://terminology.hl7.org/ValueSet/encounter-class
+    title: Classification of patient encounter context - e.g. Inpatient, outpatient
+    type: array
+  class_fhir_coding: &id001
+    binding_description: Classification of the encounter.
+    binding_strength: preferred
+    binding_uri: http://terminology.hl7.org/ValueSet/encounter-class
+    binding_version: null
+    description: '[system#code representation.] Concepts representing classification
+      of patient encounter such as ambulatory (outpatient), inpatient, emergency,
+      home health or others due to local variations.'
+    element_property: true
+    items:
+      type: string
+    term:
+      description: Classification of the encounter.
+      termDef:
+        cde_id: http://terminology.hl7.org/ValueSet/encounter-class
+        cde_version: null
+        source: fhir
+        strength: preferred
+        term: http://terminology.hl7.org/ValueSet/encounter-class
+        term_url: http://terminology.hl7.org/ValueSet/encounter-class
+    title: Classification of patient encounter context - e.g. Inpatient, outpatient
+    type: array
+  class_fhir_text: *id001
+  diagnosis:
+    description: '[Text representation of EncounterDiagnosis] The list of diagnosis
+      relevant to this encounter'
+    element_property: true
+    items:
+      type: string
+    title: The list of diagnosis relevant to this encounter
+    type: array
+  dietPreference:
+    binding_description: Medical, cultural or ethical food preferences to help with
+      catering requirements.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/encounter-diet
+    binding_version: null
+    description: text representation. Diet preferences reported by the patient
+    element_property: true
+    items:
+      type: string
+    term:
+      description: Medical, cultural or ethical food preferences to help with catering
+        requirements.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/encounter-diet
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/encounter-diet
+        term_url: http://hl7.org/fhir/ValueSet/encounter-diet
+    title: Diet preferences reported by the patient
+    type: array
+  dietPreference_coding: &id002
+    binding_description: Medical, cultural or ethical food preferences to help with
+      catering requirements.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/encounter-diet
+    binding_version: null
+    description: '[system#code representation.] Diet preferences reported by the patient'
+    element_property: true
+    items:
+      type: string
+    term:
+      description: Medical, cultural or ethical food preferences to help with catering
+        requirements.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/encounter-diet
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/encounter-diet
+        term_url: http://hl7.org/fhir/ValueSet/encounter-diet
+    title: Diet preferences reported by the patient
+    type: array
+  dietPreference_text: *id002
+  episodeOfCare:
+    backref: episodeOfCare_encounter
+    description: '[Text representation of Reference] Where a specific encounter should
+      be classified as a part of a specific episode(s) of care this field should be
+      used. This association can facilitate grouping of related encounters together
+      for a specific purpose, such as government reporting, issue tracking, association
+      via a common problem.  The association is recorded on the encounter as these
+      are typically created after the episode of care and grouped on entry rather
+      than editing the episode of care to append another encounter to it (the episode
+      of care could span years).'
+    element_property: true
+    enum_reference_types:
+    - EpisodeOfCare
+    items:
+      type: string
+    title: Episode(s) of care that this encounter should be recorded against
+    type: array
+  extension:
+    description: '[Text representation of Extension] May be used to represent additional
+      information that is not part of the basic definition of the resource. To make
+      the use of extensions safe and managable, there is a strict set of governance
+      applied to the definition and use of extensions. Though any implementer can
+      define an extension, there is a set of requirements that SHALL be met as part
+      of the definition of the extension.'
+    element_property: true
+    items:
+      type: string
+    title: Additional content defined by implementations
+    type: array
+  id:
+    description: The logical id of the resource, as used in the URL for the resource.
+      Once assigned, this value never changes.
+    element_property: true
+    maxLength: 64
+    minLength: 1
+    pattern: ^[A-Za-z0-9\-.]+$
+    title: Logical id of this artifact
+    type: string
+  identifier:
+    description: Identifier(s) by which this encounter is known
+    element_property: true
+    items:
+      type: string
+    title: Identifier(s) by which this encounter is known
+    type: array
+  identifier_coding:
+    description: '[system#code representation of identifier] Identifier(s) by which
+      this encounter is known'
+    element_property: true
+    items:
+      type: string
+    title: Identifier(s) by which this encounter is known
+    type: array
+  identifier_text_coding:
+    description: '[system#code representation of identifier.text] Identifier(s) by
+      which this encounter is known'
+    element_property: true
+    items:
+      type: string
+    title: Identifier(s) by which this encounter is known
+    type: array
+  length:
+    description: '[Text representation of Duration] Actual quantity of time the encounter
+      lasted. This excludes the time during leaves of absence.  When missing it is
+      the time in between the start and end values.'
+    element_property: true
+    title: Actual quantity of time the encounter lasted (less time absent)
+    type: string
+  location:
+    description: '[Text representation of EncounterLocation] List of locations where  the
+      patient has been during this encounter.'
+    element_property: true
+    items:
+      type: string
+    title: List of locations where the patient has been
+    type: array
+  partOf:
+    backref: encounter
+    description: '[Text representation of Reference] Another Encounter of which this
+      encounter is a part of (administratively or in time).'
+    element_property: true
+    enum_reference_types:
+    - Encounter
+    title: Another Encounter this encounter is part of
+    type: string
+  participant:
+    description: '[Text representation of EncounterParticipant] The list of people
+      responsible for providing the service.'
+    element_property: true
+    items:
+      type: string
+    title: List of participants involved in the encounter
+    type: array
+  plannedEndDate:
+    description: The planned end date/time (or discharge date) of the encounter
+    element_property: true
+    format: date-time
+    title: The planned end date/time (or discharge date) of the encounter
+    type: string
+  plannedStartDate:
+    description: The planned start date/time (or admission date) of the encounter
+    element_property: true
+    format: date-time
+    title: The planned start date/time (or admission date) of the encounter
+    type: string
+  priority:
+    binding_description: Indicates the urgency of the encounter.
+    binding_strength: example
+    binding_uri: http://terminology.hl7.org/ValueSet/v3-ActPriority
+    binding_version: null
+    description: text representation. Indicates the urgency of the encounter
+    element_property: true
+    term:
+      description: Indicates the urgency of the encounter.
+      termDef:
+        cde_id: http://terminology.hl7.org/ValueSet/v3-ActPriority
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://terminology.hl7.org/ValueSet/v3-ActPriority
+        term_url: http://terminology.hl7.org/ValueSet/v3-ActPriority
+    title: Indicates the urgency of the encounter
+    type: string
+  priority_coding: &id003
+    binding_description: Indicates the urgency of the encounter.
+    binding_strength: example
+    binding_uri: http://terminology.hl7.org/ValueSet/v3-ActPriority
+    binding_version: null
+    description: '[system#code representation.] Indicates the urgency of the encounter'
+    element_property: true
+    term:
+      description: Indicates the urgency of the encounter.
+      termDef:
+        cde_id: http://terminology.hl7.org/ValueSet/v3-ActPriority
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://terminology.hl7.org/ValueSet/v3-ActPriority
+        term_url: http://terminology.hl7.org/ValueSet/v3-ActPriority
+    title: Indicates the urgency of the encounter
+    type: string
+  priority_text: *id003
+  project_id:
+    term:
+      $ref: _terms.yaml#/project_id
+    type: string
+  reason:
+    description: '[Text representation of EncounterReason] The list of medical reasons
+      that are expected to be addressed during the episode of care'
+    element_property: true
+    items:
+      type: string
+    title: The list of medical reasons that are expected to be addressed during the
+      episode of care
+    type: array
+  resourceType:
+    const: Encounter
+    default: Encounter
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+  serviceProvider:
+    backref: encounter
+    description: '[Text representation of Reference] The organization that is primarily
+      responsible for this Encounter''s services. This MAY be the same as the organization
+      on the Patient record, however it could be different, such as if the actor performing
+      the services was from an external organization (which may be billed seperately)
+      for an external consultation.  Refer to the colonoscopy example on the Encounter
+      examples tab.'
+    element_property: true
+    enum_reference_types:
+    - Organization
+    title: The organization (facility) responsible for this encounter
+    type: string
+  serviceType:
+    backref: serviceType_encounter
+    binding_description: Broad categorization of the service that is to be provided.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/service-type
+    binding_version: null
+    description: text representation. Broad categorization of the service that is
+      to be provided (e.g. cardiology).
+    element_property: true
+    enum_reference_types:
+    - HealthcareService
+    items:
+      type: string
+    term:
+      description: Broad categorization of the service that is to be provided.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/service-type
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/service-type
+        term_url: http://hl7.org/fhir/ValueSet/service-type
+    title: Specific type of service
+    type: array
+  serviceType_coding: &id004
+    backref: serviceType_encounter
+    binding_description: Broad categorization of the service that is to be provided.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/service-type
+    binding_version: null
+    description: '[system#code representation.] Broad categorization of the service
+      that is to be provided (e.g. cardiology).'
+    element_property: true
+    enum_reference_types:
+    - HealthcareService
+    items:
+      type: string
+    term:
+      description: Broad categorization of the service that is to be provided.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/service-type
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/service-type
+        term_url: http://hl7.org/fhir/ValueSet/service-type
+    title: Specific type of service
+    type: array
+  serviceType_text: *id004
+  specialArrangement:
+    binding_description: Special arrangements.
+    binding_strength: preferred
+    binding_uri: http://hl7.org/fhir/ValueSet/encounter-special-arrangements
+    binding_version: null
+    description: text representation. Any special requests that have been made for
+      this encounter, such as the provision of specific equipment or other things.
+    element_property: true
+    items:
+      type: string
+    term:
+      description: Special arrangements.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/encounter-special-arrangements
+        cde_version: null
+        source: fhir
+        strength: preferred
+        term: http://hl7.org/fhir/ValueSet/encounter-special-arrangements
+        term_url: http://hl7.org/fhir/ValueSet/encounter-special-arrangements
+    title: Wheelchair, translator, stretcher, etc
+    type: array
+  specialArrangement_coding: &id005
+    binding_description: Special arrangements.
+    binding_strength: preferred
+    binding_uri: http://hl7.org/fhir/ValueSet/encounter-special-arrangements
+    binding_version: null
+    description: '[system#code representation.] Any special requests that have been
+      made for this encounter, such as the provision of specific equipment or other
+      things.'
+    element_property: true
+    items:
+      type: string
+    term:
+      description: Special arrangements.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/encounter-special-arrangements
+        cde_version: null
+        source: fhir
+        strength: preferred
+        term: http://hl7.org/fhir/ValueSet/encounter-special-arrangements
+        term_url: http://hl7.org/fhir/ValueSet/encounter-special-arrangements
+    title: Wheelchair, translator, stretcher, etc
+    type: array
+  specialArrangement_text: *id005
+  specialCourtesy:
+    binding_description: Special courtesies.
+    binding_strength: preferred
+    binding_uri: http://hl7.org/fhir/ValueSet/encounter-special-courtesy
+    binding_version: null
+    description: text representation. Special courtesies that may be provided to the
+      patient during the encounter (VIP, board member, professional courtesy).
+    element_property: true
+    items:
+      type: string
+    term:
+      description: Special courtesies.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/encounter-special-courtesy
+        cde_version: null
+        source: fhir
+        strength: preferred
+        term: http://hl7.org/fhir/ValueSet/encounter-special-courtesy
+        term_url: http://hl7.org/fhir/ValueSet/encounter-special-courtesy
+    title: Special courtesies (VIP, board member)
+    type: array
+  specialCourtesy_coding: &id006
+    binding_description: Special courtesies.
+    binding_strength: preferred
+    binding_uri: http://hl7.org/fhir/ValueSet/encounter-special-courtesy
+    binding_version: null
+    description: '[system#code representation.] Special courtesies that may be provided
+      to the patient during the encounter (VIP, board member, professional courtesy).'
+    element_property: true
+    items:
+      type: string
+    term:
+      description: Special courtesies.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/encounter-special-courtesy
+        cde_version: null
+        source: fhir
+        strength: preferred
+        term: http://hl7.org/fhir/ValueSet/encounter-special-courtesy
+        term_url: http://hl7.org/fhir/ValueSet/encounter-special-courtesy
+    title: Special courtesies (VIP, board member)
+    type: array
+  specialCourtesy_text: *id006
+  status:
+    binding_description: Current state of the encounter.
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/encounter-status
+    binding_version: 5.0.0
+    description: The current state of the encounter (not the state of the patient
+      within the encounter - that is subjectState).
+    element_property: true
+    element_required: true
+    enum_values:
+    - planned
+    - in-progress
+    - on-hold
+    - discharged
+    - completed
+    - cancelled
+    - discontinued
+    - entered-in-error
+    - unknown
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: planned | in-progress | on-hold | discharged | completed | cancelled |
+      discontinued | entered-in-error | unknown
+    type: string
+  subject:
+    backref: encounter
+    description: '[Text representation of Reference] The patient or group related
+      to this encounter. In some use-cases the patient MAY not be present, such as
+      a case meeting about a patient between several practitioners or a careteam.'
+    element_property: true
+    enum_reference_types:
+    - Patient
+    - Group
+    title: The patient or group related to this encounter
+    type: string
+  subjectStatus:
+    binding_description: Current status of the subject  within the encounter.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/encounter-subject-status
+    binding_version: null
+    description: text representation. The subjectStatus value can be used to track
+      the patient's status within the encounter. It details whether the patient has
+      arrived or departed, has been triaged or is currently in a waiting status.
+    element_property: true
+    term:
+      description: Current status of the subject  within the encounter.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/encounter-subject-status
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/encounter-subject-status
+        term_url: http://hl7.org/fhir/ValueSet/encounter-subject-status
+    title: The current status of the subject in relation to the Encounter
+    type: string
+  subjectStatus_coding: &id007
+    binding_description: Current status of the subject  within the encounter.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/encounter-subject-status
+    binding_version: null
+    description: '[system#code representation.] The subjectStatus value can be used
+      to track the patient''s status within the encounter. It details whether the
+      patient has arrived or departed, has been triaged or is currently in a waiting
+      status.'
+    element_property: true
+    term:
+      description: Current status of the subject  within the encounter.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/encounter-subject-status
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/encounter-subject-status
+        term_url: http://hl7.org/fhir/ValueSet/encounter-subject-status
+    title: The current status of the subject in relation to the Encounter
+    type: string
+  subjectStatus_text: *id007
+  type:
+    binding_description: A specific code indicating type of service provided
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/encounter-type
+    binding_version: null
+    description: text representation. Specific type of encounter (e.g. e-mail consultation,
+      surgical day-care, skilled nursing, rehabilitation).
+    element_property: true
+    items:
+      type: string
+    term:
+      description: A specific code indicating type of service provided
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/encounter-type
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/encounter-type
+        term_url: http://hl7.org/fhir/ValueSet/encounter-type
+    title: Specific type of encounter (e.g. e-mail consultation, surgical day-care,
+      ...)
+    type: array
+  type_coding: &id008
+    binding_description: A specific code indicating type of service provided
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/encounter-type
+    binding_version: null
+    description: '[system#code representation.] Specific type of encounter (e.g. e-mail
+      consultation, surgical day-care, skilled nursing, rehabilitation).'
+    element_property: true
+    items:
+      type: string
+    term:
+      description: A specific code indicating type of service provided
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/encounter-type
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/encounter-type
+        term_url: http://hl7.org/fhir/ValueSet/encounter-type
+    title: Specific type of encounter (e.g. e-mail consultation, surgical day-care,
+      ...)
+    type: array
+  type_text: *id008
+  virtualService:
+    description: '[Text representation of VirtualServiceDetail] Connection details
+      of a virtual service (e.g. conference call)'
+    element_property: true
+    items:
+      type: string
+    title: Connection details of a virtual service (e.g. conference call)
+    type: array
+title: Encounter
+type: object

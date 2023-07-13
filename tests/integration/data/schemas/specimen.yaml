@@ -1,0 +1,412 @@
+$schema: http://json-schema.org/draft-04/schema#
+additionalProperties: true
+category: Biospecimen
+description: Sample for analysis. A sample to be used for analysis. [See https://hl7.org/fhir/R5/Specimen.html]
+id: specimen
+links:
+- backref: specimen
+  label: Specimen_subject_Patient_specimen
+  multiplicity: many_to_many
+  name: subject_Patient
+  required: false
+  target_type: patient
+- backref: specimen
+  label: Specimen_subject_Substance_specimen
+  multiplicity: many_to_many
+  name: subject_Substance
+  required: false
+  target_type: substance
+- backref: specimen
+  label: Specimen_subject_Location_specimen
+  multiplicity: many_to_many
+  name: subject_Location
+  required: false
+  target_type: location
+- backref: parent_specimen
+  label: Specimen_parent_Specimen_parent_specimen
+  multiplicity: many_to_many
+  name: parent
+  required: false
+  target_type: specimen
+- backref: specimen
+  label: Specimen_bodySite_BodyStructure_specimen
+  multiplicity: many_to_many
+  name: bodySite
+  required: false
+  target_type: body_structure
+program: '*'
+project: '*'
+properties:
+  accessionIdentifier:
+    description: '[Text representation of Identifier] The identifier assigned by the
+      lab when accessioning specimen(s). This is not necessarily the same as the specimen
+      identifier, depending on local lab procedures.'
+    element_property: true
+    title: Identifier assigned by the lab
+    type: string
+  bodySite:
+    backref: specimen
+    binding_description: SNOMED CT Body site concepts
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/body-site
+    binding_version: null
+    description: text representation. Anatomical location from which the specimen
+      was collected (if subject is a patient). This is the target site.  This element
+      is not used for environmental specimens.
+    element_property: true
+    enum_reference_types:
+    - BodyStructure
+    term:
+      description: SNOMED CT Body site concepts
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/body-site
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/body-site
+        term_url: http://hl7.org/fhir/ValueSet/body-site
+    title: Anatomical collection site
+    type: string
+  bodySite_coding: &id001
+    backref: specimen
+    binding_description: SNOMED CT Body site concepts
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/body-site
+    binding_version: null
+    description: '[system#code representation.] Anatomical location from which the
+      specimen was collected (if subject is a patient). This is the target site.  This
+      element is not used for environmental specimens.'
+    element_property: true
+    enum_reference_types:
+    - BodyStructure
+    term:
+      description: SNOMED CT Body site concepts
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/body-site
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/body-site
+        term_url: http://hl7.org/fhir/ValueSet/body-site
+    title: Anatomical collection site
+    type: string
+  bodySite_text: *id001
+  collection:
+    description: '[Text representation of SpecimenCollection] Details concerning the
+      specimen collection.'
+    element_property: true
+    title: Collection details
+    type: string
+  combined:
+    binding_description: Codes for the combined status of a specimen.
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/specimen-combined
+    binding_version: 5.0.0
+    description: This element signifies if the specimen is part of a group or pooled.
+    element_property: true
+    enum_values:
+    - grouped
+    - pooled
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: grouped | pooled
+    type: string
+  condition:
+    binding_description: Codes describing the state of the specimen.
+    binding_strength: extensible
+    binding_uri: http://terminology.hl7.org/ValueSet/v2-0493
+    binding_version: null
+    description: text representation. A mode or state of being that describes the
+      nature of the specimen.
+    element_property: true
+    items:
+      type: string
+    term:
+      description: Codes describing the state of the specimen.
+      termDef:
+        cde_id: http://terminology.hl7.org/ValueSet/v2-0493
+        cde_version: null
+        source: fhir
+        strength: extensible
+        term: http://terminology.hl7.org/ValueSet/v2-0493
+        term_url: http://terminology.hl7.org/ValueSet/v2-0493
+    title: State of the specimen
+    type: array
+  condition_coding: &id002
+    binding_description: Codes describing the state of the specimen.
+    binding_strength: extensible
+    binding_uri: http://terminology.hl7.org/ValueSet/v2-0493
+    binding_version: null
+    description: '[system#code representation.] A mode or state of being that describes
+      the nature of the specimen.'
+    element_property: true
+    items:
+      type: string
+    term:
+      description: Codes describing the state of the specimen.
+      termDef:
+        cde_id: http://terminology.hl7.org/ValueSet/v2-0493
+        cde_version: null
+        source: fhir
+        strength: extensible
+        term: http://terminology.hl7.org/ValueSet/v2-0493
+        term_url: http://terminology.hl7.org/ValueSet/v2-0493
+    title: State of the specimen
+    type: array
+  condition_text: *id002
+  container:
+    description: '[Text representation of SpecimenContainer] The container holding
+      the specimen.  The recursive nature of containers; i.e. blood in tube in tray
+      in rack is not addressed here.'
+    element_property: true
+    items:
+      type: string
+    title: Direct container of specimen (tube/slide, etc.)
+    type: array
+  extension:
+    description: '[Text representation of Extension] May be used to represent additional
+      information that is not part of the basic definition of the resource. To make
+      the use of extensions safe and managable, there is a strict set of governance
+      applied to the definition and use of extensions. Though any implementer can
+      define an extension, there is a set of requirements that SHALL be met as part
+      of the definition of the extension.'
+    element_property: true
+    items:
+      type: string
+    title: Additional content defined by implementations
+    type: array
+  feature:
+    description: '[Text representation of SpecimenFeature] A physical feature or landmark
+      on a specimen, highlighted for context by the collector of the specimen (e.g.
+      surgeon), that identifies the type of feature as well as its meaning (e.g. the
+      red ink indicating the resection margin of the right lobe of the excised prostate
+      tissue or wire loop at radiologically suspected tumor location).'
+    element_property: true
+    items:
+      type: string
+    title: The physical feature of a specimen
+    type: array
+  id:
+    description: The logical id of the resource, as used in the URL for the resource.
+      Once assigned, this value never changes.
+    element_property: true
+    maxLength: 64
+    minLength: 1
+    pattern: ^[A-Za-z0-9\-.]+$
+    title: Logical id of this artifact
+    type: string
+  identifier:
+    description: Id for specimen.
+    element_property: true
+    items:
+      type: string
+    title: External Identifier
+    type: array
+  identifier_coding:
+    description: '[system#code representation of identifier] Id for specimen.'
+    element_property: true
+    items:
+      type: string
+    title: External Identifier
+    type: array
+  identifier_text_coding:
+    description: '[system#code representation of identifier.text] Id for specimen.'
+    element_property: true
+    items:
+      type: string
+    title: External Identifier
+    type: array
+  note:
+    description: '[Text representation of Annotation] To communicate any details or
+      issues about the specimen or during the specimen collection. (for example: broken
+      vial, sent with patient, frozen).'
+    element_property: true
+    items:
+      type: string
+    title: Comments
+    type: array
+  parent:
+    backref: parent_specimen
+    description: '[Text representation of Reference] Reference to the parent (source)
+      specimen which is used when the specimen was either derived from or a component
+      of another specimen.'
+    element_property: true
+    enum_reference_types:
+    - Specimen
+    items:
+      type: string
+    title: Specimen from which this specimen originated
+    type: array
+  processing_additive:
+    backref: additive_specimen_processing
+    description: '[Text representation of Reference] [Plucked from Specimen.processing]
+      Material used in the processing step'
+    element_property: true
+    enum_reference_types:
+    - Substance
+    items:
+      type: string
+    title: Material used in the processing step
+    type: array
+  processing_method:
+    binding_description: Type indicating the technique used to process the specimen.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/specimen-processing-method
+    binding_version: null
+    description: text representation. [Plucked from Specimen.processing] A coded value
+      specifying the method used to process the specimen.
+    element_property: true
+    term:
+      description: Type indicating the technique used to process the specimen.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/specimen-processing-method
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/specimen-processing-method
+        term_url: http://hl7.org/fhir/ValueSet/specimen-processing-method
+    title: Indicates the treatment step  applied to the specimen
+    type: string
+  project_id:
+    term:
+      $ref: _terms.yaml#/project_id
+    type: string
+  receivedTime:
+    description: Time when specimen is received by the testing laboratory for processing
+      or testing.
+    element_property: true
+    format: date-time
+    title: The time when specimen is received by the testing laboratory
+    type: string
+  request:
+    backref: request_specimen
+    description: '[Text representation of Reference] Details concerning a service
+      request that required a specimen to be collected.'
+    element_property: true
+    enum_reference_types:
+    - ServiceRequest
+    items:
+      type: string
+    title: Why the specimen was collected
+    type: array
+  resourceType:
+    const: Specimen
+    default: Specimen
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+  role:
+    binding_description: Codes describing specimen role.
+    binding_strength: preferred
+    binding_uri: http://hl7.org/fhir/ValueSet/specimen-role
+    binding_version: null
+    description: text representation. The role or reason for the specimen in the testing
+      workflow.
+    element_property: true
+    items:
+      type: string
+    term:
+      description: Codes describing specimen role.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/specimen-role
+        cde_version: null
+        source: fhir
+        strength: preferred
+        term: http://hl7.org/fhir/ValueSet/specimen-role
+        term_url: http://hl7.org/fhir/ValueSet/specimen-role
+    title: The role the specimen serves
+    type: array
+  role_coding: &id003
+    binding_description: Codes describing specimen role.
+    binding_strength: preferred
+    binding_uri: http://hl7.org/fhir/ValueSet/specimen-role
+    binding_version: null
+    description: '[system#code representation.] The role or reason for the specimen
+      in the testing workflow.'
+    element_property: true
+    items:
+      type: string
+    term:
+      description: Codes describing specimen role.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/specimen-role
+        cde_version: null
+        source: fhir
+        strength: preferred
+        term: http://hl7.org/fhir/ValueSet/specimen-role
+        term_url: http://hl7.org/fhir/ValueSet/specimen-role
+    title: The role the specimen serves
+    type: array
+  role_text: *id003
+  status:
+    binding_description: Codes providing the status/availability of a specimen.
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/specimen-status
+    binding_version: 5.0.0
+    description: The availability of the specimen.
+    element_property: true
+    enum_values:
+    - available
+    - unavailable
+    - unsatisfactory
+    - entered-in-error
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: available | unavailable | unsatisfactory | entered-in-error
+    type: string
+  subject:
+    backref: specimen
+    description: '[Text representation of Reference] Where the specimen came from.
+      This may be from patient(s), from a location (e.g., the source of an environmental
+      sample), or a sampling of a substance, a biologically-derived product, or a
+      device'
+    element_property: true
+    enum_reference_types:
+    - Patient
+    - Group
+    - Device
+    - BiologicallyDerivedProduct
+    - Substance
+    - Location
+    title: Where the specimen came from. This may be from patient(s), from a location
+      (e.g., the source of an environmental sample), or a sampling of a substance,
+      a biologically-derived product, or a device
+    type: string
+  type:
+    binding_description: The type of the specimen.
+    binding_strength: example
+    binding_uri: http://terminology.hl7.org/ValueSet/v2-0487
+    binding_version: null
+    description: text representation. The kind of material that forms the specimen.
+    element_property: true
+    term:
+      description: The type of the specimen.
+      termDef:
+        cde_id: http://terminology.hl7.org/ValueSet/v2-0487
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://terminology.hl7.org/ValueSet/v2-0487
+        term_url: http://terminology.hl7.org/ValueSet/v2-0487
+    title: Kind of material that forms the specimen
+    type: string
+  type_coding: &id004
+    binding_description: The type of the specimen.
+    binding_strength: example
+    binding_uri: http://terminology.hl7.org/ValueSet/v2-0487
+    binding_version: null
+    description: '[system#code representation.] The kind of material that forms the
+      specimen.'
+    element_property: true
+    term:
+      description: The type of the specimen.
+      termDef:
+        cde_id: http://terminology.hl7.org/ValueSet/v2-0487
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://terminology.hl7.org/ValueSet/v2-0487
+        term_url: http://terminology.hl7.org/ValueSet/v2-0487
+    title: Kind of material that forms the specimen
+    type: string
+  type_text: *id004
+title: Specimen
+type: object

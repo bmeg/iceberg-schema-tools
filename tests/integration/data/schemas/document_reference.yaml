@@ -1,0 +1,658 @@
+$schema: http://json-schema.org/draft-04/schema#
+additionalProperties: true
+category: data_file
+description: "A reference to a document. A reference to a document of any kind for\
+  \ any purpose. While the term \u201Cdocument\u201D implies a more narrow focus,\
+  \ for this resource this \"document\" encompasses *any* serialized object with a\
+  \ mime-type, it includes formal patient-centric documents (CDA), clinical notes,\
+  \ scanned paper, non-patient specific documents like policy text, as well as a photo,\
+  \ video, or audio recording acquired or used in healthcare.  The DocumentReference\
+  \ resource provides metadata about the document so that the document can be discovered\
+  \ and managed.  The actual content may be inline base64 encoded data or provided\
+  \ by direct reference. [See https://hl7.org/fhir/R5/DocumentReference.html]"
+id: document_reference
+links:
+- backref: author_document_reference
+  label: DocumentReference_author_Patient_author_document_reference
+  multiplicity: many_to_many
+  name: author_Patient
+  required: false
+  target_type: patient
+program: '*'
+project: '*'
+properties:
+  $ref: _definitions.yaml#/data_file_properties
+  attester:
+    description: '[Text representation of DocumentReferenceAttester] A participant
+      who has authenticated the accuracy of the document.'
+    element_property: true
+    items:
+      type: string
+    title: Attests to accuracy of the document
+    type: array
+  auth_resource_path:
+    description: Gen3 scaffolding
+    type: string
+  author:
+    backref: author_document_reference
+    description: '[Text representation of Reference] Identifies who is responsible
+      for adding the information to the document.'
+    element_property: true
+    enum_reference_types:
+    - Practitioner
+    - PractitionerRole
+    - Organization
+    - Device
+    - Patient
+    - RelatedPerson
+    - CareTeam
+    items:
+      type: string
+    title: Who and/or what authored the document
+    type: array
+  basedOn:
+    backref: basedOn_document_reference
+    description: '[Text representation of Reference] A procedure that is fulfilled
+      in whole or in part by the creation of this media.'
+    element_property: true
+    enum_reference_types:
+    - Appointment
+    - AppointmentResponse
+    - CarePlan
+    - Claim
+    - CommunicationRequest
+    - Contract
+    - CoverageEligibilityRequest
+    - DeviceRequest
+    - EnrollmentRequest
+    - ImmunizationRecommendation
+    - MedicationRequest
+    - NutritionOrder
+    - RequestOrchestration
+    - ServiceRequest
+    - SupplyRequest
+    - VisionPrescription
+    items:
+      type: string
+    title: Procedure that caused this media to be created
+    type: array
+  bodySite:
+    backref: bodySite_document_reference
+    binding_description: SNOMED CT Body site concepts
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/body-site
+    binding_version: null
+    description: text representation. The anatomic structures included in the document.
+    element_property: true
+    enum_reference_types:
+    - BodyStructure
+    items:
+      type: string
+    term:
+      description: SNOMED CT Body site concepts
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/body-site
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/body-site
+        term_url: http://hl7.org/fhir/ValueSet/body-site
+    title: Body part included
+    type: array
+  bodySite_coding: &id001
+    backref: bodySite_document_reference
+    binding_description: SNOMED CT Body site concepts
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/body-site
+    binding_version: null
+    description: '[system#code representation.] The anatomic structures included in
+      the document.'
+    element_property: true
+    enum_reference_types:
+    - BodyStructure
+    items:
+      type: string
+    term:
+      description: SNOMED CT Body site concepts
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/body-site
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/body-site
+        term_url: http://hl7.org/fhir/ValueSet/body-site
+    title: Body part included
+    type: array
+  bodySite_text: *id001
+  category:
+    binding_description: High-level kind of document at a macro level.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/referenced-item-category
+    binding_version: null
+    description: text representation. A categorization for the type of document referenced
+      - helps for indexing and searching. This may be implied by or derived from the
+      code specified in the DocumentReference.type.
+    element_property: true
+    items:
+      type: string
+    term:
+      description: High-level kind of document at a macro level.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/referenced-item-category
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/referenced-item-category
+        term_url: http://hl7.org/fhir/ValueSet/referenced-item-category
+    title: Categorization of document
+    type: array
+  category_coding: &id002
+    binding_description: High-level kind of document at a macro level.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/referenced-item-category
+    binding_version: null
+    description: '[system#code representation.] A categorization for the type of document
+      referenced - helps for indexing and searching. This may be implied by or derived
+      from the code specified in the DocumentReference.type.'
+    element_property: true
+    items:
+      type: string
+    term:
+      description: High-level kind of document at a macro level.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/referenced-item-category
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/referenced-item-category
+        term_url: http://hl7.org/fhir/ValueSet/referenced-item-category
+    title: Categorization of document
+    type: array
+  category_text: *id002
+  content_attachment_contentType:
+    binding_description: BCP 13 (RFCs 2045, 2046, 2047, 4288, 4289 and 2049)
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/mimetypes
+    binding_version: 5.0.0
+    description: '[Plucked from DocumentReference.content] Identifies the type of
+      the data in the attachment and allows a method to be chosen to interpret or
+      render the data. Includes mime type parameters such as charset where appropriate.'
+    element_property: true
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: Mime type of the content, with charset etc.
+    type: string
+  content_attachment_extension_md5:
+    description: '[Plucked from DocumentReference.content] Value of extension'
+    type: string
+  content_attachment_size:
+    description: '[Plucked from DocumentReference.content] The number of bytes of
+      data that make up this attachment (before base64 encoding, if that is done).'
+    element_property: true
+    title: Number of bytes of content (if url provided)
+    type: integer
+  content_attachment_url:
+    description: '[Plucked from DocumentReference.content] A location where the data
+      can be accessed.'
+    element_property: true
+    format: uri
+    maxLength: 65536
+    minLength: 1
+    title: Uri where the data can be found
+    type: string
+  context:
+    backref: context_document_reference
+    description: '[Text representation of Reference] Describes the clinical encounter
+      or type of care that the document content is associated with.'
+    element_property: true
+    enum_reference_types:
+    - Appointment
+    - Encounter
+    - EpisodeOfCare
+    items:
+      type: string
+    title: Context of the document content
+    type: array
+  custodian:
+    backref: custodian_document_reference
+    description: '[Text representation of Reference] Identifies the organization or
+      group who is responsible for ongoing maintenance of and access to the document.'
+    element_property: true
+    enum_reference_types:
+    - Organization
+    title: Organization which maintains the document
+    type: string
+  data_category:
+    term:
+      $ref: _terms.yaml#/data_category
+    type: string
+  data_format:
+    term:
+      $ref: _terms.yaml#/data_format
+    type: string
+  data_type:
+    term:
+      $ref: _terms.yaml#/data_type
+    type: string
+  date:
+    description: When the document reference was created.
+    element_property: true
+    format: date-time
+    title: When this document reference was created
+    type: string
+  description:
+    description: Human-readable description of the source document.
+    element_property: true
+    pattern: \s*(\S|\s)*
+    title: Human-readable description
+    type: string
+  docStatus:
+    binding_description: Status of the underlying document.
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/composition-status
+    binding_version: 5.0.0
+    description: The status of the underlying document.
+    element_property: true
+    enum_values:
+    - registered
+    - partial
+    - preliminary
+    - final
+    - amended
+    - corrected
+    - appended
+    - cancelled
+    - entered-in-error
+    - deprecated
+    - unknown
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: registered | partial | preliminary | final | amended | corrected | appended
+      | cancelled | entered-in-error | deprecated | unknown
+    type: string
+  event:
+    backref: event_document_reference
+    binding_description: This list of codes represents the main clinical acts being
+      documented.
+    binding_strength: example
+    binding_uri: http://terminology.hl7.org/ValueSet/v3-ActCode
+    binding_version: null
+    description: text representation. This list of codes represents the main clinical
+      acts, such as a colonoscopy or an appendectomy, being documented. In some cases,
+      the event is inherent in the type Code, such as a "History and Physical Report"
+      in which the procedure being documented is necessarily a "History and Physical"
+      act.
+    element_property: true
+    items:
+      type: string
+    term:
+      description: This list of codes represents the main clinical acts being documented.
+      termDef:
+        cde_id: http://terminology.hl7.org/ValueSet/v3-ActCode
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://terminology.hl7.org/ValueSet/v3-ActCode
+        term_url: http://terminology.hl7.org/ValueSet/v3-ActCode
+    title: Main clinical acts documented
+    type: array
+  event_coding: &id003
+    backref: event_document_reference
+    binding_description: This list of codes represents the main clinical acts being
+      documented.
+    binding_strength: example
+    binding_uri: http://terminology.hl7.org/ValueSet/v3-ActCode
+    binding_version: null
+    description: '[system#code representation.] This list of codes represents the
+      main clinical acts, such as a colonoscopy or an appendectomy, being documented.
+      In some cases, the event is inherent in the type Code, such as a "History and
+      Physical Report" in which the procedure being documented is necessarily a "History
+      and Physical" act.'
+    element_property: true
+    items:
+      type: string
+    term:
+      description: This list of codes represents the main clinical acts being documented.
+      termDef:
+        cde_id: http://terminology.hl7.org/ValueSet/v3-ActCode
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://terminology.hl7.org/ValueSet/v3-ActCode
+        term_url: http://terminology.hl7.org/ValueSet/v3-ActCode
+    title: Main clinical acts documented
+    type: array
+  event_text: *id003
+  extension:
+    description: '[Text representation of Extension] May be used to represent additional
+      information that is not part of the basic definition of the resource. To make
+      the use of extensions safe and managable, there is a strict set of governance
+      applied to the definition and use of extensions. Though any implementer can
+      define an extension, there is a set of requirements that SHALL be met as part
+      of the definition of the extension.'
+    element_property: true
+    items:
+      type: string
+    title: Additional content defined by implementations
+    type: array
+  facilityType:
+    binding_description: XDS Facility Type.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/c80-facilitycodes
+    binding_version: null
+    description: text representation. The kind of facility where the patient was seen.
+    element_property: true
+    term:
+      description: XDS Facility Type.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/c80-facilitycodes
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/c80-facilitycodes
+        term_url: http://hl7.org/fhir/ValueSet/c80-facilitycodes
+    title: Kind of facility where patient was seen
+    type: string
+  facilityType_coding: &id004
+    binding_description: XDS Facility Type.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/c80-facilitycodes
+    binding_version: null
+    description: '[system#code representation.] The kind of facility where the patient
+      was seen.'
+    element_property: true
+    term:
+      description: XDS Facility Type.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/c80-facilitycodes
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/c80-facilitycodes
+        term_url: http://hl7.org/fhir/ValueSet/c80-facilitycodes
+    title: Kind of facility where patient was seen
+    type: string
+  facilityType_text: *id004
+  id:
+    description: The logical id of the resource, as used in the URL for the resource.
+      Once assigned, this value never changes.
+    element_property: true
+    maxLength: 64
+    minLength: 1
+    pattern: ^[A-Za-z0-9\-.]+$
+    title: Logical id of this artifact
+    type: string
+  identifier:
+    description: Other business identifiers associated with the document, including
+      version independent identifiers.
+    element_property: true
+    items:
+      type: string
+    title: Business identifiers for the document
+    type: array
+  identifier_coding:
+    description: '[system#code representation of identifier] Other business identifiers
+      associated with the document, including version independent identifiers.'
+    element_property: true
+    items:
+      type: string
+    title: Business identifiers for the document
+    type: array
+  identifier_text_coding:
+    description: '[system#code representation of identifier.text] Other business identifiers
+      associated with the document, including version independent identifiers.'
+    element_property: true
+    items:
+      type: string
+    title: Business identifiers for the document
+    type: array
+  modality:
+    binding_description: Type of acquired data in the instance.
+    binding_strength: extensible
+    binding_uri: http://dicom.nema.org/medical/dicom/current/output/chtml/part16/sect_CID_33.html
+    binding_version: null
+    description: text representation. Imaging modality used. This may include both
+      acquisition and non-acquisition modalities.
+    element_property: true
+    items:
+      type: string
+    term:
+      description: Type of acquired data in the instance.
+      termDef:
+        cde_id: http://dicom.nema.org/medical/dicom/current/output/chtml/part16/sect_CID_33.html
+        cde_version: null
+        source: fhir
+        strength: extensible
+        term: http://dicom.nema.org/medical/dicom/current/output/chtml/part16/sect_CID_33.html
+        term_url: http://dicom.nema.org/medical/dicom/current/output/chtml/part16/sect_CID_33.html
+    title: Imaging modality used
+    type: array
+  modality_coding: &id005
+    binding_description: Type of acquired data in the instance.
+    binding_strength: extensible
+    binding_uri: http://dicom.nema.org/medical/dicom/current/output/chtml/part16/sect_CID_33.html
+    binding_version: null
+    description: '[system#code representation.] Imaging modality used. This may include
+      both acquisition and non-acquisition modalities.'
+    element_property: true
+    items:
+      type: string
+    term:
+      description: Type of acquired data in the instance.
+      termDef:
+        cde_id: http://dicom.nema.org/medical/dicom/current/output/chtml/part16/sect_CID_33.html
+        cde_version: null
+        source: fhir
+        strength: extensible
+        term: http://dicom.nema.org/medical/dicom/current/output/chtml/part16/sect_CID_33.html
+        term_url: http://dicom.nema.org/medical/dicom/current/output/chtml/part16/sect_CID_33.html
+    title: Imaging modality used
+    type: array
+  modality_text: *id005
+  patient_id:
+    description: Denormalized patient id
+    type: string
+  period:
+    description: '[Text representation of Period] The time period over which the service
+      that is described by the document was provided.'
+    element_property: true
+    title: Time of service that is being documented
+    type: string
+  practiceSetting:
+    binding_description: Additional details about where the content was created (e.g.
+      clinical specialty).
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/c80-practice-codes
+    binding_version: null
+    description: text representation. This property may convey specifics about the
+      practice setting where the content was created, often reflecting the clinical
+      specialty.
+    element_property: true
+    term:
+      description: Additional details about where the content was created (e.g. clinical
+        specialty).
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/c80-practice-codes
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/c80-practice-codes
+        term_url: http://hl7.org/fhir/ValueSet/c80-practice-codes
+    title: Additional details about where the content was created (e.g. clinical specialty)
+    type: string
+  practiceSetting_coding: &id006
+    binding_description: Additional details about where the content was created (e.g.
+      clinical specialty).
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/c80-practice-codes
+    binding_version: null
+    description: '[system#code representation.] This property may convey specifics
+      about the practice setting where the content was created, often reflecting the
+      clinical specialty.'
+    element_property: true
+    term:
+      description: Additional details about where the content was created (e.g. clinical
+        specialty).
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/c80-practice-codes
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/c80-practice-codes
+        term_url: http://hl7.org/fhir/ValueSet/c80-practice-codes
+    title: Additional details about where the content was created (e.g. clinical specialty)
+    type: string
+  practiceSetting_text: *id006
+  project_id:
+    term:
+      $ref: _terms.yaml#/project_id
+    type: string
+  relatesTo:
+    description: '[Text representation of DocumentReferenceRelatesTo] Relationships
+      that this document has with other document references that already exist.'
+    element_property: true
+    items:
+      type: string
+    title: Relationships to other documents
+    type: array
+  resourceType:
+    const: DocumentReference
+    default: DocumentReference
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+  securityLabel:
+    binding_description: Example Security Labels from the Healthcare Privacy and Security
+      Classification System.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/security-label-examples
+    binding_version: null
+    description: 'text representation. A set of Security-Tag codes specifying the
+      level of privacy/security of the Document found at DocumentReference.content.attachment.url.
+      Note that DocumentReference.meta.security contains the security labels of the
+      data elements in DocumentReference, while DocumentReference.securityLabel contains
+      the security labels for the document the reference refers to. The distinction
+      recognizes that the document may contain sensitive information, while the DocumentReference
+      is metadata about the document and thus might not be as sensitive as the document.
+      For example: a psychotherapy episode may contain highly sensitive information,
+      while the metadata may simply indicate that some episode happened.'
+    element_property: true
+    items:
+      type: string
+    term:
+      description: Example Security Labels from the Healthcare Privacy and Security
+        Classification System.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/security-label-examples
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/security-label-examples
+        term_url: http://hl7.org/fhir/ValueSet/security-label-examples
+    title: Document security-tags
+    type: array
+  securityLabel_coding: &id007
+    binding_description: Example Security Labels from the Healthcare Privacy and Security
+      Classification System.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/security-label-examples
+    binding_version: null
+    description: '[system#code representation.] A set of Security-Tag codes specifying
+      the level of privacy/security of the Document found at DocumentReference.content.attachment.url.
+      Note that DocumentReference.meta.security contains the security labels of the
+      data elements in DocumentReference, while DocumentReference.securityLabel contains
+      the security labels for the document the reference refers to. The distinction
+      recognizes that the document may contain sensitive information, while the DocumentReference
+      is metadata about the document and thus might not be as sensitive as the document.
+      For example: a psychotherapy episode may contain highly sensitive information,
+      while the metadata may simply indicate that some episode happened.'
+    element_property: true
+    items:
+      type: string
+    term:
+      description: Example Security Labels from the Healthcare Privacy and Security
+        Classification System.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/security-label-examples
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/security-label-examples
+        term_url: http://hl7.org/fhir/ValueSet/security-label-examples
+    title: Document security-tags
+    type: array
+  securityLabel_text: *id007
+  status:
+    binding_description: The status of the document reference.
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/document-reference-status
+    binding_version: 5.0.0
+    description: The status of this document reference.
+    element_property: true
+    element_required: true
+    enum_values:
+    - current
+    - superseded
+    - entered-in-error
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: current | superseded | entered-in-error
+    type: string
+  subject:
+    backref: document_reference
+    description: '[Text representation of Reference] Who or what the document is about.
+      The document can be about a person, (patient or healthcare practitioner), a
+      device (e.g. a machine) or even a group of subjects (such as a document about
+      a herd of farm animals, or a set of patients that share a common exposure).'
+    element_property: true
+    enum_reference_types:
+    - Resource
+    title: Who/what is the subject of the document
+    type: string
+  type:
+    binding_description: Precise type of clinical document.
+    binding_strength: preferred
+    binding_uri: http://hl7.org/fhir/ValueSet/doc-typecodes
+    binding_version: null
+    description: text representation. Specifies the particular kind of document referenced  (e.g.
+      History and Physical, Discharge Summary, Progress Note). This usually equates
+      to the purpose of making the document referenced.
+    element_property: true
+    term:
+      description: Precise type of clinical document.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/doc-typecodes
+        cde_version: null
+        source: fhir
+        strength: preferred
+        term: http://hl7.org/fhir/ValueSet/doc-typecodes
+        term_url: http://hl7.org/fhir/ValueSet/doc-typecodes
+    title: Kind of document (LOINC if possible)
+    type: string
+  type_coding: &id008
+    binding_description: Precise type of clinical document.
+    binding_strength: preferred
+    binding_uri: http://hl7.org/fhir/ValueSet/doc-typecodes
+    binding_version: null
+    description: '[system#code representation.] Specifies the particular kind of document
+      referenced  (e.g. History and Physical, Discharge Summary, Progress Note). This
+      usually equates to the purpose of making the document referenced.'
+    element_property: true
+    term:
+      description: Precise type of clinical document.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/doc-typecodes
+        cde_version: null
+        source: fhir
+        strength: preferred
+        term: http://hl7.org/fhir/ValueSet/doc-typecodes
+        term_url: http://hl7.org/fhir/ValueSet/doc-typecodes
+    title: Kind of document (LOINC if possible)
+    type: string
+  type_text: *id008
+  version:
+    description: An explicitly assigned identifer of a variation of the content in
+      the DocumentReference
+    element_property: true
+    pattern: '[ \r\n\t\S]+'
+    title: An explicitly assigned identifer of a variation of the content in the DocumentReference
+    type: string
+title: DocumentReference
+type: object

@@ -1,0 +1,508 @@
+$schema: http://json-schema.org/draft-04/schema#
+additionalProperties: true
+category: Administrative
+description: Information about an individual or animal receiving health care services.
+  Demographics and other administrative information about an individual or animal
+  receiving care or other health-related services. [See https://hl7.org/fhir/R5/Patient.html]
+id: patient
+links:
+- backref: generalPractitioner_patient
+  label: Patient_generalPractitioner_Organization_generalPractitioner_patient
+  multiplicity: many_to_many
+  name: generalPractitioner_Organization
+  required: false
+  target_type: organization
+- backref: generalPractitioner_patient
+  label: Patient_generalPractitioner_Practitioner_generalPractitioner_patient
+  multiplicity: many_to_many
+  name: generalPractitioner_Practitioner
+  required: false
+  target_type: practitioner
+- backref: generalPractitioner_patient
+  label: Patient_generalPractitioner_PractitionerRole_generalPractitioner_patient
+  multiplicity: many_to_many
+  name: generalPractitioner_PractitionerRole
+  required: false
+  target_type: practitioner_role
+program: '*'
+project: '*'
+properties:
+  active:
+    description: Whether this patient record is in active use.  Many systems use this
+      property to mark as non-current patients, such as those that have not been seen
+      for a period of time based on an organization's business rules.  It is often
+      used to filter patient lists to exclude inactive patients  Deceased patients
+      may also be marked as inactive for the same reasons, but may be active for some
+      time after death.
+    element_property: true
+    title: Whether this patient's record is in active use
+    type: boolean
+  address_postalCode:
+    description: '[Plucked from Patient.address] A postal code designating a region
+      defined by the postal service.'
+    element_property: true
+    pattern: '[ \r\n\t\S]+'
+    title: Postal code for area
+    type: string
+  birthDate:
+    description: The date of birth for the individual
+    element_property: true
+    format: date
+    title: The date of birth for the individual
+    type: string
+  communication:
+    description: '[Text representation of PatientCommunication] A language which may
+      be used to communicate with the patient about his or her health'
+    element_property: true
+    items:
+      type: string
+    title: A language which may be used to communicate with the patient about his
+      or her health
+    type: array
+  contact:
+    description: '[Text representation of PatientContact] A contact party (e.g. guardian,
+      partner, friend) for the patient'
+    element_property: true
+    items:
+      type: string
+    title: A contact party (e.g. guardian, partner, friend) for the patient
+    type: array
+  deceasedBoolean:
+    description: Indicates if the individual is deceased or not
+    element_property: true
+    one_of_many: deceased
+    one_of_many_required: false
+    title: Indicates if the individual is deceased or not
+    type: boolean
+  deceasedDateTime:
+    description: Indicates if the individual is deceased or not
+    element_property: true
+    format: date-time
+    one_of_many: deceased
+    one_of_many_required: false
+    title: Indicates if the individual is deceased or not
+    type: string
+  disability_adjusted_life_years:
+    description: '[extension disability_adjusted_life_years] Disability Adjusted Life
+      Years as defined in the literature and summarized at <a href="https://en.wikipedia.org/wiki/Disability-adjusted_life_year"/>.'
+    type: number
+  extension:
+    description: '[Text representation of Extension] May be used to represent additional
+      information that is not part of the basic definition of the resource. To make
+      the use of extensions safe and managable, there is a strict set of governance
+      applied to the definition and use of extensions. Though any implementer can
+      define an extension, there is a set of requirements that SHALL be met as part
+      of the definition of the extension.'
+    element_property: true
+    items:
+      type: string
+    title: Additional content defined by implementations
+    type: array
+  gender:
+    binding_description: The gender of a person used for administrative purposes.
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/administrative-gender
+    binding_version: 5.0.0
+    description: Administrative Gender - the gender that the patient is considered
+      to have for administration and record keeping purposes.
+    element_property: true
+    enum_values:
+    - male
+    - female
+    - other
+    - unknown
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: male | female | other | unknown
+    type: string
+  generalPractitioner:
+    backref: generalPractitioner_patient
+    description: '[Text representation of Reference] Patient''s nominated care provider.'
+    element_property: true
+    enum_reference_types:
+    - Organization
+    - Practitioner
+    - PractitionerRole
+    items:
+      type: string
+    title: Patient's nominated primary care provider
+    type: array
+  id:
+    description: The logical id of the resource, as used in the URL for the resource.
+      Once assigned, this value never changes.
+    element_property: true
+    maxLength: 64
+    minLength: 1
+    pattern: ^[A-Za-z0-9\-.]+$
+    title: Logical id of this artifact
+    type: string
+  identifier:
+    description: An identifier for this patient
+    element_property: true
+    items:
+      type: string
+    title: An identifier for this patient
+    type: array
+  identifier_coding:
+    description: '[system#code representation of identifier] An identifier for this
+      patient'
+    element_property: true
+    items:
+      type: string
+    title: An identifier for this patient
+    type: array
+  identifier_text_coding:
+    description: '[system#code representation of identifier.text] An identifier for
+      this patient'
+    element_property: true
+    items:
+      type: string
+    title: An identifier for this patient
+    type: array
+  link:
+    description: '[Text representation of PatientLink] Link to a Patient or RelatedPerson
+      resource that concerns the same actual individual'
+    element_property: true
+    items:
+      type: string
+    title: Link to a Patient or RelatedPerson resource that concerns the same actual
+      individual
+    type: array
+  managingOrganization:
+    backref: managingOrganization_patient
+    description: '[Text representation of Reference] Organization that is the custodian
+      of the patient record'
+    element_property: true
+    enum_reference_types:
+    - Organization
+    title: Organization that is the custodian of the patient record
+    type: string
+  maritalStatus:
+    binding_description: The domestic partnership status of a person.
+    binding_strength: extensible
+    binding_uri: http://hl7.org/fhir/ValueSet/marital-status
+    binding_version: null
+    description: text representation. This field contains a patient's most recent
+      marital (civil) status.
+    element_property: true
+    term:
+      description: The domestic partnership status of a person.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/marital-status
+        cde_version: null
+        source: fhir
+        strength: extensible
+        term: http://hl7.org/fhir/ValueSet/marital-status
+        term_url: http://hl7.org/fhir/ValueSet/marital-status
+    title: Marital (civil) status of a patient
+    type: string
+  maritalStatus_coding: &id001
+    binding_description: The domestic partnership status of a person.
+    binding_strength: extensible
+    binding_uri: http://hl7.org/fhir/ValueSet/marital-status
+    binding_version: null
+    description: '[system#code representation.] This field contains a patient''s most
+      recent marital (civil) status.'
+    element_property: true
+    term:
+      description: The domestic partnership status of a person.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/marital-status
+        cde_version: null
+        source: fhir
+        strength: extensible
+        term: http://hl7.org/fhir/ValueSet/marital-status
+        term_url: http://hl7.org/fhir/ValueSet/marital-status
+    title: Marital (civil) status of a patient
+    type: string
+  maritalStatus_text: *id001
+  multipleBirthBoolean:
+    description: Indicates whether the patient is part of a multiple (boolean) or
+      indicates the actual birth order (integer).
+    element_property: true
+    one_of_many: multipleBirth
+    one_of_many_required: false
+    title: Whether patient is part of a multiple birth
+    type: boolean
+  multipleBirthInteger:
+    description: Indicates whether the patient is part of a multiple (boolean) or
+      indicates the actual birth order (integer).
+    element_property: true
+    one_of_many: multipleBirth
+    one_of_many_required: false
+    title: Whether patient is part of a multiple birth
+    type: integer
+  name:
+    description: '[Text representation of HumanName] A name associated with the individual.'
+    element_property: true
+    items:
+      type: string
+    title: A name associated with the patient
+    type: array
+  patient_birthPlace:
+    description: '[Text representation of Address] [extension patient_birthPlace]
+      The registered place of birth of the patient. A sytem may use the address.text
+      if they don''t store the birthPlace address in discrete elements.'
+    type: string
+  patient_mothersMaidenName:
+    description: '[extension patient_mothersMaidenName] Mother''s maiden (unmarried)
+      name, commonly collected to help verify patient identity.'
+    type: string
+  photo:
+    description: '[Text representation of Attachment] Image of the patient'
+    element_property: true
+    items:
+      type: string
+    title: Image of the patient
+    type: array
+  project_id:
+    term:
+      $ref: _terms.yaml#/project_id
+    type: string
+  quality_adjusted_life_years:
+    description: '[extension quality_adjusted_life_years] Quality Adjusted Life Years
+      as defined in the literature and summarized at <a href="https://en.wikipedia.org/wiki/Quality-adjusted_life_year"/>.'
+    type: number
+  resourceType:
+    const: Patient
+    default: Patient
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+  telecom:
+    description: '[Text representation of ContactPoint] A contact detail (e.g. a telephone
+      number or an email address) by which the individual may be contacted.'
+    element_property: true
+    items:
+      type: string
+    title: A contact detail for the individual
+    type: array
+  us_core_birthsex:
+    binding_description: Code for sex assigned at birth
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/us/core/ValueSet/birthsex
+    binding_version: null
+    description: '[extension us_core_birthsex] A code classifying the person''s sex
+      assigned at birth  as specified by the [Office of the National Coordinator for
+      Health IT (ONC)](https://www.healthit.gov/newsroom/about-onc). This extension
+      aligns with the C-CDA Birth Sex Observation (LOINC 76689-9).'
+    term:
+      description: Code for sex assigned at birth
+      termDef:
+        cde_id: http://hl7.org/fhir/us/core/ValueSet/birthsex
+        cde_version: null
+        source: fhir
+        strength: required
+        term: http://hl7.org/fhir/us/core/ValueSet/birthsex
+        term_url: http://hl7.org/fhir/us/core/ValueSet/birthsex
+    type: string
+  us_core_ethnicity:
+    description: '[extension us_core_ethnicity] Concepts classifying the person into
+      a named category of humans sharing common history, traits, geographical origin
+      or nationality.  The ethnicity codes used to represent these concepts are based
+      upon the [CDC ethnicity and Ethnicity Code Set Version 1.0](http://www.cdc.gov/phin/resources/vocabulary/index.html)
+      which includes over 900 concepts for representing race and ethnicity of which
+      43 reference ethnicity.  The ethnicity concepts are grouped by and pre-mapped
+      to the 2 OMB ethnicity categories: - Hispanic or Latino - Not Hispanic or Latino.'
+    type: string
+  us_core_ethnicity_detailed:
+    binding_description: null
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/us/core/ValueSet/detailed-ethnicity
+    binding_version: null
+    description: '[Text representation of Coding] [extension us_core_ethnicity] Concepts
+      classifying the person into a named category of humans sharing common history,
+      traits, geographical origin or nationality.  The ethnicity codes used to represent
+      these concepts are based upon the [CDC ethnicity and Ethnicity Code Set Version
+      1.0](http://www.cdc.gov/phin/resources/vocabulary/index.html) which includes
+      over 900 concepts for representing race and ethnicity of which 43 reference
+      ethnicity.  The ethnicity concepts are grouped by and pre-mapped to the 2 OMB
+      ethnicity categories: - Hispanic or Latino - Not Hispanic or Latino.'
+    term:
+      description: null
+      termDef:
+        cde_id: http://hl7.org/fhir/us/core/ValueSet/detailed-ethnicity
+        cde_version: null
+        source: fhir
+        strength: required
+        term: http://hl7.org/fhir/us/core/ValueSet/detailed-ethnicity
+        term_url: http://hl7.org/fhir/us/core/ValueSet/detailed-ethnicity
+    type: string
+  us_core_ethnicity_ombCategory:
+    binding_description: null
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/us/core/ValueSet/omb-ethnicity-category
+    binding_version: null
+    description: '[Text representation of Coding] [extension us_core_ethnicity] Concepts
+      classifying the person into a named category of humans sharing common history,
+      traits, geographical origin or nationality.  The ethnicity codes used to represent
+      these concepts are based upon the [CDC ethnicity and Ethnicity Code Set Version
+      1.0](http://www.cdc.gov/phin/resources/vocabulary/index.html) which includes
+      over 900 concepts for representing race and ethnicity of which 43 reference
+      ethnicity.  The ethnicity concepts are grouped by and pre-mapped to the 2 OMB
+      ethnicity categories: - Hispanic or Latino - Not Hispanic or Latino.'
+    term:
+      description: null
+      termDef:
+        cde_id: http://hl7.org/fhir/us/core/ValueSet/omb-ethnicity-category
+        cde_version: null
+        source: fhir
+        strength: required
+        term: http://hl7.org/fhir/us/core/ValueSet/omb-ethnicity-category
+        term_url: http://hl7.org/fhir/us/core/ValueSet/omb-ethnicity-category
+    type: string
+  us_core_genderIdentity:
+    binding_description: null
+    binding_strength: extensible
+    binding_uri: http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1021.32
+    binding_version: null
+    description: text representation. [extension us_core_genderIdentity] This extension
+      represents an individual's sense of being a man, woman, boy, girl, nonbinary,
+      or something else, ascertained by asking them what that identity is. Systems
+      requiring multiple gender identities and associated dates **SHOULD** use the
+      FHIR R5 [genderIdentity extension](http://hl7.org/fhir/extensions/StructureDefinition-individual-genderIdentity.html).
+      When future versions of US Core are based on FHIR R5, the FHIR R5 extension
+      will supersede this extension.
+    term:
+      description: null
+      termDef:
+        cde_id: http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1021.32
+        cde_version: null
+        source: fhir
+        strength: extensible
+        term: http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1021.32
+        term_url: http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1021.32
+    type: string
+  us_core_genderIdentity_coding: &id002
+    binding_description: null
+    binding_strength: extensible
+    binding_uri: http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1021.32
+    binding_version: null
+    description: '[system#code representation.] [extension us_core_genderIdentity]
+      This extension represents an individual''s sense of being a man, woman, boy,
+      girl, nonbinary, or something else, ascertained by asking them what that identity
+      is. Systems requiring multiple gender identities and associated dates **SHOULD**
+      use the FHIR R5 [genderIdentity extension](http://hl7.org/fhir/extensions/StructureDefinition-individual-genderIdentity.html).
+      When future versions of US Core are based on FHIR R5, the FHIR R5 extension
+      will supersede this extension.'
+    term:
+      description: null
+      termDef:
+        cde_id: http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1021.32
+        cde_version: null
+        source: fhir
+        strength: extensible
+        term: http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1021.32
+        term_url: http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1021.32
+    type: string
+  us_core_genderIdentity_text: *id002
+  us_core_race:
+    description: "[extension us_core_race] Concepts classifying the person into a\
+      \ named category of humans sharing common history, traits, geographical origin\
+      \ or nationality.  The race codes used to represent these concepts are based\
+      \ upon the [CDC Race and Ethnicity Code Set Version 1.0](http://www.cdc.gov/phin/resources/vocabulary/index.html)\
+      \ which includes over 900 concepts for representing race and ethnicity of which\
+      \ 921 reference race.  The race concepts are grouped by and pre-mapped to the\
+      \ 5 OMB race categories:\n\n - American Indian or Alaska Native\n - Asian\n\
+      \ - Black or African American\n - Native Hawaiian or Other Pacific Islander\n\
+      \ - White."
+    type: string
+  us_core_race_detailed:
+    binding_description: null
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/us/core/ValueSet/detailed-race
+    binding_version: null
+    description: "[Text representation of Coding] [extension us_core_race] Concepts\
+      \ classifying the person into a named category of humans sharing common history,\
+      \ traits, geographical origin or nationality.  The race codes used to represent\
+      \ these concepts are based upon the [CDC Race and Ethnicity Code Set Version\
+      \ 1.0](http://www.cdc.gov/phin/resources/vocabulary/index.html) which includes\
+      \ over 900 concepts for representing race and ethnicity of which 921 reference\
+      \ race.  The race concepts are grouped by and pre-mapped to the 5 OMB race categories:\n\
+      \n - American Indian or Alaska Native\n - Asian\n - Black or African American\n\
+      \ - Native Hawaiian or Other Pacific Islander\n - White."
+    term:
+      description: null
+      termDef:
+        cde_id: http://hl7.org/fhir/us/core/ValueSet/detailed-race
+        cde_version: null
+        source: fhir
+        strength: required
+        term: http://hl7.org/fhir/us/core/ValueSet/detailed-race
+        term_url: http://hl7.org/fhir/us/core/ValueSet/detailed-race
+    type: string
+  us_core_race_ombCategory:
+    binding_description: The 5 race category codes according to the [OMB Standards
+      for Maintaining, Collecting, and Presenting Federal Data on Race and Ethnicity,
+      Statistical Policy Directive No. 15, as revised, October 30, 1997](https://www.govinfo.gov/content/pkg/FR-1997-10-30/pdf/97-28653.pdf).
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/us/core/ValueSet/omb-race-category
+    binding_version: null
+    description: "[Text representation of Coding] [extension us_core_race] Concepts\
+      \ classifying the person into a named category of humans sharing common history,\
+      \ traits, geographical origin or nationality.  The race codes used to represent\
+      \ these concepts are based upon the [CDC Race and Ethnicity Code Set Version\
+      \ 1.0](http://www.cdc.gov/phin/resources/vocabulary/index.html) which includes\
+      \ over 900 concepts for representing race and ethnicity of which 921 reference\
+      \ race.  The race concepts are grouped by and pre-mapped to the 5 OMB race categories:\n\
+      \n - American Indian or Alaska Native\n - Asian\n - Black or African American\n\
+      \ - Native Hawaiian or Other Pacific Islander\n - White."
+    term:
+      description: The 5 race category codes according to the [OMB Standards for Maintaining,
+        Collecting, and Presenting Federal Data on Race and Ethnicity, Statistical
+        Policy Directive No. 15, as revised, October 30, 1997](https://www.govinfo.gov/content/pkg/FR-1997-10-30/pdf/97-28653.pdf).
+      termDef:
+        cde_id: http://hl7.org/fhir/us/core/ValueSet/omb-race-category
+        cde_version: null
+        source: fhir
+        strength: required
+        term: http://hl7.org/fhir/us/core/ValueSet/omb-race-category
+        term_url: http://hl7.org/fhir/us/core/ValueSet/omb-race-category
+    type: string
+  us_core_tribal_affiliation_isEnrolled:
+    description: '[extension us_core_tribal_affiliation] This Extension profile represents
+      a tribe or band with which a person associates and, optionally, whether they
+      are enrolled.'
+    type: boolean
+  us_core_tribal_affiliation_tribalAffiliation:
+    binding_description: Tribal Entity recognized by the United States Bureau Of Indian
+      Affairs.
+    binding_strength: extensible
+    binding_uri: http://terminology.hl7.org/ValueSet/v3-TribalEntityUS
+    binding_version: null
+    description: text representation. [extension us_core_tribal_affiliation] This
+      Extension profile represents a tribe or band with which a person associates
+      and, optionally, whether they are enrolled.
+    term:
+      description: Tribal Entity recognized by the United States Bureau Of Indian
+        Affairs.
+      termDef:
+        cde_id: http://terminology.hl7.org/ValueSet/v3-TribalEntityUS
+        cde_version: null
+        source: fhir
+        strength: extensible
+        term: http://terminology.hl7.org/ValueSet/v3-TribalEntityUS
+        term_url: http://terminology.hl7.org/ValueSet/v3-TribalEntityUS
+    type: string
+  us_core_tribal_affiliation_tribalAffiliation_coding: &id003
+    binding_description: Tribal Entity recognized by the United States Bureau Of Indian
+      Affairs.
+    binding_strength: extensible
+    binding_uri: http://terminology.hl7.org/ValueSet/v3-TribalEntityUS
+    binding_version: null
+    description: '[system#code representation.] [extension us_core_tribal_affiliation]
+      This Extension profile represents a tribe or band with which a person associates
+      and, optionally, whether they are enrolled.'
+    term:
+      description: Tribal Entity recognized by the United States Bureau Of Indian
+        Affairs.
+      termDef:
+        cde_id: http://terminology.hl7.org/ValueSet/v3-TribalEntityUS
+        cde_version: null
+        source: fhir
+        strength: extensible
+        term: http://terminology.hl7.org/ValueSet/v3-TribalEntityUS
+        term_url: http://terminology.hl7.org/ValueSet/v3-TribalEntityUS
+    type: string
+  us_core_tribal_affiliation_tribalAffiliation_text: *id003
+title: Patient
+type: object

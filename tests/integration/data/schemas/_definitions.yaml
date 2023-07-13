@@ -1,0 +1,230 @@
+$schema: http://json-schema.org/draft-04/schema#
+UUID:
+  pattern: ^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$
+  term:
+    $ref: _terms.yaml#/UUID
+  type: string
+data_bundle_state:
+  default: submitted
+  description: State of a data bundle.
+  enum:
+  - submitted
+  - validated
+  - error
+  - released
+  - suppressed
+  - redacted
+data_file_error_type:
+  enum:
+  - file_size
+  - file_format
+  - md5sum
+  term:
+    $ref: _terms.yaml#/data_file_error_type
+data_file_properties:
+  $ref: '#/ubiquitous_properties'
+  error_type:
+    $ref: '#/data_file_error_type'
+  file_format:
+    $ref: '#/file_format'
+  file_name:
+    $ref: '#/file_name'
+  file_size:
+    $ref: '#/file_size'
+  file_state:
+    $ref: '#/file_state'
+  ga4gh_drs_uri:
+    $ref: '#/ga4gh_drs_uri'
+  md5sum:
+    $ref: '#/md5sum'
+  object_id:
+    $ref: '#/object_id'
+datetime:
+  oneOf:
+  - format: date-time
+    type: string
+  - type: 'null'
+  term:
+    $ref: _terms.yaml#/datetime
+fhir_resource:
+  additionalProperties: true
+  properties:
+    id:
+      $ref: '#/UUID'
+    resource_type:
+      type: string
+  type: object
+file_format:
+  term:
+    $ref: _terms.yaml#/file_format
+  type: string
+file_name:
+  term:
+    $ref: _terms.yaml#/file_name
+  type: string
+file_size:
+  term:
+    $ref: _terms.yaml#/file_size
+  type: integer
+file_state:
+  default: registered
+  enum:
+  - registered
+  - uploading
+  - uploaded
+  - validating
+  - validated
+  - submitted
+  - processing
+  - processed
+  - released
+  - error
+  term:
+    $ref: _terms.yaml#/file_state
+foreign_key:
+  additionalProperties: true
+  properties:
+    id:
+      $ref: '#/UUID'
+    submitter_id:
+      type: string
+  type: object
+foreign_key_project:
+  additionalProperties: true
+  properties:
+    code:
+      type: string
+    id:
+      $ref: '#/UUID'
+  type: object
+ga4gh_drs_uri:
+  term:
+    $ref: _terms.yaml#/ga4gh_drs_uri
+  type: string
+id: _definitions
+md5sum:
+  pattern: ^[a-f0-9]{32}$
+  term:
+    $ref: _terms.yaml#/md5sum
+  type: string
+object_id:
+  description: The GUID of the object in the index service.
+  type: string
+parent_uuids:
+  items:
+    $ref: '#/UUID'
+  minItems: 1
+  type: array
+  uniqueItems: true
+project_id:
+  term:
+    $ref: _terms.yaml#/project_id
+  type: string
+qc_metrics_state:
+  enum:
+  - FAIL
+  - PASS
+  - WARN
+  term:
+    $ref: _terms.yaml#/qc_metric_state
+release_state:
+  default: unreleased
+  description: Release state of an entity.
+  enum:
+  - unreleased
+  - released
+  - redacted
+state:
+  default: validated
+  downloadable:
+  - uploaded
+  - md5summed
+  - validating
+  - validated
+  - error
+  - invalid
+  - released
+  oneOf:
+  - enum:
+    - uploading
+    - uploaded
+    - md5summing
+    - md5summed
+    - validating
+    - error
+    - invalid
+    - suppressed
+    - redacted
+    - live
+  - enum:
+    - validated
+    - submitted
+    - released
+  public:
+  - live
+  term:
+    $ref: _terms.yaml#/state
+to_many:
+  anyOf:
+  - items:
+      $ref: '#/foreign_key'
+      minItems: 1
+    type: array
+  - $ref: '#/foreign_key'
+to_many_project:
+  anyOf:
+  - items:
+      $ref: '#/foreign_key_project'
+      minItems: 1
+    type: array
+  - $ref: '#/foreign_key_project'
+to_one:
+  anyOf:
+  - items:
+      $ref: '#/foreign_key'
+      maxItems: 1
+      minItems: 1
+    type: array
+  - $ref: '#/foreign_key'
+to_one_project:
+  anyOf:
+  - items:
+      $ref: '#/foreign_key_project'
+      maxItems: 1
+      minItems: 1
+    type: array
+  - $ref: '#/foreign_key_project'
+ubiquitous_properties:
+  created_datetime:
+    $ref: '#/datetime'
+  id:
+    $ref: '#/UUID'
+    systemAlias: node_id
+  project_id:
+    $ref: '#/project_id'
+  state:
+    $ref: '#/state'
+  submitter_id:
+    description: 'A project-specific identifier for a node. This property is the calling
+      card/nickname/alias for a unit of submission. It can be used in place of the
+      UUID for identifying or recalling a node.
+
+      '
+    type:
+    - string
+  type:
+    type: string
+  updated_datetime:
+    $ref: '#/datetime'
+workflow_properties:
+  $ref: '#/ubiquitous_properties'
+  workflow_end_datetime:
+    $ref: '#/datetime'
+  workflow_link:
+    description: Link to Github hash for the CWL workflow used.
+    type: string
+  workflow_start_datetime:
+    $ref: '#/datetime'
+  workflow_version:
+    description: Major version for a GDC workflow.
+    type: string
