@@ -1,4 +1,5 @@
 import json
+import os
 
 import pathlib
 from typing import Any
@@ -188,9 +189,41 @@ def test_generate_links_from_instances():
                     print(f"\tOK {instance['gid']} has {len(instance['links'])} links")
 
 
-@pytest.mark.skip(reason="Just use to create bundled json file")
+@pytest.mark.skip(reason="Use to create bundled json file")
 def test_bundled():
     """Ensure we can bundle yaml files into a single json file."""
 
     bundle_schemas(pathlib.Path("tests/fixtures/swapi"), "http://bmeg-swapi/0.0.1", "graph-swapi.json")
     validate_hyper_schema(json.load(open("tests/fixtures/swapi/graph-swapi.json")))
+
+
+@pytest.mark.skip(reason="Use to create edge json file")
+def test_create_links():
+    """Ensure we can create instances with links."""
+
+    instances = """tests/fixtures/swapi/swapi_character.ndjson
+    tests/fixtures/swapi/swapi_film.ndjson
+    tests/fixtures/swapi/swapi_planet.ndjson
+    tests/fixtures/swapi/swapi_species.ndjson
+    tests/fixtures/swapi/swapi_starship.ndjson
+    tests/fixtures/swapi/swapi_vehicle.ndjson
+    tests/fixtures/swapi/swapi_planets.ndjson
+    """.split()
+
+    for path in instances:
+        print(f"Generating links for instances in: {path}")
+        schema = None
+        with open(path) as fp:
+            for line in fp:
+                instance = json.loads(line)
+                schema = load_yaml(f"tests/fixtures/swapi/{instance['label'].lower()}.yaml")
+                break
+
+        with VertexLinkWriter(schema) as mgr:
+            output_path = path.replace(".ndjson", "-links.ndjson")
+            with open(output_path, "w") as out_fp:
+                with open(path) as fp:
+                    for line in fp:
+                        instance = mgr.insert_links(json.loads(line))
+                        out_fp.write(json.dumps(instance) + "\n")
+            assert os.path.exists(output_path), f"{output_path} does not exist"
