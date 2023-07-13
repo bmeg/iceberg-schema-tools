@@ -266,6 +266,26 @@ properties:
         term_url: http://hl7.org/fhir/ValueSet/specimen-processing-method
     title: Indicates the treatment step  applied to the specimen
     type: string
+  processing_method_coding: &id003
+    binding_description: Type indicating the technique used to process the specimen.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/specimen-processing-method
+    binding_version: null
+    description: '[system#code representation.] [Plucked from Specimen.processing]
+      A coded value specifying the method used to process the specimen.'
+    element_property: true
+    term:
+      description: Type indicating the technique used to process the specimen.
+      termDef:
+        cde_id: http://hl7.org/fhir/ValueSet/specimen-processing-method
+        cde_version: null
+        source: fhir
+        strength: example
+        term: http://hl7.org/fhir/ValueSet/specimen-processing-method
+        term_url: http://hl7.org/fhir/ValueSet/specimen-processing-method
+    title: Indicates the treatment step  applied to the specimen
+    type: string
+  processing_method_text: *id003
   project_id:
     term:
       $ref: _terms.yaml#/project_id
@@ -315,7 +335,7 @@ properties:
         term_url: http://hl7.org/fhir/ValueSet/specimen-role
     title: The role the specimen serves
     type: array
-  role_coding: &id003
+  role_coding: &id004
     binding_description: Codes describing specimen role.
     binding_strength: preferred
     binding_uri: http://hl7.org/fhir/ValueSet/specimen-role
@@ -336,7 +356,7 @@ properties:
         term_url: http://hl7.org/fhir/ValueSet/specimen-role
     title: The role the specimen serves
     type: array
-  role_text: *id003
+  role_text: *id004
   status:
     binding_description: Codes providing the status/availability of a specimen.
     binding_strength: required
@@ -388,7 +408,7 @@ properties:
         term_url: http://terminology.hl7.org/ValueSet/v2-0487
     title: Kind of material that forms the specimen
     type: string
-  type_coding: &id004
+  type_coding: &id005
     binding_description: The type of the specimen.
     binding_strength: example
     binding_uri: http://terminology.hl7.org/ValueSet/v2-0487
@@ -407,6 +427,6 @@ properties:
         term_url: http://terminology.hl7.org/ValueSet/v2-0487
     title: Kind of material that forms the specimen
     type: string
-  type_text: *id004
+  type_text: *id005
 title: Specimen
 type: object
