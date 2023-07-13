@@ -1,0 +1,107 @@
+
+class: sifter
+name: measurement_observation_fhir_to_omop
+
+outdir: ../output
+
+config:
+  observation_file : ../output/measurement_omop_to_fhir.measurement.Observation.json.gz
+ 
+inputs:
+  observation_Data:
+    plugin:
+       commandLine: python3 readable_to_epoch_time.py {{config.observation_file}} Measurement
+
+pipelines:
+  measurement:
+    - from: observation_Data
+    - map:
+        method: build_omop_observation
+        gpython: |
+          def Nonefy(listargs,out):
+            for field in listargs:
+              out[field] = None
+            return out
+
+          def is_int(num):
+            try:
+              int(num)
+              return True
+            except ValueError:
+              return False
+
+          def build_omop_observation(row):
+            if is_int(row["code"]["coding"][0]["code"]):
+              row["code"]["coding"][0]["code"] = int(row["code"]["coding"][0]["code"])
+            out = {
+              "measurement_id": int(row["identifier"][0]["value"]),
+              "person_id": int(row["subject"]["reference"].split("/")[1]),
+              "measurement_concept_id": int(row["code"]["coding"][0]["display"]),
+              "measurement_date": int(row["measurement_date"]),
+              "measurement_type_concept_id": row["category"][0]["extension"][0]["valueInteger"]
+            }
+            non_req_vals = ["measurement_source_value","unit_source_value", "measurement_datetime",
+                            "value_as_number", "value_as_concept_id","unit_concept_id","provider_id", 
+                            "operator_concept_id", "range_low", "range_high", "visit_occurence_id", "visit_detaiL_id",
+                            "measurement_source_concept_id", "value_source_value", "measurement_time"]
+            out = Nonefy(non_req_vals,out)
+
+            if "referenceRange" in row and row["referenceRange"] is not None:
+              if "high" in row["referenceRange"][0]:
+                out["range_high"] = row["referenceRange"][0]["high"]["value"]
+              if "low" in row["referenceRange"][0]:
+                out["range_low"] = row["referenceRange"][0]["low"]["value"]
+
+            if "measurement_datetime" in row and row["measurement_datetime"] is not None:
+              out["measurement_datetime"] = row["measurement_datetime"]
+
+            if row["category"][1]["coding"][0]["code"] is not None:
+              out["measurement_source_concept_id"] = int(row["category"][1]["coding"][0]["code"])
+            
+            if "performer" in row and row["performer"] is not None:
+              out["provider_id"] = int(row["performer"][0]["reference"].split("Practitioner/")[1])
+            
+            if "note" in row and row["note"] is not None:
+              out["qualifier_concept_id"] = int(row["note"][0]["text"])
+            
+            if "encounter" in row and row["encounter"] is not None:
+              out["visit_occurence_id"] = int(row["encounter"]["reference"].split("Encounter/")[1])
+        
+            if "extension" in row and row["extension"] is not None:
+              for elem in row["extension"]:
+                if "valueReference" in elem:
+                  out["visit_detail_id"] = int(elem["valueReference"]["reference"].split("Encounter/")[1])
+  
+                if "valueString" in elem:
+                  value = elem["url"].split("__measurement_source_value")[-1].split("__")[1]
+                  out[value] = str(elem["valueString"])
+              
+                if "valueInteger" in elem and elem["url"] == "http://hl7.org/fhir/StructureDefinition/#MEASUREMENT__measurement_source_value":
+                  out["measurement_source_value"] = int(elem["valueInteger"])
+                
+                if "valueInteger" in elem and elem["url"] == "http://hl7.org/fhir/StructureDefinition/#MEASUREMENT__value_source_value":
+                  out["value_source_value"] = int(elem["valueInteger"])
+            
+            if "valueQuantity" in row and row["valueQuantity"] is not None:
+              out["unit_concept_id"] = row["valueQuantity"]["value"]
+
+            if "valueInteger" in row and row["valueInteger"] is not None:
+              out["value_as_number"] = int(row["valueInteger"])
+
+            elif "valueString" in row and row["valueString"] is not None:
+              out["value_as_string"] = str(row["valueString"])
+
+            elif "valueCodeableConcept" in row and row["valueCodeableConcept"] is not None:
+              out["value_as_concept_id"]= int(row["valueCodeableConcept"]["coding"][0]["code"])
+
+            return out
+
+            
+    - emit:
+        name: measurement
+    
+
+          
+
+
+

@@ -1,0 +1,3 @@
+REDIVIS_API_TOKEN = "PUT YOUR TOKEN HERE"
+REDIVIS_USER = "demo"
+REDIVIS_PROJECT = "cms_synthetic_patient_data_omop:ye2v:v2_0"

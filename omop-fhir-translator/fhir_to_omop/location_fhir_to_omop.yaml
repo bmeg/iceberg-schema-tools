@@ -1,0 +1,48 @@
+class: sifter
+name: location_fhir_to_omop
+
+outdir: ../output
+
+config: 
+  Patient: ../output/patient_omop_to_fhir.Patient.Patient.json.gz
+
+inputs:
+  patientData:
+    jsonLoad:
+      input: "{{config.Patient}}"
+  
+pipelines:
+  location:
+    - from: patientData
+    - map:
+        method: create_location_table
+        gpython: |
+          def create_location_table(row):
+            out_table = {}
+            if (row["identifier"][1]["value"].split("_")[1] == "None"):
+              return out_table
+
+            out_table["location_id"] = int(row["identifier"][1]["value"].split("_")[1])
+            opt_keys = [("city","city"),("county","district"),("state","state"),("zip","postalCode")]
+            if "address" in row:
+              for key in opt_keys:
+                if key[1] in row["address"][0] and key[1] == "zip":
+                  out_table[key[0]] = int(row["address"][0]["zip"])
+                elif key[1] in row["address"][0]:
+                  out_table[key[0]] = row["address"][0][key[1]]
+                else:
+                  out_table[key[0]] = None
+
+              if "line" in row["address"][0]:
+                out_table["address_1"] = row["address"][0]["line"][0]
+              else: out_table["address_1"] = None
+              if (len(row["address"]) == 2) and "line" in row["address"][1]:
+                out_table["address_2"] = row["address"][1]["line"][0]
+              else: out_table["address_2"] = None
+
+                
+            return out_table
+    - emit:
+        name: location
+          
+

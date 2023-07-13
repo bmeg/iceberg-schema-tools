@@ -1,0 +1,91 @@
+
+class: sifter
+name: encounter_fhir_to_omop
+
+outdir: ../output
+
+config:
+  visit_occurrence_file : ../output/visit_occurence_omop_to_fhir.Encounter.Encounter.json.gz
+ 
+inputs:
+  visit_occurrence_Data:
+    plugin:
+       commandLine: python3 readable_to_epoch_time.py {{config.visit_occurrence_file}} Encounter
+
+pipelines:
+  encounter:
+    - from: visit_occurrence_Data
+    - map:
+        method: build_omop_encounter
+        gpython: |
+          def Nonefy(listargs,out):
+            for field in listargs:
+              out[field] = None
+            return out
+
+          def is_int(num):
+            try:
+              int(num)
+              return True
+            except ValueError:
+              return False
+
+          def build_omop_encounter(row):
+            out = {
+              "visit_occurrence_id": row["id"],
+              "person_id": int(row["subject"]["reference"].split("/")[1]),
+              "visit_concept_id": int(row["type"]["coding"][0]["display"]),
+              "visit_start_date": row["visit_start_date"],
+              "visit_end_date": row["visit_end_date"],
+              "visit_type_concept_id": int(row["diagnosis"][0]["extension"][0]["valueCode"])
+            }
+            non_req_vals = ["visit_start_datetime", "visit_end_datetime", "provider_id", 
+                            "care_site_id", "visit_source_value", "visit_source_concept_id",
+                             "admitting_source_concept_id", "admitting_source_value", 
+                             "discharge_to_concept_id", "discharge_to_source_value", 
+                             "preceding_vist_occurrence_id"]
+
+            out = Nonefy(non_req_vals,out)
+
+            if "visit_start_datetime" in row and row["visit_start_datetime"] is not None:
+              out["visit_start_datetime"] = row["visit_start_datetime"]
+            if "visit_end_datetime" in row and row["visit_end_datetime"] is not None:
+              out["visit_end_datetime"] = row["visit_end_datetime"]
+
+            if "performer" in row and row["perfomer"] is not None:
+             out["provider_id"] = str(row["performer"][0]["reference"].split("Practitioner/")[1])
+  
+            if "location" in row and row["location"] is not None:
+              out["care_site_id"] = row["location"][0]["reference"].split("Location/")[1]
+            
+            if len(row["type"]["coding"]) == 2:
+              out["visit_source_value"] = row["type"]["coding"][1]["code"]
+            
+            if len(row["extension"]) == 1:
+              out["visit_source_concept_id"] = row["extension"][0]["valueString"]
+            
+            if "partOf" in row and row["partOf"] is not None:
+              out["preceding_visit_occurrence_id"] = str(row["partOf"]["reference"]).split("Encounter/")[1]
+            
+            if "hospitalization" in row and len(row["hospitalization"]["extension"]) > 0:
+              for elem in row["hospitalization"]["extension"]:
+                if elem["url"] == "http://hl7.org/fhir/us/cdmh/StructureDefinition/cdmh-pcornet-admitting-source-facility-type":
+                  out["admitting_source_concept_id"] = elem["valueString"]
+                elif elem["url"] == "http://hl7.org/fhir/us/cdmh/StructureDefinition/cdmh-pcornet-admitting-source-facility-type":
+                  out["admitting_source_value"] = elem["valueString"]
+                elif elem["url"] == "http://hl7.org/fhir/us/cdmh/StructureDefinition/cdmh-pcornet-discharge-status":
+                  out["discahrge_to_concept_id"] = elem["valueString"]
+                elif elem["url"] == "http://hl7.org/fhir/us/cdmh/StructureDefinition/cdmh-pcornet-discharge-status":
+                  out["discharge_to_source_value"] = elem["valueString"]
+
+            return out
+
+    #- debug: {}     
+    - emit:
+        name: encounter
+    
+
+          
+
+
+

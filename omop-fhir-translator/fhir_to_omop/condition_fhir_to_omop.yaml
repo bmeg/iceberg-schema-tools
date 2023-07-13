@@ -1,0 +1,94 @@
+
+class: sifter
+name: condition_fhir_to_omop
+
+outdir: ../output
+
+config:
+  concept_file : ../output/condition_occurance_omop_to_fhir.Condition.Condition.json.gz
+ 
+inputs:
+  concept_Data:
+    plugin:
+       commandLine: python3 readable_to_epoch_time.py {{config.concept_file}} Condition
+
+pipelines:
+  condition:
+    - from: concept_Data
+    - map:
+        method: build_omop_condition
+        gpython: |
+          def Nonefy(listargs,out):
+            for field in listargs:
+              out[field] = None
+            return out
+
+          def is_int(num):
+            try:
+              int(num)
+              return True
+            except ValueError:
+              return False
+
+          def build_omop_condition(row):
+            if is_int(row["code"]["coding"][0]["code"]):
+              row["code"]["coding"][0]["code"] = int(row["code"]["coding"][0]["code"])
+            #print(row["code"]["extension"][0]["valueString"])
+            out = {
+              "condition_occurrence_id": int(row["identifier"][0]["value"]),
+              "person_id": int(row["subject"]["reference"].split("/")[1]),
+              "condition_concept_id": int(row["code"]["coding"][0]["display"]),
+              "condition_start_date": int(row["onsetDateTime"]),
+              "condition_type_concept_id": int(row["code"]["extension"][0]["valueString"])
+            }
+            non_req_vals = ["condition_start_datetime","condition_end_date","condition_end_datetime", "condition_status_concept_id",
+                            "stop_reason","provider_id","visit_occurence_id","visit_detail_id","condition_source_value","condition_source_concept_id","condition_status_source_value"]
+           
+            out = Nonefy(non_req_vals,out)
+
+            if "abatementDateTime" in row and row["abatementDateTime"] is not None:
+              out["condition_end_date"] = int(row["abatementDateTime"])
+              out["condition_end_datetime"] = int(row["abatementDateTime"])
+
+            if "extension" in row["code"] and row["code"]["extension"][0]["valueString"] is not None:
+              out["condition_type_concept_id"] = int(row["code"]["extension"][0]["valueString"])
+            
+            if "note" in row and row["note"][0]["text"] is not None:
+              out["stop_reason"] = str(row["note"][0]["text"])
+
+            if "extension" in row and "valueReference" in str(row["extension"]):
+              #print(str(row["extension"]).split("Practitioner/")[1].split("'")[0])
+              out["provider_id"] = int(str(row["extension"]).split("Practitioner/")[1].split("'")[0])
+            
+            if "encounter" in row and row["encounter"] is not None:
+              out["visit_occurrence_id"] = int(row["encounter"]["reference"].split("Encounter/")[1])
+              if "extension" in row["encounter"]:
+                out["visit_detail_id"] = row["encounter"]["extension"][0]["valueReference"]["reference"].split("Encounter/")[1]
+
+            if "extension" in row and row["extension"] is not None:
+              for elem in row["extension"]:
+                if elem["url"] == "https://ohdsi.github.io/CommonDataModel/cdm54.html#CONDITION_OCCURRENCE__condition_source_value":
+                  out["condition_source_value"] = elem["valueString"]
+                
+                elif elem["url"] == "https://ohdsi.github.io/CommonDataModel/cdm54.html#CONDITION_OCCURRENCE__condition_source_concept_id":
+                  out["condition_source_concept_id"] = int(elem["valueString"])
+            
+
+            if "category" in row and row["category"][0]["coding"][0] is not None:
+              out["condition_status_concept_id"] = row["category"][0]["coding"][0]["code"]
+            
+            if "category" in row and row["category"]["extension"][0] is not None:
+              out["condition_status_source_value"] = row["category"]["extension"][0]["valueString"]
+            
+            
+            return out
+
+            
+    - emit:
+        name: condition
+    
+
+          
+
+
+

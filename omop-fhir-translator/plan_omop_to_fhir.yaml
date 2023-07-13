@@ -1,0 +1,8 @@
+
+
+class: OMOP_TO_FHIR
+name: OMOP_FHIR_TRANSLATION
+
+steps:
+  - buildCommands:
+      dir: omop_to_fhir
