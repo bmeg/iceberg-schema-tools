@@ -1,0 +1,130 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: character
+title: character
+type: object
+required:
+- gid
+- id
+- label
+uniqueKeys:
+- - gid
+- - label
+  - id
+links:
+- rel: homeworld
+  href: planet/{id}
+  templateRequired:
+  - id
+  targetSchema:
+    $ref: planet.yaml
+  templatePointers:
+    id: /homeworld/id
+  targetHints:
+    directionality: outbound
+    multiplicity: has_one
+    backref: characters
+- rel: films
+  href: film/{id}
+  templateRequired:
+  - id
+  targetSchema:
+    $ref: film.yaml
+  templatePointers:
+    id: /films/-/id
+  targetHints:
+    directionality: outbound
+    multiplicity: has_many
+    backref: characters
+- rel: species
+  href: species/{id}
+  templateRequired:
+  - id
+  targetSchema:
+    $ref: starship.yaml
+  templatePointers:
+    id: /starships/-/id
+  targetHints:
+    directionality: outbound
+    multiplicity: has_many
+    backref: characters
+- rel: starships
+  href: starship/{id}
+  templateRequired:
+  - id
+  targetSchema:
+    $ref: species.yaml
+  templatePointers:
+    id: /species/-/id
+  targetHints:
+    directionality: outbound
+    multiplicity: has_many
+    backref: characters
+properties:
+  links:
+    type: array
+    items:
+      $ref: https://json-schema.org/draft/2020-12/links
+  gid:
+    type:
+    - string
+  label:
+    type:
+    - string
+  id:
+    type:
+    - string
+  created_datetime:
+    type:
+    - string
+  edited_datetime:
+    type:
+    - string
+  name:
+    type:
+    - string
+  height:
+    type:
+    - integer
+  mass:
+    type:
+    - integer
+    - "null"
+  hair_color:
+    type:
+    - string
+    - "null"
+  skin_color:
+    type:
+    - string
+  eye_color:
+    type:
+    - string
+  birth_year:
+    type:
+    - string
+  gender:
+    type:
+    - string
+    - "null"
+  url:
+    type:
+    - string
+  homeworld:
+    $ref: reference.yaml
+  films:
+    type:
+    - array
+    items:
+      $ref: reference.yaml
+
+  species:
+    type:
+    - array
+    items:
+      $ref: reference.yaml
+
+  starships:
+    type:
+    - array
+    items:
+      $ref: reference.yaml

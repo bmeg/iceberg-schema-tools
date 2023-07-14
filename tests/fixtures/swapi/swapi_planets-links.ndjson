@@ -1,0 +1,3 @@
+{"gid": "Film:1-planets-Planet:2", "label": "planets", "scene_count": 10, "film": "1", "planet": "2", "links": [{"rel": "film", "href": "film/1"}, {"rel": "planet", "href": "planet/2"}]}
+{"gid": "Film:1-planets-Planet:3", "label": "planets", "scene_count": 15, "film": "1", "planet": "3", "links": [{"rel": "film", "href": "film/1"}, {"rel": "planet", "href": "planet/3"}]}
+{"gid": "Film:1-planets-Planet:1", "label": "planets", "scene_count": 20, "film": "1", "planet": "1", "links": [{"rel": "film", "href": "film/1"}, {"rel": "planet", "href": "planet/1"}]}
