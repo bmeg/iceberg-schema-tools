@@ -455,11 +455,25 @@ In english, this means that the `processing` array is an iterable of unknown len
 This method will convert a json pointer path into a jq query that can be used to extract the template pointers from the instance data.
 
 ```python
-def cast_json_pointer_to_jq(_):
-    """Convert a JSON pointer to a jq query."""
-    return '.' + _.replace('/', '.').replace('.-', '.[]?').replace('.', ' | .')
+    json_pointers = [
+        "/foo",
+        "/foo/bar",
+        "/foo/bar/0",
+        "/foo/bar/0/baz",
+        "/foo/bar/0/baz/0",
+        "/foo/bar/-/baz",
+    ]
+    jq_expressions = [
+        ". | .foo",
+        '. | .foo | .bar',
+        '. | .foo | .bar | .[0]',
+        '. | .foo | .bar | .[0] | .baz',
+        '. | .foo | .bar | .[0] | .baz | .[0]',
+        '. | .foo | .bar | .[]? | .baz',
+    ]
+
 ```
 
-See tests/unit/link-description-object/test_nested_references.py for examples of how this works.
+See tests/unit/link-description-object/test_nested_references.py and tests/unit/link-description-object/test_json_pointer_to_jq.py for examples of how this works.
 
 Bindings exist for [GO](https://pkg.go.dev/github.com/itchyny/gojq) and [python](https://pypi.org/project/pyjq/).
