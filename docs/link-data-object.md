@@ -112,6 +112,49 @@ The `templatePointers` field is used to describe the location of the target node
 
 See [more](https://json-schema.org/draft/2019-09/json-schema-hypermedia.html#rfc.section.6.4.1)
 
+The link writer maps instance data from the vertex body to the link href using templatePointers as a two step process:
+
+1. The templatePointers are used to retrieve the template variables from the source vertex.
+2. The template variables are used to populate the template URI in the `href` field.
+
+
+Specifically we need to consider href components are retrieved from the vertex and how the templatePointer is constructed.
+Sometimes an id is encoded as a scalar, sometimes as an object, and sometimes as an array.
+
+1. If the id is a scalar, the templatePointer would be:
+    ```/<property_name>```
+
+2. If the id is encoded as an object of type [reference](tests/fixtures/swapi/reference.yaml), the templatePointer would be:
+    ```/<property_name>/id```
+
+3. If the id is encoded as an array of type reference, and the multiplicity is `has_one` the templatePointer would be:
+    ```/<property_name>/0/id```
+
+4. If the id is encoded as an array f type reference, and the multiplicity is `has_many` the templatePointer would be:
+    ```/<property_name>/-/id```
+
+The constraint of the `href/templatePointer` approach is that the vertex data MUST be consistent. e.g:
+
+```text
+bad - not supported:
+
+{ "label": "A", "x": {"id":"X-id-1"} }
+{ "label": "A", "x": [{"id":"X-id-2"}] }
+{ "label": "A", "x": "X-id-3" }
+
+messy - but legal and supported:
+
+{ "label": "A", "x": {"id": "X-id-1"} }
+{ "label": "A", "y": [{"id": "Y-id-1"}] }
+{ "label": "A", "z": "Z-id-1" }
+```
+
+Note: that there are no schema dependencies to a "reference" type, the schema author can still encode the templatePointer based on understanding where the id appears in the vertex data.
+
+
+
+From there the link reader can use the `href` field and schemas `targetSchema` to retrieve the target vertex.
+
 #### Example
 
 ```
