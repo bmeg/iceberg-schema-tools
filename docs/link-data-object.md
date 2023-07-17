@@ -131,7 +131,7 @@ Sometimes an id is encoded as a scalar, sometimes as an object, and sometimes as
     ```/<property_name>/0/id```
 
 4. If the id is encoded as an array f type reference, and the multiplicity is `has_many` the templatePointer would be:
-    ```/<property_name>/_/id```
+    ```/<property_name>/-/id```
 
 The constraint of the `href/templatePointer` approach is that the vertex data MUST be consistent. e.g:
 
