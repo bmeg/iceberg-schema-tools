@@ -332,8 +332,11 @@ class VertexSchemaDecorator:
 
 
 def cast_json_pointer_to_jq(_):
-    """Convert a JSON pointer to a jq query."""
-    return '.' + _.replace('/', '.').replace('.-', '.[]?').replace('.', ' | .')
+    """Convert a JSON pointer to a jq query.
+    turn the pointer into a jq expression, note the leading dot and `-` for lists"""
+    _ = '.' + _.replace('/', '.').replace('.-', '.[]?').replace('.', ' | .')
+    _ = re.sub(r'.(\d+)', r'.[\g<1>]', _)
+    return _
 
 
 class VertexLinkWriter:
@@ -419,18 +422,14 @@ class VertexLinkWriter:
         """Extract values from a vertex given a link description object"""
         values = []
         for k, v in schema_link['templatePointers'].items():
-            # turn the pointer into a jq expression, note the leading dot and `-` for lists
-            if v not in self.jq_cache:
-                jq = cast_json_pointer_to_jq(v)
-                self.jq_cache[v] = self.jq_cache.get(v, None) or pyjq.compile(jq)
-            values_ = self.jq_cache[v].all(vertex)
+            values_ = self.extract_json_pointer_via_jq(v, vertex)
 
             if None in values_:
                 #  Unable to resolve {schema_link['href']} {schema_link['templatePointers']}
                 return [None]
 
             # disambiguate polymorphic references
-            # if we have a polymorphic reference, we need to check that the target schema is in the list of values
+            # if we have a FHIR polymorphic reference, we need to check that the target schema is in the list of values
             _ = "".join(values_)
             if '/' in _ and schema_link['targetSchema']['$ref'] not in _:
                 # Polymorphic reference {schema_link['targetSchema']['$ref']} {values} skipping
@@ -438,15 +437,27 @@ class VertexLinkWriter:
 
             # Resolved {schema_link['href']} {schema_link['templatePointers']} {values_}
             # strip the prefix for fhir references
-            values.extend([self._extract_id(schema_link['href'], _)[0] for _ in values_])
+            values.extend([self._extract_value(schema_link['href'], _)[0] for _ in values_])
         return values
 
-    def _extract_id(self, schema_href, instance_href) -> str:
-        """Read the id from instance href, strips fhir relative references."""
+    def extract_json_pointer_via_jq(self, json_pointer, vertex):
+        """Convert json pointer to jq query, cache the compiled and extract the value from the vertex."""
+        if json_pointer not in self.jq_cache:
+            jq = cast_json_pointer_to_jq(json_pointer)
+            self.jq_cache[json_pointer] = self.jq_cache.get(json_pointer, None) or pyjq.compile(jq)
+        values_ = self.jq_cache[json_pointer].all(vertex)
+        return values_
+
+    def _extract_value(self, schema_href, instance_href) -> (str, str):
+        """Read the value from instance href, strips fhir relative references.
+        Returns: (instance_value, key)
+            """
         # not a fhir relative reference
         if '/' not in instance_href:
-            return instance_href, self._extract_href_keys(schema_href)[0]
+            key = self._extract_href_keys(schema_href)[0]
+            return instance_href, key
 
+        # cache the regexp
         rexp = self.regexp_cache.get(schema_href, None)
         if rexp is None:
             _ = schema_href
@@ -456,8 +467,9 @@ class VertexLinkWriter:
             rexp = re.compile(_)
             self.regexp_cache[schema_href] = rexp
         m = rexp.match(instance_href)
-        assert m is not None, f"Unable to find id in instance link {instance_href} given schema {schema_href}"
-        return m.group(1), self._extract_href_keys(schema_href)[0]
+        assert m is not None, f"Unable to find value in instance link {instance_href} given schema {schema_href}"
+        _ = self._extract_href_keys(schema_href)[0]
+        return m.group(1), _
 
 
 class SchemaLinkWriter:
