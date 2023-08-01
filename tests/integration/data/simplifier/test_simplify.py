@@ -9,14 +9,15 @@ def test_simplify_study():
     """Ensure we can validate a synthetic study"""
 
     simplify_directory('tests/fixtures/simplify/study/', '**/*.*', 'tmp/study/extractions',
-                       'iceberg/schemas/simplified/simplified-fhir.json', 'FHIR', 'config.yaml')
+                       'iceberg/schemas/simplified/simplified-fhir.json', 'PFB', 'config.yaml')
 
     directory_path = pathlib.Path('tmp/study/extractions')
     input_files = [_ for _ in directory_path.glob("*.ndjson")]
     for file_name in input_files:
         with open(file_name) as fp:
             for line in fp.readlines():
-                simplified = orjson.loads(line)
+                pfb_ready = orjson.loads(line)
+                simplified = pfb_ready['object']
                 all_ok = all([validate_simplified_value(_) for _ in simplified.values()])
                 assert all_ok, (file_name, line)
                 if simplified['resourceType'] == 'DocumentReference':
@@ -27,6 +28,11 @@ def test_simplify_study():
                     )
                     actual = set([_ for _ in simplified if _.startswith('content')])
                     assert expected == actual, (file_name, line)
+                relations = pfb_ready['relations']
+                if len(relations) > 0:
+                    dst_ids = [_['dst_id'] for _ in relations]
+                    if len(set(dst_ids)) != len(dst_ids):
+                        print("WARNING: multiple edges between nodes", file_name, line)
 
 
 def test_simplify_foo():
