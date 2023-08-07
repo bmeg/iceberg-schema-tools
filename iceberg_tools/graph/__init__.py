@@ -520,11 +520,9 @@ class SchemaLinkWriter:
         links, nested_links = _generate_links_from_fhir_references(schema)
         schema['links'] = links + nested_links
         schema['properties']['links'] = {
-            'links': {
-                'type': 'array',
-                'items': {
-                    '$ref': 'https://json-schema.org/draft/2020-12/links'
-                }
+            'type': 'array',
+            'items': {
+                '$ref': 'https://json-schema.org/draft/2020-12/links'
             }
         }
         return schema

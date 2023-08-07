@@ -47,6 +47,7 @@ def test_vertex_link_writer_polymorphic():
 def test_vertex_link_writer_nested():
     """Ensure links are discovered from properties. Use a context manager for throughput."""
     schemas = extract_schemas([Specimen], BASE_URI)
+
     specimen_schema = VertexSchemaDecorator(schemas['Specimen'])
 
     with VertexLinkWriter(specimen_schema) as mgr:
@@ -89,3 +90,4 @@ def test_schema_link_writer_nested():
         specimen_schema = mgr.insert_links(specimen_schema)
         assert specimen_schema['links'] is not None, "Links should be added to specimen"
         assert specimen_schema['properties']['links'] is not None, "Links should be added to specimen properties"
+        assert 'links' not in specimen_schema['properties']['links'], "Links should not be double nested"
