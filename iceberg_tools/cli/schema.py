@@ -6,6 +6,7 @@ import click
 import yaml
 from yaml import SafeLoader
 
+from iceberg_tools.graph import SchemaLinkWriter
 from iceberg_tools.schema import _find_fhir_classes, BASE_URI, extract_schemas
 from iceberg_tools.schema.graph import bundle_schemas
 from iceberg_tools.schema.simplified import _simplify_schemas
@@ -54,9 +55,11 @@ def generate_bmeg(output_path, config_path, stats):
 
     output_path.mkdir(parents=True, exist_ok=True)
 
-    for klass, schema in schemas.items():
-        with open(output_path / pathlib.Path(klass + ".yaml"), "w") as fp:
-            yaml.dump(schema, fp)
+    with SchemaLinkWriter() as mgr:
+        for klass, schema in schemas.items():
+            with open(output_path / pathlib.Path(klass + ".yaml"), "w") as fp:
+                schema = mgr.insert_links(schema)
+                yaml.dump(schema, fp)
     logger.info(f"Individual yaml schemas written to {output_path}/*.yaml")
 
     path = bundle_schemas(output_path, BASE_URI)

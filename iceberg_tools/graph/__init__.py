@@ -127,7 +127,7 @@ def _extract_links(schema: dict) -> List[dict]:
                     "rel": rel,
                     "href": f"{enum_reference_type}/{{id}}",
                     "templateRequired": ["id"],
-                    "templateHints": {
+                    "targetHints": {
                         "multiplicity": [multiplicity],
                         "direction": [direction],
                         'backref': [property_['backref']],
@@ -384,6 +384,9 @@ class VertexLinkWriter:
         if isinstance(self.vertex_schema, VertexSchemaDecorator):
             _schema = self.vertex_schema.schema
 
+        if 'links' not in _schema:
+            return vertex
+
         for schema_link in _schema['links']:
 
             keys = self._extract_href_keys(schema_link['href'])
@@ -396,12 +399,20 @@ class VertexLinkWriter:
             for _ in values:
                 if not isinstance(_, list):
                     _ = [_]
-                links.append(
-                    {
-                        'rel': schema_link['rel'],
-                        'href': schema_link['href'].format(**dict(zip(keys, _))),
-                    }
-                )
+                if 'Resource' in schema_link['href']:  # Any resource
+                    links.append(
+                        {
+                            'rel': schema_link['rel'],
+                            'href': _[0],
+                        }
+                    )
+                else:
+                    links.append(
+                        {
+                            'rel': schema_link['rel'],
+                            'href': schema_link['href'].format(**dict(zip(keys, _))),
+                        }
+                    )
 
         vertex['links'] = links
         return vertex
@@ -431,9 +442,11 @@ class VertexLinkWriter:
             # disambiguate polymorphic references
             # if we have a FHIR polymorphic reference, we need to check that the target schema is in the list of values
             _ = "".join(values_)
-            if '/' in _ and schema_link['targetSchema']['$ref'] not in _:
-                # Polymorphic reference {schema_link['targetSchema']['$ref']} {values} skipping
-                return [None]
+            ref = schema_link['targetSchema']['$ref'].split('/')[-1]
+            if ref != 'Resource': # skip `Any` Resource
+                if '/' in _ and ref not in _:
+                    # Polymorphic reference {schema_link['targetSchema']['$ref']} {values} skipping
+                    return [None]
 
             # Resolved {schema_link['href']} {schema_link['templatePointers']} {values_}
             # strip the prefix for fhir references
@@ -466,9 +479,14 @@ class VertexLinkWriter:
                 _ = _.replace(f"{{{key}}}", '(.*)')
             rexp = re.compile(_)
             self.regexp_cache[schema_href] = rexp
+
+        _ = self._extract_href_keys(schema_href)[0]
+
+        if 'Resource' in schema_href: # Any Resource
+            return instance_href, _
+
         m = rexp.match(instance_href)
         assert m is not None, f"Unable to find value in instance link {instance_href} given schema {schema_href}"
-        _ = self._extract_href_keys(schema_href)[0]
         return m.group(1), _
 
 
@@ -502,11 +520,9 @@ class SchemaLinkWriter:
         links, nested_links = _generate_links_from_fhir_references(schema)
         schema['links'] = links + nested_links
         schema['properties']['links'] = {
-            'links': {
-                'type': 'array',
-                'items': {
-                    '$ref': 'https://json-schema.org/draft/2020-12/links'
-                }
+            'type': 'array',
+            'items': {
+                '$ref': 'https://json-schema.org/draft/2020-12/links'
             }
         }
         return schema

@@ -118,7 +118,8 @@ def extract_schemas(classes: List[type], base_uri: str) -> dict:
         schema['description'] = schema['description'].replace("""Disclaimer: Any field name ends with ``__ext`` doesn't part of\nResource StructureDefinition, instead used to enable Extensibility feature\nfor FHIR Primitive Data Types.\n""", '')
         schema['description'] = schema['description'].replace('\n', ' ')
 
-        schema['description'] += f" [See https://hl7.org/fhir/R5/{schema['title']}.html]"
+        if '[See' not in schema['description']:
+            schema['description'] += f" [See https://hl7.org/fhir/R5/{schema['title']}.html]"
 
         # rename python style name back to resourceType
         if 'resource_type' in schema['properties']:
