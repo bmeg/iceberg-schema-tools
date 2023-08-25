@@ -120,6 +120,17 @@ extra_properties:
         type: string
         description: Denormalized patient id
 
+    subject:
+      description: Who/what is the subject of the document.
+      $ref: Reference.yaml
+      backref: subject_DocumentReference
+      enum_reference_types:
+      - ResearchStudy
+      - Patient
+      - Specimen
+      title: The item that this DocumentReference is about.
+
+
   # a link that does not exist in the FHIR schema, in this case from ResearchStudy to Project
   ResearchStudy:
     gen3_project:
@@ -129,6 +140,7 @@ extra_properties:
       enum_reference_types:
       - Project
       title: The Gen3 project this study belongs to.
+
 
   # Create edges from references typed as ANY
   # In this case Task we hint that Task inputs will point to Specimen and outputs point to DocumentReferences
