@@ -79,6 +79,7 @@ limit_links:
     - Patient
     - Specimen
     - ResearchStudy
+    - Observation
 
 # Add these extra properties to the simplified schema
 # These may be used to add extra scalar properties to the simplified schema as well as constrain edge destination types.
@@ -128,6 +129,7 @@ extra_properties:
       - ResearchStudy
       - Patient
       - Specimen
+      - Observation
       title: The item that this DocumentReference is about.
 
 
