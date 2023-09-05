@@ -195,6 +195,8 @@ def _add_gen3_schema_scaffolding(config_categories, schemas):
         schema["project"] = "*"
         schema["additionalProperties"] = True
         schema["category"] = config_categories.get(schema['title'], 'Clinical')
+        schema["uniqueKeys"] = [["id"]]
+        schema["systemProperties"] = ["id"]
 
         # rename $id to id, make it lowercase since Peregrine does not quote table names
         if '$id' in schema:
