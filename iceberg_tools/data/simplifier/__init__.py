@@ -4,12 +4,14 @@ import logging
 import pathlib
 import threading
 import uuid
+import re
 from typing import Dict, List
 
 import click
 import inflection
 import orjson
 import requests
+import os
 import yaml
 
 from fhir.resources import FHIRAbstractModel  # noqa
@@ -490,6 +492,40 @@ def validate_simplified_value(v) -> bool:
     return True
 
 
+def _grip_simplifier(simplified: dict):
+    new_dict = {"gid": simplified["id"], "label": simplified["resourceType"]}
+    del simplified["resourceType"]
+
+    # uuid regex
+    pattern = r'[a-zA-Z]+/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}'
+    names = []
+    print("SIMPLIFIED ORIG: ", simplified)
+    for fields in simplified.items():
+        if isinstance(fields[1], list):
+            simplified[fields[0]] = fields[1][0]
+
+        if re.match(pattern, str(simplified[fields[0]])):
+            elems = simplified[fields[0]].split("/")
+            if "edges" not in new_dict:
+                new_dict["edges"] = []
+
+            temp_fields = fields[0]
+            if "_" in temp_fields:
+                temp_fields = temp_fields.split("_")[-1]
+
+            new_dict["edges"].append({"from": simplified["id"], "to": elems[1], "label": f'{new_dict["label"]}_{temp_fields}'})
+            new_dict["edges"].append({"from": elems[1], "to": simplified["id"], "label": f'{temp_fields}_{new_dict["label"]}'})
+            names.append(fields[0])
+
+    print("NAMES: ", names)
+    for elems in names:
+        simplified.pop(elems)
+
+    print("SIMPLIFIED: ", simplified)
+    new_dict["data"] = simplified
+    return new_dict
+
+
 def _gen3_scaffolding_document_reference(simplified: dict, resource: FHIRAbstractModel) -> dict:
     """Add Gen3 boiler plate"""
 
@@ -543,6 +579,7 @@ def _ensure_dialect(simplified: dict, resource: FHIRAbstractModel, dialect: str)
     """
     if dialect != 'PFB':
         return simplified
+
     simplified = _gen3_scaffolding_document_reference(simplified, resource)
     return simplified
 
@@ -550,8 +587,13 @@ def _ensure_dialect(simplified: dict, resource: FHIRAbstractModel, dialect: str)
 def _render_dialect(simplified: dict, references: List[str], dialect: str, schemas: dict, limit_links: dict = {}) -> dict:
     """Render as PFB record ready for import
     """
-    if dialect != 'PFB':
+
+    if dialect == 'FHIR':
         return simplified
+
+    if dialect == "GRIP":
+        grip_simplified = _grip_simplifier(simplified)
+        return grip_simplified
 
     labels = [_['title'] for _ in schemas.values() if 'title' in _]
 
@@ -679,6 +721,7 @@ def simplify_directory(input_path, pattern, output_path, schema_path, dialect, c
     input_path = pathlib.Path(input_path)
     assert input_path.is_dir(), f"{input_path} not a directory"
     dialect = dialect.upper()
+    print("DIALECT ", dialect)
 
     if pathlib.Path(schema_path).is_file():
         with open(schema_path, "rb") as fp_:
@@ -693,10 +736,12 @@ def simplify_directory(input_path, pattern, output_path, schema_path, dialect, c
     nested_objects = gen3_config['nested_objects']
 
     with SimplifierContextManager():
-        with EmitterContextManager(output_path) as emitter:
+        with EmitterContextManager(output_path) as emitter, EmitterContextManager(output_path + ".edges") as edge_emitter:
             for parse_result in directory_reader(directory_path=input_path, pattern=pattern,
                                                  validate=False, ignore_path=output_path):
+                # print("PARSE RESULT: ", parse_result)
                 if parse_result.exception is not None:
+                    print("PARSE EXCEPTION: ", parse_result.exception)
                     if 'resourceType' not in str(parse_result.exception):
                         logger.error(f"{parse_result.path} has exception {parse_result.exception}")
                     continue
@@ -714,6 +759,18 @@ def simplify_directory(input_path, pattern, output_path, schema_path, dialect, c
 
                 simplified = _render_dialect(simplified, references, dialect, schemas, limit_links)
                 fp = emitter.emit(resource.resource_type)
+
+                if dialect == "GRIP":
+                    if "edges" in simplified:
+                        ep = edge_emitter.emit(resource.resource_type)
+                        for entry in simplified["edges"]:
+                            ep.write(orjson.dumps(entry, default=_default_json_serializer,
+                                                  option=orjson.OPT_APPEND_NEWLINE).decode())
+                        del simplified["edges"]
+                else:
+                    if os.path.exists(output_path + ".edges"):
+                        os.rmdir(output_path + ".edges")
+
                 fp.write(orjson.dumps(simplified, default=_default_json_serializer,
                                       option=orjson.OPT_APPEND_NEWLINE).decode())
 
@@ -745,7 +802,7 @@ def _assert_all_ok(all_ok, parse_result, resource, simplified):
               )
 @click.option('--dialect',
               default='PFB',
-              type=click.Choice(['FHIR', 'PFB'], case_sensitive=False),
+              type=click.Choice(['FHIR', 'PFB', 'GRIP'], case_sensitive=False),
               help='PFB: adds common properties, FHIR: passthrough'
               )
 @click.option('--config_path',
