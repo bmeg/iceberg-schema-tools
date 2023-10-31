@@ -11,6 +11,7 @@ from typing import Dict, List, Iterator
 import click
 import inflection
 import requests
+import os
 import yaml
 
 from fhir.resources import FHIRAbstractModel  # noqa
@@ -803,6 +804,7 @@ def simplify_directory(input_path, pattern, output_path, schema_path, dialect, c
     input_path = pathlib.Path(input_path)
     assert input_path.is_dir(), f"{input_path} not a directory"
     dialect = dialect.upper()
+    print("DIALECT ", dialect)
 
     if pathlib.Path(schema_path).is_file():
         with open(schema_path, "rb") as fp_:
@@ -817,8 +819,7 @@ def simplify_directory(input_path, pattern, output_path, schema_path, dialect, c
     nested_objects = gen3_config['nested_objects']
 
     with SimplifierContextManager():
-
-        with EmitterContextManager(output_path) as emitter:
+        with EmitterContextManager(output_path) as emitter, EmitterContextManager(output_path + ".edges") as edge_emitter:
             for parse_result in directory_reader(directory_path=input_path, pattern=pattern,
                                                  validate=False, ignore_path=output_path):
                 # print("PARSE RESULT: ", parse_result)
@@ -843,6 +844,17 @@ def simplify_directory(input_path, pattern, output_path, schema_path, dialect, c
 
                 simplified = _render_dialect(simplified, references, dialect, schemas, project_id, limit_links)
                 fp = emitter.emit(resource.resource_type)
+
+                if dialect == "GRIP":
+                    if "edges" in simplified:
+                        ep = edge_emitter.emit(resource.resource_type)
+                        for entry in simplified["edges"]:
+                            ep.write(orjson.dumps(entry, default=_default_json_serializer,
+                                                  option=orjson.OPT_APPEND_NEWLINE).decode())
+                        del simplified["edges"]
+                else:
+                    if os.path.exists(output_path + ".edges"):
+                        os.rmdir(output_path + ".edges")
 
                 fp.write(orjson.dumps(simplified, default=_default_json_serializer,
                                       option=orjson.OPT_APPEND_NEWLINE).decode())
