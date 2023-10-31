@@ -1,5 +1,4 @@
 import importlib
-import json
 from string import Formatter
 from typing import List, Iterator
 
@@ -165,7 +164,6 @@ class AssociationSchema:
             raise ValueError("Schema must be a URL or a dict")
         self.compiled_schema = fastjsonschema.compile(self.schema)
 
-
     def validate(self, instance: dict) -> dict:
         """Validate data against schema.
 
@@ -195,7 +193,6 @@ class AssociationSchema:
         assert cls.is_association(schema), "Schema links should be an association"
         assert 'title' in schema, "Schema should have a title"
         return True
-
 
     def validate_links(self, instance: dict):
         """Validate instance.links against schema.links"""
@@ -443,7 +440,7 @@ class VertexLinkWriter:
             # if we have a FHIR polymorphic reference, we need to check that the target schema is in the list of values
             _ = "".join(values_)
             ref = schema_link['targetSchema']['$ref'].split('/')[-1]
-            if ref != 'Resource': # skip `Any` Resource
+            if ref != 'Resource':  # skip `Any` Resource
                 if '/' in _ and ref not in _:
                     # Polymorphic reference {schema_link['targetSchema']['$ref']} {values} skipping
                     return [None]
@@ -482,7 +479,7 @@ class VertexLinkWriter:
 
         _ = self._extract_href_keys(schema_href)[0]
 
-        if 'Resource' in schema_href: # Any Resource
+        if 'Resource' in schema_href:  # Any Resource
             return instance_href, _
 
         m = rexp.match(instance_href)

@@ -42,6 +42,7 @@ THREAD_LOCAL = threading.local()
 
 ICEBERG_NAMESPACE = uuid.uuid3(uuid.NAMESPACE_DNS, 'ICEBERG')
 
+
 class Getter:
     """A getter for a FHIR resource."""
 
@@ -813,7 +814,6 @@ def _assert_all_ok(all_ok, parse_result, resource, simplified):
               default=None,
               show_default=True,
               help='Transform ids based on this seed')
-
 def cli(path, pattern, output_path, schema_path, dialect, config_path, transform_ids):
     """Renders PFB friendly flattened records.
 
