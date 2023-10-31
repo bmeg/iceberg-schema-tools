@@ -529,7 +529,7 @@ class VertexLinkWriter:
 
             ref = ref.replace('.yaml', '')
             if ref != 'Resource':  # skip `Any` Resource
-                if '/' in values_ and ref not in values_:
+                if '/' in _ and ref not in _:
                     # Polymorphic reference {schema_link['targetSchema']['$ref']} {values} skipping
                     return [None]
 
