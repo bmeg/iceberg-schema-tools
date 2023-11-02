@@ -5,13 +5,12 @@ import pathlib
 import threading
 import uuid
 import re
-from typing import Dict, List
+import orjson
+from typing import Dict, List, Iterator
 
 import click
 import inflection
-import orjson
 import requests
-import os
 import yaml
 
 from fhir.resources import FHIRAbstractModel  # noqa
@@ -28,8 +27,9 @@ from fhir.resources.reference import Reference
 from fhir.resources.task import Task
 from yaml import SafeLoader
 
-from iceberg_tools.util import EmitterContextManager, directory_reader
+from iceberg_tools.util import EmitterContextManager, directory_reader, _is_ndjson, _to_file, _is_json_file
 from iceberg_tools.data.simplifier.oid_lookup import get_oid
+from iceberg_tools.graph import VertexLinkWriter
 
 # Latest FHIR version by default
 FHIR_CLASSES = importlib.import_module('fhir.resources')
@@ -507,18 +507,13 @@ def _grip_simplifier(simplified: dict):
 
         if re.match(pattern, str(simplified[fields[0]])):
             elems = simplified[fields[0]].split("/")
-            if "edges" not in new_dict:
-                new_dict["edges"] = []
 
             temp_fields = fields[0]
             if "_" in temp_fields:
                 temp_fields = temp_fields.split("_")[-1]
 
-            new_dict["edges"].append({"from": simplified["id"], "to": elems[1], "label": f'{new_dict["label"]}_{temp_fields}'})
-            new_dict["edges"].append({"from": elems[1], "to": simplified["id"], "label": f'{temp_fields}_{new_dict["label"]}'})
             names.append(fields[0])
 
-    print("NAMES: ", names)
     for elems in names:
         simplified.pop(elems)
 
@@ -716,13 +711,44 @@ class SimplifierContextManager:
         Task.dict = self.orig_task_dict
 
 
+def directory_json(
+        directory_path: pathlib.Path,
+        pattern: str = '*.*',
+        ignore_path: str = None) -> Iterator[dict]:
+    """Extract JSON resources from directory
+    Args:
+        directory_path (pathlib.Path): directory to read
+        pattern (str, optional): glob pattern. Defaults to '*.*'.
+        ignore_path (str, optional): ignore files with this string in path. Defaults to None.
+    """
+
+    assert directory_path.is_dir(), f"{directory_path.name} is not a directory"
+
+    input_files = [_ for _ in directory_path.glob(pattern) if _is_json_file(_.name)]
+    for input_file in input_files:
+        if ignore_path is not None and ignore_path in str(input_file):
+            continue
+        logger.info(input_file)
+        if not input_file.is_file():
+            continue
+        is_ndjson = _is_ndjson(input_file)
+        fp = _to_file(input_file)
+        with fp:
+            if is_ndjson:
+                for line in fp.readlines():
+                    yield line
+            else:
+                _ = orjson.loads(fp.read())
+                yield _
+                continue
+
+
 def simplify_directory(input_path, pattern, output_path, schema_path, dialect, config_path, transform_ids=None):
     """Reads directory of FHIR, renders simple, data frame friendly flattened records."""
 
     input_path = pathlib.Path(input_path)
     assert input_path.is_dir(), f"{input_path} not a directory"
     dialect = dialect.upper()
-    print("DIALECT ", dialect)
 
     if pathlib.Path(schema_path).is_file():
         with open(schema_path, "rb") as fp_:
@@ -737,7 +763,7 @@ def simplify_directory(input_path, pattern, output_path, schema_path, dialect, c
     nested_objects = gen3_config['nested_objects']
 
     with SimplifierContextManager():
-        with EmitterContextManager(output_path) as emitter, EmitterContextManager(output_path + ".edges") as edge_emitter:
+        with EmitterContextManager(output_path) as emitter:
             for parse_result in directory_reader(directory_path=input_path, pattern=pattern,
                                                  validate=False, ignore_path=output_path):
                 # print("PARSE RESULT: ", parse_result)
@@ -761,19 +787,27 @@ def simplify_directory(input_path, pattern, output_path, schema_path, dialect, c
                 simplified = _render_dialect(simplified, references, dialect, schemas, limit_links)
                 fp = emitter.emit(resource.resource_type)
 
-                if dialect == "GRIP":
-                    if "edges" in simplified:
-                        ep = edge_emitter.emit(resource.resource_type)
-                        for entry in simplified["edges"]:
-                            ep.write(orjson.dumps(entry, default=_default_json_serializer,
-                                                  option=orjson.OPT_APPEND_NEWLINE).decode())
-                        del simplified["edges"]
-                else:
-                    if os.path.exists(output_path + ".edges"):
-                        os.rmdir(output_path + ".edges")
-
                 fp.write(orjson.dumps(simplified, default=_default_json_serializer,
                                       option=orjson.OPT_APPEND_NEWLINE).decode())
+
+        if dialect == "GRIP":
+            schemas = schemas["$defs"]
+            with EmitterContextManager(output_path + ".edges") as emitter:
+                for vertex in directory_json(directory_path=input_path, pattern=pattern,
+                                             ignore_path=output_path):
+                    vertex = orjson.loads(vertex)
+                    if vertex["resourceType"] in schemas:
+                        actual_schema = schemas[vertex["resourceType"]]
+                        with VertexLinkWriter(actual_schema) as mgr:
+                            instance = mgr.insert_links(vertex)
+                            links = instance['links']
+                            for link in links:
+                                edge = {"label": link["rel"], "from": str(instance["id"]), "to": link["href"].split("/")[-1]}
+                                fp = emitter.emit(vertex["resourceType"])
+                                fp.write(orjson.dumps(edge, default=_default_json_serializer,
+                                         option=orjson.OPT_APPEND_NEWLINE).decode())
+
+                                # logger.info(f"WRITTEN: {edge}")
 
 
 def _debug_once(msg):
