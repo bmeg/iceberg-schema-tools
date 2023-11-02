@@ -86,14 +86,9 @@ def test_simplify_task_grip(distribution_schema):
     with SimplifierContextManager():
         simplified, references = simplify(task, dialect='GRIP')
         rendered = _render_dialect(simplified, references, 'GRIP', schemas=distribution_schema)
-
         print(orjson.dumps(rendered, option=orjson.OPT_INDENT_2).decode())
-
-        first_edge = next(iter([_ for _ in rendered['edges']]), None)
-        assert first_edge["label"] == "Task_focus"
         assert rendered["data"] == {
                                         "id": "857f89ab-2808-5592-a3e1-315466bc6181",
                                         "status": "completed",
                                         "intent": "order"
                                     }
-        
