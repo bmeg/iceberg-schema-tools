@@ -310,7 +310,6 @@ properties:
     type: array
   resourceType:
     const: Specimen
-    default: Specimen
     description: One of the resource types defined as part of FHIR
     title: Resource Type
     type: string
@@ -428,5 +427,9 @@ properties:
     title: Kind of material that forms the specimen
     type: string
   type_text: *id005
+systemProperties:
+- id
 title: Specimen
 type: object
+uniqueKeys:
+- - id

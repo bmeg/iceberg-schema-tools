@@ -151,9 +151,12 @@ properties:
     type: string
   resourceType:
     const: BodyStructure
-    default: BodyStructure
     description: One of the resource types defined as part of FHIR
     title: Resource Type
     type: string
+systemProperties:
+- id
 title: BodyStructure
 type: object
+uniqueKeys:
+- - id
