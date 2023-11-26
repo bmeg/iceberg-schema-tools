@@ -1,25 +1,23 @@
 import json
 
 import yaml
+from fhir.resources.device import Device
+from fhir.resources.group import Group
+from fhir.resources.patient import Patient
 from fhir.resources.specimen import Specimen
+from fhir.resources.substance import Substance
 
 from iceberg_tools.graph import VertexSchemaDecorator, VertexLinkWriter, SchemaLinkWriter
 from iceberg_tools.schema import extract_schemas, BASE_URI
 
-EXPECTED_LINKS = ['collection_collector_Patient', 'collection_collector_Practitioner',
-                  'collection_collector_PractitionerRole', 'collection_collector_RelatedPerson', 'collection_procedure',
-                  'container_device', 'container_location', 'note_authorReference_Organization',
-                  'note_authorReference_Patient', 'note_authorReference_Practitioner',
-                  'note_authorReference_PractitionerRole', 'note_authorReference_RelatedPerson', 'parent',
-                  'processing_additive', 'request', 'subject_BiologicallyDerivedProduct', 'subject_Device',
-                  'subject_Group', 'subject_Location', 'subject_Patient', 'subject_Substance']
+EXPECTED_LINKS = ['collection_collector_Patient', 'note_authorReference_Patient', 'parent', 'subject_Patient']
 
 
 def test_specimen_schema_decorator():
     """Ensure links are discovered from properties."""
-    schemas = extract_schemas([Specimen], BASE_URI)
-    specimen_schema = VertexSchemaDecorator(schemas['Specimen'])
-    assert len(specimen_schema.schema['links']) == 21, ("Specimen should have 21 links", yaml.dump(specimen_schema.schema, sort_keys=False))
+    schemas = extract_schemas([Specimen, Patient], BASE_URI)
+    specimen_schema = VertexSchemaDecorator(schemas['Specimen'], [Specimen, Patient])
+    assert len(specimen_schema.schema['links']) == 4, ("Specimen should have 4 links", yaml.dump(specimen_schema.schema, sort_keys=False))
     actual_links = sorted([_['rel'] for _ in specimen_schema.schema['links']])
     print(sorted(actual_links))
     assert actual_links == EXPECTED_LINKS, ("Specimen links should match", actual_links, EXPECTED_LINKS)
@@ -28,7 +26,7 @@ def test_specimen_schema_decorator():
 def test_vertex_link_writer_polymorphic():
     """Ensure links are discovered from properties. Use a context manager for throughput."""
     schemas = extract_schemas([Specimen], BASE_URI)
-    specimen_schema = VertexSchemaDecorator(schemas['Specimen'])
+    specimen_schema = VertexSchemaDecorator(schemas['Specimen'], [Specimen, Patient, Device, Group])
     with VertexLinkWriter(specimen_schema) as mgr:
         for specimen in [
             {'id': 's-p1', 'resourceType': 'Specimen', 'subject': {'reference': 'Patient/p1'}},
@@ -48,7 +46,7 @@ def test_vertex_link_writer_nested():
     """Ensure links are discovered from properties. Use a context manager for throughput."""
     schemas = extract_schemas([Specimen], BASE_URI)
 
-    specimen_schema = VertexSchemaDecorator(schemas['Specimen'])
+    specimen_schema = VertexSchemaDecorator(schemas['Specimen'], [Specimen, Patient, Substance])
 
     with VertexLinkWriter(specimen_schema) as mgr:
 
@@ -87,7 +85,7 @@ def test_schema_link_writer_nested():
     specimen_schema = schemas['Specimen']
 
     with SchemaLinkWriter() as mgr:
-        specimen_schema = mgr.insert_links(specimen_schema)
+        specimen_schema = mgr.insert_links(specimen_schema, [Specimen, Patient])
         assert specimen_schema['links'] is not None, "Links should be added to specimen"
         assert specimen_schema['properties']['links'] is not None, "Links should be added to specimen properties"
         assert 'links' not in specimen_schema['properties']['links'], "Links should not be double nested"

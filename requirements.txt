@@ -11,6 +11,7 @@ inflection~=0.5.1
 # fhir model
 fhir.resources
 
+
 # yaml
 PyYAML
 
@@ -21,7 +22,8 @@ flatten_json
 dataclass-csv
 
 # data dictionary and PFB
-gen3
+gen3==4.22.2
+
 
 # faster requests
 requests
@@ -33,10 +35,15 @@ joblib
 beautifulsoup4
 
 # faster json schema
-fastjsonschema
+fastjsonschema==2.19.0
 
 # json pointer
 jsonpointer
 
 # jq bindings
 pyjq
+
+# uptodate
+jsonschema==4.20.0
+
+referencing

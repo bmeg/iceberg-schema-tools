@@ -4,6 +4,8 @@ from typing import Callable
 import jsonschema
 import fastjsonschema
 import pytest
+from jsonschema.validators import Draft202012Validator
+from referencing import Registry
 
 
 # import re
@@ -27,21 +29,31 @@ def test_validate_edge_properties_fastjsonschema(compiled_schema: Callable,
 
 
 def test_validate_edge_properties(schema: dict,
+                                  registry: Registry,
                                   instance: dict,
                                   bad_instance: dict,
                                   bad_links: dict):
     """Ensures schema validates using the jsonschema library."""
 
     # validate schema, checks `valid` nested object data.fizz.buzz
-    assert jsonschema.validate(schema=schema, instance=instance) is None, "Instance should have validated"
+    assert Draft202012Validator(
+        schema=schema,
+        registry=registry,
+    ).validate(instance) is None, "Instance should have validated"
 
     # validate schema, checks `invalid` nested object data.fizz.buzz
     with pytest.raises(jsonschema.exceptions.ValidationError):
-        assert jsonschema.validate(schema=schema, instance=bad_instance) is not None, "Instance should not have validated"
+        assert Draft202012Validator(
+            schema=schema,
+            registry=registry,
+        ).validate(bad_instance) is not None, "Instance should not have validated"
 
     # validate schema, test `missing link` required properties
     with pytest.raises(jsonschema.exceptions.ValidationError):
-        assert jsonschema.validate(schema=schema, instance=bad_links) is not None, "Instance should not have validated"
+        assert Draft202012Validator(
+            schema=schema,
+            registry=registry,
+        ).validate(bad_links) is not None, "Instance should not have validated"
 
 
 def test_schema_is_association(schema: dict):

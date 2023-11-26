@@ -1,7 +1,7 @@
 import importlib
 import json
 from string import Formatter
-from typing import List, Iterator
+from typing import List, Iterator, Callable
 
 import fastjsonschema
 import jsonschema
@@ -30,23 +30,26 @@ def _extract_target_hints(schema_link):
     return directionality, multiplicity, association
 
 
-def _generate_links_from_fhir_references(schema) -> List[dict]:
+def _generate_links_from_fhir_references(schema, classes) -> List[dict]:
     """Generate links for a schema.
 
+    Parameters
+        schema: a schema dict
+        classes: a list of types
     Returns:
         tuple: (links, nested_links)
     """
 
     # Direct links from {schema['title']}"
     links = []
-    links.extend(_extract_links(schema))
+    links.extend(_extract_links(schema, classes))
 
     # Nested links
     nested_links = []
     for nested_schema, path in _extract_nested_schemas(schema):
         if nested_schema['title'] in NESTED_OBJECTS_IGNORE:
             continue
-        extracted_links = _extract_links(nested_schema)
+        extracted_links = _extract_links(nested_schema, classes)
         if len(extracted_links) == 0:
             continue
 
@@ -97,7 +100,7 @@ def _extract_nested_schemas(schema) -> Iterator[tuple[dict, str]]:
         yield sub_schema, match
 
 
-def _extract_links(schema: dict) -> List[dict]:
+def _extract_links(schema: dict, classes) -> List[dict]:
     """Extract Link Description Object (LDO) from a schema.
 
     see https://json-schema.org/draft/2019-09/json-schema-hypermedia.html#rfc.section.6
@@ -118,7 +121,12 @@ def _extract_links(schema: dict) -> List[dict]:
         _path = _path + '.reference'
         _path = _path.replace('.items', '.-')
 
+        _class_names = [_.__name__ for _ in classes]
+
         for enum_reference_type in property_['enum_reference_types']:
+            if enum_reference_type not in _class_names:
+                print(f"DEBUG: {enum_reference_type} not in scope, skipping link {schema['$id']}->{enum_reference_type}")
+                continue
             rel = f"{property_name}"
             if append_postscript:
                 rel += f"_{enum_reference_type}"
@@ -152,6 +160,39 @@ def _load_schema(schema) -> dict:
     return schema_
 
 
+def fastjsonschema_compile(schema: dict, formats: dict = {}) -> Callable:
+    """Compile a JSON schema, explicitly provide handlers."""
+
+    def _handler(uri):
+        """Resolve $ref to $id"""
+        for _def in schema['$defs'].values():
+            if _def['$id'] == uri:
+                print(f"Found {uri}")
+                return _def
+        print(f"Could not find {uri}")
+
+    def _https_handler(uri):
+        # ‘https://json-schema.org/draft/2020-12/links’  hosted by cloudflare
+        # see  https://github.com/IATI/IATI-Standard-Website/issues/230
+        import urllib.request
+        req = urllib.request.Request(
+            uri,
+            data=None,
+            headers={
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'
+            }
+        )
+        f = urllib.request.urlopen(req)
+        _ = f.read().decode('utf-8')
+        return json.loads(_)
+
+    compiled_schema = fastjsonschema.compile(
+        schema,
+        formats=formats,
+        handlers={'http': _handler, 'https': _https_handler},
+    )
+    return compiled_schema
+
 class AssociationSchema:
     """A JSON schema for an association."""
 
@@ -163,7 +204,7 @@ class AssociationSchema:
             self.schema = schema
         else:
             raise ValueError("Schema must be a URL or a dict")
-        self.compiled_schema = fastjsonschema.compile(self.schema)
+        self.compiled_schema = fastjsonschema_compile(self.schema)
 
 
     def validate(self, instance: dict) -> dict:
@@ -312,7 +353,7 @@ class AssociationInstance:
 class VertexSchemaDecorator:
     """Adds links to vertex schema."""
 
-    def __init__(self, schema: dict):
+    def __init__(self, schema: dict, classes: list):
         """Load and compile a JSON schema."""
         self.schema = _load_schema(schema)
         # add links property
@@ -325,10 +366,10 @@ class VertexSchemaDecorator:
             }
         }
         # add links element
-        links, nested_links = _generate_links_from_fhir_references(schema)
+        links, nested_links = _generate_links_from_fhir_references(schema, classes)
         self.schema['links'] = links + nested_links
         # check schema
-        jsonschema.Draft202012Validator.check_schema(schema)
+        jsonschema.Draft202012Validator.check_schema(schema)   # Draft202012Validator.check_schema(schema)
 
 
 def cast_json_pointer_to_jq(_):
@@ -507,17 +548,18 @@ class SchemaLinkWriter:
         pass
 
     @staticmethod
-    def insert_links(schema) -> dict:
+    def insert_links(schema, classes) -> dict:
         """Insert links into a schema.
 
         Parameters:
             schema: a schema dict or url
+            classes: a list of types
         Returns:
             dict: schema with links inserted
 
         """
         schema = _load_schema(schema)
-        links, nested_links = _generate_links_from_fhir_references(schema)
+        links, nested_links = _generate_links_from_fhir_references(schema, classes)
         schema['links'] = links + nested_links
         schema['properties']['links'] = {
             'type': 'array',
