@@ -143,7 +143,7 @@ def _extract_links(schema: dict, classes) -> List[dict]:
                     "templatePointers": {
                         'id': "/" + _path.replace('.', '/')
                     },
-                    'targetSchema': {'$ref': enum_reference_type},
+                    'targetSchema': {'$ref': enum_reference_type + '.yaml'},
                 }
             )
     return links
@@ -484,6 +484,7 @@ class VertexLinkWriter:
             # if we have a FHIR polymorphic reference, we need to check that the target schema is in the list of values
             _ = "".join(values_)
             ref = schema_link['targetSchema']['$ref'].split('/')[-1]
+            ref = ref.replace('.yaml', '')
             if ref != 'Resource': # skip `Any` Resource
                 if '/' in _ and ref not in _:
                     # Polymorphic reference {schema_link['targetSchema']['$ref']} {values} skipping

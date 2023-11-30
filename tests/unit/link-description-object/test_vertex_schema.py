@@ -56,10 +56,10 @@ def test_vertex_link_writer_nested():
             specimen = mgr.insert_links(specimen)
 
             assert specimen['links'] is not None, "Links should be added to specimen"
-            assert len(specimen['links']) > 0, "Links should be added to specimen"
+            assert len(specimen['links']) > 0, f"Links should be added to specimen, {specimen}"
 
             print(json.dumps(specimen, indent=2))
-            assert specimen['links'][0] == {'rel': 'processing_additive', 'href': specimen['processing'][0]['additive'][0]['reference']}, "Links should be added to specimen"
+            assert specimen['links'][0] == {'rel': 'processing_additive', 'href': specimen['processing'][0]['additive'][0]['reference']}, f"Links should be added to specimen, {specimen}"
 
         for specimen in [
             {
