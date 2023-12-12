@@ -12723,48 +12723,6 @@
         "title": "Indicates the treatment step  applied to the specimen",
         "type": "string"
       },
-      "processing_method_coding": {
-        "binding_description": "Type indicating the technique used to process the specimen.",
-        "binding_strength": "example",
-        "binding_uri": "http://hl7.org/fhir/ValueSet/specimen-processing-method",
-        "binding_version": null,
-        "description": "[system#code representation.] [Plucked from Specimen.processing] A coded value specifying the method used to process the specimen.",
-        "element_property": true,
-        "term": {
-          "description": "Type indicating the technique used to process the specimen.",
-          "termDef": {
-            "cde_id": "http://hl7.org/fhir/ValueSet/specimen-processing-method",
-            "cde_version": null,
-            "source": "fhir",
-            "strength": "example",
-            "term": "http://hl7.org/fhir/ValueSet/specimen-processing-method",
-            "term_url": "http://hl7.org/fhir/ValueSet/specimen-processing-method"
-          }
-        },
-        "title": "Indicates the treatment step  applied to the specimen",
-        "type": "string"
-      },
-      "processing_method_text": {
-        "binding_description": "Type indicating the technique used to process the specimen.",
-        "binding_strength": "example",
-        "binding_uri": "http://hl7.org/fhir/ValueSet/specimen-processing-method",
-        "binding_version": null,
-        "description": "[system#code representation.] [Plucked from Specimen.processing] A coded value specifying the method used to process the specimen.",
-        "element_property": true,
-        "term": {
-          "description": "Type indicating the technique used to process the specimen.",
-          "termDef": {
-            "cde_id": "http://hl7.org/fhir/ValueSet/specimen-processing-method",
-            "cde_version": null,
-            "source": "fhir",
-            "strength": "example",
-            "term": "http://hl7.org/fhir/ValueSet/specimen-processing-method",
-            "term_url": "http://hl7.org/fhir/ValueSet/specimen-processing-method"
-          }
-        },
-        "title": "Indicates the treatment step  applied to the specimen",
-        "type": "string"
-      },
       "project_id": {
         "term": {
           "$ref": "_terms.yaml#/project_id"

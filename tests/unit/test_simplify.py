@@ -1,6 +1,7 @@
 # http://build.fhir.org/specimen-example.json
 
 import orjson
+from fhir.resources.observation import Observation
 from fhir.resources.patient import Patient
 from fhir.resources.specimen import Specimen
 from fhir.resources.task import Task
@@ -353,6 +354,21 @@ TASK = {
   ]
 }
 
+OBSERVATION = {
+    "resourceType": "Observation", "id": "5d1610df-afd4-4d42-b397-49db9f489a5e",
+    "meta": {"versionId": "1", "lastUpdated": "2023-01-26T14:21:56.658+00:00", "source": "#DmW9sueQ4yuQdyA9",
+             "profile": ["http://hl7.org/fhir/StructureDefinition/vitalsigns",
+                         "http://hl7.org/fhir/StructureDefinition/heartrate"]}, "status": "final",
+    "category": [{"coding": [
+        {"system": "http://terminology.hl7.org/CodeSystem/observation-category", "code": "vital-signs",
+         "display": "vital-signs"}]}],
+    "code": {"coding": [{"system": "http://loinc.org", "code": "8867-4", "display": "Heart rate"}],
+             "text": "Heart rate"}, "subject": {"reference": "Patient/45c11dad-2b38-4c8e-822e-7abff8a1ee1d"},
+    "encounter": {"reference": "Encounter/bd62656a-5e43-46a5-9584-d2402786f7f5"},
+    "effectiveDateTime": "2019-01-19T14:40:53-05:00", "issued": "2019-01-19T14:40:53.188-05:00",
+    "valueQuantity": {"value": 61, "unit": "/min", "system": "http://unitsofmeasure.org", "code": "/min"}
+}
+
 
 def test_simplify_specimen():
     nested_objects = {
@@ -416,3 +432,27 @@ def test_simplify_task():
         relations = rendered['relations']
         dst_ids = [_['dst_id'] for _ in relations]
         assert len(set(dst_ids)) == len(dst_ids), "Should have unique dst_ids"
+
+
+def test_simplify_observation():
+    observation = Observation(**OBSERVATION)
+    with SimplifierContextManager():
+        simplified, references = simplify(observation, 'PFB')
+        simplified = orjson.loads(orjson.dumps(simplified, default=_default_json_serializer))
+        assert sorted(references) == ['Encounter/bd62656a-5e43-46a5-9584-d2402786f7f5',
+                                      'Patient/45c11dad-2b38-4c8e-822e-7abff8a1ee1d']
+        schema = ensure_schema('iceberg/schemas/simplified/simplified-fhir.json')
+        parse_result = validate({'object': simplified, "relations": [], 'id': simplified['id']}, schema)
+        assert not parse_result.exception,  parse_result.exception
+
+        rendered = _render_dialect(simplified, references, 'PFB', schemas=schema)
+
+        from pprint import pprint
+        pprint(rendered)
+        relations = rendered['relations']
+        dst_ids = [_['dst_id'] for _ in relations]
+        assert len(set(dst_ids)) == len(dst_ids), "Should have unique dst_ids"
+
+        expected_properties = ['valueQuantity', 'valueQuantity_unit', 'valueQuantity_value']
+        for expected_property in expected_properties:
+            assert expected_property in simplified, f"Should have {expected_property}"
