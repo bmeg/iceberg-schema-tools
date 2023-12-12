@@ -297,7 +297,6 @@ properties:
     type: string
   resourceType:
     const: PractitionerRole
-    default: PractitionerRole
     description: One of the resource types defined as part of FHIR
     title: Resource Type
     type: string
@@ -345,5 +344,9 @@ properties:
     title: Specific specialty of the practitioner
     type: array
   specialty_text: *id004
+systemProperties:
+- id
 title: PractitionerRole
 type: object
+uniqueKeys:
+- - id

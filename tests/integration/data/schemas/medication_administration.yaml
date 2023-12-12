@@ -427,7 +427,6 @@ properties:
     type: string
   resourceType:
     const: MedicationAdministration
-    default: MedicationAdministration
     description: One of the resource types defined as part of FHIR
     title: Resource Type
     type: string
@@ -569,5 +568,9 @@ properties:
       type: string
     title: Additional information to support administration
     type: array
+systemProperties:
+- id
 title: MedicationAdministration
 type: object
+uniqueKeys:
+- - id

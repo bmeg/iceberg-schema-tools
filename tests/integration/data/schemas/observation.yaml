@@ -550,7 +550,6 @@ properties:
     type: array
   resourceType:
     const: Observation
-    default: Observation
     description: One of the resource types defined as part of FHIR
     title: Resource Type
     type: string
@@ -738,5 +737,9 @@ properties:
     one_of_many_required: false
     title: Actual result
     type: string
+systemProperties:
+- id
 title: Observation
 type: object
+uniqueKeys:
+- - id

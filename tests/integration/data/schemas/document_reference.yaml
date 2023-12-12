@@ -515,7 +515,6 @@ properties:
     type: array
   resourceType:
     const: DocumentReference
-    default: DocumentReference
     description: One of the resource types defined as part of FHIR
     title: Resource Type
     type: string
@@ -654,5 +653,9 @@ properties:
     pattern: '[ \r\n\t\S]+'
     title: An explicitly assigned identifer of a variation of the content in the DocumentReference
     type: string
+systemProperties:
+- id
 title: DocumentReference
 type: object
+uniqueKeys:
+- - id

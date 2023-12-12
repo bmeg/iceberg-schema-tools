@@ -727,7 +727,6 @@ properties:
     type: string
   resourceType:
     const: Procedure
-    default: Procedure
     description: One of the resource types defined as part of FHIR
     title: Resource Type
     type: string
@@ -879,5 +878,9 @@ properties:
     title: Items used during procedure
     type: array
   used_text: *id009
+systemProperties:
+- id
 title: Procedure
 type: object
+uniqueKeys:
+- - id

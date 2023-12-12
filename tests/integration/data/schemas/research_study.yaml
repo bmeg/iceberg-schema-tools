@@ -547,7 +547,6 @@ properties:
     type: array
   resourceType:
     const: ResearchStudy
-    default: ResearchStudy
     description: One of the resource types defined as part of FHIR
     title: Resource Type
     type: string
@@ -700,5 +699,9 @@ properties:
       | temporarily-closed-per-study-design
     type: string
   whyStopped_text: *id009
+systemProperties:
+- id
 title: ResearchStudy
 type: object
+uniqueKeys:
+- - id

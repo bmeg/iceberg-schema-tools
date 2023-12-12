@@ -185,7 +185,6 @@ properties:
     type: string
   resourceType:
     const: Medication
-    default: Medication
     description: One of the resource types defined as part of FHIR
     title: Resource Type
     type: string
@@ -223,5 +222,9 @@ properties:
       product code does not infer a package size, this is the specific amount of drug
       in the product
     type: number
+systemProperties:
+- id
 title: Medication
 type: object
+uniqueKeys:
+- - id
