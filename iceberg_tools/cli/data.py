@@ -39,6 +39,10 @@ def _validate(path, pattern):
 
     PATH: Path to FHIR files.
     """
+    validate(path, pattern)
+
+
+def validate(path, pattern):
     ok = True
     for result in directory_reader(pathlib.Path(path), pattern):
         if result.exception:
@@ -50,6 +54,9 @@ def _validate(path, pattern):
             print('\texception:', msg)
     if ok:
         print('OK, all resources pass')
+        return ok
+
+    return False
 
 
 @cli.command('validate-simplified')
@@ -65,7 +72,12 @@ def _validate_simplified(path, schema_path):
 
     PATH: Path to simplified ndjson files.
     """
+    validate_simplified(path, schema_path)
+
+
+def validate_simplified(path, schema_path):
     ok = True
+
     for result in simplified_directory_reader(pathlib.Path(path), schema_path):
         if result.exception:
             ok = False
@@ -76,6 +88,9 @@ def _validate_simplified(path, schema_path):
             print('\texception:', msg)
     if ok:
         print('OK, all resources pass')
+        return ok
+
+    return False
 
 
 @cli.command('pfb')

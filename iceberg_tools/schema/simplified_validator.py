@@ -7,6 +7,7 @@ import fastjsonschema
 import inflection
 import orjson
 import requests
+import os
 from dictionaryutils import DataDictionary
 from jsonschema.exceptions import ValidationError
 
@@ -128,7 +129,7 @@ def directory_reader(
 def ensure_schema(schema_path):
     """Ensure schema is loaded, from either local file or URL."""
     if 'http' in schema_path:
-        schemas = requests.get(schema_path).json()
-    else:
+        schemas = DataDictionary(url=schema_path).schema
+    elif os.path.exists(schema_path):
         schemas = DataDictionary(local_file=schema_path).schema
     return schemas
