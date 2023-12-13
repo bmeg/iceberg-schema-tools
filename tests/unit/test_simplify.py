@@ -456,3 +456,7 @@ def test_simplify_observation():
         expected_properties = ['valueQuantity', 'valueQuantity_unit', 'valueQuantity_value']
         for expected_property in expected_properties:
             assert expected_property in simplified, f"Should have {expected_property}"
+
+        assert simplified['valueQuantity_value'] == 61, simplified['valueQuantity_value']
+        assert simplified['valueQuantity_unit'] == "http://unitsofmeasure.org#/min", simplified['valueQuantity_unit']
+        assert simplified['valueQuantity'] == "61 /min", simplified['valueQuantity']
