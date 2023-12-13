@@ -22,6 +22,7 @@ from fhir.resources.documentreference import DocumentReferenceContent, DocumentR
 from fhir.resources.extension import Extension
 from fhir.resources.identifier import Identifier
 from fhir.resources.observation import Observation
+from fhir.resources.quantity import Quantity
 from fhir.resources.reference import Reference
 from fhir.resources.task import Task
 from yaml import SafeLoader
@@ -182,7 +183,48 @@ def _simple_observation_dict(self: Observation, *args, **kwargs):
     if 'category' not in observation or observation['category'] == [None]:
         observation['category'] = ['laboratory']
         observation['category_coding'] = ['http://terminology.hl7.org/CodeSystem/observation-category#laboratory']
+
+    alias_maps = self.get_alias_mapping()
+    for prop_name in self.elements_sequence():
+        field_key = alias_maps[prop_name]
+        is_value = field_key.startswith('value')
+        if is_value:
+            v = self.__dict__.get(field_key, None)
+            if v is not None:
+                is_fhir = issubclass(type(v), FHIRAbstractModel)
+                flattened_props = {field_key: v}
+                nested_object_name = field_key
+                if is_fhir:
+                    name_value_list = v.dict()
+                    if not isinstance(name_value_list, list):
+                        name_value_list = [name_value_list]
+                    for item in name_value_list:
+                        if '__value__' in item:
+                            assert '__value__' in item, (nested_object_name, name_value_list)
+                            value = item['__value__']
+                            name = item.get('__name__', None)
+                            if name:
+                                name = '_' + name
+                            else:
+                                name = ''
+                            if isinstance(value, list):
+                                value = value[0]
+                            observation[f"{nested_object_name}{name}"] = value
+                        else:
+                            for k, v in item.items():
+                                observation[f"{nested_object_name}_{k}"] = v
     return observation
+
+
+def _simple_quantity_dict(self: Quantity, *args, **kwargs):
+    """MonkeyPatch replacement for dict(), render Quantity."""
+    # ['valueQuantity', 'valueQuantity_unit', 'valueQuantity_value']
+    return [
+        {'__value__': f"{self.system}#{self.code}", "__name__": "unit"},
+        {'__value__': self.value, "__name__": "value"},
+        {'__value__': f"{self.value} {self.unit}"},  # Unit symbols follow the numerical value in the expression of a quantity.
+                                                     # Numerical value and unit symbol are separated by a space.
+    ]
 
 
 def _simple_extension_dict(self: Extension, *args, **kwargs):
@@ -639,6 +681,8 @@ class SimplifierContextManager:
         self.orig_codeable_reference_dict = CodeableReference.dict
 
         self.orig_task_dict = Task.dict
+        self.orig_quantity_dict = Quantity.dict
+
 
         FHIRAbstractModel.dict = _simple_resource_dict
         Coding.dict = _simple_coding_dict
@@ -654,6 +698,7 @@ class SimplifierContextManager:
         CodeableReference.dict = _simple_codeable_reference_dict
 
         Task.dict = _simple_task_dict    # TODO - do we still need this?
+        Quantity.dict = _simple_quantity_dict
 
     def __exit__(self, exc_type, exc_value, exc_tb):
         # print("Restoring original FHIR classes", file=sys.stderr)
