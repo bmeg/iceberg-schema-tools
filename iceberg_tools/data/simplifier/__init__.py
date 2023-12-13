@@ -699,6 +699,8 @@ def simplify_directory(input_path, pattern, output_path, schema_path, dialect, c
                 if parse_result.exception is not None:
                     if 'resourceType' not in str(parse_result.exception):
                         logger.error(f"{parse_result.path} has exception {parse_result.exception}")
+                    # print other exceptions too
+                    logger.error(f"{parse_result.path} has exception {parse_result.exception}")
                     continue
                 resource = parse_result.resource
 
