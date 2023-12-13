@@ -222,7 +222,8 @@ def _simple_quantity_dict(self: Quantity, *args, **kwargs):
     return [
         {'__value__': f"{self.system}#{self.code}", "__name__": "unit"},
         {'__value__': self.value, "__name__": "value"},
-        {'__value__': f"{self.value}{self.unit}"},
+        {'__value__': f"{self.value} {self.unit}"},  # Unit symbols follow the numerical value in the expression of a quantity.
+                                                     # Numerical value and unit symbol are separated by a space.
     ]
 
 
