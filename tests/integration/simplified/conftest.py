@@ -3,7 +3,7 @@ import pytest
 
 import os
 
-from dictionaryutils import DataDictionary
+from iceberg_tools.dictionaryutils import DataDictionary
 
 
 @pytest.fixture()
