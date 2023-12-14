@@ -2,23 +2,38 @@ import importlib
 import json
 from string import Formatter
 from typing import List, Iterator, Callable
+from glom import glom
 
+# import pyjq
 import fastjsonschema
 import jsonschema
-import pyjq
 import requests
 import re
 from jsonpointer import resolve_pointer
 
 from iceberg_tools.schema import extract_schemas, BASE_URI
 
-NESTED_OBJECTS = pyjq.compile(
-    '( paths | select(.[-1] == "$ref") ) as $p |   if getpath($p) != "Reference.yaml" then ( $p |  [.[] | tostring]  | join(".") ) else empty end')
-
 NESTED_OBJECTS_IGNORE = ['Identifier', 'Extension']
 
-REFERENCES = pyjq.compile(
-    '( paths | select(.[-1] == "$ref")) as $p |   if getpath($p) == "Reference.yaml" then ( $p | join(".") ) else empty end')
+
+def process_nested_schema_objects(data):
+    for path in glom(data, "paths", default=[]):
+        if path[-1] == "$ref":
+            path_value = glom.glom(data, path)
+            if path_value != "Reference.yaml":
+                result = ".".join(map(str, path))
+                return result
+    return None
+
+
+def process_nested_schema_references(data):
+    for path in glom.glom(data, "paths", default=[]):
+        if path[-1] == "$ref":
+            path_value = glom.glom(data, path)
+            if path_value == "Reference.yaml":
+                result = ".".join(map(str, path))
+                return result
+    return None
 
 
 def _extract_target_hints(schema_link):
@@ -71,7 +86,7 @@ def _extract_nested_schemas(schema) -> Iterator[tuple[dict, str]]:
     Returns: (sub_schema, path) a tuple of the sub schema and the path to it in the passed schema
     """
     # print(json.dumps(schema))
-    matches = sorted(NESTED_OBJECTS.all(schema))
+    matches = sorted(process_nested_schema_objects(schema))
 
     mod = importlib.import_module('fhir.resources')
     for match in matches:
@@ -105,7 +120,7 @@ def _extract_links(schema: dict, classes) -> List[dict]:
 
     see https://json-schema.org/draft/2019-09/json-schema-hypermedia.html#rfc.section.6
     """
-    matches = sorted(REFERENCES.all(schema))
+    matches = sorted(process_nested_schema_references(schema))
     links = []
     for match in matches:
         direction = 'outbound'
@@ -193,6 +208,7 @@ def fastjsonschema_compile(schema: dict, formats: dict = {}) -> Callable:
     )
     return compiled_schema
 
+
 class AssociationSchema:
     """A JSON schema for an association."""
 
@@ -205,7 +221,6 @@ class AssociationSchema:
         else:
             raise ValueError("Schema must be a URL or a dict")
         self.compiled_schema = fastjsonschema_compile(self.schema)
-
 
     def validate(self, instance: dict) -> dict:
         """Validate data against schema.
@@ -236,7 +251,6 @@ class AssociationSchema:
         assert cls.is_association(schema), "Schema links should be an association"
         assert 'title' in schema, "Schema should have a title"
         return True
-
 
     def validate_links(self, instance: dict):
         """Validate instance.links against schema.links"""
@@ -372,11 +386,12 @@ class VertexSchemaDecorator:
         jsonschema.Draft202012Validator.check_schema(schema)   # Draft202012Validator.check_schema(schema)
 
 
-def cast_json_pointer_to_jq(_):
-    """Convert a JSON pointer to a jq query.
-    turn the pointer into a jq expression, note the leading dot and `-` for lists"""
-    _ = '.' + _.replace('/', '.').replace('.-', '.[]?').replace('.', ' | .')
-    _ = re.sub(r'.(\d+)', r'.[\g<1>]', _)
+def cast_json_pointer_to_glom(_):
+    """Convert a JSON pointer to a glom query.
+    turn the pointer into a glom expression, note the leading dot and `-` for lists
+    refer to https://glom.readthedocs.io/en/latest/api.html#glom.glom
+    """
+    _ = _.replace('/', '', 1).replace('/', '.').replace('-', '*')
     return _
 
 
@@ -391,7 +406,7 @@ class VertexLinkWriter:
         """
         self.vertex_schema = schema
         self.href_keys_cache = {}
-        self.jq_cache = {}
+        self.glom_cache = {}
         self.regexp_cache = {}
 
     def _extract_href_keys(self, href):
@@ -474,9 +489,10 @@ class VertexLinkWriter:
         """Extract values from a vertex given a link description object"""
         values = []
         for k, v in schema_link['templatePointers'].items():
-            values_ = self.extract_json_pointer_via_jq(v, vertex)
+            values_ = self.extract_json_pointer_via_glom(v, vertex)
+            print("VALUES: ", values_, type(values_))
 
-            if None in values_:
+            if isinstance(values_, list) and None in values_:
                 #  Unable to resolve {schema_link['href']} {schema_link['templatePointers']}
                 return [None]
 
@@ -495,12 +511,12 @@ class VertexLinkWriter:
             values.extend([self._extract_value(schema_link['href'], _)[0] for _ in values_])
         return values
 
-    def extract_json_pointer_via_jq(self, json_pointer, vertex):
-        """Convert json pointer to jq query, cache the compiled and extract the value from the vertex."""
-        if json_pointer not in self.jq_cache:
-            jq = cast_json_pointer_to_jq(json_pointer)
-            self.jq_cache[json_pointer] = self.jq_cache.get(json_pointer, None) or pyjq.compile(jq)
-        values_ = self.jq_cache[json_pointer].all(vertex)
+    def extract_json_pointer_via_glom(self, json_pointer, vertex):
+        """Convert json pointer to glom query, cache the compiled and extract the value from the vertex."""
+        if json_pointer not in self.glom_cache:
+            glom_instance = cast_json_pointer_to_glom(json_pointer)
+            self.glom_cache[json_pointer] = self.glom_cache.get(json_pointer, None) or glom_instance
+        values_ = glom(vertex, self.glom_cache[json_pointer])
         return values_
 
     def _extract_value(self, schema_href, instance_href) -> (str, str):
