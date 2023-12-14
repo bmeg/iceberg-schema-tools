@@ -135,7 +135,6 @@ _BAR = yaml.safe_load("""
 id: 9a652678-4616-475d-af12-aca21cfbe06d
 """)
 
-
 _NESTED_REFERENCES = yaml.safe_load("""
 ---
 references:
@@ -155,7 +154,7 @@ references:
     - reference: Substance/sub-2
 - id: s-processing-3
   resourceType: Specimen
-  _expected_reference_count: 2
+  _expected_reference_count: 1
   processing:
   - additive:
     - reference: Substance/sub-1
