@@ -25,6 +25,12 @@ def data_dictionary_from_yaml(simplified_dir) -> DataDictionary:
 
 
 @pytest.fixture()
-def distribution_schema(simplified_dir) -> dict:
+def distribution_schema(distribution_schema_path) -> dict:
     """Load the simplified-fhir schema"""
-    yield json.load(open("simplified-fhir.json"))
+    yield json.load(open(distribution_schema_path))
+
+
+@pytest.fixture()
+def distribution_schema_path(simplified_dir) -> str:
+    """path to the simplified-fhir schema"""
+    return "simplified-fhir.json"
