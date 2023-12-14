@@ -3,6 +3,7 @@ from string import Formatter
 from typing import List, Iterator, Callable
 from glom import glom, PathAccessError, flatten
 
+# import pyjq
 import fastjsonschema
 import jsonschema
 import requests
