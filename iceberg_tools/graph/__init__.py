@@ -2,7 +2,7 @@ import importlib
 import json
 from string import Formatter
 from typing import List, Iterator, Callable
-from glom import glom
+from glom import glom, PathAccessError
 
 # import pyjq
 import fastjsonschema
@@ -16,24 +16,33 @@ from iceberg_tools.schema import extract_schemas, BASE_URI
 NESTED_OBJECTS_IGNORE = ['Identifier', 'Extension']
 
 
-def process_nested_schema_objects(data):
-    for path in glom(data, "paths", default=[]):
-        if path[-1] == "$ref":
-            path_value = glom.glom(data, path)
-            if path_value != "Reference.yaml":
-                result = ".".join(map(str, path))
-                return result
-    return None
+def getpath(data, path):
+    for key in path:
+        data = data[key]
+    return data
 
 
-def process_nested_schema_references(data):
-    for path in glom.glom(data, "paths", default=[]):
-        if path[-1] == "$ref":
-            path_value = glom.glom(data, path)
-            if path_value == "Reference.yaml":
-                result = ".".join(map(str, path))
-                return result
-    return None
+def find_refs(schema, current_path, current_data, nested_objects=None):
+    if nested_objects is None:
+        nested_objects = []
+
+    if isinstance(current_data, dict):
+        for key, value in current_data.items():
+            new_path = current_path + [key]
+            if key == "$ref":
+                if getpath(schema, new_path[:-1]) != "Reference.yaml":
+                    nested_objects.append(".".join(map(str, new_path)))
+
+                # elif getpath(schema, new_path[:-1]) == "Reference.yaml" and ref_flag == True:
+                    # nested_objects.append(".".join(map(str, new_path)))
+
+            find_refs(schema, new_path, value, nested_objects)
+    elif isinstance(current_data, list):
+        for index, value in enumerate(current_data):
+            new_path = current_path + [index]
+            find_refs(schema, new_path, value, nested_objects)
+
+    return nested_objects
 
 
 def _extract_target_hints(schema_link):
@@ -85,8 +94,7 @@ def _extract_nested_schemas(schema) -> Iterator[tuple[dict, str]]:
 
     Returns: (sub_schema, path) a tuple of the sub schema and the path to it in the passed schema
     """
-    # print(json.dumps(schema))
-    matches = sorted(process_nested_schema_objects(schema))
+    matches = sorted(find_refs(schema, [], schema))
 
     mod = importlib.import_module('fhir.resources')
     for match in matches:
@@ -120,7 +128,12 @@ def _extract_links(schema: dict, classes) -> List[dict]:
 
     see https://json-schema.org/draft/2019-09/json-schema-hypermedia.html#rfc.section.6
     """
-    matches = sorted(process_nested_schema_references(schema))
+
+    matches = sorted(find_refs(schema, [], schema))
+    print("MATCHES: ", matches)
+
+    # filter out only the matches that link property references
+    matches = [match for match in matches if match.startswith("properties.")]
     links = []
     for match in matches:
         direction = 'outbound'
@@ -381,6 +394,7 @@ class VertexSchemaDecorator:
         }
         # add links element
         links, nested_links = _generate_links_from_fhir_references(schema, classes)
+        # print("VALUE OF LINKS IN INIT VERTEX SCHEMA DECORATOR: ", links, "NESTED LINKS \n\n\n", nested_links)
         self.schema['links'] = links + nested_links
         # check schema
         jsonschema.Draft202012Validator.check_schema(schema)   # Draft202012Validator.check_schema(schema)
@@ -447,12 +461,15 @@ class VertexLinkWriter:
 
             keys = self._extract_href_keys(schema_link['href'])
 
+            # print("SCHEMA LINK: ", schema_link, "VERTEX: ", vertex)
             values = self._extract_values(schema_link, vertex)
 
-            if None in values:
+            if values is None or (isinstance(values, list) and len(values) == 1 and values[0] is None):
                 continue
 
+            print("KEYS: ", keys, "VALUES: ", values, "SCHEMA LINK: ", schema_link)
             for _ in values:
+                print("HELLO INDEX LINKS ", _)
                 if not isinstance(_, list):
                     _ = [_]
                 if 'Resource' in schema_link['href']:  # Any resource
@@ -463,12 +480,15 @@ class VertexLinkWriter:
                         }
                     )
                 else:
+                    print("keys", keys, "FORMAT: ", schema_link['href'].format(**dict(zip(keys, _))))
                     links.append(
                         {
                             'rel': schema_link['rel'],
                             'href': schema_link['href'].format(**dict(zip(keys, _))),
                         }
                     )
+            print("EXITING INNER LOOP")
+        print("FINAL LINKS: ", links)
 
         vertex['links'] = links
         return vertex
@@ -490,25 +510,36 @@ class VertexLinkWriter:
         values = []
         for k, v in schema_link['templatePointers'].items():
             values_ = self.extract_json_pointer_via_glom(v, vertex)
-            print("VALUES: ", values_, type(values_))
+            if len(values_) == 1:
+                values_ = values_[0]
 
-            if isinstance(values_, list) and None in values_:
+            print("V", v, "VERTEX", vertex, "GLOM VALUES: ", values_)
+
+            if values_ is None or (isinstance(values_, list) and None in values_):
                 #  Unable to resolve {schema_link['href']} {schema_link['templatePointers']}
                 return [None]
 
             # disambiguate polymorphic references
             # if we have a FHIR polymorphic reference, we need to check that the target schema is in the list of values
-            _ = "".join(values_)
             ref = schema_link['targetSchema']['$ref'].split('/')[-1]
             ref = ref.replace('.yaml', '')
-            if ref != 'Resource': # skip `Any` Resource
-                if '/' in _ and ref not in _:
+            if ref != 'Resource':  # skip `Any` Resource
+                if '/' in values_ and ref not in values_:
                     # Polymorphic reference {schema_link['targetSchema']['$ref']} {values} skipping
                     return [None]
 
-            # Resolved {schema_link['href']} {schema_link['templatePointers']} {values_}
-            # strip the prefix for fhir references
-            values.extend([self._extract_value(schema_link['href'], _)[0] for _ in values_])
+            new_val = []
+            if isinstance(values_, str):
+                values_ = [values_]
+            for _ in values_:
+                if isinstance(_, list) and len(_) == 1:
+                    _ = _[0]
+
+                extracted_value = self._extract_value(schema_link['href'], _)[0]
+                new_val.append(extracted_value)
+            values.extend(new_val)
+
+            print("VALUES: ", values)
         return values
 
     def extract_json_pointer_via_glom(self, json_pointer, vertex):
@@ -516,7 +547,11 @@ class VertexLinkWriter:
         if json_pointer not in self.glom_cache:
             glom_instance = cast_json_pointer_to_glom(json_pointer)
             self.glom_cache[json_pointer] = self.glom_cache.get(json_pointer, None) or glom_instance
-        values_ = glom(vertex, self.glom_cache[json_pointer])
+        # print("POINTER: ", json_pointer, "VERTEX: ", vertex, "GLOM CACHE: ", self.glom_cache[json_pointer])
+        try:
+            values_ = glom(vertex, self.glom_cache[json_pointer])
+        except PathAccessError:
+            return [None]
         return values_
 
     def _extract_value(self, schema_href, instance_href) -> (str, str):
@@ -524,6 +559,7 @@ class VertexLinkWriter:
         Returns: (instance_value, key)
             """
         # not a fhir relative reference
+        print("SCHEMA HREF: ", schema_href, "INSTANCE HREF: ", instance_href)
         if '/' not in instance_href:
             key = self._extract_href_keys(schema_href)[0]
             return instance_href, key
@@ -540,7 +576,7 @@ class VertexLinkWriter:
 
         _ = self._extract_href_keys(schema_href)[0]
 
-        if 'Resource' in schema_href: # Any Resource
+        if 'Resource' in schema_href:  # Any Resource
             return instance_href, _
 
         m = rexp.match(instance_href)
@@ -577,6 +613,7 @@ class SchemaLinkWriter:
         """
         schema = _load_schema(schema)
         links, nested_links = _generate_links_from_fhir_references(schema, classes)
+        print("VALUE OF LINKS IN INSERT LINKS: ", links)
         schema['links'] = links + nested_links
         schema['properties']['links'] = {
             'type': 'array',

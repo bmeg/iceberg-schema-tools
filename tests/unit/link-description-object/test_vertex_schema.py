@@ -59,6 +59,7 @@ def test_vertex_link_writer_nested():
             assert len(specimen['links']) > 0, f"Links should be added to specimen, {specimen}"
 
             print(json.dumps(specimen, indent=2))
+            print({'rel': 'processing_additive', 'href': specimen['processing'][0]['additive'][0]['reference']}, f" ACTUAL VALUE: {specimen['links'][0]}")
             assert specimen['links'][0] == {'rel': 'processing_additive', 'href': specimen['processing'][0]['additive'][0]['reference']}, f"Links should be added to specimen, {specimen}"
 
         for specimen in [

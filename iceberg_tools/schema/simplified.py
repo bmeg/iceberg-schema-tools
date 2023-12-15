@@ -363,7 +363,7 @@ def _add_plucked_properties(schemas: dict, nested_objects: dict):
     """
 
     for schema in schemas.values():
-        plucked_properties = _plucked_properties(schema, schemas,  nested_objects)
+        plucked_properties = _plucked_properties(schema, schemas, nested_objects)
 
         if plucked_properties:
             properties_with_plucked = set()

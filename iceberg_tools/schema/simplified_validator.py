@@ -6,7 +6,7 @@ from typing import Iterator
 import fastjsonschema
 import inflection
 import orjson
-import requests
+# import requests
 import os
 from dictionaryutils import DataDictionary
 from jsonschema.exceptions import ValidationError

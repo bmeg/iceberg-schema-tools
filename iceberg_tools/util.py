@@ -118,7 +118,7 @@ def directory_reader(
         pattern: str = '*.*',
         parse=True,
         validate=True,
-        ignore_path:str =None) -> Iterator[ParseResult]:
+        ignore_path: str = None) -> Iterator[ParseResult]:
     """Extract FHIR resources from directory
 
     Args:
