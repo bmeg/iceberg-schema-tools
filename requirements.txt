@@ -40,8 +40,8 @@ fastjsonschema==2.19.0
 # json pointer
 jsonpointer==2.4
 
-# jq bindings
-pyjq==2.6.0
+# glom bindings
+glom==23.5.0
 
 # uptodate jsonschema
 jsonschema==4.20.0
