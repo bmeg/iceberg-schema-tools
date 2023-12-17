@@ -408,7 +408,6 @@ class VertexSchemaDecorator:
         }
         # add links element
         links, nested_links = _generate_links_from_fhir_references(schema, classes)
-        # print("VALUE OF LINKS IN INIT VERTEX SCHEMA DECORATOR: ", links, "NESTED LINKS \n\n\n", nested_links)
         self.schema['links'] = links + nested_links
         # check schema
         jsonschema.Draft202012Validator.check_schema(schema)   # Draft202012Validator.check_schema(schema)
@@ -475,15 +474,12 @@ class VertexLinkWriter:
 
             keys = self._extract_href_keys(schema_link['href'])
 
-            # print("SCHEMA LINK: ", schema_link, "VERTEX: ", vertex)
             values = self._extract_values(schema_link, vertex)
 
             if values is None or (isinstance(values, list) and len(values) == 1 and values[0] is None):
                 continue
 
-            print("KEYS: ", keys, "VALUES: ", values, "SCHEMA LINK: ", schema_link)
             for _ in values:
-                print("HELLO INDEX LINKS ", _)
                 if not isinstance(_, list):
                     _ = [_]
                 if 'Resource' in schema_link['href']:  # Any resource
@@ -494,15 +490,12 @@ class VertexLinkWriter:
                         }
                     )
                 else:
-                    print("keys", keys, "FORMAT: ", schema_link['href'].format(**dict(zip(keys, _))))
                     links.append(
                         {
                             'rel': schema_link['rel'],
                             'href': schema_link['href'].format(**dict(zip(keys, _))),
                         }
                     )
-            print("EXITING INNER LOOP")
-        print("FINAL LINKS: ", links)
 
         vertex['links'] = links
         return vertex
@@ -573,7 +566,6 @@ class VertexLinkWriter:
         Returns: (instance_value, key)
             """
         # not a fhir relative reference
-        print("SCHEMA HREF: ", schema_href, "INSTANCE HREF: ", instance_href)
         if '/' not in instance_href:
             key = self._extract_href_keys(schema_href)[0]
             return instance_href, key
@@ -627,7 +619,6 @@ class SchemaLinkWriter:
         """
         schema = _load_schema(schema)
         links, nested_links = _generate_links_from_fhir_references(schema, classes)
-        print("VALUE OF LINKS IN INSERT LINKS: ", links)
         schema['links'] = links + nested_links
         schema['properties']['links'] = {
             'type': 'array',
