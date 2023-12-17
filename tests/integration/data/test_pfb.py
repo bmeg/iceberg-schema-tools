@@ -1,7 +1,12 @@
 import pathlib
 
+import pytest
+
 from iceberg_tools.data.pfb import SimplePFBWriter
 from iceberg_tools.data.simplifier import simplify_directory
+
+
+pytestmark = pytest.mark.skip("removed dependency on gen3")
 
 
 def setup_module(module):

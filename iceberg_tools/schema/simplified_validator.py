@@ -6,9 +6,9 @@ from typing import Iterator
 import fastjsonschema
 import inflection
 import orjson
-# import requests
+
 import os
-from dictionaryutils import DataDictionary
+from iceberg_tools.dictionaryutils import DataDictionary
 from jsonschema.exceptions import ValidationError
 
 from iceberg_tools.util import _to_file, ParseResult
