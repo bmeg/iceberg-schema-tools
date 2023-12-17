@@ -16,33 +16,34 @@ from iceberg_tools.schema import extract_schemas, BASE_URI
 NESTED_OBJECTS_IGNORE = ['Identifier', 'Extension']
 
 
-def getpath(data, path):
-    for key in path:
-        data = data[key]
-    return data
+class RefFinder:
+    def __init__(self, schema, refs, nested_objects=None):
+        self.schema = schema
+        self.refs = refs
+        self.nested_objects = nested_objects or []
 
+    def getpath(self, data, path):
+        for key in path:
+            data = data[key]
+        return data
 
-def find_refs(schema, current_path, current_data, nested_objects=None):
-    if nested_objects is None:
-        nested_objects = []
+    def traverse(self, path, data):
+        if isinstance(data, dict):
+            for key, value in data.items():
+                new_path = path + [key]
+                if key == "$ref":
+                    ref_value = self.getpath(self.schema, new_path[:-1])[key]
+                    if (ref_value != "Reference.yaml" and not self.refs) or (ref_value == "Reference.yaml" and self.refs):
+                        self.nested_objects.append(".".join(map(str, new_path)))
+                self.traverse(new_path, value)
+        elif isinstance(data, list):
+            for index, value in enumerate(data):
+                new_path = path + [index]
+                self.traverse(new_path, value)
 
-    if isinstance(current_data, dict):
-        for key, value in current_data.items():
-            new_path = current_path + [key]
-            if key == "$ref":
-                if getpath(schema, new_path[:-1]) != "Reference.yaml":
-                    nested_objects.append(".".join(map(str, new_path)))
-
-                # elif getpath(schema, new_path[:-1]) == "Reference.yaml" and ref_flag == True:
-                    # nested_objects.append(".".join(map(str, new_path)))
-
-            find_refs(schema, new_path, value, nested_objects)
-    elif isinstance(current_data, list):
-        for index, value in enumerate(current_data):
-            new_path = current_path + [index]
-            find_refs(schema, new_path, value, nested_objects)
-
-    return nested_objects
+    def find_refs(self):
+        self.traverse([], self.schema)
+        return self.nested_objects
 
 
 def _extract_target_hints(schema_link):
@@ -94,7 +95,8 @@ def _extract_nested_schemas(schema) -> Iterator[tuple[dict, str]]:
 
     Returns: (sub_schema, path) a tuple of the sub schema and the path to it in the passed schema
     """
-    matches = sorted(find_refs(schema, [], schema))
+    refs_finder = RefFinder(schema, refs=False)
+    matches = sorted(refs_finder.find_refs())
 
     mod = importlib.import_module('fhir.resources')
     for match in matches:
@@ -128,9 +130,8 @@ def _extract_links(schema: dict, classes) -> List[dict]:
 
     see https://json-schema.org/draft/2019-09/json-schema-hypermedia.html#rfc.section.6
     """
-
-    matches = sorted(find_refs(schema, [], schema))
-    print("MATCHES: ", matches)
+    refs_finder = RefFinder(schema, refs=True)
+    matches = sorted(refs_finder.find_refs())
 
     # filter out only the matches that link property references
     matches = [match for match in matches if match.startswith("properties.")]
