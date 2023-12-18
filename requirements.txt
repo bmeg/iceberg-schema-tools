@@ -48,3 +48,6 @@ jsonschema==4.20.0
 
 # JSON reference resolution
 referencing==0.31.0
+
+# Fast Avro for Python
+fastavro

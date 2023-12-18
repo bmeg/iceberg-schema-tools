@@ -4,7 +4,6 @@ from string import Formatter
 from typing import List, Iterator, Callable
 from glom import glom, PathAccessError, flatten
 
-# import pyjq
 import fastjsonschema
 import jsonschema
 import requests
@@ -17,17 +16,29 @@ NESTED_OBJECTS_IGNORE = ['Identifier', 'Extension']
 
 
 class RefFinder:
+    """
+    For returning a list of paths to schema refs
+
+    Parameters:
+        schema: the json schema object to be traversed
+        refs: a flag that decides wether Reference.yaml refs will be collected
+                or if every other ref will be collected
+    Returns:
+        list: A list of glom paths to schema refs
+    """
     def __init__(self, schema, refs, nested_objects=None):
         self.schema = schema
         self.refs = refs
         self.nested_objects = nested_objects or []
 
     def getpath(self, data, path):
+        """Reassign schema data dict to the new index path of every key in new_path"""
         for key in path:
             data = data[key]
         return data
 
     def traverse(self, path, data):
+        """Traverse through a schema collecting a list of glom $ref paths"""
         if isinstance(data, dict):
             for key, value in data.items():
                 new_path = path + [key]
@@ -42,6 +53,7 @@ class RefFinder:
                 self.traverse(new_path, value)
 
     def find_refs(self):
+        """Calling function kickcs off schema traversal"""
         self.traverse([], self.schema)
         return self.nested_objects
 
@@ -82,9 +94,9 @@ def _generate_links_from_fhir_references(schema, classes) -> List[dict]:
         parent_path = '.'.join(path_parts[1:-1]).replace('.items', '.-')
 
         for _ in extracted_links:
-            _['$comment'] = f"From {nested_schema['title']}/{parent_path.replace('.-','')}"
+            _['$comment'] = f"From {nested_schema['title']}/{parent_path.replace('.-', '')}"
             _['templatePointers'] = {"id": f"/{parent_path.replace('.', '/')}{_['templatePointers'][tp]}" for tp in _['templatePointers']}
-            _['rel'] = f"{parent_path.replace('.-','')}_{_['rel']}"
+            _['rel'] = f"{parent_path.replace('.-', '')}_{_['rel']}"
         nested_links.extend(extracted_links)
 
     return links, nested_links
