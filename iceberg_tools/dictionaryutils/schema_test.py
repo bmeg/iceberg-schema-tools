@@ -108,10 +108,10 @@ def validate_schemata(schemata, metaschema):
                 link in s["properties"]
             ), "Entity '{}' has '{}' as a link but not property".format(s["id"], link)
 
-        for link in [l["name"] for l in s["links"] if "name" in l]:
+        for link in [link_instance["name"] for link_instance in s["links"] if "name" in link_instance]:
             assert_link_is_also_prop(link)
-        for subgroup in [l["subgroup"] for l in s["links"] if "name" not in l]:
-            for link in [l["name"] for l in subgroup if "name" in l]:
+        for subgroup in [link_instance["subgroup"] for link_instance in s["links"] if "name" not in link_instance]:
+            for link in [link_instance["name"] for link_instance in subgroup if "name" in link_instance]:
                 assert_link_is_also_prop(link)
 
         for prop in s["properties"]:
@@ -136,10 +136,10 @@ class SchemaTest(unittest.TestCase):
             print("Validating {}".format(path))
             doc = json.load(open(path, "r"))
             print(doc)
-            if type(doc) == dict:
+            if isinstance(doc, dict):
                 self.add_system_props(doc)
                 validate_entity(doc, self.dictionary.schema)
-            elif type(doc) == list:
+            elif isinstance(doc, list):
                 for entity in doc:
                     self.add_system_props(entity)
                     validate_entity(entity, self.dictionary.schema)
@@ -150,11 +150,11 @@ class SchemaTest(unittest.TestCase):
         for path in glob.glob(os.path.join(DATA_DIR, "invalid", "*.json")):
             print("Validating {}".format(path))
             doc = json.load(open(path, "r"))
-            if type(doc) == dict:
+            if isinstance(doc, dict):
                 self.add_system_props(doc)
                 with self.assertRaises(ValidationError):
                     validate_entity(doc, self.dictionary.schema)
-            elif type(doc) == list:
+            elif isinstance(doc, list):
                 for entity in doc:
                     self.add_system_props(entity)
                     with self.assertRaises(ValidationError):
@@ -166,9 +166,7 @@ class SchemaTest(unittest.TestCase):
         schema = self.dictionary.schema[doc["type"]]
         for key in schema["systemProperties"]:
             use_def_default = (
-                "$ref" in schema["properties"][key]
-                and key in self.definitions
-                and "default" in self.definitions[key]
+                "$ref" in schema["properties"][key] and key in self.definitions and "default" in self.definitions[key]
             )
             if use_def_default:
                 doc[key] = self.definitions[key]["default"]
@@ -211,23 +209,23 @@ if __name__ == "__main__":
             try:
                 print(("CHECK if {0} is invalid:".format(f.name)), end=" ")
                 print(type(doc))
-                if type(doc) == dict:
+                if isinstance(doc, dict):
                     validate_entity(doc, dictionary.schema)
-                elif type(doc) == list:
+                elif isinstance(doc, list):
                     for entity in doc:
                         validate_entity(entity, dictionary.schema)
                 else:
                     raise ValidationError("Invalid json")
-            except ValidationError as e:
+            except ValidationError:
                 print("Invalid as expected.")
                 pass
             else:
                 raise Exception("Expected invalid, but validated.")
         else:
             print(("CHECK if {0} is valid:".format(f.name)), end=" ")
-            if type(doc) == dict:
+            if isinstance(doc, dict):
                 validate_entity(doc, dictionary.schema)
-            elif type(doc) == list:
+            elif isinstance(doc, list):
                 for entity in doc:
                     validate_entity(entity, dictionary.schema)
             else:
