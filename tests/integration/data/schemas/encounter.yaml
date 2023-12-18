@@ -335,7 +335,6 @@ properties:
     type: array
   resourceType:
     const: Encounter
-    default: Encounter
     description: One of the resource types defined as part of FHIR
     title: Resource Type
     type: string
@@ -617,5 +616,9 @@ properties:
       type: string
     title: Connection details of a virtual service (e.g. conference call)
     type: array
+systemProperties:
+- id
 title: Encounter
 type: object
+uniqueKeys:
+- - id

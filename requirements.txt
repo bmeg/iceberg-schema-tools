@@ -3,40 +3,48 @@
 click
 
 # faster json
-orjson
+orjson==3.9.5
 
 # pluralization
-inflection~=0.5.1
+inflection==0.5.1
 
 # fhir model
-fhir.resources
+fhir.resources==7.0.2
 
 # yaml
-PyYAML
+# gdcdictionary 1.2.0 requires PyYAML~=5.1, but you have pyyaml 6.0.1 which is incompatible.
+PyYAML  # ==6.0.1
 
-#
-flatten_json
+# Python functions for flattening a JSON object to a single dictionary of pairs, and unflattening that dictionary back to a JSON object
+flatten-json==0.1.13
 
-#
-dataclass-csv
+# Use dataclasses instead of dictionaries to represent the rows in the CSV file.
+dataclass-csv==1.4.0
 
 # data dictionary and PFB
-gen3
+# gen3==4.22.2
 
 # faster requests
-requests
-requests-cache
+requests==2.31.0
+requests-cache==1.1.0
 
 # function caching
-joblib
+joblib==1.3.2
+
 # html parsing (urn:oid lookups)
-beautifulsoup4
+beautifulsoup4==4.12.2
 
 # faster json schema
-fastjsonschema
+fastjsonschema==2.19.0
 
 # json pointer
-jsonpointer
+jsonpointer==2.4
 
 # jq bindings
-pyjq
+pyjq==2.6.0
+
+# uptodate jsonschema
+jsonschema==4.20.0
+
+# JSON reference resolution
+referencing==0.31.0

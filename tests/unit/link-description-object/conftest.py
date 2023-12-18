@@ -1,8 +1,15 @@
+import copy
+import json
 from typing import List, Callable
 
 import fastjsonschema
 import pytest
 import yaml
+
+from functools import cache
+
+import requests
+from referencing import Registry, Resource
 
 
 @pytest.fixture
@@ -161,7 +168,7 @@ def nested_references():
     return _NESTED_REFERENCES['references']
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def schema():
     return _SCHEMA
 
@@ -173,7 +180,7 @@ def not_an_association_schema():
 
 @pytest.fixture
 def instance():
-    return _INSTANCE
+    return copy.deepcopy(_INSTANCE)
 
 
 @pytest.fixture
@@ -188,8 +195,32 @@ def bad_links():
 
 @pytest.fixture
 def compiled_schema(schema: dict) -> Callable:
-    """compile schema"""
-    return fastjsonschema.compile(schema)
+    """compile fastjsonschema """
+
+    def _handler(uri):
+        """Resolve $ref to $id"""
+        for _def in schema['$defs'].values():
+            if _def['$id'] == uri:
+                print(f"Found {uri}")
+                return _def
+        print(f"Could not find {uri}")
+
+    def _https_handler(uri):
+        # ‘https://json-schema.org/draft/2020-12/links’  hosted by cloudflare
+        # see  https://github.com/IATI/IATI-Standard-Website/issues/230
+        import urllib.request
+        req = urllib.request.Request(
+            uri,
+            data=None,
+            headers={
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'
+            }
+        )
+        f = urllib.request.urlopen(req)
+        _ = f.read().decode('utf-8')
+        return json.loads(_)
+
+    return fastjsonschema.compile(schema, handlers={'http': _handler, 'https': _https_handler},)
 
 
 @pytest.fixture
@@ -208,3 +239,17 @@ def bar() -> dict:
 def bad_foo() -> dict:
     """Instance of Foo with missing id"""
     return _BAD_FOO
+
+
+@pytest.fixture
+def registry() -> Registry:
+    """Registry of schemas."""
+    @cache
+    def retrieve_via_http(uri: str):
+        """Retrieve schema via http."""
+        response = requests.get(uri)
+        assert response.status_code == 200, f"{response.status_code} {response.reason} {response.text}"
+        resource = Resource.from_contents(response.json())
+        return resource
+
+    return Registry(retrieve=retrieve_via_http)

@@ -417,7 +417,6 @@ properties:
     type: string
   resourceType:
     const: Condition
-    default: Condition
     description: One of the resource types defined as part of FHIR
     title: Resource Type
     type: string
@@ -529,5 +528,9 @@ properties:
     title: unconfirmed | provisional | differential | confirmed | refuted | entered-in-error
     type: string
   verificationStatus_text: *id007
+systemProperties:
+- id
 title: Condition
 type: object
+uniqueKeys:
+- - id

@@ -512,7 +512,6 @@ properties:
     type: string
   resourceType:
     const: Task
-    default: Task
     description: One of the resource types defined as part of FHIR
     title: Resource Type
     type: string
@@ -594,5 +593,9 @@ properties:
     title: Reason for current status
     type: string
   statusReason_text: *id005
+systemProperties:
+- id
 title: Task
 type: object
+uniqueKeys:
+- - id

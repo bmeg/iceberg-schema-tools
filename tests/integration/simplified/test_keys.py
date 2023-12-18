@@ -1,4 +1,4 @@
-from dictionaryutils import DataDictionary
+from iceberg_tools.dictionaryutils import DataDictionary
 
 
 def test_keys(data_dictionary_from_yaml: DataDictionary):

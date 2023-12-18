@@ -264,7 +264,6 @@ properties:
     type: number
   resourceType:
     const: Patient
-    default: Patient
     description: One of the resource types defined as part of FHIR
     title: Resource Type
     type: string
@@ -504,5 +503,9 @@ properties:
         term_url: http://terminology.hl7.org/ValueSet/v3-TribalEntityUS
     type: string
   us_core_tribal_affiliation_tribalAffiliation_text: *id003
+systemProperties:
+- id
 title: Patient
 type: object
+uniqueKeys:
+- - id
