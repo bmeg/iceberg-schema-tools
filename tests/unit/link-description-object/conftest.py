@@ -154,7 +154,7 @@ references:
     - reference: Substance/sub-2
 - id: s-processing-3
   resourceType: Specimen
-  _expected_reference_count: 1
+  _expected_reference_count: 2
   processing:
   - additive:
     - reference: Substance/sub-1
