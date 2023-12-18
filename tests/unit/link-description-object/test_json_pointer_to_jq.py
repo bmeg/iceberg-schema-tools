@@ -1,5 +1,5 @@
 import json
-from glom import glom
+from glom import glom, flatten
 
 from iceberg_tools.graph import VertexLinkWriter, cast_json_pointer_to_glom
 
@@ -12,6 +12,7 @@ def test_cast_json_pointer_to_glom():
         "/foo/bar/0/baz",
         "/foo/bar/0/baz/0",
         "/foo/bar/-/baz",
+        "/foo/-/bar/-/baz",
     ]
     glom_expressions = [
         "foo",
@@ -20,6 +21,7 @@ def test_cast_json_pointer_to_glom():
         'foo.bar.0.baz',
         'foo.bar.0.baz.0',
         'foo.bar.*.baz',
+        'foo.*.bar.*.baz',
     ]
 
     json_instances = [
@@ -29,6 +31,7 @@ def test_cast_json_pointer_to_glom():
         {"foo": {"bar": [{"baz": "qux"}]}},
         {"foo": {"bar": [{"baz": ["qux"]}]}},
         {"foo": {"bar": [{"baz": "qux"}, {"baz": "quux"}]}},
+        {"foo": [{"bar": [{"baz": "qux"}, {"baz": "quux"}]}]},
     ]
     expected_values = [
         "bar",
@@ -36,14 +39,19 @@ def test_cast_json_pointer_to_glom():
         "baz",
         "qux",
         "qux",
-        ["qux", "quux"]
+        ["qux", "quux"],
+        ["qux", "quux"],
     ]
 
     # test the underlying jsonpointer -> glom conversion and the glom extraction
     for json_pointer, expected_glom_expression, json_instance, expected_value in zip(json_pointers, glom_expressions, json_instances, expected_values):
         actual_glom_expression = cast_json_pointer_to_glom(json_pointer)
         assert actual_glom_expression == expected_glom_expression, (json_pointer, actual_glom_expression)
+        # run glom here
         actual_value = glom(json_instance, actual_glom_expression)
+        # flatten nested lists
+        if isinstance(actual_value, list) and len(actual_value) > 0 and isinstance(actual_value[0], list):
+            actual_value = flatten(actual_value)
         assert expected_value == actual_value, (json_pointer, actual_glom_expression, json.dumps(json_instance), expected_value, actual_value)
 
     # test the VertexLinkWriter implementation in extract_json_pointer_via_glom

@@ -2,7 +2,7 @@ import importlib
 import json
 from string import Formatter
 from typing import List, Iterator, Callable
-from glom import glom, PathAccessError
+from glom import glom, PathAccessError, flatten
 
 # import pyjq
 import fastjsonschema
@@ -534,7 +534,7 @@ class VertexLinkWriter:
         return values
 
     def extract_json_pointer_via_glom(self, json_pointer, vertex):
-        """Convert json pointer to glom query, cache the compiled and extract the value from the vertex."""
+        """Convert json pointer to glom query, cache the compiled and extract the value from the vertex. flatten nested lists."""
         if json_pointer not in self.glom_cache:
             glom_instance = cast_json_pointer_to_glom(json_pointer)
             self.glom_cache[json_pointer] = self.glom_cache.get(json_pointer, None) or glom_instance
@@ -542,6 +542,9 @@ class VertexLinkWriter:
             values_ = glom(vertex, self.glom_cache[json_pointer])
         except PathAccessError:
             return [None]
+        # flatten nested lists
+        if isinstance(values_, list) and len(values_) > 0 and isinstance(values_[0], list):
+            values_ = flatten(values_)
         return values_
 
     def _extract_value(self, schema_href, instance_href) -> (str, str):
