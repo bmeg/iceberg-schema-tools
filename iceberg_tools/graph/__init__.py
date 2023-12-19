@@ -2,23 +2,60 @@ import importlib
 import json
 from string import Formatter
 from typing import List, Iterator, Callable
+from glom import glom, PathAccessError, flatten
 
 import fastjsonschema
 import jsonschema
-import pyjq
 import requests
 import re
 from jsonpointer import resolve_pointer
 
 from iceberg_tools.schema import extract_schemas, BASE_URI
 
-NESTED_OBJECTS = pyjq.compile(
-    '( paths | select(.[-1] == "$ref") ) as $p |   if getpath($p) != "Reference.yaml" then ( $p |  [.[] | tostring]  | join(".") ) else empty end')
-
 NESTED_OBJECTS_IGNORE = ['Identifier', 'Extension']
 
-REFERENCES = pyjq.compile(
-    '( paths | select(.[-1] == "$ref")) as $p |   if getpath($p) == "Reference.yaml" then ( $p | join(".") ) else empty end')
+
+class RefFinder:
+    """
+    For returning a list of paths to schema refs
+
+    Parameters:
+        schema: the json schema object to be traversed
+        refs: a flag that decides wether Reference.yaml refs will be collected
+                or if every other ref will be collected
+    Returns:
+        list: A list of glom paths to schema refs
+    """
+    def __init__(self, schema, refs, nested_objects=None):
+        self.schema = schema
+        self.refs = refs
+        self.nested_objects = nested_objects or []
+
+    def getpath(self, data, path):
+        """Reassign schema data dict to the new index path of every key in new_path"""
+        for key in path:
+            data = data[key]
+        return data
+
+    def traverse(self, path, data):
+        """Traverse through a schema collecting a list of glom $ref paths"""
+        if isinstance(data, dict):
+            for key, value in data.items():
+                new_path = path + [key]
+                if key == "$ref":
+                    ref_value = self.getpath(self.schema, new_path[:-1])[key]
+                    if (ref_value != "Reference.yaml" and not self.refs) or (ref_value == "Reference.yaml" and self.refs):
+                        self.nested_objects.append(".".join(map(str, new_path)))
+                self.traverse(new_path, value)
+        elif isinstance(data, list):
+            for index, value in enumerate(data):
+                new_path = path + [index]
+                self.traverse(new_path, value)
+
+    def find_refs(self):
+        """Calling function kickcs off schema traversal"""
+        self.traverse([], self.schema)
+        return self.nested_objects
 
 
 def _extract_target_hints(schema_link):
@@ -57,9 +94,9 @@ def _generate_links_from_fhir_references(schema, classes) -> List[dict]:
         parent_path = '.'.join(path_parts[1:-1]).replace('.items', '.-')
 
         for _ in extracted_links:
-            _['$comment'] = f"From {nested_schema['title']}/{parent_path.replace('.-','')}"
+            _['$comment'] = f"From {nested_schema['title']}/{parent_path.replace('.-', '')}"
             _['templatePointers'] = {"id": f"/{parent_path.replace('.', '/')}{_['templatePointers'][tp]}" for tp in _['templatePointers']}
-            _['rel'] = f"{parent_path.replace('.-','')}_{_['rel']}"
+            _['rel'] = f"{parent_path.replace('.-', '')}_{_['rel']}"
         nested_links.extend(extracted_links)
 
     return links, nested_links
@@ -70,8 +107,8 @@ def _extract_nested_schemas(schema) -> Iterator[tuple[dict, str]]:
 
     Returns: (sub_schema, path) a tuple of the sub schema and the path to it in the passed schema
     """
-    # print(json.dumps(schema))
-    matches = sorted(NESTED_OBJECTS.all(schema))
+    refs_finder = RefFinder(schema, refs=False)
+    matches = sorted(refs_finder.find_refs())
 
     mod = importlib.import_module('fhir.resources')
     for match in matches:
@@ -105,7 +142,11 @@ def _extract_links(schema: dict, classes) -> List[dict]:
 
     see https://json-schema.org/draft/2019-09/json-schema-hypermedia.html#rfc.section.6
     """
-    matches = sorted(REFERENCES.all(schema))
+    refs_finder = RefFinder(schema, refs=True)
+    matches = sorted(refs_finder.find_refs())
+
+    # filter out only the matches that link property references
+    matches = [match for match in matches if match.startswith("properties.")]
     links = []
     for match in matches:
         direction = 'outbound'
@@ -193,6 +234,7 @@ def fastjsonschema_compile(schema: dict, formats: dict = {}) -> Callable:
     )
     return compiled_schema
 
+
 class AssociationSchema:
     """A JSON schema for an association."""
 
@@ -205,7 +247,6 @@ class AssociationSchema:
         else:
             raise ValueError("Schema must be a URL or a dict")
         self.compiled_schema = fastjsonschema_compile(self.schema)
-
 
     def validate(self, instance: dict) -> dict:
         """Validate data against schema.
@@ -236,7 +277,6 @@ class AssociationSchema:
         assert cls.is_association(schema), "Schema links should be an association"
         assert 'title' in schema, "Schema should have a title"
         return True
-
 
     def validate_links(self, instance: dict):
         """Validate instance.links against schema.links"""
@@ -372,11 +412,12 @@ class VertexSchemaDecorator:
         jsonschema.Draft202012Validator.check_schema(schema)   # Draft202012Validator.check_schema(schema)
 
 
-def cast_json_pointer_to_jq(_):
-    """Convert a JSON pointer to a jq query.
-    turn the pointer into a jq expression, note the leading dot and `-` for lists"""
-    _ = '.' + _.replace('/', '.').replace('.-', '.[]?').replace('.', ' | .')
-    _ = re.sub(r'.(\d+)', r'.[\g<1>]', _)
+def cast_json_pointer_to_glom(_):
+    """Convert a JSON pointer to a glom query.
+    turn the pointer into a glom expression, note the leading dot and `-` for lists
+    refer to https://glom.readthedocs.io/en/latest/api.html#glom.glom
+    """
+    _ = _.replace('/', '', 1).replace('/', '.').replace('-', '*')
     return _
 
 
@@ -391,7 +432,7 @@ class VertexLinkWriter:
         """
         self.vertex_schema = schema
         self.href_keys_cache = {}
-        self.jq_cache = {}
+        self.glom_cache = {}
         self.regexp_cache = {}
 
     def _extract_href_keys(self, href):
@@ -434,7 +475,7 @@ class VertexLinkWriter:
 
             values = self._extract_values(schema_link, vertex)
 
-            if None in values:
+            if values is None or (isinstance(values, list) and len(values) == 1 and values[0] is None):
                 continue
 
             for _ in values:
@@ -474,33 +515,48 @@ class VertexLinkWriter:
         """Extract values from a vertex given a link description object"""
         values = []
         for k, v in schema_link['templatePointers'].items():
-            values_ = self.extract_json_pointer_via_jq(v, vertex)
+            values_ = self.extract_json_pointer_via_glom(v, vertex)
+            if len(values_) == 1:
+                values_ = values_[0]
 
-            if None in values_:
+            if values_ is None or (isinstance(values_, list) and None in values_):
                 #  Unable to resolve {schema_link['href']} {schema_link['templatePointers']}
                 return [None]
 
             # disambiguate polymorphic references
             # if we have a FHIR polymorphic reference, we need to check that the target schema is in the list of values
-            _ = "".join(values_)
             ref = schema_link['targetSchema']['$ref'].split('/')[-1]
             ref = ref.replace('.yaml', '')
-            if ref != 'Resource': # skip `Any` Resource
-                if '/' in _ and ref not in _:
+            if ref != 'Resource':  # skip `Any` Resource
+                if '/' in values_ and ref not in values_:
                     # Polymorphic reference {schema_link['targetSchema']['$ref']} {values} skipping
                     return [None]
 
-            # Resolved {schema_link['href']} {schema_link['templatePointers']} {values_}
-            # strip the prefix for fhir references
-            values.extend([self._extract_value(schema_link['href'], _)[0] for _ in values_])
+            new_val = []
+            if isinstance(values_, str):
+                values_ = [values_]
+            for _ in values_:
+                if isinstance(_, list) and len(_) == 1:
+                    _ = _[0]
+
+                extracted_value = self._extract_value(schema_link['href'], _)[0]
+                new_val.append(extracted_value)
+            values.extend(new_val)
+
         return values
 
-    def extract_json_pointer_via_jq(self, json_pointer, vertex):
-        """Convert json pointer to jq query, cache the compiled and extract the value from the vertex."""
-        if json_pointer not in self.jq_cache:
-            jq = cast_json_pointer_to_jq(json_pointer)
-            self.jq_cache[json_pointer] = self.jq_cache.get(json_pointer, None) or pyjq.compile(jq)
-        values_ = self.jq_cache[json_pointer].all(vertex)
+    def extract_json_pointer_via_glom(self, json_pointer, vertex):
+        """Convert json pointer to glom query, cache the compiled and extract the value from the vertex. flatten nested lists."""
+        if json_pointer not in self.glom_cache:
+            glom_instance = cast_json_pointer_to_glom(json_pointer)
+            self.glom_cache[json_pointer] = self.glom_cache.get(json_pointer, None) or glom_instance
+        try:
+            values_ = glom(vertex, self.glom_cache[json_pointer])
+        except PathAccessError:
+            return [None]
+        # flatten nested lists
+        if isinstance(values_, list) and len(values_) > 0 and isinstance(values_[0], list):
+            values_ = flatten(values_)
         return values_
 
     def _extract_value(self, schema_href, instance_href) -> (str, str):
@@ -524,7 +580,7 @@ class VertexLinkWriter:
 
         _ = self._extract_href_keys(schema_href)[0]
 
-        if 'Resource' in schema_href: # Any Resource
+        if 'Resource' in schema_href:  # Any Resource
             return instance_href, _
 
         m = rexp.match(instance_href)

@@ -88,10 +88,10 @@ def create_fhir_definitions_lookup(iceberg_path: str = "~/.iceberg"):
     connection = sqlite3.connect(path)
 
     with connection:
-        connection.execute(f'DROP table IF EXISTS element_bindings')
-        connection.execute(f'CREATE TABLE if not exists element_bindings (id PRIMARY KEY, entity Text)')
+        connection.execute('DROP table IF EXISTS element_bindings')
+        connection.execute('CREATE TABLE if not exists element_bindings (id PRIMARY KEY, entity Text)')
         with connection:
-            connection.executemany(f'INSERT OR REPLACE into element_bindings values (?, ?)',
+            connection.executemany('INSERT OR REPLACE into element_bindings values (?, ?)',
                                    [(_['key'], orjson.dumps(_['element']).decode(),) for _ in generator])
         with connection:
             cursor = connection.cursor()

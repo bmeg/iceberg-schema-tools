@@ -1,11 +1,10 @@
 import json
+from glom import glom, flatten
 
-import pyjq
-
-from iceberg_tools.graph import cast_json_pointer_to_jq, VertexLinkWriter
+from iceberg_tools.graph import VertexLinkWriter, cast_json_pointer_to_glom
 
 
-def test_cast_json_pointer_to_jq():
+def test_cast_json_pointer_to_glom():
     json_pointers = [
         "/foo",
         "/foo/bar",
@@ -13,15 +12,18 @@ def test_cast_json_pointer_to_jq():
         "/foo/bar/0/baz",
         "/foo/bar/0/baz/0",
         "/foo/bar/-/baz",
+        "/foo/-/bar/-/baz",
     ]
-    jq_expressions = [
-        ". | .foo",
-        '. | .foo | .bar',
-        '. | .foo | .bar | .[0]',
-        '. | .foo | .bar | .[0] | .baz',
-        '. | .foo | .bar | .[0] | .baz | .[0]',
-        '. | .foo | .bar | .[]? | .baz',
+    glom_expressions = [
+        "foo",
+        'foo.bar',
+        'foo.bar.0',
+        'foo.bar.0.baz',
+        'foo.bar.0.baz.0',
+        'foo.bar.*.baz',
+        'foo.*.bar.*.baz',
     ]
+
     json_instances = [
         {"foo": "bar"},
         {"foo": {"bar": "baz"}},
@@ -29,25 +31,31 @@ def test_cast_json_pointer_to_jq():
         {"foo": {"bar": [{"baz": "qux"}]}},
         {"foo": {"bar": [{"baz": ["qux"]}]}},
         {"foo": {"bar": [{"baz": "qux"}, {"baz": "quux"}]}},
+        {"foo": [{"bar": [{"baz": "qux"}, {"baz": "quux"}]}]},
     ]
     expected_values = [
-        ["bar"],
-        ["baz"],
-        ["baz"],
-        ["qux"],
-        ["qux"],
+        "bar",
+        "baz",
+        "baz",
+        "qux",
+        "qux",
+        ["qux", "quux"],
         ["qux", "quux"],
     ]
 
-    # test the underlying jsonpointer -> jq conversion and the pyjq extraction
-    for json_pointer, expected_jq_expression, json_instance, expected_value in zip(json_pointers, jq_expressions, json_instances, expected_values):
-        actual_jq_expression = cast_json_pointer_to_jq(json_pointer)
-        assert actual_jq_expression == expected_jq_expression, (json_pointer, expected_jq_expression, actual_jq_expression)
-        actual_value = pyjq.compile(actual_jq_expression).all(json_instance)
-        assert expected_value == actual_value, (json_pointer, actual_jq_expression, json.dumps(json_instance), expected_value, actual_value)
+    # test the underlying jsonpointer -> glom conversion and the glom extraction
+    for json_pointer, expected_glom_expression, json_instance, expected_value in zip(json_pointers, glom_expressions, json_instances, expected_values):
+        actual_glom_expression = cast_json_pointer_to_glom(json_pointer)
+        assert actual_glom_expression == expected_glom_expression, (json_pointer, actual_glom_expression)
+        # run glom here
+        actual_value = glom(json_instance, actual_glom_expression)
+        # flatten nested lists
+        if isinstance(actual_value, list) and len(actual_value) > 0 and isinstance(actual_value[0], list):
+            actual_value = flatten(actual_value)
+        assert expected_value == actual_value, (json_pointer, actual_glom_expression, json.dumps(json_instance), expected_value, actual_value)
 
-    # test the VertexLinkWriter implementation in extract_json_pointer_via_jq
+    # test the VertexLinkWriter implementation in extract_json_pointer_via_glom
     vertex_link_writer = VertexLinkWriter({})
     for json_pointer, expected_value, json_instance in zip(json_pointers, expected_values, json_instances):
-        actual_value = vertex_link_writer.extract_json_pointer_via_jq(json_pointer, json_instance)
-        assert expected_value == actual_value, (json_pointer, actual_jq_expression, json.dumps(json_instance), expected_value, actual_value)
+        actual_value = vertex_link_writer.extract_json_pointer_via_glom(json_pointer, json_instance)
+        assert expected_value == actual_value, (json_pointer, actual_glom_expression, json.dumps(json_instance), expected_value, actual_value)

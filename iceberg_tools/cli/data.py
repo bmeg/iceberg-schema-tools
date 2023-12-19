@@ -175,7 +175,7 @@ def migrate(path, output_path, validate, pattern):
 @click.argument('path')
 @click.argument('output_path')
 @click.option('--pattern', default='**/*.avro', help='Search pattern', show_default=True)
-def report(path: str,  output_path: str,  pattern: str):
+def report(path: str, output_path: str, pattern: str):
     """Aggregate avro pfb files into a cytoscape tsv.
 
     \b
