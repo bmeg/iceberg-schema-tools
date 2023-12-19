@@ -121,7 +121,7 @@ def generate_simplified(output_path, config_path, gen3_fixtures, stats):
 
 def compile_gen3_schemas(output_path):
     """create uber schema of all yaml"""
-    from dictionaryutils import dump_schemas_from_dir
+    from iceberg_tools.dictionaryutils import dump_schemas_from_dir
     with open(output_path / pathlib.Path("simplified-fhir.json"), "w") as fp:
         json.dump(dump_schemas_from_dir(output_path), fp, indent=2, sort_keys=False)
 

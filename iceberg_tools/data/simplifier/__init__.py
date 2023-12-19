@@ -195,7 +195,6 @@ def _simple_observation_dict(self: Observation, *args, **kwargs):
             v = self.__dict__.get(field_key, None)
             if v is not None:
                 is_fhir = issubclass(type(v), FHIRAbstractModel)
-                flattened_props = {field_key: v}
                 nested_object_name = field_key
                 if is_fhir:
                     name_value_list = v.dict()
@@ -719,7 +718,6 @@ class SimplifierContextManager:
 
         self.orig_task_dict = Task.dict
         self.orig_quantity_dict = Quantity.dict
-
 
         FHIRAbstractModel.dict = _simple_resource_dict
         Coding.dict = _simple_coding_dict

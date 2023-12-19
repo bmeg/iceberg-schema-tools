@@ -135,7 +135,6 @@ _BAR = yaml.safe_load("""
 id: 9a652678-4616-475d-af12-aca21cfbe06d
 """)
 
-
 _NESTED_REFERENCES = yaml.safe_load("""
 ---
 references:

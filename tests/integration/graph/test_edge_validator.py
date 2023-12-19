@@ -22,10 +22,10 @@ def test_edge_validator(fhir_schema, fhir_validator, edge_schemas):
     fail = False
     for edge in edge_schemas:
         instance = {
-                "resourceType": edge['title'],
-                "source": {"type": edge['source_type'], "identifier": {"value": "1234"}},
-                "target": {"type": edge['destination_type'], "identifier": {"value": "5678"}},
-            }
+            "resourceType": edge['title'],
+            "source": {"type": edge['source_type'], "identifier": {"value": "1234"}},
+            "target": {"type": edge['destination_type'], "identifier": {"value": "5678"}},
+        }
         try:
             edge_validator(fhir_validator, instance)
         except ValidationError:
@@ -40,7 +40,7 @@ def test_edge_validator(fhir_schema, fhir_validator, edge_schemas):
     needs_unresolved_primary = False
     for edge in edge_schemas:
         if edge['destination_type'] == 'Resource' and len([e for e in edge_schemas if e['source_type'] == edge['source_type']]) == 1:
-            print('  ', edge['source_type']+'.'+edge['source_property_name'], edge['destination_type'])
+            print('  ', edge['source_type'] + '.' + edge['source_property_name'], edge['destination_type'])
             needs_unresolved_primary = True
     if not needs_unresolved_primary:
         print('  None')
