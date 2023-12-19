@@ -140,7 +140,6 @@ properties:
     type: array
   resourceType:
     const: Organization
-    default: Organization
     description: One of the resource types defined as part of FHIR
     title: Resource Type
     type: string
@@ -186,5 +185,9 @@ properties:
     title: Kind of organization
     type: array
   type_text: *id001
+systemProperties:
+- id
 title: Organization
 type: object
+uniqueKeys:
+- - id

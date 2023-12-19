@@ -150,7 +150,6 @@ properties:
     type: array
   resourceType:
     const: Practitioner
-    default: Practitioner
     description: One of the resource types defined as part of FHIR
     title: Resource Type
     type: string
@@ -162,5 +161,9 @@ properties:
       type: string
     title: A contact detail for the practitioner (that apply to all roles)
     type: array
+systemProperties:
+- id
 title: Practitioner
 type: object
+uniqueKeys:
+- - id

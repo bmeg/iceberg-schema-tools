@@ -422,7 +422,6 @@ properties:
   relationship_text: *id003
   resourceType:
     const: FamilyMemberHistory
-    default: FamilyMemberHistory
     description: One of the resource types defined as part of FHIR
     title: Resource Type
     type: string
@@ -484,5 +483,9 @@ properties:
     pattern: ^[^\s]+(\s[^\s]+)*$
     title: partial | completed | entered-in-error | health-unknown
     type: string
+systemProperties:
+- id
 title: FamilyMemberHistory
 type: object
+uniqueKeys:
+- - id

@@ -54,6 +54,18 @@ def _summarize_stats(gen3_schema) -> str:
     return '  ' + stats_table
 
 
+def _remove_resource_type_default(schemas):
+    """Remove resourceType default"""
+    for schema in schemas.values():
+        if 'properties' not in schema:
+            continue
+        for k, _ in schema['properties'].items():
+            if k != 'resourceType':
+                continue
+            if 'default' in _:
+                del _['default']
+
+
 def _simplify_schemas(gen3_config, gen3_fixtures, schemas, log_stats=True):
     """Make the schema PFB (data-frame) friendly."""
 
@@ -92,6 +104,8 @@ def _simplify_schemas(gen3_config, gen3_fixtures, schemas, log_stats=True):
         del schemas[k]
 
     _add_gen3_static_dependencies(gen3_fixtures, schemas)
+
+    _remove_resource_type_default(schemas)
 
     # save simplified schema in order
     dependency_order.extend(k for k in schemas if k not in dependency_order)

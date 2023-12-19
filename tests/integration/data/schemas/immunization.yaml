@@ -453,7 +453,6 @@ properties:
   reason_text: *id005
   resourceType:
     const: Immunization
-    default: Immunization
     description: One of the resource types defined as part of FHIR
     title: Resource Type
     type: string
@@ -683,5 +682,9 @@ properties:
     title: Vaccine administered
     type: string
   vaccineCode_text: *id010
+systemProperties:
+- id
 title: Immunization
 type: object
+uniqueKeys:
+- - id

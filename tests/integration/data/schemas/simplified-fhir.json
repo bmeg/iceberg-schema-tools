@@ -501,7 +501,6 @@
       },
       "resourceType": {
         "const": "PractitionerRole",
-        "default": "PractitionerRole",
         "description": "One of the resource types defined as part of FHIR",
         "title": "Resource Type",
         "type": "string"
@@ -579,8 +578,16 @@
         "type": "array"
       }
     },
+    "systemProperties": [
+      "id"
+    ],
     "title": "PractitionerRole",
-    "type": "object"
+    "type": "object",
+    "uniqueKeys": [
+      [
+        "id"
+      ]
+    ]
   },
   "observation.yaml": {
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -1291,7 +1298,6 @@
       },
       "resourceType": {
         "const": "Observation",
-        "default": "Observation",
         "description": "One of the resource types defined as part of FHIR",
         "title": "Resource Type",
         "type": "string"
@@ -1491,8 +1497,16 @@
         "type": "string"
       }
     },
+    "systemProperties": [
+      "id"
+    ],
     "title": "Observation",
-    "type": "object"
+    "type": "object",
+    "uniqueKeys": [
+      [
+        "id"
+      ]
+    ]
   },
   "research_study.yaml": {
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -2215,7 +2229,6 @@
       },
       "resourceType": {
         "const": "ResearchStudy",
-        "default": "ResearchStudy",
         "description": "One of the resource types defined as part of FHIR",
         "title": "Resource Type",
         "type": "string"
@@ -2425,8 +2438,16 @@
         "type": "string"
       }
     },
+    "systemProperties": [
+      "id"
+    ],
     "title": "ResearchStudy",
-    "type": "object"
+    "type": "object",
+    "uniqueKeys": [
+      [
+        "id"
+      ]
+    ]
   },
   "patient.yaml": {
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -2735,7 +2756,6 @@
       },
       "resourceType": {
         "const": "Patient",
-        "default": "Patient",
         "description": "One of the resource types defined as part of FHIR",
         "title": "Resource Type",
         "type": "string"
@@ -2971,8 +2991,16 @@
         "type": "string"
       }
     },
+    "systemProperties": [
+      "id"
+    ],
     "title": "Patient",
-    "type": "object"
+    "type": "object",
+    "uniqueKeys": [
+      [
+        "id"
+      ]
+    ]
   },
   "practitioner.yaml": {
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -3129,7 +3157,6 @@
       },
       "resourceType": {
         "const": "Practitioner",
-        "default": "Practitioner",
         "description": "One of the resource types defined as part of FHIR",
         "title": "Resource Type",
         "type": "string"
@@ -3144,8 +3171,16 @@
         "type": "array"
       }
     },
+    "systemProperties": [
+      "id"
+    ],
     "title": "Practitioner",
-    "type": "object"
+    "type": "object",
+    "uniqueKeys": [
+      [
+        "id"
+      ]
+    ]
   },
   "substance.yaml": {
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -3401,7 +3436,6 @@
       },
       "resourceType": {
         "const": "Substance",
-        "default": "Substance",
         "description": "One of the resource types defined as part of FHIR",
         "title": "Resource Type",
         "type": "string"
@@ -3423,8 +3457,16 @@
         "type": "string"
       }
     },
+    "systemProperties": [
+      "id"
+    ],
     "title": "Substance",
-    "type": "object"
+    "type": "object",
+    "uniqueKeys": [
+      [
+        "id"
+      ]
+    ]
   },
   "_program.yaml": {
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -3438,6 +3480,10 @@
     "properties": {
       "dbgap_accession_number": {
         "description": "The dbgap accession number provided for the program.",
+        "type": "string"
+      },
+      "default_bucket": {
+        "description": "The Gen3 managed bucket projects in this program will use.",
         "type": "string"
       },
       "id": {
@@ -4194,7 +4240,6 @@
       },
       "resourceType": {
         "const": "Immunization",
-        "default": "Immunization",
         "description": "One of the resource types defined as part of FHIR",
         "title": "Resource Type",
         "type": "string"
@@ -4554,8 +4599,16 @@
         "type": "string"
       }
     },
+    "systemProperties": [
+      "id"
+    ],
     "title": "Immunization",
-    "type": "object"
+    "type": "object",
+    "uniqueKeys": [
+      [
+        "id"
+      ]
+    ]
   },
   "_definitions.yaml": {
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -5588,7 +5641,6 @@
       },
       "resourceType": {
         "const": "DocumentReference",
-        "default": "DocumentReference",
         "description": "One of the resource types defined as part of FHIR",
         "title": "Resource Type",
         "type": "string"
@@ -5763,8 +5815,16 @@
         "type": "string"
       }
     },
+    "systemProperties": [
+      "id"
+    ],
     "title": "DocumentReference",
-    "type": "object"
+    "type": "object",
+    "uniqueKeys": [
+      [
+        "id"
+      ]
+    ]
   },
   "_settings.yaml": {
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -6394,7 +6454,6 @@
       },
       "resourceType": {
         "const": "Task",
-        "default": "Task",
         "description": "One of the resource types defined as part of FHIR",
         "title": "Resource Type",
         "type": "string"
@@ -6500,8 +6559,16 @@
         "type": "string"
       }
     },
+    "systemProperties": [
+      "id"
+    ],
     "title": "Task",
-    "type": "object"
+    "type": "object",
+    "uniqueKeys": [
+      [
+        "id"
+      ]
+    ]
   },
   "condition.yaml": {
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -7056,7 +7123,6 @@
       },
       "resourceType": {
         "const": "Condition",
-        "default": "Condition",
         "description": "One of the resource types defined as part of FHIR",
         "title": "Resource Type",
         "type": "string"
@@ -7208,8 +7274,16 @@
         "type": "string"
       }
     },
+    "systemProperties": [
+      "id"
+    ],
     "title": "Condition",
-    "type": "object"
+    "type": "object",
+    "uniqueKeys": [
+      [
+        "id"
+      ]
+    ]
   },
   "location.yaml": {
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -7538,7 +7612,6 @@
       },
       "resourceType": {
         "const": "Location",
-        "default": "Location",
         "description": "One of the resource types defined as part of FHIR",
         "title": "Resource Type",
         "type": "string"
@@ -7641,8 +7714,16 @@
         "type": "array"
       }
     },
+    "systemProperties": [
+      "id"
+    ],
     "title": "Location",
-    "type": "object"
+    "type": "object",
+    "uniqueKeys": [
+      [
+        "id"
+      ]
+    ]
   },
   "encounter.yaml": {
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -8069,7 +8150,6 @@
       },
       "resourceType": {
         "const": "Encounter",
-        "default": "Encounter",
         "description": "One of the resource types defined as part of FHIR",
         "title": "Resource Type",
         "type": "string"
@@ -8491,8 +8571,16 @@
         "type": "array"
       }
     },
+    "systemProperties": [
+      "id"
+    ],
     "title": "Encounter",
-    "type": "object"
+    "type": "object",
+    "uniqueKeys": [
+      [
+        "id"
+      ]
+    ]
   },
   "research_subject.yaml": {
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -8644,7 +8732,6 @@
       },
       "resourceType": {
         "const": "ResearchSubject",
-        "default": "ResearchSubject",
         "description": "One of the resource types defined as part of FHIR",
         "title": "Resource Type",
         "type": "string"
@@ -8694,8 +8781,16 @@
         "type": "string"
       }
     },
+    "systemProperties": [
+      "id"
+    ],
     "title": "ResearchSubject",
-    "type": "object"
+    "type": "object",
+    "uniqueKeys": [
+      [
+        "id"
+      ]
+    ]
   },
   "diagnostic_report.yaml": {
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -9159,7 +9254,6 @@
       },
       "resourceType": {
         "const": "DiagnosticReport",
-        "default": "DiagnosticReport",
         "description": "One of the resource types defined as part of FHIR",
         "title": "Resource Type",
         "type": "string"
@@ -9273,8 +9367,16 @@
         "type": "array"
       }
     },
+    "systemProperties": [
+      "id"
+    ],
     "title": "DiagnosticReport",
-    "type": "object"
+    "type": "object",
+    "uniqueKeys": [
+      [
+        "id"
+      ]
+    ]
   },
   "procedure.yaml": {
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -10211,7 +10313,6 @@
       },
       "resourceType": {
         "const": "Procedure",
-        "default": "Procedure",
         "description": "One of the resource types defined as part of FHIR",
         "title": "Resource Type",
         "type": "string"
@@ -10423,8 +10524,16 @@
         "type": "array"
       }
     },
+    "systemProperties": [
+      "id"
+    ],
     "title": "Procedure",
-    "type": "object"
+    "type": "object",
+    "uniqueKeys": [
+      [
+        "id"
+      ]
+    ]
   },
   "organization.yaml": {
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -10569,7 +10678,6 @@
       },
       "resourceType": {
         "const": "Organization",
-        "default": "Organization",
         "description": "One of the resource types defined as part of FHIR",
         "title": "Resource Type",
         "type": "string"
@@ -10647,8 +10755,16 @@
         "type": "array"
       }
     },
+    "systemProperties": [
+      "id"
+    ],
     "title": "Organization",
-    "type": "object"
+    "type": "object",
+    "uniqueKeys": [
+      [
+        "id"
+      ]
+    ]
   },
   "_terms.yaml": {
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -11965,7 +12081,6 @@
       },
       "resourceType": {
         "const": "FamilyMemberHistory",
-        "default": "FamilyMemberHistory",
         "description": "One of the resource types defined as part of FHIR",
         "title": "Resource Type",
         "type": "string"
@@ -12052,8 +12167,16 @@
         "type": "string"
       }
     },
+    "systemProperties": [
+      "id"
+    ],
     "title": "FamilyMemberHistory",
-    "type": "object"
+    "type": "object",
+    "uniqueKeys": [
+      [
+        "id"
+      ]
+    ]
   },
   "body_structure.yaml": {
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -12240,14 +12363,21 @@
       },
       "resourceType": {
         "const": "BodyStructure",
-        "default": "BodyStructure",
         "description": "One of the resource types defined as part of FHIR",
         "title": "Resource Type",
         "type": "string"
       }
     },
+    "systemProperties": [
+      "id"
+    ],
     "title": "BodyStructure",
-    "type": "object"
+    "type": "object",
+    "uniqueKeys": [
+      [
+        "id"
+      ]
+    ]
   },
   "specimen.yaml": {
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -12593,48 +12723,6 @@
         "title": "Indicates the treatment step  applied to the specimen",
         "type": "string"
       },
-      "processing_method_coding": {
-        "binding_description": "Type indicating the technique used to process the specimen.",
-        "binding_strength": "example",
-        "binding_uri": "http://hl7.org/fhir/ValueSet/specimen-processing-method",
-        "binding_version": null,
-        "description": "[system#code representation.] [Plucked from Specimen.processing] A coded value specifying the method used to process the specimen.",
-        "element_property": true,
-        "term": {
-          "description": "Type indicating the technique used to process the specimen.",
-          "termDef": {
-            "cde_id": "http://hl7.org/fhir/ValueSet/specimen-processing-method",
-            "cde_version": null,
-            "source": "fhir",
-            "strength": "example",
-            "term": "http://hl7.org/fhir/ValueSet/specimen-processing-method",
-            "term_url": "http://hl7.org/fhir/ValueSet/specimen-processing-method"
-          }
-        },
-        "title": "Indicates the treatment step  applied to the specimen",
-        "type": "string"
-      },
-      "processing_method_text": {
-        "binding_description": "Type indicating the technique used to process the specimen.",
-        "binding_strength": "example",
-        "binding_uri": "http://hl7.org/fhir/ValueSet/specimen-processing-method",
-        "binding_version": null,
-        "description": "[system#code representation.] [Plucked from Specimen.processing] A coded value specifying the method used to process the specimen.",
-        "element_property": true,
-        "term": {
-          "description": "Type indicating the technique used to process the specimen.",
-          "termDef": {
-            "cde_id": "http://hl7.org/fhir/ValueSet/specimen-processing-method",
-            "cde_version": null,
-            "source": "fhir",
-            "strength": "example",
-            "term": "http://hl7.org/fhir/ValueSet/specimen-processing-method",
-            "term_url": "http://hl7.org/fhir/ValueSet/specimen-processing-method"
-          }
-        },
-        "title": "Indicates the treatment step  applied to the specimen",
-        "type": "string"
-      },
       "project_id": {
         "term": {
           "$ref": "_terms.yaml#/project_id"
@@ -12663,7 +12751,6 @@
       },
       "resourceType": {
         "const": "Specimen",
-        "default": "Specimen",
         "description": "One of the resource types defined as part of FHIR",
         "title": "Resource Type",
         "type": "string"
@@ -12836,8 +12923,16 @@
         "type": "string"
       }
     },
+    "systemProperties": [
+      "id"
+    ],
     "title": "Specimen",
-    "type": "object"
+    "type": "object",
+    "uniqueKeys": [
+      [
+        "id"
+      ]
+    ]
   },
   "medication_administration.yaml": {
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -13366,7 +13461,6 @@
       },
       "resourceType": {
         "const": "MedicationAdministration",
-        "default": "MedicationAdministration",
         "description": "One of the resource types defined as part of FHIR",
         "title": "Resource Type",
         "type": "string"
@@ -13561,8 +13655,16 @@
         "type": "array"
       }
     },
+    "systemProperties": [
+      "id"
+    ],
     "title": "MedicationAdministration",
-    "type": "object"
+    "type": "object",
+    "uniqueKeys": [
+      [
+        "id"
+      ]
+    ]
   },
   "medication.yaml": {
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -13797,7 +13899,6 @@
       },
       "resourceType": {
         "const": "Medication",
-        "default": "Medication",
         "description": "One of the resource types defined as part of FHIR",
         "title": "Resource Type",
         "type": "string"
@@ -13833,7 +13934,15 @@
         "type": "number"
       }
     },
+    "systemProperties": [
+      "id"
+    ],
     "title": "Medication",
-    "type": "object"
+    "type": "object",
+    "uniqueKeys": [
+      [
+        "id"
+      ]
+    ]
   }
 }

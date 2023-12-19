@@ -362,7 +362,6 @@ properties:
     type: string
   resourceType:
     const: DiagnosticReport
-    default: DiagnosticReport
     description: One of the resource types defined as part of FHIR
     title: Resource Type
     type: string
@@ -473,5 +472,9 @@ properties:
       type: string
     title: Additional information supporting the diagnostic report
     type: array
+systemProperties:
+- id
 title: DiagnosticReport
 type: object
+uniqueKeys:
+- - id

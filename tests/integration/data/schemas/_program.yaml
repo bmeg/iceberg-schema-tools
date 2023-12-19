@@ -12,6 +12,9 @@ properties:
   dbgap_accession_number:
     description: The dbgap accession number provided for the program.
     type: string
+  default_bucket:
+    description: The Gen3 managed bucket projects in this program will use.
+    type: string
   id:
     $ref: _definitions.yaml#/UUID
     systemAlias: node_id

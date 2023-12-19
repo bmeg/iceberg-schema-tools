@@ -1,4 +1,4 @@
-from dictionaryutils import DataDictionary
+from iceberg_tools.dictionaryutils import DataDictionary
 
 
 def test_codeable_concept(data_dictionary_from_yaml: DataDictionary):

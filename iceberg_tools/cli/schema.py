@@ -58,7 +58,7 @@ def generate_bmeg(output_path, config_path, stats):
     with SchemaLinkWriter() as mgr:
         for klass, schema in schemas.items():
             with open(output_path / pathlib.Path(klass + ".yaml"), "w") as fp:
-                schema = mgr.insert_links(schema)
+                schema = mgr.insert_links(schema, classes)
                 yaml.dump(schema, fp)
     logger.info(f"Individual yaml schemas written to {output_path}/*.yaml")
 

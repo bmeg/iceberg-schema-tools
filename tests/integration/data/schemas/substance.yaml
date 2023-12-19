@@ -190,7 +190,6 @@ properties:
     type: number
   resourceType:
     const: Substance
-    default: Substance
     description: One of the resource types defined as part of FHIR
     title: Resource Type
     type: string
@@ -208,5 +207,9 @@ properties:
     pattern: ^[^\s]+(\s[^\s]+)*$
     title: active | inactive | entered-in-error
     type: string
+systemProperties:
+- id
 title: Substance
 type: object
+uniqueKeys:
+- - id
