@@ -135,7 +135,7 @@ def directory_reader(
     for input_file in input_files:
         if ignore_path is not None and ignore_path in str(input_file):
             continue
-        logger.info(input_file)
+        logger.info(f"Reading from {input_file}")
         if not input_file.is_file():
             continue
         is_ndjson = _is_ndjson(input_file)

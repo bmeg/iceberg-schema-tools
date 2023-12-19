@@ -500,7 +500,6 @@ def _grip_simplifier(simplified: dict):
     # uuid regex
     pattern = r'[a-zA-Z]+/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}'
     names = []
-    print("SIMPLIFIED ORIG: ", simplified)
     for fields in simplified.items():
         if isinstance(fields[1], list):
             simplified[fields[0]] = fields[1][0]
@@ -517,7 +516,7 @@ def _grip_simplifier(simplified: dict):
     for elems in names:
         simplified.pop(elems)
 
-    print("SIMPLIFIED: ", simplified)
+    logger.info(simplified)
     new_dict["data"] = simplified
     return new_dict
 
@@ -763,6 +762,7 @@ def simplify_directory(input_path, pattern, output_path, schema_path, dialect, c
     nested_objects = gen3_config['nested_objects']
 
     with SimplifierContextManager():
+
         with EmitterContextManager(output_path) as emitter:
             for parse_result in directory_reader(directory_path=input_path, pattern=pattern,
                                                  validate=False, ignore_path=output_path):
@@ -791,23 +791,34 @@ def simplify_directory(input_path, pattern, output_path, schema_path, dialect, c
                                       option=orjson.OPT_APPEND_NEWLINE).decode())
 
         if dialect == "GRIP":
+            logger.info(f"Generating Grip Edges at {output_path}.edges")
             schemas = schemas["$defs"]
             with EmitterContextManager(output_path + ".edges") as emitter:
-                for vertex in directory_json(directory_path=input_path, pattern=pattern,
-                                             ignore_path=output_path):
-                    vertex = orjson.loads(vertex)
-                    if vertex["resourceType"] in schemas:
+                first_line = True
+                # read the first line so that don't have to re-enter the VertexLinkWriter every line
+                for vertex in directory_reader(directory_path=input_path, pattern=pattern,
+                                               validate=False, ignore_path=output_path):
+                    vertex = vertex.object
+                    if first_line and "resourceType" in vertex and vertex["resourceType"] in schemas:
                         actual_schema = schemas[vertex["resourceType"]]
-                        with VertexLinkWriter(actual_schema) as mgr:
-                            instance = mgr.insert_links(vertex)
-                            links = instance['links']
-                            for link in links:
+                        break
+                    else:
+                        logger.warning(f"resourceType field not found for first line in line {vertex}")
+
+                with VertexLinkWriter(actual_schema) as mgr:
+                    for vertex in directory_reader(directory_path=input_path, pattern=pattern,
+                                                   validate=False, ignore_path=output_path):
+                        vertex = vertex.object
+                        instance = mgr.insert_links(vertex)
+                        if "links" in instance:
+                            for link in instance['links']:
                                 edge = {"label": link["rel"], "from": str(instance["id"]), "to": link["href"].split("/")[-1]}
                                 fp = emitter.emit(vertex["resourceType"])
                                 fp.write(orjson.dumps(edge, default=_default_json_serializer,
                                          option=orjson.OPT_APPEND_NEWLINE).decode())
-
-                                # logger.info(f"WRITTEN: {edge}")
+                                logger.info(f" {edge}")
+                        else:
+                            logger.warning(f"ResourceType key not in resource, skipping line {vertex}")
 
 
 def _debug_once(msg):
