@@ -28,15 +28,14 @@ The below command will generate a FHIR graph from 1 aggregated FHIR schema file
 python schema.py one_file --input_path aced-bmeg.json
 ```
 
-Below are some commands to fetch the data and setup the schemas for graph visualization
-
+## BMEG schema viewer update steps
 ```
-wget https://github.com/bmeg/iceberg/archive/feature/itemize-gen3.zip
-unzip itemize-gen3.zip
+wget https://github.com/bmeg/bmeg-etl/archive/refs/heads/develop.zip
+unzip develop.zip
 mkdir yaml_schemas
-mv iceberg-feature-itemize-gen3/schemas/bmeg/* yaml_schemas
-rm -rf iceberg-feature-itemize-gen3 
-rm -f itemize-gen3.zip
+mv bmeg-etl-develop/schema/* yaml_schemas
+rm -rf bmeg-etl-develop
+rm -f develop.zip
 ```
 
 The below command will generate a FHIR graph from however many schema.yaml files are in the directory specified:
@@ -45,14 +44,13 @@ python3 schema.py yaml_dir --input_path yaml_schemas
 ```
 
 this will generate a json file at:
-CytoScapeSchemaViewer/public/data/graph.json 
+CytoScapeSchemaViewer/public/data/graph.json
 
 # Development:
-A copy of the current schema can be retrieved from:
-https://raw.githubusercontent.com/bmeg/iceberg/main/schemas/bmeg/aced-bmeg.json
 
 To build and start the schema viewer run the below commands inside the CytoScapeSchemaViewer directory:
 ```
+export NODE_OPTIONS=--openssl-legacy-provider
 npm i
 npm start
 ```
