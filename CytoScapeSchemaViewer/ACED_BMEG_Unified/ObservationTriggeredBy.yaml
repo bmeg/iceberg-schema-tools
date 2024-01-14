@@ -1,0 +1,114 @@
+$id: ObservationTriggeredBy
+additionalProperties: false
+description: Triggering observation(s). Identifies the observation(s) that triggered
+  the performance of this observation. [See https://hl7.org/fhir/R5/ObservationTriggeredBy.html]
+links:
+- href: Observation/{id}
+  rel: observation
+  targetHints:
+    backref:
+    - observation_triggered_by
+    direction:
+    - outbound
+    multiplicity:
+    - has_one
+  targetSchema:
+    $ref: Observation.yaml
+  templatePointers:
+    id: /observation/reference
+  templateRequired:
+  - id
+properties:
+  _reason:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``reason``.
+  _type:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``type``.
+  extension:
+    description: May be used to represent additional information that is not part
+      of the basic definition of the element. To make the use of extensions safe and
+      managable, there is a strict set of governance applied to the definition and
+      use of extensions. Though any implementer can define an extension, there is
+      a set of requirements that SHALL be met as part of the definition of the extension.
+    element_property: true
+    items:
+      $ref: Extension.yaml
+    title: Additional content defined by implementations
+    type: array
+  fhir_comments:
+    anyOf:
+    - type: string
+    - items:
+        type: string
+      type: array
+    element_property: false
+    title: Fhir Comments
+  id:
+    description: Unique id for the element within a resource (for internal references).
+      This may be any string value that does not contain spaces.
+    element_property: true
+    pattern: '[ \r\n\t\S]+'
+    title: Unique id for inter-element referencing
+    type: string
+  links:
+    items:
+      $ref: https://json-schema.org/draft/2020-12/links
+    type: array
+  modifierExtension:
+    description: May be used to represent additional information that is not part
+      of the basic definition of the element and that modifies the understanding of
+      the element in which it is contained and/or the understanding of the containing
+      element's descendants. Usually modifier elements provide negation or qualification.
+      To make the use of extensions safe and managable, there is a strict set of governance
+      applied to the definition and use of extensions. Though any implementer can
+      define an extension, there is a set of requirements that SHALL be met as part
+      of the definition of the extension. Applications processing a resource are required
+      to check for modifier extensions.  Modifier extensions SHALL NOT change the
+      meaning of any elements on Resource or DomainResource (including cannot change
+      the meaning of modifierExtension itself).
+    element_property: true
+    items:
+      $ref: Extension.yaml
+    title: Extensions that cannot be ignored even if unrecognized
+    type: array
+  observation:
+    $ref: Reference.yaml
+    backref: observation_triggered_by
+    description: Reference to the triggering observation.
+    element_property: true
+    enum_reference_types:
+    - Observation
+    title: Triggering observation
+  reason:
+    description: Provides the reason why this observation was performed as a result
+      of the observation(s) referenced.
+    element_property: true
+    pattern: '[ \r\n\t\S]+'
+    title: Reason that the observation was triggered
+    type: string
+  resourceType:
+    const: ObservationTriggeredBy
+    default: ObservationTriggeredBy
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+  type:
+    binding_description: The type of TriggeredBy Observation.
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/observation-triggeredbytype
+    binding_version: 5.0.0
+    description: The type of trigger. Reflex | Repeat | Re-run.
+    element_property: true
+    element_required: true
+    enum_values:
+    - reflex
+    - repeat
+    - re-run
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: reflex | repeat | re-run
+    type: string
+required:
+- observation
+title: ObservationTriggeredBy
+type: object

@@ -1,0 +1,210 @@
+$id: RelatedArtifact
+additionalProperties: false
+description: Related artifacts for a knowledge resource. Related artifacts such as
+  additional documentation, justification, or bibliographic references. [See https://hl7.org/fhir/R5/RelatedArtifact.html]
+links:
+- href: Resource/{id}
+  rel: resourceReference
+  targetHints:
+    backref:
+    - related_artifact
+    direction:
+    - outbound
+    multiplicity:
+    - has_one
+  targetSchema:
+    $ref: Resource.yaml
+  templatePointers:
+    id: /resourceReference/reference
+  templateRequired:
+  - id
+properties:
+  _citation:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``citation``.
+  _display:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``display``.
+  _label:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``label``.
+  _publicationDate:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``publicationDate``.
+  _publicationStatus:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``publicationStatus``.
+  _resource:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``resource``.
+  _type:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``type``.
+  citation:
+    description: A bibliographic citation for the related artifact. This text SHOULD
+      be formatted according to an accepted citation format.
+    element_property: true
+    pattern: \s*(\S|\s)*
+    title: Bibliographic citation for the artifact
+    type: string
+  classifier:
+    binding_description: Additional classifiers for the related artifact.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/citation-artifact-classifier
+    binding_version: null
+    description: Provides additional classifiers of the related artifact.
+    element_property: true
+    items:
+      $ref: CodeableConcept.yaml
+    title: Additional classifiers
+    type: array
+  display:
+    description: A brief description of the document or knowledge resource being referenced,
+      suitable for display to a consumer.
+    element_property: true
+    pattern: '[ \r\n\t\S]+'
+    title: Brief description of the related artifact
+    type: string
+  document:
+    $ref: Attachment.yaml
+    description: The document being referenced, represented as an attachment. This
+      is exclusive with the resource element.
+    element_property: true
+    title: What document is being referenced
+  extension:
+    description: May be used to represent additional information that is not part
+      of the basic definition of the element. To make the use of extensions safe and
+      managable, there is a strict set of governance applied to the definition and
+      use of extensions. Though any implementer can define an extension, there is
+      a set of requirements that SHALL be met as part of the definition of the extension.
+    element_property: true
+    items:
+      $ref: Extension.yaml
+    title: Additional content defined by implementations
+    type: array
+  fhir_comments:
+    anyOf:
+    - type: string
+    - items:
+        type: string
+      type: array
+    element_property: false
+    title: Fhir Comments
+  id:
+    description: Unique id for the element within a resource (for internal references).
+      This may be any string value that does not contain spaces.
+    element_property: true
+    pattern: '[ \r\n\t\S]+'
+    title: Unique id for inter-element referencing
+    type: string
+  label:
+    description: A short label that can be used to reference the citation from elsewhere
+      in the containing artifact, such as a footnote index.
+    element_property: true
+    pattern: '[ \r\n\t\S]+'
+    title: Short label
+    type: string
+  links:
+    items:
+      $ref: https://json-schema.org/draft/2020-12/links
+    type: array
+  publicationDate:
+    description: The date of publication of the artifact being referred to.
+    element_property: true
+    format: date
+    title: Date of publication of the artifact being referred to
+    type: string
+  publicationStatus:
+    binding_description: Publication status of an artifact being referred to.
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/publication-status
+    binding_version: 5.0.0
+    description: The publication status of the artifact being referred to.
+    element_property: true
+    enum_values:
+    - draft
+    - active
+    - retired
+    - unknown
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: draft | active | retired | unknown
+    type: string
+  resource:
+    description: The related artifact, such as a library, value set, profile, or other
+      knowledge resource.
+    element_property: true
+    enum_reference_types:
+    - Resource
+    pattern: \S*
+    title: What artifact is being referenced
+    type: string
+  resourceReference:
+    $ref: Reference.yaml
+    backref: related_artifact
+    description: The related artifact, if the artifact is not a canonical resource,
+      or a resource reference to a canonical resource.
+    element_property: true
+    enum_reference_types:
+    - Resource
+    title: What artifact, if not a conformance resource
+  resourceType:
+    const: RelatedArtifact
+    default: RelatedArtifact
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+  type:
+    binding_description: The type of relationship to the related artifact.
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/related-artifact-type
+    binding_version: 5.0.0
+    description: The type of relationship to the related artifact.
+    element_property: true
+    element_required: true
+    enum_values:
+    - documentation
+    - justification
+    - citation
+    - predecessor
+    - successor
+    - derived-from
+    - depends-on
+    - composed-of
+    - part-of
+    - amends
+    - amended-with
+    - appends
+    - appended-with
+    - cites
+    - cited-by
+    - comments-on
+    - comment-in
+    - contains
+    - contained-in
+    - corrects
+    - correction-in
+    - replaces
+    - replaced-with
+    - retracts
+    - retracted-by
+    - signs
+    - similar-to
+    - supports
+    - supported-with
+    - transforms
+    - transformed-into
+    - transformed-with
+    - documents
+    - specification-of
+    - created-with
+    - cite-as
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: documentation | justification | citation | predecessor | successor | derived-from
+      | depends-on | composed-of | part-of | amends | amended-with | appends | appended-with
+      | cites | cited-by | comments-on | comment-in | contains | contained-in | corrects
+      | correction-in | replaces | replaced-with | retracts | retracted-by | signs
+      | similar-to | supports | supported-with | transforms | transformed-into | transformed-with
+      | documents | specification-of | created-with | cite-as
+    type: string
+title: RelatedArtifact
+type: object

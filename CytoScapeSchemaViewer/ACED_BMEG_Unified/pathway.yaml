@@ -1,0 +1,106 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: pathway
+title: Pathway
+type: object
+description: 'A biological pathway
+
+  '
+required:
+- submitter_id
+- project_id
+- name
+links:
+- rel: genes
+  href: gene/{id}
+  templateRequired:
+  - id
+  targetSchema:
+    $ref: gene.yaml
+  templatePointers:
+    id: /genes/-/id
+  targetHints:
+    directionality:
+    - outbound
+    multiplicity:
+    - has_many
+    backref: pathways
+- rel: interactions
+  href: interaction/{id}
+  templateRequired:
+  - id
+  targetSchema:
+    $ref: interaction.yaml
+  templatePointers:
+    id: /interactions/-/id
+  targetHints:
+    directionality:
+    - outbound
+    multiplicity:
+    - has_many
+    backref: pathways
+- rel: sub_pathways
+  href: pathway/{id}
+  templateRequired:
+  - id
+  targetSchema:
+    $ref: pathway.yaml
+  templatePointers:
+    id: /sub_pathways/-/id
+  targetHints:
+    directionality:
+    - outbound
+    multiplicity:
+    - has_many
+    backref: pathways
+- rel: publications
+  href: publication/{id}
+  templateRequired:
+  - id
+  targetSchema:
+    $ref: publication.yaml
+  templatePointers:
+    id: /publications/-/id
+  targetHints:
+    directionality:
+    - outbound
+    multiplicity:
+    - has_one
+    backref: pathways
+properties:
+  id:
+    type: string
+    systemAlias: node_id
+  name:
+    type: string
+  project_id:
+    $ref: _definitions.yaml#/project_id
+  submitter_id:
+    type:
+    - string
+    - 'null'
+  type:
+    type: string
+  created_datetime:
+    $ref: _definitions.yaml#/datetime
+  updated_datetime:
+    $ref: _definitions.yaml#/datetime
+  genes:
+    type:
+    - array
+    items:
+      $ref: reference.yaml
+  interactions:
+    type:
+    - array
+    items:
+      $ref: reference.yaml
+  sub_pathways:
+    type:
+    - array
+    items:
+      $ref: reference.yaml
+  publications:
+    type:
+    - array
+    items:
+      $ref: reference.yaml

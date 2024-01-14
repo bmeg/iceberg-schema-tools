@@ -1,0 +1,88 @@
+$id: ExtendedContactDetail
+additionalProperties: false
+description: Contact information. Specifies contact information for a specific purpose
+  over a period of time, might be handled/monitored by a specific named person or
+  organization. [See https://hl7.org/fhir/R5/ExtendedContactDetail.html]
+links: []
+properties:
+  address:
+    $ref: Address.yaml
+    element_property: true
+    title: Address for the contact
+  extension:
+    description: May be used to represent additional information that is not part
+      of the basic definition of the element. To make the use of extensions safe and
+      managable, there is a strict set of governance applied to the definition and
+      use of extensions. Though any implementer can define an extension, there is
+      a set of requirements that SHALL be met as part of the definition of the extension.
+    element_property: true
+    items:
+      $ref: Extension.yaml
+    title: Additional content defined by implementations
+    type: array
+  fhir_comments:
+    anyOf:
+    - type: string
+    - items:
+        type: string
+      type: array
+    element_property: false
+    title: Fhir Comments
+  id:
+    description: Unique id for the element within a resource (for internal references).
+      This may be any string value that does not contain spaces.
+    element_property: true
+    pattern: '[ \r\n\t\S]+'
+    title: Unique id for inter-element referencing
+    type: string
+  links:
+    items:
+      $ref: https://json-schema.org/draft/2020-12/links
+    type: array
+  name:
+    description: The name of an individual to contact, some types of contact detail
+      are usually blank.
+    element_property: true
+    items:
+      $ref: HumanName.yaml
+    title: Name of an individual to contact
+    type: array
+  organization:
+    $ref: Reference.yaml
+    backref: extended_contact_detail
+    description: This contact detail is handled/monitored by a specific organization.
+      If the name is provided in the contact, then it is referring to the named individual
+      within this organization.
+    element_property: true
+    enum_reference_types:
+    - Organization
+    title: This contact detail is handled/monitored by a specific organization
+  period:
+    $ref: Period.yaml
+    element_property: true
+    title: Period that this contact was valid for usage
+  purpose:
+    $ref: CodeableConcept.yaml
+    binding_description: The purpose for which an extended contact detail should be
+      used.
+    binding_strength: preferred
+    binding_uri: http://terminology.hl7.org/ValueSet/contactentity-type
+    binding_version: null
+    description: The purpose/type of contact.
+    element_property: true
+    title: The type of contact
+  resourceType:
+    const: ExtendedContactDetail
+    default: ExtendedContactDetail
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+  telecom:
+    description: The contact details application for the purpose defined.
+    element_property: true
+    items:
+      $ref: ContactPoint.yaml
+    title: Contact details (e.g.phone/fax/url)
+    type: array
+title: ExtendedContactDetail
+type: object

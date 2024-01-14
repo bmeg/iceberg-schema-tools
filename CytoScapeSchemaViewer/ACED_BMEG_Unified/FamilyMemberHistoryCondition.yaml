@@ -1,0 +1,159 @@
+$id: FamilyMemberHistoryCondition
+additionalProperties: false
+description: Condition that the related person had. The significant Conditions (or
+  condition) that the family member had. This is a repeating section to allow a system
+  to represent more than one condition per resource, though there is nothing stopping
+  multiple resources - one per condition. [See https://hl7.org/fhir/R5/FamilyMemberHistoryCondition.html]
+links:
+- $comment: From Annotation/note
+  href: Patient/{id}
+  rel: note_authorReference_Patient
+  targetHints:
+    backref:
+    - annotation
+    direction:
+    - outbound
+    multiplicity:
+    - has_one
+  targetSchema:
+    $ref: Patient.yaml
+  templatePointers:
+    id: /note/-/authorReference/reference
+  templateRequired:
+  - id
+properties:
+  _contributedToDeath:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``contributedToDeath``.
+  _onsetString:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``onsetString``.
+  code:
+    $ref: CodeableConcept.yaml
+    binding_description: Identification of the Condition or diagnosis.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/condition-code
+    binding_version: null
+    description: The actual condition specified. Could be a coded condition (like
+      MI or Diabetes) or a less specific string like 'cancer' depending on how much
+      is known about the condition and the capabilities of the creating system.
+    element_property: true
+    title: Condition suffered by relation
+  contributedToDeath:
+    description: This condition contributed to the cause of death of the related person.
+      If contributedToDeath is not populated, then it is unknown.
+    element_property: true
+    title: Whether the condition contributed to the cause of death
+    type: boolean
+  extension:
+    description: May be used to represent additional information that is not part
+      of the basic definition of the element. To make the use of extensions safe and
+      managable, there is a strict set of governance applied to the definition and
+      use of extensions. Though any implementer can define an extension, there is
+      a set of requirements that SHALL be met as part of the definition of the extension.
+    element_property: true
+    items:
+      $ref: Extension.yaml
+    title: Additional content defined by implementations
+    type: array
+  fhir_comments:
+    anyOf:
+    - type: string
+    - items:
+        type: string
+      type: array
+    element_property: false
+    title: Fhir Comments
+  id:
+    description: Unique id for the element within a resource (for internal references).
+      This may be any string value that does not contain spaces.
+    element_property: true
+    pattern: '[ \r\n\t\S]+'
+    title: Unique id for inter-element referencing
+    type: string
+  links:
+    items:
+      $ref: https://json-schema.org/draft/2020-12/links
+    type: array
+  modifierExtension:
+    description: May be used to represent additional information that is not part
+      of the basic definition of the element and that modifies the understanding of
+      the element in which it is contained and/or the understanding of the containing
+      element's descendants. Usually modifier elements provide negation or qualification.
+      To make the use of extensions safe and managable, there is a strict set of governance
+      applied to the definition and use of extensions. Though any implementer can
+      define an extension, there is a set of requirements that SHALL be met as part
+      of the definition of the extension. Applications processing a resource are required
+      to check for modifier extensions.  Modifier extensions SHALL NOT change the
+      meaning of any elements on Resource or DomainResource (including cannot change
+      the meaning of modifierExtension itself).
+    element_property: true
+    items:
+      $ref: Extension.yaml
+    title: Extensions that cannot be ignored even if unrecognized
+    type: array
+  note:
+    description: An area where general notes can be placed about this specific condition.
+    element_property: true
+    items:
+      $ref: Annotation.yaml
+    title: Extra information about condition
+    type: array
+  onsetAge:
+    $ref: Age.yaml
+    description: Either the age of onset, range of approximate age or descriptive
+      string can be recorded.  For conditions with multiple occurrences, this describes
+      the first known occurrence.
+    element_property: true
+    one_of_many: onset
+    one_of_many_required: false
+    title: When condition first manifested
+  onsetPeriod:
+    $ref: Period.yaml
+    description: Either the age of onset, range of approximate age or descriptive
+      string can be recorded.  For conditions with multiple occurrences, this describes
+      the first known occurrence.
+    element_property: true
+    one_of_many: onset
+    one_of_many_required: false
+    title: When condition first manifested
+  onsetRange:
+    $ref: Range.yaml
+    description: Either the age of onset, range of approximate age or descriptive
+      string can be recorded.  For conditions with multiple occurrences, this describes
+      the first known occurrence.
+    element_property: true
+    one_of_many: onset
+    one_of_many_required: false
+    title: When condition first manifested
+  onsetString:
+    description: Either the age of onset, range of approximate age or descriptive
+      string can be recorded.  For conditions with multiple occurrences, this describes
+      the first known occurrence.
+    element_property: true
+    one_of_many: onset
+    one_of_many_required: false
+    pattern: '[ \r\n\t\S]+'
+    title: When condition first manifested
+    type: string
+  outcome:
+    $ref: CodeableConcept.yaml
+    binding_description: The result of the condition for the patient; e.g. death,
+      permanent disability, temporary disability, etc.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/condition-outcome
+    binding_version: null
+    description: Indicates what happened following the condition.  If the condition
+      resulted in death, deceased date is captured on the relation.
+    element_property: true
+    title: deceased | permanent disability | etc
+  resourceType:
+    const: FamilyMemberHistoryCondition
+    default: FamilyMemberHistoryCondition
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+required:
+- code
+title: FamilyMemberHistoryCondition
+type: object

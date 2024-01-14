@@ -1,0 +1,152 @@
+$id: MedicationRequestDispenseRequest
+additionalProperties: false
+description: Medication supply authorization. Indicates the specific details for the
+  dispense or medication supply part of a medication request (also known as a Medication
+  Prescription or Medication Order).  Note that this information is not always sent
+  with the order.  There may be in some settings (e.g. hospitals) institutional or
+  system support for completing the dispense details in the pharmacy department. [See
+  https://hl7.org/fhir/R5/MedicationRequestDispenseRequest.html]
+links:
+- $comment: From Annotation/dispenserInstruction
+  href: Patient/{id}
+  rel: dispenserInstruction_authorReference_Patient
+  targetHints:
+    backref:
+    - annotation
+    direction:
+    - outbound
+    multiplicity:
+    - has_one
+  targetSchema:
+    $ref: Patient.yaml
+  templatePointers:
+    id: /dispenserInstruction/-/authorReference/reference
+  templateRequired:
+  - id
+properties:
+  _numberOfRepeatsAllowed:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``numberOfRepeatsAllowed``.
+  dispenseInterval:
+    $ref: Duration.yaml
+    description: The minimum period of time that must occur between dispenses of the
+      medication.
+    element_property: true
+    title: Minimum period of time between dispenses
+  dispenser:
+    $ref: Reference.yaml
+    backref: medication_request_dispense_request
+    description: Indicates the intended performing Organization that will dispense
+      the medication as specified by the prescriber.
+    element_property: true
+    enum_reference_types:
+    - Organization
+    title: Intended performer of dispense
+  dispenserInstruction:
+    description: Provides additional information to the dispenser, for example, counselling
+      to be provided to the patient.
+    element_property: true
+    items:
+      $ref: Annotation.yaml
+    title: Additional information for the dispenser
+    type: array
+  doseAdministrationAid:
+    $ref: CodeableConcept.yaml
+    binding_description: null
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/medication-dose-aid
+    binding_version: null
+    description: Provides information about the type of adherence packaging to be
+      supplied for the medication dispense.
+    element_property: true
+    title: Type of adherence packaging to use for the dispense
+  expectedSupplyDuration:
+    $ref: Duration.yaml
+    description: Identifies the period time over which the supplied product is expected
+      to be used, or the length of time the dispense is expected to last.
+    element_property: true
+    title: Number of days supply per dispense
+  extension:
+    description: May be used to represent additional information that is not part
+      of the basic definition of the element. To make the use of extensions safe and
+      managable, there is a strict set of governance applied to the definition and
+      use of extensions. Though any implementer can define an extension, there is
+      a set of requirements that SHALL be met as part of the definition of the extension.
+    element_property: true
+    items:
+      $ref: Extension.yaml
+    title: Additional content defined by implementations
+    type: array
+  fhir_comments:
+    anyOf:
+    - type: string
+    - items:
+        type: string
+      type: array
+    element_property: false
+    title: Fhir Comments
+  id:
+    description: Unique id for the element within a resource (for internal references).
+      This may be any string value that does not contain spaces.
+    element_property: true
+    pattern: '[ \r\n\t\S]+'
+    title: Unique id for inter-element referencing
+    type: string
+  initialFill:
+    $ref: MedicationRequestDispenseRequestInitialFill.yaml
+    description: Indicates the quantity or duration for the first dispense of the
+      medication.
+    element_property: true
+    title: First fill details
+  links:
+    items:
+      $ref: https://json-schema.org/draft/2020-12/links
+    type: array
+  modifierExtension:
+    description: May be used to represent additional information that is not part
+      of the basic definition of the element and that modifies the understanding of
+      the element in which it is contained and/or the understanding of the containing
+      element's descendants. Usually modifier elements provide negation or qualification.
+      To make the use of extensions safe and managable, there is a strict set of governance
+      applied to the definition and use of extensions. Though any implementer can
+      define an extension, there is a set of requirements that SHALL be met as part
+      of the definition of the extension. Applications processing a resource are required
+      to check for modifier extensions.  Modifier extensions SHALL NOT change the
+      meaning of any elements on Resource or DomainResource (including cannot change
+      the meaning of modifierExtension itself).
+    element_property: true
+    items:
+      $ref: Extension.yaml
+    title: Extensions that cannot be ignored even if unrecognized
+    type: array
+  numberOfRepeatsAllowed:
+    description: 'An integer indicating the number of times, in addition to the original
+      dispense, (aka refills or repeats) that the patient can receive the prescribed
+      medication. Usage Notes: This integer does not include the original order dispense.
+      This means that if an order indicates dispense 30 tablets plus "3 repeats",
+      then the order can be dispensed a total of 4 times and the patient can receive
+      a total of 120 tablets.  A prescriber may explicitly say that zero refills are
+      permitted after the initial dispense.'
+    element_property: true
+    minimum: 0
+    title: Number of refills authorized
+    type: integer
+  quantity:
+    $ref: Quantity.yaml
+    description: The amount that is to be dispensed for one fill.
+    element_property: true
+    title: Amount of medication to supply per dispense
+  resourceType:
+    const: MedicationRequestDispenseRequest
+    default: MedicationRequestDispenseRequest
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+  validityPeriod:
+    $ref: Period.yaml
+    description: This indicates the validity period of a prescription (stale dating
+      the Prescription).
+    element_property: true
+    title: Time period supply is authorized for
+title: MedicationRequestDispenseRequest
+type: object

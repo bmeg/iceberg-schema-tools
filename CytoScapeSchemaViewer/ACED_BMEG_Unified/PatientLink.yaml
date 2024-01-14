@@ -1,0 +1,109 @@
+$id: PatientLink
+additionalProperties: false
+description: Link to a Patient or RelatedPerson resource that concerns the same actual
+  individual. [See https://hl7.org/fhir/R5/PatientLink.html]
+links:
+- href: Patient/{id}
+  rel: other_Patient
+  targetHints:
+    backref:
+    - patient_link
+    direction:
+    - outbound
+    multiplicity:
+    - has_one
+  targetSchema:
+    $ref: Patient.yaml
+  templatePointers:
+    id: /other/reference
+  templateRequired:
+  - id
+properties:
+  _type:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``type``.
+  extension:
+    description: May be used to represent additional information that is not part
+      of the basic definition of the element. To make the use of extensions safe and
+      managable, there is a strict set of governance applied to the definition and
+      use of extensions. Though any implementer can define an extension, there is
+      a set of requirements that SHALL be met as part of the definition of the extension.
+    element_property: true
+    items:
+      $ref: Extension.yaml
+    title: Additional content defined by implementations
+    type: array
+  fhir_comments:
+    anyOf:
+    - type: string
+    - items:
+        type: string
+      type: array
+    element_property: false
+    title: Fhir Comments
+  id:
+    description: Unique id for the element within a resource (for internal references).
+      This may be any string value that does not contain spaces.
+    element_property: true
+    pattern: '[ \r\n\t\S]+'
+    title: Unique id for inter-element referencing
+    type: string
+  links:
+    items:
+      $ref: https://json-schema.org/draft/2020-12/links
+    type: array
+  modifierExtension:
+    description: May be used to represent additional information that is not part
+      of the basic definition of the element and that modifies the understanding of
+      the element in which it is contained and/or the understanding of the containing
+      element's descendants. Usually modifier elements provide negation or qualification.
+      To make the use of extensions safe and managable, there is a strict set of governance
+      applied to the definition and use of extensions. Though any implementer can
+      define an extension, there is a set of requirements that SHALL be met as part
+      of the definition of the extension. Applications processing a resource are required
+      to check for modifier extensions.  Modifier extensions SHALL NOT change the
+      meaning of any elements on Resource or DomainResource (including cannot change
+      the meaning of modifierExtension itself).
+    element_property: true
+    items:
+      $ref: Extension.yaml
+    title: Extensions that cannot be ignored even if unrecognized
+    type: array
+  other:
+    $ref: Reference.yaml
+    backref: patient_link
+    description: Link to a Patient or RelatedPerson resource that concerns the same
+      actual individual.
+    element_property: true
+    enum_reference_types:
+    - Patient
+    - RelatedPerson
+    title: The other patient or related person resource that the link refers to
+  resourceType:
+    const: PatientLink
+    default: PatientLink
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+  type:
+    binding_description: The type of link between this patient resource and another
+      Patient resource, or Patient/RelatedPerson when using the `seealso` code
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/link-type
+    binding_version: 5.0.0
+    description: The type of link between this patient resource and another patient
+      resource.
+    element_property: true
+    element_required: true
+    enum_values:
+    - replaced-by
+    - replaces
+    - refer
+    - seealso
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: replaced-by | replaces | refer | seealso
+    type: string
+required:
+- other
+title: PatientLink
+type: object

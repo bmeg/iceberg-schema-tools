@@ -1,0 +1,151 @@
+$id: SampledData
+additionalProperties: false
+description: A series of measurements taken by a device. A series of measurements
+  taken by a device, with upper and lower limits. There may be more than one dimension
+  in the data. [See https://hl7.org/fhir/R5/SampledData.html]
+links: []
+properties:
+  _codeMap:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``codeMap``.
+  _data:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``data``.
+  _dimensions:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``dimensions``.
+  _factor:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``factor``.
+  _interval:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``interval``.
+  _intervalUnit:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``intervalUnit``.
+  _lowerLimit:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``lowerLimit``.
+  _offsets:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``offsets``.
+  _upperLimit:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``upperLimit``.
+  codeMap:
+    description: Reference to ConceptMap that defines the codes used in the data.
+    element_property: true
+    enum_reference_types:
+    - ConceptMap
+    pattern: \S*
+    title: Defines the codes used in the data
+    type: string
+  data:
+    description: A series of data points which are decimal values or codes separated
+      by a single space (character u20). The special codes "E" (error), "L" (below
+      detection limit) and "U" (above detection limit) are also defined for used in
+      place of decimal values.
+    element_property: true
+    pattern: '[ \r\n\t\S]+'
+    title: Decimal values with spaces, or "E" | "U" | "L", or another code
+    type: string
+  dimensions:
+    description: The number of sample points at each time point. If this value is
+      greater than one, then the dimensions will be interlaced - all the sample points
+      for a point in time will be recorded at once.
+    element_property: true
+    element_required: true
+    exclusiveMinimum: 0
+    title: Number of sample points at each time point
+    type: integer
+  extension:
+    description: May be used to represent additional information that is not part
+      of the basic definition of the element. To make the use of extensions safe and
+      managable, there is a strict set of governance applied to the definition and
+      use of extensions. Though any implementer can define an extension, there is
+      a set of requirements that SHALL be met as part of the definition of the extension.
+    element_property: true
+    items:
+      $ref: Extension.yaml
+    title: Additional content defined by implementations
+    type: array
+  factor:
+    description: A correction factor that is applied to the sampled data points before
+      they are added to the origin.
+    element_property: true
+    title: Multiply data by this before adding to origin
+    type: number
+  fhir_comments:
+    anyOf:
+    - type: string
+    - items:
+        type: string
+      type: array
+    element_property: false
+    title: Fhir Comments
+  id:
+    description: Unique id for the element within a resource (for internal references).
+      This may be any string value that does not contain spaces.
+    element_property: true
+    pattern: '[ \r\n\t\S]+'
+    title: Unique id for inter-element referencing
+    type: string
+  interval:
+    description: Amount of intervalUnits between samples, e.g. milliseconds for time-based
+      sampling.
+    element_property: true
+    title: Number of intervalUnits between samples
+    type: number
+  intervalUnit:
+    binding_description: Units of measure allowed for an element.
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/ucum-units
+    binding_version: 5.0.0
+    description: The measurement unit in which the sample interval is expressed.
+    element_property: true
+    element_required: true
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: The measurement unit of the interval between samples
+    type: string
+  links:
+    items:
+      $ref: https://json-schema.org/draft/2020-12/links
+    type: array
+  lowerLimit:
+    description: The lower limit of detection of the measured points. This is needed
+      if any of the data points have the value "L" (lower than detection limit).
+    element_property: true
+    title: Lower limit of detection
+    type: number
+  offsets:
+    description: A series of data points which are decimal values separated by a single
+      space (character u20).  The units in which the offsets are expressed are found
+      in intervalUnit.  The absolute point at which the measurements begin SHALL be
+      conveyed outside the scope of this datatype, e.g. Observation.effectiveDateTime
+      for a timing offset.
+    element_property: true
+    pattern: '[ \r\n\t\S]+'
+    title: Offsets, typically in time, at which data values were taken
+    type: string
+  origin:
+    $ref: Quantity.yaml
+    description: The base quantity that a measured value of zero represents. In addition,
+      this provides the units of the entire measurement series.
+    element_property: true
+    title: Zero value and units
+  resourceType:
+    const: SampledData
+    default: SampledData
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+  upperLimit:
+    description: The upper limit of detection of the measured points. This is needed
+      if any of the data points have the value "U" (higher than detection limit).
+    element_property: true
+    title: Upper limit of detection
+    type: number
+required:
+- origin
+title: SampledData
+type: object

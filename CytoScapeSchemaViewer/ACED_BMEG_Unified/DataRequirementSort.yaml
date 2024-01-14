@@ -1,0 +1,74 @@
+$id: DataRequirementSort
+additionalProperties: false
+description: Order of the results. Specifies the order of the results to be returned.
+  [See https://hl7.org/fhir/R5/DataRequirementSort.html]
+links: []
+properties:
+  _direction:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``direction``.
+  _path:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``path``.
+  direction:
+    binding_description: The possible sort directions, ascending or descending.
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/sort-direction
+    binding_version: 5.0.0
+    description: The direction of the sort, ascending or descending.
+    element_property: true
+    element_required: true
+    enum_values:
+    - ascending
+    - descending
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: ascending | descending
+    type: string
+  extension:
+    description: May be used to represent additional information that is not part
+      of the basic definition of the element. To make the use of extensions safe and
+      managable, there is a strict set of governance applied to the definition and
+      use of extensions. Though any implementer can define an extension, there is
+      a set of requirements that SHALL be met as part of the definition of the extension.
+    element_property: true
+    items:
+      $ref: Extension.yaml
+    title: Additional content defined by implementations
+    type: array
+  fhir_comments:
+    anyOf:
+    - type: string
+    - items:
+        type: string
+      type: array
+    element_property: false
+    title: Fhir Comments
+  id:
+    description: Unique id for the element within a resource (for internal references).
+      This may be any string value that does not contain spaces.
+    element_property: true
+    pattern: '[ \r\n\t\S]+'
+    title: Unique id for inter-element referencing
+    type: string
+  links:
+    items:
+      $ref: https://json-schema.org/draft/2020-12/links
+    type: array
+  path:
+    description: The attribute of the sort. The specified path must be resolvable
+      from the type of the required data. The path is allowed to contain qualifiers
+      (.) to traverse sub-elements, as well as indexers ([x]) to traverse multiple-cardinality
+      sub-elements. Note that the index must be an integer constant.
+    element_property: true
+    element_required: true
+    pattern: '[ \r\n\t\S]+'
+    title: The name of the attribute to perform the sort
+    type: string
+  resourceType:
+    const: DataRequirementSort
+    default: DataRequirementSort
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+title: DataRequirementSort
+type: object

@@ -1,0 +1,176 @@
+$id: SpecimenCollection
+additionalProperties: false
+description: Collection details. Details concerning the specimen collection. [See
+  https://hl7.org/fhir/R5/SpecimenCollection.html]
+links:
+- href: Patient/{id}
+  rel: collector_Patient
+  targetHints:
+    backref:
+    - specimen_collection
+    direction:
+    - outbound
+    multiplicity:
+    - has_one
+  targetSchema:
+    $ref: Patient.yaml
+  templatePointers:
+    id: /collector/reference
+  templateRequired:
+  - id
+properties:
+  _collectedDateTime:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``collectedDateTime``.
+  bodySite:
+    $ref: CodeableReference.yaml
+    backref: specimen_collection
+    binding_description: SNOMED CT Body site concepts
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/body-site
+    binding_version: null
+    description: Anatomical location from which the specimen was collected (if subject
+      is a patient). This is the target site.  This element is not used for environmental
+      specimens.
+    element_property: true
+    enum_reference_types:
+    - BodyStructure
+    title: Anatomical collection site
+  collectedDateTime:
+    description: Time when specimen was collected from subject - the physiologically
+      relevant time.
+    element_property: true
+    format: date-time
+    one_of_many: collected
+    one_of_many_required: false
+    title: Collection time
+    type: string
+  collectedPeriod:
+    $ref: Period.yaml
+    description: Time when specimen was collected from subject - the physiologically
+      relevant time.
+    element_property: true
+    one_of_many: collected
+    one_of_many_required: false
+    title: Collection time
+  collector:
+    $ref: Reference.yaml
+    backref: specimen_collection
+    description: Person who collected the specimen.
+    element_property: true
+    enum_reference_types:
+    - Practitioner
+    - PractitionerRole
+    - Patient
+    - RelatedPerson
+    title: Who collected the specimen
+  device:
+    $ref: CodeableReference.yaml
+    backref: specimen_collection
+    description: A coded value specifying the technique that is used to perform the
+      procedure.
+    element_property: true
+    enum_reference_types:
+    - Device
+    title: Device used to perform collection
+  duration:
+    $ref: Duration.yaml
+    description: The span of time over which the collection of a specimen occurred.
+    element_property: true
+    title: How long it took to collect specimen
+  extension:
+    description: May be used to represent additional information that is not part
+      of the basic definition of the element. To make the use of extensions safe and
+      managable, there is a strict set of governance applied to the definition and
+      use of extensions. Though any implementer can define an extension, there is
+      a set of requirements that SHALL be met as part of the definition of the extension.
+    element_property: true
+    items:
+      $ref: Extension.yaml
+    title: Additional content defined by implementations
+    type: array
+  fastingStatusCodeableConcept:
+    $ref: CodeableConcept.yaml
+    description: Abstinence or reduction from some or all food, drink, or both, for
+      a period of time prior to sample collection.
+    element_property: true
+    one_of_many: fastingStatus
+    one_of_many_required: false
+    title: Whether or how long patient abstained from food and/or drink
+  fastingStatusDuration:
+    $ref: Duration.yaml
+    description: Abstinence or reduction from some or all food, drink, or both, for
+      a period of time prior to sample collection.
+    element_property: true
+    one_of_many: fastingStatus
+    one_of_many_required: false
+    title: Whether or how long patient abstained from food and/or drink
+  fhir_comments:
+    anyOf:
+    - type: string
+    - items:
+        type: string
+      type: array
+    element_property: false
+    title: Fhir Comments
+  id:
+    description: Unique id for the element within a resource (for internal references).
+      This may be any string value that does not contain spaces.
+    element_property: true
+    pattern: '[ \r\n\t\S]+'
+    title: Unique id for inter-element referencing
+    type: string
+  links:
+    items:
+      $ref: https://json-schema.org/draft/2020-12/links
+    type: array
+  method:
+    $ref: CodeableConcept.yaml
+    binding_description: The  technique that is used to perform the procedure.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/specimen-collection-method
+    binding_version: null
+    description: A coded value specifying the technique that is used to perform the
+      procedure.
+    element_property: true
+    title: Technique used to perform collection
+  modifierExtension:
+    description: May be used to represent additional information that is not part
+      of the basic definition of the element and that modifies the understanding of
+      the element in which it is contained and/or the understanding of the containing
+      element's descendants. Usually modifier elements provide negation or qualification.
+      To make the use of extensions safe and managable, there is a strict set of governance
+      applied to the definition and use of extensions. Though any implementer can
+      define an extension, there is a set of requirements that SHALL be met as part
+      of the definition of the extension. Applications processing a resource are required
+      to check for modifier extensions.  Modifier extensions SHALL NOT change the
+      meaning of any elements on Resource or DomainResource (including cannot change
+      the meaning of modifierExtension itself).
+    element_property: true
+    items:
+      $ref: Extension.yaml
+    title: Extensions that cannot be ignored even if unrecognized
+    type: array
+  procedure:
+    $ref: Reference.yaml
+    backref: specimen_collection
+    description: The procedure event during which the specimen was collected (e.g.
+      the surgery leading to the collection of a pathology sample).
+    element_property: true
+    enum_reference_types:
+    - Procedure
+    title: The procedure that collects the specimen
+  quantity:
+    $ref: Quantity.yaml
+    description: The quantity of specimen collected; for instance the volume of a
+      blood sample, or the physical measurement of an anatomic pathology sample.
+    element_property: true
+    title: The quantity of specimen collected
+  resourceType:
+    const: SpecimenCollection
+    default: SpecimenCollection
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+title: SpecimenCollection
+type: object

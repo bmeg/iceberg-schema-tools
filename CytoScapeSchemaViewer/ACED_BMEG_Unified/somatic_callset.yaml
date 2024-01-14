@@ -1,0 +1,71 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: somatic_callset
+title: SomaticCallset
+type: object
+description: 'A collection of somatic variants.
+
+  '
+required:
+- submitter_id
+- tumor_aliquot_id
+- project_id
+links:
+- rel: alleles
+  href: allele/{id}
+  templateRequired:
+  - id
+  targetSchema:
+    $ref: allele.yaml
+  templatePointers:
+    id: /alleles/-/id
+  targetHints:
+    directionality:
+    - outbound
+    multiplicity:
+    - has_many
+    backref: somatic_callsets
+- rel: aliquots
+  href: aliquot/{id}
+  templateRequired:
+  - id
+  targetSchema:
+    $ref: aliquot.yaml
+  templatePointers:
+    id: /aliquots/-/id
+  targetHints:
+    directionality:
+    - outbound
+    multiplicity:
+    - has_many
+    backref: somatic_callsets
+properties:
+  id:
+    type: string
+  tumor_aliquot_id:
+    type: string
+  normal_aliquot_id:
+    type:
+    - 'null'
+    - string
+  project_id:
+    $ref: _definitions.yaml#/project_id
+  submitter_id:
+    type:
+    - string
+    - 'null'
+  type:
+    type: string
+  created_datetime:
+    $ref: _definitions.yaml#/datetime
+  updated_datetime:
+    $ref: _definitions.yaml#/datetime
+  alleles:
+    type:
+    - array
+    items:
+      $ref: reference.yaml
+  aliquots:
+    type:
+    - array
+    items:
+      $ref: reference.yaml

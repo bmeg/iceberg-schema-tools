@@ -1,0 +1,38 @@
+$id: FHIRPrimitiveExtension
+additionalProperties: false
+description: ' [See https://hl7.org/fhir/R5/FHIRPrimitiveExtension.html]'
+links: []
+properties:
+  extension:
+    description: Additional content defined by implementations
+    element_property: true
+    items:
+      $ref: Extension.yaml
+    title: List of `Extension` items (represented as `dict` in JSON)
+    type: array
+  fhir_comments:
+    anyOf:
+    - type: string
+    - items:
+        type: string
+      type: array
+    element_property: false
+    title: Fhir Comments
+  id:
+    description: Unique id for inter-element referencing
+    element_property: false
+    pattern: '[ \r\n\t\S]+'
+    title: Type `String`
+    type: string
+  links:
+    items:
+      $ref: https://json-schema.org/draft/2020-12/links
+    type: array
+  resourceType:
+    const: FHIRPrimitiveExtension
+    default: FHIRPrimitiveExtension
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+title: FHIRPrimitiveExtension
+type: object

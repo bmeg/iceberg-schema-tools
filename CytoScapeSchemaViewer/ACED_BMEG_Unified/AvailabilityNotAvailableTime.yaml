@@ -1,0 +1,55 @@
+$id: AvailabilityNotAvailableTime
+additionalProperties: false
+description: Not available during this time due to provided reason. [See https://hl7.org/fhir/R5/AvailabilityNotAvailableTime.html]
+links: []
+properties:
+  _description:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``description``.
+  description:
+    element_property: true
+    pattern: '[ \r\n\t\S]+'
+    title: Reason presented to the user explaining why time not available
+    type: string
+  during:
+    $ref: Period.yaml
+    element_property: true
+    title: Service not available during this period
+  extension:
+    description: May be used to represent additional information that is not part
+      of the basic definition of the element. To make the use of extensions safe and
+      managable, there is a strict set of governance applied to the definition and
+      use of extensions. Though any implementer can define an extension, there is
+      a set of requirements that SHALL be met as part of the definition of the extension.
+    element_property: true
+    items:
+      $ref: Extension.yaml
+    title: Additional content defined by implementations
+    type: array
+  fhir_comments:
+    anyOf:
+    - type: string
+    - items:
+        type: string
+      type: array
+    element_property: false
+    title: Fhir Comments
+  id:
+    description: Unique id for the element within a resource (for internal references).
+      This may be any string value that does not contain spaces.
+    element_property: true
+    pattern: '[ \r\n\t\S]+'
+    title: Unique id for inter-element referencing
+    type: string
+  links:
+    items:
+      $ref: https://json-schema.org/draft/2020-12/links
+    type: array
+  resourceType:
+    const: AvailabilityNotAvailableTime
+    default: AvailabilityNotAvailableTime
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+title: AvailabilityNotAvailableTime
+type: object

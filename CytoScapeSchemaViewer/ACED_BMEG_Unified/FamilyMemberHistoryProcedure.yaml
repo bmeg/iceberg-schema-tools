@@ -1,0 +1,172 @@
+$id: FamilyMemberHistoryProcedure
+additionalProperties: false
+description: Procedures that the related person had. The significant Procedures (or
+  procedure) that the family member had. This is a repeating section to allow a system
+  to represent more than one procedure per resource, though there is nothing stopping
+  multiple resources - one per procedure. [See https://hl7.org/fhir/R5/FamilyMemberHistoryProcedure.html]
+links:
+- $comment: From Annotation/note
+  href: Patient/{id}
+  rel: note_authorReference_Patient
+  targetHints:
+    backref:
+    - annotation
+    direction:
+    - outbound
+    multiplicity:
+    - has_one
+  targetSchema:
+    $ref: Patient.yaml
+  templatePointers:
+    id: /note/-/authorReference/reference
+  templateRequired:
+  - id
+properties:
+  _contributedToDeath:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``contributedToDeath``.
+  _performedDateTime:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``performedDateTime``.
+  _performedString:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``performedString``.
+  code:
+    $ref: CodeableConcept.yaml
+    binding_description: A code to identify a specific procedure.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/procedure-code
+    binding_version: null
+    description: The actual procedure specified. Could be a coded procedure or a less
+      specific string depending on how much is known about the procedure and the capabilities
+      of the creating system.
+    element_property: true
+    title: Procedures performed on the related person
+  contributedToDeath:
+    description: This procedure contributed to the cause of death of the related person.
+      If contributedToDeath is not populated, then it is unknown.
+    element_property: true
+    title: Whether the procedure contributed to the cause of death
+    type: boolean
+  extension:
+    description: May be used to represent additional information that is not part
+      of the basic definition of the element. To make the use of extensions safe and
+      managable, there is a strict set of governance applied to the definition and
+      use of extensions. Though any implementer can define an extension, there is
+      a set of requirements that SHALL be met as part of the definition of the extension.
+    element_property: true
+    items:
+      $ref: Extension.yaml
+    title: Additional content defined by implementations
+    type: array
+  fhir_comments:
+    anyOf:
+    - type: string
+    - items:
+        type: string
+      type: array
+    element_property: false
+    title: Fhir Comments
+  id:
+    description: Unique id for the element within a resource (for internal references).
+      This may be any string value that does not contain spaces.
+    element_property: true
+    pattern: '[ \r\n\t\S]+'
+    title: Unique id for inter-element referencing
+    type: string
+  links:
+    items:
+      $ref: https://json-schema.org/draft/2020-12/links
+    type: array
+  modifierExtension:
+    description: May be used to represent additional information that is not part
+      of the basic definition of the element and that modifies the understanding of
+      the element in which it is contained and/or the understanding of the containing
+      element's descendants. Usually modifier elements provide negation or qualification.
+      To make the use of extensions safe and managable, there is a strict set of governance
+      applied to the definition and use of extensions. Though any implementer can
+      define an extension, there is a set of requirements that SHALL be met as part
+      of the definition of the extension. Applications processing a resource are required
+      to check for modifier extensions.  Modifier extensions SHALL NOT change the
+      meaning of any elements on Resource or DomainResource (including cannot change
+      the meaning of modifierExtension itself).
+    element_property: true
+    items:
+      $ref: Extension.yaml
+    title: Extensions that cannot be ignored even if unrecognized
+    type: array
+  note:
+    description: An area where general notes can be placed about this specific procedure.
+    element_property: true
+    items:
+      $ref: Annotation.yaml
+    title: Extra information about the procedure
+    type: array
+  outcome:
+    $ref: CodeableConcept.yaml
+    binding_description: The result of the procedure; e.g. death, permanent disability,
+      temporary disability, etc.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/clinical-findings
+    binding_version: null
+    description: Indicates what happened following the procedure. If the procedure
+      resulted in death, deceased date is captured on the relation.
+    element_property: true
+    title: What happened following the procedure
+  performedAge:
+    $ref: Age.yaml
+    description: Estimated or actual date, date-time, period, or age when the procedure
+      was performed. Allows a period to support complex procedures that span more
+      than one date, and also allows for the length of the procedure to be captured.
+    element_property: true
+    one_of_many: performed
+    one_of_many_required: false
+    title: When the procedure was performed
+  performedDateTime:
+    description: Estimated or actual date, date-time, period, or age when the procedure
+      was performed. Allows a period to support complex procedures that span more
+      than one date, and also allows for the length of the procedure to be captured.
+    element_property: true
+    format: date-time
+    one_of_many: performed
+    one_of_many_required: false
+    title: When the procedure was performed
+    type: string
+  performedPeriod:
+    $ref: Period.yaml
+    description: Estimated or actual date, date-time, period, or age when the procedure
+      was performed. Allows a period to support complex procedures that span more
+      than one date, and also allows for the length of the procedure to be captured.
+    element_property: true
+    one_of_many: performed
+    one_of_many_required: false
+    title: When the procedure was performed
+  performedRange:
+    $ref: Range.yaml
+    description: Estimated or actual date, date-time, period, or age when the procedure
+      was performed. Allows a period to support complex procedures that span more
+      than one date, and also allows for the length of the procedure to be captured.
+    element_property: true
+    one_of_many: performed
+    one_of_many_required: false
+    title: When the procedure was performed
+  performedString:
+    description: Estimated or actual date, date-time, period, or age when the procedure
+      was performed. Allows a period to support complex procedures that span more
+      than one date, and also allows for the length of the procedure to be captured.
+    element_property: true
+    one_of_many: performed
+    one_of_many_required: false
+    pattern: '[ \r\n\t\S]+'
+    title: When the procedure was performed
+    type: string
+  resourceType:
+    const: FamilyMemberHistoryProcedure
+    default: FamilyMemberHistoryProcedure
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+required:
+- code
+title: FamilyMemberHistoryProcedure
+type: object

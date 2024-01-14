@@ -29,9 +29,13 @@ ALL_ACED_NODES = """
     FamilyMemberHistory
     BodyStructure
     Immunization
+    MedicationRequest
     """.strip().split()
 
-MAIN_ACED_NODES = """MedicationAdministration
+MAIN_ACED_NODES = """
+    Program
+    Project
+    MedicationAdministration
     DocumentReference
     FamilyMemberHistory
     Observation
@@ -40,14 +44,12 @@ MAIN_ACED_NODES = """MedicationAdministration
     DiagnosticReport
     Task
     Condition
-    Encounter
-    BodyStructure
     ResearchStudy
     Specimen
     Medication
     ResearchSubject""".strip().split()
 
-ALL_BMEG_NODES = """
+MAIN_BMEG_NODES = """
     Program
     Project
     Aliquot
@@ -72,15 +74,28 @@ ALL_BMEG_NODES = """
     Pathway
     Phenotype
     Protein
-    ProteinCompoundAssociation
+    ProteinSubstanceAssociation
     ProteinStructure
     Publication
-    Reference
     Sample
     SomaticCallset
     SomaticVariant
     Transcript
-    TranscriptExpression""".strip().split()
+    TranscriptExpression
+    MedicationAdministration
+    DocumentReference
+    FamilyMemberHistory
+    Observation
+    Patient
+    Substance
+    DiagnosticReport
+    Task
+    Condition
+    ResearchStudy
+    Specimen
+    Medication
+    ResearchSubject
+    """.strip().split()
 
 
 def is_edge(name, schema) -> bool:
@@ -99,13 +114,17 @@ def recursive_items(dictionary):
 
 def convert_file_to_title(file):
     file = file.split('.yaml')[0]
+    print("FILE START: ", file)
     if "_" in file:
         file = file.split("_")
         for i, _ in enumerate(file):
-            file[i] = file[i].title()
+            file[i] = file[i].capitalize()
+            print("FILE", file[i])
         file = "".join(file)
-    else:
+    elif not file[0].isupper():
         file = file.capitalize()
+
+    print("FILE: ", file)
 
     return file
 
@@ -165,7 +184,7 @@ def onefile(input_path, output_path):
 
 @cli.command('yaml_dir')
 @click.option('--input_path', required=True,
-              default='generate-json-schema/coherent.json',
+              default='ACED_BMEG_Unified',
               show_default=True,
               help='Path to schema files directory'
               )
@@ -187,7 +206,7 @@ def yaml_dir(input_path, output_path):
     assert output_path.is_dir()
 
     paths = [file for file in glob.glob(os.path.join(input_path, "*.yaml")) if file.split("/")[-1][0] != "_"]
-    nodes = [{"data": {"id": elem}} for elem in ALL_BMEG_NODES]
+    nodes = [{"data": {"id": elem}} for elem in MAIN_BMEG_NODES]
     fn = output_path / pathlib.Path('graph.json')
 
     with open(fn, 'wb') as tsv_file:
@@ -198,21 +217,26 @@ def yaml_dir(input_path, output_path):
                 if "links" in schema:
                     edges = [edge for edge in schema["links"]]
                 # print("EDGES", edges, "VERTEX  NAME", schema["$id"])
-                if schema["title"] in ALL_BMEG_NODES:
-                    name_dict = [item for item in nodes if item["data"]["id"] == schema["title"]][0]
-                    #print("NAME DICT", name_dict)
-                    edge = list(schema["properties"].keys())
-                    #print("EDGE: ", edge, "TYPE EDGE", type(edge))
-                    name_dict["data"]["properties"] = edge
-                    tsv_file.write(orjson.dumps(name_dict))
-                    tsv_file.write(b",")
+                if schema["title"] in MAIN_BMEG_NODES:
+                    #exit()
+                    if "title" in schema:
+                        #for node in nodes:
+                            #print("NODE: ", node, schema["title"])
+                        #print("NODES: ", nodes)
+                        name_dict = [item for item in nodes if item["data"]["id"] == schema["title"]][0]
+                        #print("NAME DICT", name_dict)
+                        edge = list(schema["properties"].keys())
+                        #print("EDGE: ", edge, "TYPE EDGE", type(edge))
+                        name_dict["data"]["properties"] = edge
+                        tsv_file.write(orjson.dumps(name_dict))
+                        tsv_file.write(b",")
 
                 for edge in edges:
-                    print("ENTERING EDGE GENERATION FOR EDGE: ", edge)
+                    #print("ENTERING EDGE GENERATION FOR EDGE: ", edge)
                     for key, value in recursive_items(edge):
-                        print("KEY: ", key, "VALUE: ", value)
+                        #print("KEY: ", key, "VALUE: ", value)
                         if "$ref" in key:
-                            if schema["title"] in ALL_BMEG_NODES:
+                            if schema["title"] in MAIN_BMEG_NODES and convert_file_to_title(value) in MAIN_BMEG_NODES:
                                 tsv_file.write(orjson.dumps({"data": {"source": schema["title"], "target": convert_file_to_title(value)}}))
                                 tsv_file.write(b",")
 

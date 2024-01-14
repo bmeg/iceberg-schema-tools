@@ -1,0 +1,55 @@
+Breaking Changes / Steps taken to Unify BMEG-FHIR graph schema
+
+0. Generate iceberg graph schema from iceberg-schema-tools main branch. Add develop branch bmeg-etl
+schemas to the iceberg graph schemas that were just generated.
+
+1. Remove Command, File, add Linkage DocumentReference -> Aliquot. in DocumentReference.yaml
+    Note: Since Task doesn't have a formal connection to DocumentReference and Specimen in
+    FHIR proper, these links don't show up when viewing as the graph schema.
+    Because of this, Command (Task) -> File (DocumentReference) -> Aliquot
+    linkage can be substituted for just DocumentReference -> Aliquot for now.
+2. In aliquot.yaml: remove - property/link: sample and add link to Specimen.yaml
+3. In Sample.yaml: remove property/link: phenotypes and add it to Specimen.yaml
+4. In Sample.yaml remove property/link: case, and do not add anything as Specimen.yaml link to Patient.yaml already exists.
+5. In Sample.yaml remove property/link: project, and add it to Specimen.yaml as rel/ResearchStudies. Remove this file entirely from the graph.
+6. In aliquot.yaml remove property/link: projects and replace it with ResearchStudies rel/project
+7. In case.yaml remove property/link to project:
+    In BMEG case -> project exists, but in FHIR patient has no outbound edges to anything, so by convention,
+    This should probably be preserved and it should be ResearchStudy -> Patient, which already exists, but not sure about this.
+8. In compound.yaml, remove property/link project and in Substance.yaml add the link to ResearchStudy.yaml
+9. In Case.yaml remove the link to phenotype.yaml and in Patient.yaml add a property/link to phenotype.yaml.
+        Similar to #7, case -> phenotype is expressed in BMEG schema but, FHIR doesn't like outbound edges from Patient.
+            Here though, I think it makes more sense to say a Patient has a phenotype then to say a Phenotype has a patient.
+            So going to stick with the original BMEG edge directionality.
+10. In Patient.yaml add a link/property to Substance.yaml. Remove the link from case to compound, and remove case from the graph entirely.
+11. in gene_phenotype_association.yaml remove link/property to compound.yaml and add a link/property to Substance.yaml
+12. in protein_compound_association.yaml replace all instances of compound with substance.
+13. in drug_response.yaml replace all instances of compound with substance
+
+Replaced Vertices:
+    Sample.yaml -> Specimen.yaml,
+    program.yaml/project.yaml -> ResearchStudy.yaml,
+    case.yaml -> Patient.yaml,
+    compound.yaml -> Substance.yaml
+
+Normalization Differences:
+
+There needs to be a decision made on the convention of naming rel fields in links.
+FHIR uses rel: {field_name/target_vertex} while BMEG just uses {field_name}
+Same thing is going on with links.backref field. Also, in FHIR backref is key:value
+while in BMEG it is a list entry. This needs to be normalized. In BMEG, description fields are enclosed
+with single quotes while this does not exist in FHIR schema. Also, property fields in BMEG schemas don't really
+match the FHIR property schemas. FHIR ones tend to have the fields $ref,description,title,element_property,with enum_reference_tyes
+used to show which nodes the property could map to, while bmeg properties are more minimal. This should probably be normalized.
+The first entry in the linkage lists is rel in BMEG schemas but it is href in FHIR schemas.
+This should get normalized to either all rel or all href.
+
+Design Opinions:
+
+I think that the Substance/Compound and Phenotype linkages to Patient might be better
+connected to researchSubject instead, since they coming from Research/BMEG vertices.
+
+Instead of merging Compound Substance it might be better to merge links from Substance to Compound.
+
+Task connections should be added to DocumentReference and Specimen in the graph schema
+since FHIR is getting broken already by merging FHIR schema with BMEG schema.

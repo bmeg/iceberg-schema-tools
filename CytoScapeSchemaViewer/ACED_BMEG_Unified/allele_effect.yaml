@@ -1,0 +1,142 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: allele_effect
+title: AlleleEffect
+type: object
+links:
+- rel: ensembl_gene
+  href: ensemblgene/{id}
+  templateRequired:
+  - id
+  targetSchema:
+    $ref: gene.yaml
+  templatePointers:
+    id: /ensembl_gene/-/id
+  targetHints:
+    directionality:
+    - outbound
+    multiplicity:
+    - has_one
+    backref: allele_effects
+- rel: ensembl_transcript
+  href: ensembltranscript/{id}
+  templateRequired:
+  - id
+  targetSchema:
+    $ref: transcript.yaml
+  templatePointers:
+    id: /ensembl_transcript/-/id
+  targetHints:
+    directionality:
+    - outbound
+    multiplicity:
+    - has_one
+    backref: allele_effects
+properties:
+  id:
+    type: string
+  annotation:
+    type: string
+  annotation_impact:
+    type: string
+  aa_position:
+    type: integer
+  aa_length:
+    type: integer
+  aa_ref:
+    type: string
+  aa_var:
+    type: string
+  cds_position:
+    type: integer
+  cds_length:
+    type: integer
+  cdna_position:
+    type: integer
+  cdna_length:
+    type: integer
+  exon_rank:
+    type: string
+  hgnc_id:
+    type: string
+  hgvsc:
+    type: string
+  hgvsp:
+    type: string
+  num_transcripts:
+    type: number
+  percent_transcripts_affected:
+    type: number
+  initiator_methionine:
+    type: string
+  chain:
+    type: string
+  site:
+    type: string
+  modified_residue:
+    type: string
+  sequence_conflict:
+    type: string
+  structure:
+    type: string
+  cross_link:
+    type: string
+  splice_variant:
+    type: string
+  sequence_variant:
+    type: string
+  mutagenesis_site:
+    type: string
+  region_of_interest:
+    type: string
+  compositionally_biased_region:
+    type: string
+  repeat:
+    type: string
+  short_sequence_motif:
+    type: string
+  domain:
+    type: string
+  transmembrane_region:
+    type: string
+  active_site:
+    type: string
+  transit_peptide:
+    type: string
+  topological_domain:
+    type: string
+  glycosylation_site:
+    type: string
+  lipid_moiety_binding_region:
+    type: string
+  disulfide_bond:
+    type: string
+  propeptide:
+    type: string
+  binding_site:
+    type: string
+  peptide:
+    type: string
+  intramembrane_region:
+    type: string
+  zinc_finger_region:
+    type: string
+  DNA_binding_region:
+    type: string
+  signal_peptide:
+    type: string
+  non_standard_amino_acid:
+    type: string
+  hugo_symbol:
+    type: string
+  biotype:
+    type: string
+  ensembl_gene:
+    type:
+    - array
+    items:
+      $ref: reference.yaml
+  ensembl_transcript:
+    type:
+    - array
+    items:
+      $ref: reference.yaml

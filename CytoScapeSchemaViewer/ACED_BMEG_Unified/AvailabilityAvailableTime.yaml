@@ -1,0 +1,91 @@
+$id: AvailabilityAvailableTime
+additionalProperties: false
+description: Times the {item} is available. [See https://hl7.org/fhir/R5/AvailabilityAvailableTime.html]
+links: []
+properties:
+  _allDay:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``allDay``.
+  _availableEndTime:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``availableEndTime``.
+  _availableStartTime:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``availableStartTime``.
+  _daysOfWeek:
+    items:
+      $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``daysOfWeek``.
+    type: array
+  allDay:
+    element_property: true
+    title: Always available? i.e. 24 hour service
+    type: boolean
+  availableEndTime:
+    element_property: true
+    format: time
+    title: Closing time of day (ignored if allDay = true)
+    type: string
+  availableStartTime:
+    element_property: true
+    format: time
+    title: Opening time of day (ignored if allDay = true)
+    type: string
+  daysOfWeek:
+    binding_description: The purpose for which an extended contact detail should be
+      used.
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/days-of-week
+    binding_version: 5.0.0
+    element_property: true
+    enum_values:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+    - sat
+    - sun
+    items:
+      pattern: ^[^\s]+(\s[^\s]+)*$
+      type: string
+    title: mon | tue | wed | thu | fri | sat | sun
+    type: array
+  extension:
+    description: May be used to represent additional information that is not part
+      of the basic definition of the element. To make the use of extensions safe and
+      managable, there is a strict set of governance applied to the definition and
+      use of extensions. Though any implementer can define an extension, there is
+      a set of requirements that SHALL be met as part of the definition of the extension.
+    element_property: true
+    items:
+      $ref: Extension.yaml
+    title: Additional content defined by implementations
+    type: array
+  fhir_comments:
+    anyOf:
+    - type: string
+    - items:
+        type: string
+      type: array
+    element_property: false
+    title: Fhir Comments
+  id:
+    description: Unique id for the element within a resource (for internal references).
+      This may be any string value that does not contain spaces.
+    element_property: true
+    pattern: '[ \r\n\t\S]+'
+    title: Unique id for inter-element referencing
+    type: string
+  links:
+    items:
+      $ref: https://json-schema.org/draft/2020-12/links
+    type: array
+  resourceType:
+    const: AvailabilityAvailableTime
+    default: AvailabilityAvailableTime
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+title: AvailabilityAvailableTime
+type: object

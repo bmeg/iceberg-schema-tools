@@ -1,0 +1,205 @@
+$id: Medication
+additionalProperties: false
+description: Definition of a Medication. This resource is primarily used for the identification
+  and definition of a medication, including ingredients, for the purposes of prescribing,
+  dispensing, and administering a medication as well as for making statements about
+  medication use. [See https://hl7.org/fhir/R5/Medication.html]
+links: []
+properties:
+  _implicitRules:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``implicitRules``.
+  _language:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``language``.
+  _status:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``status``.
+  batch:
+    $ref: MedicationBatch.yaml
+    description: Information that only applies to packages (not products).
+    element_property: true
+    title: Details about packaged medications
+  code:
+    $ref: CodeableConcept.yaml
+    binding_description: A coded concept that defines the type of a medication.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/medication-codes
+    binding_version: null
+    description: 'A code (or set of codes) that specify this medication, or a textual
+      description if no code is available. Usage note: This could be a standard medication
+      code such as a code from RxNorm, SNOMED CT, IDMP etc. It could also be a national
+      or local formulary code, optionally with translations to other code systems.'
+    element_property: true
+    title: Codes that identify this medication
+  contained:
+    description: These resources do not have an independent existence apart from the
+      resource that contains them - they cannot be identified independently, nor can
+      they have their own independent transaction scope. This is allowed to be a Parameters
+      resource if and only if it is referenced by a resource that provides context/meaning.
+    element_property: true
+    items:
+      $ref: Resource.yaml
+    title: Contained, inline Resources
+    type: array
+  definition:
+    $ref: Reference.yaml
+    backref: medication
+    description: A reference to a knowledge resource that provides more information
+      about this medication.
+    element_property: true
+    enum_reference_types:
+    - MedicationKnowledge
+    title: Knowledge about this medication
+  doseForm:
+    $ref: CodeableConcept.yaml
+    binding_description: A coded concept defining the form of a medication.
+    binding_strength: example
+    binding_uri: http://hl7.org/fhir/ValueSet/medication-form-codes
+    binding_version: null
+    description: Describes the form of the item.  Powder; tablets; capsule.
+    element_property: true
+    title: powder | tablets | capsule +
+  extension:
+    description: May be used to represent additional information that is not part
+      of the basic definition of the resource. To make the use of extensions safe
+      and managable, there is a strict set of governance applied to the definition
+      and use of extensions. Though any implementer can define an extension, there
+      is a set of requirements that SHALL be met as part of the definition of the
+      extension.
+    element_property: true
+    items:
+      $ref: Extension.yaml
+    title: Additional content defined by implementations
+    type: array
+  fhir_comments:
+    anyOf:
+    - type: string
+    - items:
+        type: string
+      type: array
+    element_property: false
+    title: Fhir Comments
+  id:
+    description: The logical id of the resource, as used in the URL for the resource.
+      Once assigned, this value never changes.
+    element_property: true
+    maxLength: 64
+    minLength: 1
+    pattern: ^[A-Za-z0-9\-.]+$
+    title: Logical id of this artifact
+    type: string
+  identifier:
+    element_property: true
+    items:
+      $ref: Identifier.yaml
+    title: Business identifier for this medication
+    type: array
+  implicitRules:
+    description: A reference to a set of rules that were followed when the resource
+      was constructed, and which must be understood when processing the content. Often,
+      this is a reference to an implementation guide that defines the special rules
+      along with other profiles etc.
+    element_property: true
+    pattern: \S*
+    title: A set of rules under which this content was created
+    type: string
+  ingredient:
+    description: Identifies a particular constituent of interest in the product.
+    element_property: true
+    items:
+      $ref: MedicationIngredient.yaml
+    title: Active or inactive ingredient
+    type: array
+  language:
+    binding_description: IETF language tag for a human language
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/all-languages
+    binding_version: 5.0.0
+    description: The base language in which the resource is written.
+    element_property: true
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: Language of the resource content
+    type: string
+  links:
+    items:
+      $ref: https://json-schema.org/draft/2020-12/links
+    type: array
+  marketingAuthorizationHolder:
+    $ref: Reference.yaml
+    backref: medication
+    description: 'The company or other legal entity that has authorization, from the
+      appropriate drug regulatory authority,  to market a medicine in one or more
+      jurisdictions.  Typically abbreviated MAH.Note:  The MAH may manufacture the
+      product and may also contract the manufacturing of the product to one or more
+      companies (organizations).'
+    element_property: true
+    enum_reference_types:
+    - Organization
+    title: Organization that has authorization to market medication
+  meta:
+    $ref: Meta.yaml
+    description: The metadata about the resource. This is content that is maintained
+      by the infrastructure. Changes to the content might not always be associated
+      with version changes to the resource.
+    element_property: true
+    title: Metadata about the resource
+  modifierExtension:
+    description: May be used to represent additional information that is not part
+      of the basic definition of the resource and that modifies the understanding
+      of the element that contains it and/or the understanding of the containing element's
+      descendants. Usually modifier elements provide negation or qualification. To
+      make the use of extensions safe and managable, there is a strict set of governance
+      applied to the definition and use of extensions. Though any implementer is allowed
+      to define an extension, there is a set of requirements that SHALL be met as
+      part of the definition of the extension. Applications processing a resource
+      are required to check for modifier extensions.  Modifier extensions SHALL NOT
+      change the meaning of any elements on Resource or DomainResource (including
+      cannot change the meaning of modifierExtension itself).
+    element_property: true
+    items:
+      $ref: Extension.yaml
+    title: Extensions that cannot be ignored
+    type: array
+  resourceType:
+    const: Medication
+    default: Medication
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+  status:
+    binding_description: A coded concept defining if the medication is in active use.
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/medication-status
+    binding_version: 5.0.0
+    description: A code to indicate if the medication is in active use.
+    element_property: true
+    enum_values:
+    - active
+    - inactive
+    - entered-in-error
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: active | inactive | entered-in-error
+    type: string
+  text:
+    $ref: Narrative.yaml
+    description: A human-readable narrative that contains a summary of the resource
+      and can be used to represent the content of the resource to a human. The narrative
+      need not encode all the structured data, but is required to contain sufficient
+      detail to make it "clinically safe" for a human to just read the narrative.
+      Resource definitions may define what content should be represented in the narrative
+      to ensure clinical safety.
+    element_property: true
+    title: Text summary of the resource, for human interpretation
+  totalVolume:
+    $ref: Quantity.yaml
+    description: When the specified product code does not infer a package size, this
+      is the specific amount of drug in the product.  For example, when specifying
+      a product that has the same strength (For example, Insulin glargine 100 unit
+      per mL solution for injection), this attribute provides additional clarification
+      of the package amount (For example, 3 mL, 10mL, etc.).
+    element_property: true
+    title: When the specified product code does not infer a package size, this is
+      the specific amount of drug in the product
+title: Medication
+type: object

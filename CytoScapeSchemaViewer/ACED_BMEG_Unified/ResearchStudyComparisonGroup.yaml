@@ -1,0 +1,121 @@
+$id: ResearchStudyComparisonGroup
+additionalProperties: false
+description: 'Defined path through the study for a subject. Describes an expected
+  event or sequence of events for one of the subjects of a study. E.g. for a living
+  subject: exposure to drug A, wash-out, exposure to drug B, wash-out, follow-up.
+  E.g. for a stability study: {store sample from lot A at 25 degrees for 1 month},
+  {store sample from lot A at 40 degrees for 1 month}. [See https://hl7.org/fhir/R5/ResearchStudyComparisonGroup.html]'
+links: []
+properties:
+  _description:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``description``.
+  _linkId:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``linkId``.
+  _name:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``name``.
+  description:
+    description: A succinct description of the path through the study that would be
+      followed by a subject adhering to this comparisonGroup.
+    element_property: true
+    pattern: \s*(\S|\s)*
+    title: Short explanation of study path
+    type: string
+  extension:
+    description: May be used to represent additional information that is not part
+      of the basic definition of the element. To make the use of extensions safe and
+      managable, there is a strict set of governance applied to the definition and
+      use of extensions. Though any implementer can define an extension, there is
+      a set of requirements that SHALL be met as part of the definition of the extension.
+    element_property: true
+    items:
+      $ref: Extension.yaml
+    title: Additional content defined by implementations
+    type: array
+  fhir_comments:
+    anyOf:
+    - type: string
+    - items:
+        type: string
+      type: array
+    element_property: false
+    title: Fhir Comments
+  id:
+    description: Unique id for the element within a resource (for internal references).
+      This may be any string value that does not contain spaces.
+    element_property: true
+    pattern: '[ \r\n\t\S]+'
+    title: Unique id for inter-element referencing
+    type: string
+  intendedExposure:
+    backref: intendedExposure_research_study_comparison_group
+    element_property: true
+    enum_reference_types:
+    - EvidenceVariable
+    items:
+      $ref: Reference.yaml
+    title: Interventions or exposures in this comparisonGroup or cohort
+    type: array
+  linkId:
+    element_property: true
+    maxLength: 64
+    minLength: 1
+    pattern: ^[A-Za-z0-9\-.]+$
+    title: Allows the comparisonGroup for the study and the comparisonGroup for the
+      subject to be linked easily
+    type: string
+  links:
+    items:
+      $ref: https://json-schema.org/draft/2020-12/links
+    type: array
+  modifierExtension:
+    description: May be used to represent additional information that is not part
+      of the basic definition of the element and that modifies the understanding of
+      the element in which it is contained and/or the understanding of the containing
+      element's descendants. Usually modifier elements provide negation or qualification.
+      To make the use of extensions safe and managable, there is a strict set of governance
+      applied to the definition and use of extensions. Though any implementer can
+      define an extension, there is a set of requirements that SHALL be met as part
+      of the definition of the extension. Applications processing a resource are required
+      to check for modifier extensions.  Modifier extensions SHALL NOT change the
+      meaning of any elements on Resource or DomainResource (including cannot change
+      the meaning of modifierExtension itself).
+    element_property: true
+    items:
+      $ref: Extension.yaml
+    title: Extensions that cannot be ignored even if unrecognized
+    type: array
+  name:
+    description: Unique, human-readable label for this comparisonGroup of the study.
+    element_property: true
+    element_required: true
+    pattern: '[ \r\n\t\S]+'
+    title: Label for study comparisonGroup
+    type: string
+  observedGroup:
+    $ref: Reference.yaml
+    backref: research_study_comparison_group
+    element_property: true
+    enum_reference_types:
+    - Group
+    title: Group of participants who were enrolled in study comparisonGroup
+  resourceType:
+    const: ResearchStudyComparisonGroup
+    default: ResearchStudyComparisonGroup
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+  type:
+    $ref: CodeableConcept.yaml
+    binding_description: desc.
+    binding_strength: extensible
+    binding_uri: http://hl7.org/fhir/ValueSet/research-study-arm-type
+    binding_version: null
+    description: Categorization of study comparisonGroup, e.g. experimental, active
+      comparator, placebo comparater.
+    element_property: true
+    title: Categorization of study comparisonGroup
+title: ResearchStudyComparisonGroup
+type: object

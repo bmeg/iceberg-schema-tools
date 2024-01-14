@@ -1,0 +1,84 @@
+$id: ResearchStudyProgressStatus
+additionalProperties: false
+description: Status of study with time for that status. [See https://hl7.org/fhir/R5/ResearchStudyProgressStatus.html]
+links: []
+properties:
+  _actual:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``actual``.
+  actual:
+    description: An indication of whether or not the date is a known date when the
+      state changed or will change. A value of true indicates a known date. A value
+      of false indicates an estimated date.
+    element_property: true
+    title: Actual if true else anticipated
+    type: boolean
+  extension:
+    description: May be used to represent additional information that is not part
+      of the basic definition of the element. To make the use of extensions safe and
+      managable, there is a strict set of governance applied to the definition and
+      use of extensions. Though any implementer can define an extension, there is
+      a set of requirements that SHALL be met as part of the definition of the extension.
+    element_property: true
+    items:
+      $ref: Extension.yaml
+    title: Additional content defined by implementations
+    type: array
+  fhir_comments:
+    anyOf:
+    - type: string
+    - items:
+        type: string
+      type: array
+    element_property: false
+    title: Fhir Comments
+  id:
+    description: Unique id for the element within a resource (for internal references).
+      This may be any string value that does not contain spaces.
+    element_property: true
+    pattern: '[ \r\n\t\S]+'
+    title: Unique id for inter-element referencing
+    type: string
+  links:
+    items:
+      $ref: https://json-schema.org/draft/2020-12/links
+    type: array
+  modifierExtension:
+    description: May be used to represent additional information that is not part
+      of the basic definition of the element and that modifies the understanding of
+      the element in which it is contained and/or the understanding of the containing
+      element's descendants. Usually modifier elements provide negation or qualification.
+      To make the use of extensions safe and managable, there is a strict set of governance
+      applied to the definition and use of extensions. Though any implementer can
+      define an extension, there is a set of requirements that SHALL be met as part
+      of the definition of the extension. Applications processing a resource are required
+      to check for modifier extensions.  Modifier extensions SHALL NOT change the
+      meaning of any elements on Resource or DomainResource (including cannot change
+      the meaning of modifierExtension itself).
+    element_property: true
+    items:
+      $ref: Extension.yaml
+    title: Extensions that cannot be ignored even if unrecognized
+    type: array
+  period:
+    $ref: Period.yaml
+    element_property: true
+    title: Date range
+  resourceType:
+    const: ResearchStudyProgressStatus
+    default: ResearchStudyProgressStatus
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+  state:
+    $ref: CodeableConcept.yaml
+    binding_description: defn.
+    binding_strength: extensible
+    binding_uri: http://hl7.org/fhir/ValueSet/research-study-status
+    binding_version: null
+    element_property: true
+    title: Label for status or state (e.g. recruitment status)
+required:
+- state
+title: ResearchStudyProgressStatus
+type: object

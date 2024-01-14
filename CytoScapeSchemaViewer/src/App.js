@@ -139,7 +139,7 @@ export default function App() {
             selector: "edge",
             style: {
               "line-color": "lightgreen",
-              "width": 1.5
+              "width": 2.5
             }
           },  
           {

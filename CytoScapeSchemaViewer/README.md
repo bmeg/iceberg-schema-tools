@@ -28,6 +28,17 @@ The below command will generate a FHIR graph from 1 aggregated FHIR schema file
 python schema.py one_file --input_path aced-bmeg.json
 ```
 
+## FHIR-BMEG Unified schema viewer:
+
+The schema.py file is currently setup to generate a graph for the unified schema.
+Run the below commands to view the schema.
+```
+python schema.py yaml_dir
+export NODE_OPTIONS=--openssl-legacy-provider
+npm i
+npm start
+```
+
 ## BMEG schema viewer update steps
 ```
 wget https://github.com/bmeg/bmeg-etl/archive/refs/heads/develop.zip

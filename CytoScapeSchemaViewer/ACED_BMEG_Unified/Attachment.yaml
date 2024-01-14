@@ -1,0 +1,175 @@
+$id: Attachment
+additionalProperties: false
+description: Content in a format defined elsewhere. For referring to data content
+  defined in other formats. [See https://hl7.org/fhir/R5/Attachment.html]
+links: []
+properties:
+  _contentType:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``contentType``.
+  _creation:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``creation``.
+  _data:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``data``.
+  _duration:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``duration``.
+  _frames:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``frames``.
+  _hash:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``hash``.
+  _height:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``height``.
+  _language:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``language``.
+  _pages:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``pages``.
+  _size:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``size``.
+  _title:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``title``.
+  _url:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``url``.
+  _width:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``width``.
+  contentType:
+    binding_description: BCP 13 (RFCs 2045, 2046, 2047, 4288, 4289 and 2049)
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/mimetypes
+    binding_version: 5.0.0
+    description: Identifies the type of the data in the attachment and allows a method
+      to be chosen to interpret or render the data. Includes mime type parameters
+      such as charset where appropriate.
+    element_property: true
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: Mime type of the content, with charset etc.
+    type: string
+  creation:
+    description: The date that the attachment was first created.
+    element_property: true
+    format: date-time
+    title: Date attachment was first created
+    type: string
+  data:
+    description: The actual data of the attachment - a sequence of bytes, base64 encoded.
+    element_property: true
+    format: binary
+    title: Data inline, base64ed
+    type: string
+  duration:
+    description: The duration of the recording in seconds - for audio and video.
+    element_property: true
+    title: Length in seconds (audio / video)
+    type: number
+  extension:
+    description: May be used to represent additional information that is not part
+      of the basic definition of the element. To make the use of extensions safe and
+      managable, there is a strict set of governance applied to the definition and
+      use of extensions. Though any implementer can define an extension, there is
+      a set of requirements that SHALL be met as part of the definition of the extension.
+    element_property: true
+    items:
+      $ref: Extension.yaml
+    title: Additional content defined by implementations
+    type: array
+  fhir_comments:
+    anyOf:
+    - type: string
+    - items:
+        type: string
+      type: array
+    element_property: false
+    title: Fhir Comments
+  frames:
+    description: The number of frames in a photo. This is used with a multi-page fax,
+      or an imaging acquisition context that takes multiple slices in a single image,
+      or an animated gif. If there is more than one frame, this SHALL have a value
+      in order to alert interface software that a multi-frame capable rendering widget
+      is required.
+    element_property: true
+    exclusiveMinimum: 0
+    title: Number of frames if > 1 (photo)
+    type: integer
+  hash:
+    description: The calculated hash of the data using SHA-1. Represented using base64.
+    element_property: true
+    format: binary
+    title: Hash of the data (sha-1, base64ed)
+    type: string
+  height:
+    element_property: true
+    exclusiveMinimum: 0
+    title: Height of the image in pixels (photo/video)
+    type: integer
+  id:
+    description: Unique id for the element within a resource (for internal references).
+      This may be any string value that does not contain spaces.
+    element_property: true
+    pattern: '[ \r\n\t\S]+'
+    title: Unique id for inter-element referencing
+    type: string
+  language:
+    binding_description: IETF language tag for a human language.
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/all-languages
+    binding_version: 5.0.0
+    description: The human language of the content. The value can be any valid value
+      according to BCP 47.
+    element_property: true
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: Human language of the content (BCP-47)
+    type: string
+  links:
+    items:
+      $ref: https://json-schema.org/draft/2020-12/links
+    type: array
+  pages:
+    description: The number of pages when printed.
+    element_property: true
+    exclusiveMinimum: 0
+    title: Number of printed pages
+    type: integer
+  resourceType:
+    const: Attachment
+    default: Attachment
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+  size:
+    description: The number of bytes of data that make up this attachment (before
+      base64 encoding, if that is done).
+    element_property: true
+    title: Number of bytes of content (if url provided)
+    type: integer
+  title:
+    description: A label or set of text to display in place of the data.
+    element_property: true
+    pattern: '[ \r\n\t\S]+'
+    title: Label to display in place of the data
+    type: string
+  url:
+    description: A location where the data can be accessed.
+    element_property: true
+    format: uri
+    maxLength: 65536
+    minLength: 1
+    title: Uri where the data can be found
+    type: string
+  width:
+    element_property: true
+    exclusiveMinimum: 0
+    title: Width of the image in pixels (photo/video)
+    type: integer
+title: Attachment
+type: object

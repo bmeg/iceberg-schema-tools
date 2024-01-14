@@ -1,0 +1,409 @@
+$id: Specimen
+additionalProperties: false
+description: Sample for analysis. A sample to be used for analysis. [See https://hl7.org/fhir/R5/Specimen.html]
+links:
+- rel: ResearchStudies
+  href: ResearchStudy/{id}
+  templateRequired:
+  - id
+  targetSchema:
+    $ref: ResearchStudy.yaml
+  templatePointers:
+    id: /ResearchStudy/-/id
+  targetHints:
+    directionality:
+    - outbound
+    multiplicity:
+    - has_many
+    backref: Specimen
+- rel: phenotypes
+  href: phenotype/{id}
+  templateRequired:
+    - id
+  targetSchema:
+    $ref: phenotype.yaml
+  templatePointers:
+    id: /phenotypes/-/id
+  targetHints:
+    directionality:
+    - outbound
+    multiplicity:
+    - has_many
+    backref: Specimen
+- href: Specimen/{id}
+  rel: parent
+  targetHints:
+    backref:
+    - parent_specimen
+    direction:
+    - outbound
+    multiplicity:
+    - has_many
+  targetSchema:
+    $ref: Specimen.yaml
+  templatePointers:
+    id: /parent/-/reference
+  templateRequired:
+  - id
+- href: Patient/{id}
+  rel: subject_Patient
+  targetHints:
+    backref:
+    - specimen
+    direction:
+    - outbound
+    multiplicity:
+    - has_one
+  targetSchema:
+    $ref: Patient.yaml
+  templatePointers:
+    id: /subject/reference
+  templateRequired:
+  - id
+- href: Substance/{id}
+  rel: subject_Substance
+  targetHints:
+    backref:
+    - specimen
+    direction:
+    - outbound
+    multiplicity:
+    - has_one
+  targetSchema:
+    $ref: Substance.yaml
+  templatePointers:
+    id: /subject/reference
+  templateRequired:
+  - id
+- $comment: From SpecimenCollection/collection
+  href: Patient/{id}
+  rel: collection_collector_Patient
+  targetHints:
+    backref:
+    - specimen_collection
+    direction:
+    - outbound
+    multiplicity:
+    - has_one
+  targetSchema:
+    $ref: Patient.yaml
+  templatePointers:
+    id: /collection/collector/reference
+  templateRequired:
+  - id
+- $comment: From Annotation/note
+  href: Patient/{id}
+  rel: note_authorReference_Patient
+  targetHints:
+    backref:
+    - annotation
+    direction:
+    - outbound
+    multiplicity:
+    - has_one
+  targetSchema:
+    $ref: Patient.yaml
+  templatePointers:
+    id: /note/-/authorReference/reference
+  templateRequired:
+  - id
+- $comment: From SpecimenProcessing/processing
+  href: Substance/{id}
+  rel: processing_additive
+  targetHints:
+    backref:
+    - additive_specimen_processing
+    direction:
+    - outbound
+    multiplicity:
+    - has_many
+  targetSchema:
+    $ref: Substance.yaml
+  templatePointers:
+    id: /processing/-/additive/-/reference
+  templateRequired:
+  - id
+properties:
+  _combined:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``combined``.
+  _implicitRules:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``implicitRules``.
+  _language:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``language``.
+  _receivedTime:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``receivedTime``.
+  _status:
+    $ref: FHIRPrimitiveExtension.yaml
+    title: Extension field for ``status``.
+  accessionIdentifier:
+    $ref: Identifier.yaml
+    description: The identifier assigned by the lab when accessioning specimen(s).
+      This is not necessarily the same as the specimen identifier, depending on local
+      lab procedures.
+    element_property: true
+    title: Identifier assigned by the lab
+  collection:
+    $ref: SpecimenCollection.yaml
+    description: Details concerning the specimen collection.
+    element_property: true
+    title: Collection details
+  combined:
+    binding_description: Codes for the combined status of a specimen.
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/specimen-combined
+    binding_version: 5.0.0
+    description: This element signifies if the specimen is part of a group or pooled.
+    element_property: true
+    enum_values:
+    - grouped
+    - pooled
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: grouped | pooled
+    type: string
+  condition:
+    binding_description: Codes describing the state of the specimen.
+    binding_strength: extensible
+    binding_uri: http://terminology.hl7.org/ValueSet/v2-0493
+    binding_version: null
+    description: A mode or state of being that describes the nature of the specimen.
+    element_property: true
+    items:
+      $ref: CodeableConcept.yaml
+    title: State of the specimen
+    type: array
+  contained:
+    description: These resources do not have an independent existence apart from the
+      resource that contains them - they cannot be identified independently, nor can
+      they have their own independent transaction scope. This is allowed to be a Parameters
+      resource if and only if it is referenced by a resource that provides context/meaning.
+    element_property: true
+    items:
+      $ref: Resource.yaml
+    title: Contained, inline Resources
+    type: array
+  container:
+    description: The container holding the specimen.  The recursive nature of containers;
+      i.e. blood in tube in tray in rack is not addressed here.
+    element_property: true
+    items:
+      $ref: SpecimenContainer.yaml
+    title: Direct container of specimen (tube/slide, etc.)
+    type: array
+  extension:
+    description: May be used to represent additional information that is not part
+      of the basic definition of the resource. To make the use of extensions safe
+      and managable, there is a strict set of governance applied to the definition
+      and use of extensions. Though any implementer can define an extension, there
+      is a set of requirements that SHALL be met as part of the definition of the
+      extension.
+    element_property: true
+    items:
+      $ref: Extension.yaml
+    title: Additional content defined by implementations
+    type: array
+  feature:
+    description: A physical feature or landmark on a specimen, highlighted for context
+      by the collector of the specimen (e.g. surgeon), that identifies the type of
+      feature as well as its meaning (e.g. the red ink indicating the resection margin
+      of the right lobe of the excised prostate tissue or wire loop at radiologically
+      suspected tumor location).
+    element_property: true
+    items:
+      $ref: SpecimenFeature.yaml
+    title: The physical feature of a specimen
+    type: array
+  fhir_comments:
+    anyOf:
+    - type: string
+    - items:
+        type: string
+      type: array
+    element_property: false
+    title: Fhir Comments
+  id:
+    description: The logical id of the resource, as used in the URL for the resource.
+      Once assigned, this value never changes.
+    element_property: true
+    maxLength: 64
+    minLength: 1
+    pattern: ^[A-Za-z0-9\-.]+$
+    title: Logical id of this artifact
+    type: string
+  identifier:
+    description: Id for specimen.
+    element_property: true
+    items:
+      $ref: Identifier.yaml
+    title: External Identifier
+    type: array
+  implicitRules:
+    description: A reference to a set of rules that were followed when the resource
+      was constructed, and which must be understood when processing the content. Often,
+      this is a reference to an implementation guide that defines the special rules
+      along with other profiles etc.
+    element_property: true
+    pattern: \S*
+    title: A set of rules under which this content was created
+    type: string
+  language:
+    binding_description: IETF language tag for a human language
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/all-languages
+    binding_version: 5.0.0
+    description: The base language in which the resource is written.
+    element_property: true
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: Language of the resource content
+    type: string
+  links:
+    items:
+      $ref: https://json-schema.org/draft/2020-12/links
+    type: array
+  meta:
+    $ref: Meta.yaml
+    description: The metadata about the resource. This is content that is maintained
+      by the infrastructure. Changes to the content might not always be associated
+      with version changes to the resource.
+    element_property: true
+    title: Metadata about the resource
+  modifierExtension:
+    description: May be used to represent additional information that is not part
+      of the basic definition of the resource and that modifies the understanding
+      of the element that contains it and/or the understanding of the containing element's
+      descendants. Usually modifier elements provide negation or qualification. To
+      make the use of extensions safe and managable, there is a strict set of governance
+      applied to the definition and use of extensions. Though any implementer is allowed
+      to define an extension, there is a set of requirements that SHALL be met as
+      part of the definition of the extension. Applications processing a resource
+      are required to check for modifier extensions.  Modifier extensions SHALL NOT
+      change the meaning of any elements on Resource or DomainResource (including
+      cannot change the meaning of modifierExtension itself).
+    element_property: true
+    items:
+      $ref: Extension.yaml
+    title: Extensions that cannot be ignored
+    type: array
+  note:
+    description: 'To communicate any details or issues about the specimen or during
+      the specimen collection. (for example: broken vial, sent with patient, frozen).'
+    element_property: true
+    items:
+      $ref: Annotation.yaml
+    title: Comments
+    type: array
+  parent:
+    backref: parent_specimen
+    description: Reference to the parent (source) specimen which is used when the
+      specimen was either derived from or a component of another specimen.
+    element_property: true
+    enum_reference_types:
+    - Specimen
+    items:
+      $ref: Reference.yaml
+    title: Specimen from which this specimen originated
+    type: array
+  processing:
+    description: Details concerning processing and processing steps for the specimen.
+    element_property: true
+    items:
+      $ref: SpecimenProcessing.yaml
+    title: Processing and processing step details
+    type: array
+  receivedTime:
+    description: Time when specimen is received by the testing laboratory for processing
+      or testing.
+    element_property: true
+    format: date-time
+    title: The time when specimen is received by the testing laboratory
+    type: string
+  request:
+    backref: request_specimen
+    description: Details concerning a service request that required a specimen to
+      be collected.
+    element_property: true
+    enum_reference_types:
+    - ServiceRequest
+    items:
+      $ref: Reference.yaml
+    title: Why the specimen was collected
+    type: array
+  resourceType:
+    const: Specimen
+    default: Specimen
+    description: One of the resource types defined as part of FHIR
+    title: Resource Type
+    type: string
+  role:
+    binding_description: Codes describing specimen role.
+    binding_strength: preferred
+    binding_uri: http://hl7.org/fhir/ValueSet/specimen-role
+    binding_version: null
+    description: The role or reason for the specimen in the testing workflow.
+    element_property: true
+    items:
+      $ref: CodeableConcept.yaml
+    title: The role the specimen serves
+    type: array
+  status:
+    binding_description: Codes providing the status/availability of a specimen.
+    binding_strength: required
+    binding_uri: http://hl7.org/fhir/ValueSet/specimen-status
+    binding_version: 5.0.0
+    description: The availability of the specimen.
+    element_property: true
+    enum_values:
+    - available
+    - unavailable
+    - unsatisfactory
+    - entered-in-error
+    pattern: ^[^\s]+(\s[^\s]+)*$
+    title: available | unavailable | unsatisfactory | entered-in-error
+    type: string
+  subject:
+    $ref: Reference.yaml
+    backref: specimen
+    element_property: true
+    enum_reference_types:
+    - Patient
+    - Group
+    - Device
+    - BiologicallyDerivedProduct
+    - Substance
+    - Location
+    title: Where the specimen came from. This may be from patient(s), from a location
+      (e.g., the source of an environmental sample), or a sampling of a substance,
+      a biologically-derived product, or a device
+  text:
+    $ref: Narrative.yaml
+    description: A human-readable narrative that contains a summary of the resource
+      and can be used to represent the content of the resource to a human. The narrative
+      need not encode all the structured data, but is required to contain sufficient
+      detail to make it "clinically safe" for a human to just read the narrative.
+      Resource definitions may define what content should be represented in the narrative
+      to ensure clinical safety.
+    element_property: true
+    title: Text summary of the resource, for human interpretation
+  type:
+    $ref: CodeableConcept.yaml
+    binding_description: The type of the specimen.
+    binding_strength: example
+    binding_uri: http://terminology.hl7.org/ValueSet/v2-0487
+    binding_version: null
+    description: The kind of material that forms the specimen.
+    element_property: true
+    title: Kind of material that forms the specimen
+  phenotypes:
+    $ref: phenotype.yaml
+    description: 'An observable characteristics of a case or sample resulting from the  interaction
+      of its genotype with the environment (i.e. a disease).'
+    element_property: true
+  ResearchStudies:
+    $ref: ResearchStudy.yaml
+    description: 'Investigation to increase healthcare-related patient-independent knowledge.'
+    element_property: true
+title: Specimen
+type: object
