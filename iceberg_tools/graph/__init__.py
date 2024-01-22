@@ -7,6 +7,7 @@ import fastjsonschema
 import jsonschema
 import requests
 import re
+import json
 from jsonpointer import resolve_pointer
 
 from iceberg_tools.schema import extract_schemas, BASE_URI
@@ -581,7 +582,6 @@ class VertexLinkWriter:
 
         _ = self._extract_href_keys(schema_href)[0]
 
-        if 'Resource' in schema_href:  # Any Resource
         if 'Resource' in schema_href:  # Any Resource
             return instance_href, _
 

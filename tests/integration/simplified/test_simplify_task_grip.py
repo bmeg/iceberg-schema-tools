@@ -23,7 +23,7 @@ def test_simplify_task(distribution_schema):
     with SimplifierContextManager():
 
         simplified, references = simplify(task, dialect='PFB')
-        rendered = _render_dialect(simplified, references, 'PFB', schemas=distribution_schema)
+        rendered = _render_dialect(simplified, references, 'PFB', schemas=distribution_schema, project_id=None)
 
         print(orjson.dumps(rendered, option=orjson.OPT_INDENT_2).decode())
 
@@ -85,10 +85,12 @@ def test_simplify_task_grip(distribution_schema):
     task = Task(**task)
     with SimplifierContextManager():
         simplified, references = simplify(task, dialect='GRIP')
-        rendered = _render_dialect(simplified, references, 'GRIP', schemas=distribution_schema)
+        rendered = _render_dialect(simplified, references, 'GRIP', schemas=distribution_schema, project_id="test-synthea")
         print(orjson.dumps(rendered, option=orjson.OPT_INDENT_2).decode())
         assert rendered["data"] == {
-                                        "id": "857f89ab-2808-5592-a3e1-315466bc6181",
-                                        "status": "completed",
-                                        "intent": "order"
-                                    }
+            "id": "857f89ab-2808-5592-a3e1-315466bc6181",
+            "status": "completed",
+            "intent": "order",
+            'auth_resource_path': '/programs/test/projects/test',
+            'project_id': 'test-synthea'
+        }

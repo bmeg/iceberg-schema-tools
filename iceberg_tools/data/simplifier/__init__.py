@@ -543,12 +543,12 @@ def _grip_simplifier(simplified: dict, project_id: str):
         "label": simplified["resourceType"],
     }
     simplified.update({
-        "project_id":project_id,
+        "project_id": project_id,
         "auth_resource_path": f"/programs/{project_parts[0]}/projects/{project_parts[0]}"
     })
     # If vertex is project, front end expects to see an availability type
     if simplified["resourceType"] == "Project":
-        simplified.update({"availability_type":"Open"})
+        simplified.update({"availability_type": "Open"})
 
     del simplified["resourceType"]
 
@@ -634,7 +634,7 @@ def _ensure_dialect(simplified: dict, resource: FHIRAbstractModel, dialect: str)
     return simplified
 
 
-def _render_dialect(simplified: dict, references: List[str], dialect: str, schemas: dict, project_id: str, limit_links: dict = {}) -> dict:
+def _render_dialect(simplified: dict, references: List[str], dialect: str, schemas: dict, project_id: str = None, limit_links: dict = {}) -> dict:
     """Render as PFB record ready for import"""
 
     if dialect == 'FHIR':
@@ -798,13 +798,12 @@ def directory_json(
                 continue
 
 
-def simplify_directory(input_path, pattern, output_path, schema_path, dialect, config_path, project_id, transform_ids=None):
+def simplify_directory(input_path, pattern, output_path, schema_path, dialect, config_path, project_id=None, transform_ids=None):
     """Reads directory of FHIR, renders simple, data frame friendly flattened records."""
 
     input_path = pathlib.Path(input_path)
     assert input_path.is_dir(), f"{input_path} not a directory"
     dialect = dialect.upper()
-    print("DIALECT ", dialect)
 
     if pathlib.Path(schema_path).is_file():
         with open(schema_path, "rb") as fp_:

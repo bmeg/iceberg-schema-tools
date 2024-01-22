@@ -43,5 +43,5 @@ def edge_schemas(fhir_schema):
 
 
 @pytest.fixture()
-def lath_path():
-    return pathlib.Path('~/go/bin/lathe').expanduser()
+def jsonschemagraph_path():
+    return pathlib.Path('~/go/bin/jsonschemagraph').expanduser()
