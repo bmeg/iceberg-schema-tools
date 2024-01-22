@@ -534,8 +534,21 @@ def validate_simplified_value(v) -> bool:
     return True
 
 
-def _grip_simplifier(simplified: dict):
-    new_dict = {"gid": simplified["id"], "label": simplified["resourceType"]}
+def _grip_simplifier(simplified: dict, project_id: str):
+    project_parts = project_id.split("-")
+    assert len(project_parts) == 2, "project_id must be of form [program]-[project]"
+    new_dict = {
+        "gid": simplified["id"],
+        "label": simplified["resourceType"],
+    }
+    simplified.update({
+        "project_id":project_id,
+        "auth_resource_path": f"/programs/{project_parts[0]}/projects/{project_parts[0]}"
+    })
+    # If vertex is project, front end expects to see an availability type
+    if simplified["resourceType"] == "Project":
+        simplified.update({"availability_type":"Open"})
+
     del simplified["resourceType"]
 
     # uuid regex
@@ -620,15 +633,14 @@ def _ensure_dialect(simplified: dict, resource: FHIRAbstractModel, dialect: str)
     return simplified
 
 
-def _render_dialect(simplified: dict, references: List[str], dialect: str, schemas: dict, limit_links: dict = {}) -> dict:
-    """Render as PFB record ready for import
-    """
+def _render_dialect(simplified: dict, references: List[str], dialect: str, schemas: dict, project_id: str, limit_links: dict = {}) -> dict:
+    """Render as PFB record ready for import"""
 
     if dialect == 'FHIR':
         return simplified
 
     if dialect == "GRIP":
-        grip_simplified = _grip_simplifier(simplified)
+        grip_simplified = _grip_simplifier(simplified, project_id)
         return grip_simplified
 
     labels = [_['title'] for _ in schemas.values() if 'title' in _]
@@ -785,7 +797,7 @@ def directory_json(
                 continue
 
 
-def simplify_directory(input_path, pattern, output_path, schema_path, dialect, config_path, transform_ids=None):
+def simplify_directory(input_path, pattern, output_path, schema_path, dialect, config_path, project_id, transform_ids=None):
     """Reads directory of FHIR, renders simple, data frame friendly flattened records."""
 
     input_path = pathlib.Path(input_path)
@@ -829,7 +841,7 @@ def simplify_directory(input_path, pattern, output_path, schema_path, dialect, c
                 all_ok = all([validate_simplified_value(_) for _ in simplified.values()])
                 _assert_all_ok(all_ok, parse_result, resource, simplified)
 
-                simplified = _render_dialect(simplified, references, dialect, schemas, limit_links)
+                simplified = _render_dialect(simplified, references, dialect, schemas, project_id, limit_links)
                 fp = emitter.emit(resource.resource_type)
 
                 fp.write(orjson.dumps(simplified, default=_default_json_serializer,
@@ -900,17 +912,21 @@ def _assert_all_ok(all_ok, parse_result, resource, simplified):
               default='config.yaml',
               show_default=True,
               help='Path to config file.')
+@click.option('--project_id',
+              default=None,
+              show_default=True,
+              help='If grip dialect is enabled, project_id is required')
 @click.option('--transform_ids',
               default=None,
               show_default=True,
               help='Transform ids based on this seed')
-def cli(path, pattern, output_path, schema_path, dialect, config_path, transform_ids):
+def cli(path, pattern, output_path, schema_path, dialect, config_path, project_id, transform_ids):
     """Renders PFB friendly flattened records.
 
     PATH: Path containing bundles (*.json) or resources (*.ndjson)
     OUTPUT_PATH: Path where simplified resources will be stored
     """
-    simplify_directory(path, pattern, output_path, schema_path, dialect, config_path, transform_ids)
+    simplify_directory(path, pattern, output_path, schema_path, dialect, config_path, project_id, transform_ids)
 
 
 if __name__ == '__main__':
