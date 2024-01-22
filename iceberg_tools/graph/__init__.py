@@ -582,6 +582,7 @@ class VertexLinkWriter:
         _ = self._extract_href_keys(schema_href)[0]
 
         if 'Resource' in schema_href:  # Any Resource
+        if 'Resource' in schema_href:  # Any Resource
             return instance_href, _
 
         m = rexp.match(instance_href)
