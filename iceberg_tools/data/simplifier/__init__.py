@@ -547,7 +547,7 @@ def _grip_simplifier(simplified: dict, project_id: str):
     }
     simplified.update({
         "project_id": project_id,
-        "auth_resource_path": f"/programs/{project_parts[0]}/projects/{project_parts[0]}"
+        "auth_resource_path": f"/programs/{project_parts[0]}/projects/{project_parts[1]}"
     })
     # If vertex is project, front end expects to see an availability type
     if simplified["resourceType"] == "Project":
@@ -821,7 +821,8 @@ def simplify_directory(input_path, pattern, output_path, schema_path, dialect, c
     nested_objects = gen3_config['nested_objects']
 
     with SimplifierContextManager():
-        with EmitterContextManager(output_path) as emitter, EmitterContextManager(output_path + ".edges") as edge_emitter:
+        with EmitterContextManager(output_path) as emitter:
+
             for parse_result in directory_reader(directory_path=input_path, pattern=pattern,
                                                  validate=False, ignore_path=output_path):
                 # print("PARSE RESULT: ", parse_result)
@@ -847,49 +848,56 @@ def simplify_directory(input_path, pattern, output_path, schema_path, dialect, c
                 simplified = _render_dialect(simplified, references, dialect, schemas, project_id, limit_links)
                 fp = emitter.emit(resource.resource_type)
 
-                if dialect == "GRIP":
-                    if "edges" in simplified:
-                        ep = edge_emitter.emit(resource.resource_type)
-                        for entry in simplified["edges"]:
-                            ep.write(orjson.dumps(entry, default=_default_json_serializer,
-                                                  option=orjson.OPT_APPEND_NEWLINE).decode())
-                        del simplified["edges"]
-                else:
-                    if os.path.exists(output_path + ".edges"):
-                        os.rmdir(output_path + ".edges")
-
                 fp.write(orjson.dumps(simplified, default=_default_json_serializer,
                                       option=orjson.OPT_APPEND_NEWLINE).decode())
 
-        if dialect == "GRIP":
-            logger.info(f"Generating Grip Edges at {output_path}.edges")
-            schemas = schemas["$defs"]
-            with EmitterContextManager(output_path + ".edges") as emitter:
-                first_line = True
-                # read the first line so that don't have to re-enter the VertexLinkWriter every line
-                for vertex in directory_reader(directory_path=input_path, pattern=pattern,
-                                               validate=False, ignore_path=output_path):
-                    vertex = vertex.object
-                    if first_line and "resourceType" in vertex and vertex["resourceType"] in schemas:
-                        actual_schema = schemas[vertex["resourceType"]]
-                        break
-                    else:
-                        logger.warning(f"resourceType field not found for first line in line {vertex}")
-
-                with VertexLinkWriter(actual_schema) as mgr:
+            if dialect == "GRIP":
+                logger.info(f"Generating Grip Edges at {output_path}.edges")
+                schemas = schemas["$defs"]
+                with EmitterContextManager(output_path + ".edges") as edge_emitter:
+                    first_line = True
+                    # read the first line so that don't have to re-enter the VertexLinkWriter every line
                     for vertex in directory_reader(directory_path=input_path, pattern=pattern,
                                                    validate=False, ignore_path=output_path):
                         vertex = vertex.object
-                        instance = mgr.insert_links(vertex)
-                        if "links" in instance:
-                            for link in instance['links']:
-                                edge = {"label": link["rel"], "from": str(instance["id"]), "to": link["href"].split("/")[-1]}
-                                fp = emitter.emit(vertex["resourceType"])
-                                fp.write(orjson.dumps(edge, default=_default_json_serializer,
-                                         option=orjson.OPT_APPEND_NEWLINE).decode())
-                                logger.info(f" {edge}")
+                        if first_line and "resourceType" in vertex and vertex["resourceType"] in schemas:
+                            actual_schema = schemas[vertex["resourceType"]]
+                            break
                         else:
-                            logger.warning(f"ResourceType key not in resource, skipping line {vertex}")
+                            logger.warning(f"resourceType field not found for first line in line {vertex}")
+
+                    with VertexLinkWriter(actual_schema) as mgr:
+                        for vertex in directory_reader(directory_path=input_path, pattern=pattern,
+                                                       validate=False, ignore_path=output_path):
+                            vertex = vertex.object
+                            instance = mgr.insert_links(vertex)
+                            if "links" in instance:
+                                for link in instance['links']:
+                                    edge = {"label": link["rel"], "from": str(instance["id"]), "to": link["href"].split("/")[-1]}
+                                    fp = edge_emitter.emit(vertex["resourceType"])
+                                    fp.write(orjson.dumps(edge, default=_default_json_serializer,
+                                             option=orjson.OPT_APPEND_NEWLINE).decode())
+                                    logger.info(f" {edge}")
+                            else:
+                                logger.warning(f"ResourceType key not in resource, skipping line {vertex}")
+
+                assert project_id is not None, "using dialect GRIP, --project_id option must be populated"
+                fp = emitter.emit("Project")
+                project_parts = project_id.split("-")
+                vertex = {
+                    "gid": str(uuid.uuid5(ICEBERG_NAMESPACE, project_id)),
+                    "label": "Project",
+                    "data": {
+                        "auth_resource_path": f"/programs/{project_parts[0]}/projects/{project_parts[1]}",
+                        "availability_type": "Open",
+                        "code": project_parts[1],
+                        "id": str(uuid.uuid5(ICEBERG_NAMESPACE, project_id)),
+                        "name": project_id,
+                        "project_id": project_id
+                    }
+                }
+                fp.write(orjson.dumps(vertex, default=_default_json_serializer,
+                                      option=orjson.OPT_APPEND_NEWLINE).decode())
 
 
 def _debug_once(msg):
