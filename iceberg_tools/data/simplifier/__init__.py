@@ -536,7 +536,10 @@ def validate_simplified_value(v) -> bool:
 
 
 def _grip_simplifier(simplified: dict, project_id: str):
+    assert project_id is not None, "pass a project id in the form --project_id [program]-[project]"
     project_parts = project_id.split("-")
+
+    # project_parts must be of length 2
     assert len(project_parts) == 2, "project_id must be of form [program]-[project]"
     new_dict = {
         "gid": simplified["id"],

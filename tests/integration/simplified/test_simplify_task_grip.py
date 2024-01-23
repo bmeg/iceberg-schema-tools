@@ -1,7 +1,8 @@
 import orjson
 from fhir.resources.task import Task
-
-from iceberg_tools.data.simplifier import simplify, _render_dialect, SimplifierContextManager
+import subprocess
+import os
+from iceberg_tools.data.simplifier import simplify, _render_dialect, SimplifierContextManager, simplify_directory
 
 
 def test_simplify_task(distribution_schema):
@@ -94,3 +95,42 @@ def test_simplify_task_grip(distribution_schema):
             'auth_resource_path': '/programs/test/projects/test',
             'project_id': 'test-synthea'
         }
+
+
+def parse_directory_info(directory_info):
+    files = []
+    for line in str(directory_info).strip().split('\n'):
+        parts = line.split()
+        if len(parts) == 2:
+            continue
+        filename = parts[-1]
+        size = int(parts[-5])
+        files.append({'filename': filename, 'size': size})
+    return files
+
+
+# Kindof a lengthy test
+def test_simplify_synthea_grip():
+    print("CURRENT DIR", os.getcwd())
+
+    simplify_directory("tests/fixtures/simplify/synthea",
+                       "**/*.*", "grip_data",
+                       "iceberg/schemas/graph/graph-fhir.json",
+                       "GRIP", "config.yaml",
+                       "synthea-test",
+                       transform_ids=None)
+
+    expected_files = [
+        {'filename': 'Condition.ndjson', 'size': 3941769},
+        {'filename': 'DiagnosticReport.ndjson', 'size': 7299266},
+        {'filename': 'DocumentReference.ndjson', 'size': 6683493},
+        {'filename': 'Encounter.ndjson', 'size': 6081266},
+        {'filename': 'Immunization.ndjson', 'size': 1029819},
+        {'filename': 'Observation.ndjson', 'size': 34755721},
+        {'filename': 'Patient.ndjson', 'size': 161823},
+    ]
+
+    result = subprocess.run(['ls', '-l', "grip_data"], capture_output=True, text=True).stdout
+    actual_files = parse_directory_info(result)
+    for expected, actual in zip(expected_files, actual_files):
+        assert expected == actual, f"Assertion failed for file: {actual['filename']}"
