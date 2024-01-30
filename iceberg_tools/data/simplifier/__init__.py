@@ -854,7 +854,7 @@ def simplify_directory(input_path, pattern, output_path, schema_path, dialect, c
             if dialect == "GRIP":
                 logger.info(f"Generating Grip Edges at {output_path}.edges")
                 schemas = schemas["$defs"]
-                with EmitterContextManager(output_path + ".edges") as edge_emitter:
+                with EmitterContextManager(output_path) as edge_emitter:
                     first_line = True
                     # read the first line so that don't have to re-enter the VertexLinkWriter every line
                     for vertex in directory_reader(directory_path=input_path, pattern=pattern,
@@ -874,7 +874,7 @@ def simplify_directory(input_path, pattern, output_path, schema_path, dialect, c
                             if "links" in instance:
                                 for link in instance['links']:
                                     edge = {"label": link["rel"], "from": str(instance["id"]), "to": link["href"].split("/")[-1]}
-                                    fp = edge_emitter.emit(vertex["resourceType"])
+                                    fp = edge_emitter.emit(vertex["resourceType"] + ".edge")
                                     fp.write(orjson.dumps(edge, default=_default_json_serializer,
                                              option=orjson.OPT_APPEND_NEWLINE).decode())
                                     logger.info(f" {edge}")
