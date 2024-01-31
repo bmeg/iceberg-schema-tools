@@ -541,6 +541,10 @@ def _grip_simplifier(simplified: dict, project_id: str):
 
     # project_parts must be of length 2
     assert len(project_parts) == 2, "project_id must be of form [program]-[project]"
+
+    if simplified["resourceType"] == "DocumentReference":
+        simplified["resourceType"] = "File"
+
     new_dict = {
         "gid": simplified["id"],
         "label": simplified["resourceType"],
@@ -846,7 +850,12 @@ def simplify_directory(input_path, pattern, output_path, schema_path, dialect, c
                 _assert_all_ok(all_ok, parse_result, resource, simplified)
 
                 simplified = _render_dialect(simplified, references, dialect, schemas, project_id, limit_links)
-                fp = emitter.emit(resource.resource_type)
+
+                resource_emitted = resource.resource_type
+                # Fix to work with frontend
+                if resource_emitted == "DocumentReference":
+                    resource_emitted = "File"
+                fp = emitter.emit(resource_emitted)
 
                 fp.write(orjson.dumps(simplified, default=_default_json_serializer,
                                       option=orjson.OPT_APPEND_NEWLINE).decode())
@@ -866,6 +875,7 @@ def simplify_directory(input_path, pattern, output_path, schema_path, dialect, c
                         else:
                             logger.warning(f"resourceType field not found for first line in line {vertex}")
 
+                    print("actual schema ", actual_schema)
                     with VertexLinkWriter(actual_schema) as mgr:
                         for vertex in directory_reader(directory_path=input_path, pattern=pattern,
                                                        validate=False, ignore_path=output_path):
@@ -874,6 +884,10 @@ def simplify_directory(input_path, pattern, output_path, schema_path, dialect, c
                             if "links" in instance:
                                 for link in instance['links']:
                                     edge = {"label": link["rel"], "from": str(instance["id"]), "to": link["href"].split("/")[-1]}
+
+                                    if vertex["resourceType"] == "DocumentReference":
+                                        vertex["resourceType"] = "File"
+
                                     fp = edge_emitter.emit(vertex["resourceType"] + ".edge")
                                     fp.write(orjson.dumps(edge, default=_default_json_serializer,
                                              option=orjson.OPT_APPEND_NEWLINE).decode())
