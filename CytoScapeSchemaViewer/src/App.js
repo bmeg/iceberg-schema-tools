@@ -125,6 +125,7 @@ export default function App() {
             selector: "node",
             style: {
               label: "data(id)",
+              "font-size": "40px",
               "background-color": "black"
             }
           }, 
@@ -139,7 +140,7 @@ export default function App() {
             selector: "edge",
             style: {
               "line-color": "lightgreen",
-              "width": 2.5
+              "width": 4.5
             }
           },  
           {

@@ -20,19 +20,13 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## Python schema generation commands
-Commands only tested with FHIR schema data.
-
-The below command will generate a FHIR graph from 1 aggregated FHIR schema file
-```
-python schema.py one_file --input_path aced-bmeg.json
-```
-
 ## FHIR-BMEG Unified schema viewer:
 
 The schema.py file is currently setup to generate a graph for the unified schema.
-Run the below commands to view the schema.
+Run the below commands to view the schema. Note: python schema.py yaml_dir looks at the ACED_BMEG_Unified to generate a
+output file that is read by the cytoscape schema viewer in public/data/graph.json
 ```
+cd CytoScapeSchemaViewer
 python schema.py yaml_dir
 export NODE_OPTIONS=--openssl-legacy-provider
 npm i
@@ -40,6 +34,7 @@ npm start
 ```
 
 ## BMEG schema viewer update steps
+These commands aren't needed since the ACED_BMEG_Unified directory got committed
 ```
 wget https://github.com/bmeg/bmeg-etl/archive/refs/heads/develop.zip
 unzip develop.zip
@@ -49,21 +44,7 @@ rm -rf bmeg-etl-develop
 rm -f develop.zip
 ```
 
-The below command will generate a FHIR graph from however many schema.yaml files are in the directory specified:
-```
-python3 schema.py yaml_dir --input_path yaml_schemas
-```
-
-this will generate a json file at:
-CytoScapeSchemaViewer/public/data/graph.json
-
 # Development:
 
-To build and start the schema viewer run the below commands inside the CytoScapeSchemaViewer directory:
-```
-export NODE_OPTIONS=--openssl-legacy-provider
-npm i
-npm start
-```
 The schema viewer looks for a file at:
 CytoScapeSchemaViewer/public/data/graph.json
