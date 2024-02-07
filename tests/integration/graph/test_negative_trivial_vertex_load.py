@@ -1,4 +1,4 @@
-from pydantic import ValidationError
+from pydantic.v1.error_wrappers import ValidationError
 
 from tests.integration.graph import is_edge
 

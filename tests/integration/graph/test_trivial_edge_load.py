@@ -1,4 +1,4 @@
-from pydantic import ValidationError
+from pydantic.v1.error_wrappers import ValidationError
 
 
 def test_trivial_edge_load(fhir_schema, fhir_validator, edge_schemas):
