@@ -239,6 +239,11 @@ extra_properties:
       type: array
       items:
         type: string
+    condition_identifier:
+      description: Denormalized condition identifier
+      type: array
+      items:
+        type: string
 
   # add a link from a sub-object collection.bodySite
   Specimen:
