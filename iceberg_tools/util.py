@@ -8,7 +8,7 @@ from typing import Dict, Iterator, TextIO
 import click
 import orjson
 from fhir.resources.fhirresourcemodel import FHIRResourceModel
-from pydantic import ValidationError
+from pydantic.v1.error_wrappers import ValidationError
 import logging
 
 FHIR_CLASSES = importlib.import_module('fhir.resources')
