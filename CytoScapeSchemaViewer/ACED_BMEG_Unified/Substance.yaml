@@ -2,20 +2,6 @@ $id: Substance
 additionalProperties: false
 description: A homogeneous material with a definite composition. [See https://hl7.org/fhir/R5/Substance.html]
 links:
-- rel: ResearchStudies
-  href: ResearchStudy/{id}
-  templateRequired:
-  - id
-  targetSchema:
-    $ref: ResearchStudy.yaml
-  templatePointers:
-    id: /ResearchStudies/-/id
-  targetHints:
-    directionality:
-    - outbound
-    multiplicity:
-    - has_many
-    backref: compounds
 - $comment: From SubstanceIngredient/ingredient
   href: Substance/{id}
   rel: ingredient_substanceReference
@@ -30,6 +16,36 @@ links:
     $ref: Substance.yaml
   templatePointers:
     id: /ingredient/-/substanceReference/reference
+  templateRequired:
+  - id
+- href: ResearchStudy/{id}
+  rel: projects_ResearchStudy
+  targetHints:
+    backref:
+    - projects_substance
+    directionality:
+    - outbound
+    multiplicity:
+    - has_many
+  targetSchema:
+    $ref: ResearchStudy.yaml
+  templatePointers:
+    id: /projects/-/id
+  templateRequired:
+  - id
+- href: ResearchStudy/{id}
+  rel: projects_ResearchStudy
+  targetHints:
+    backref:
+    - projects_substance
+    directionality:
+    - outbound
+    multiplicity:
+    - has_many
+  targetSchema:
+    $ref: ResearchStudy.yaml
+  templatePointers:
+    id: /projects/-/id
   templateRequired:
   - id
 properties:
@@ -197,6 +213,12 @@ properties:
       $ref: Extension.yaml
     title: Extensions that cannot be ignored
     type: array
+  projects:
+    backref: projects_substance
+    element_property: true
+    items:
+      $ref: ResearchStudy.yaml
+    type: array
   quantity:
     $ref: Quantity.yaml
     description: The amount of the substance.
@@ -232,10 +254,6 @@ properties:
       to ensure clinical safety.
     element_property: true
     title: Text summary of the resource, for human interpretation
-  ResearchStudies:
-    $ref: ResearchStudy.yaml
-    description: 'Investigation to increase healthcare-related patient-independent knowledge.'
-    element_property: true
 required:
 - code
 title: Substance

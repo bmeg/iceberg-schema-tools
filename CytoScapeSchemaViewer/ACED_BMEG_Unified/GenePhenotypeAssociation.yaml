@@ -1,0 +1,196 @@
+$id: GenePhenotypeAssociation
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Associations of genomic features, drugs and diseases
+links:
+- href: Allele/{id}
+  rel: alleles_Allele
+  targetHints:
+    backref:
+    - alleles_gene_phenotype_association
+    directionality:
+    - outbound
+    multiplicity:
+    - has_many
+  targetSchema:
+    $ref: Allele.yaml
+  templatePointers:
+    id: /alleles/-/id
+  templateRequired:
+  - id
+- href: Gene/{id}
+  rel: genes_Gene
+  targetHints:
+    backref:
+    - genes_gene_phenotype_association
+    directionality:
+    - outbound
+    multiplicity:
+    - has_many
+  targetSchema:
+    $ref: Gene.yaml
+  templatePointers:
+    id: /genes/-/id
+  templateRequired:
+  - id
+- href: GenomicFeature/{id}
+  rel: genomicFeatures_GenomicFeature
+  targetHints:
+    backref:
+    - genomicFeatures_gene_phenotype_association
+    directionality:
+    - outbound
+    multiplicity:
+    - has_many
+  targetSchema:
+    $ref: GenomicFeature.yaml
+  templatePointers:
+    id: /genomicFeatures/-/id
+  templateRequired:
+  - id
+- href: Publication/{id}
+  rel: publications_Publication
+  targetHints:
+    backref:
+    - publications_gene_phenotype_association
+    directionality:
+    - outbound
+    multiplicity:
+    - has_many
+  targetSchema:
+    $ref: Publication.yaml
+  templatePointers:
+    id: /publications/-/id
+  templateRequired:
+  - id
+- href: Phenotype/{id}
+  rel: phenotypes_Phenotype
+  targetHints:
+    backref:
+    - phenotypes_gene_phenotype_association
+    directionality:
+    - outbound
+    multiplicity:
+    - has_many
+  targetSchema:
+    $ref: Phenotype.yaml
+  templatePointers:
+    id: /phenotypes/-/id
+  templateRequired:
+  - id
+- href: Substance/{id}
+  rel: substances_Substance
+  targetHints:
+    backref:
+    - substances_genephenotypeassociation
+    directionality:
+    - outbound
+    multiplicity:
+    - has_many
+  targetSchema:
+    $ref: Substance.yaml
+  templatePointers:
+    id: /substances/-/id
+  templateRequired:
+  - id
+- href: Substance/{id}
+  rel: substances_Substance
+  targetHints:
+    backref:
+    - substances_genephenotypeassociation
+    directionality:
+    - outbound
+    multiplicity:
+    - has_many
+  targetSchema:
+    $ref: Substance.yaml
+  templatePointers:
+    id: /substances/-/id
+  templateRequired:
+  - id
+properties:
+  alleles:
+    backref: alleles_gene_phenotype_association
+    element_property: true
+    items:
+      $ref: Allele.yaml
+    type: array
+  createdDateTime:
+    element_property: true
+    format: date-time
+    type: string
+  description:
+    element_property: true
+    type: string
+  evidenceLabel:
+    element_property: true
+    type: string
+  genes:
+    backref: genes_gene_phenotype_association
+    element_property: true
+    items:
+      $ref: Gene.yaml
+    type: array
+  genomicFeatures:
+    backref: genomicFeatures_gene_phenotype_association
+    element_property: true
+    items:
+      $ref: GenomicFeature.yaml
+    type: array
+  id:
+    element_property: true
+    type: string
+  oncogenic:
+    element_property: true
+    type: string
+  phenotypes:
+    backref: phenotypes_gene_phenotype_association
+    element_property: true
+    items:
+      $ref: Phenotype.yaml
+    type: array
+  projectId:
+    element_property: true
+    type: string
+  publications:
+    backref: publications_gene_phenotype_association
+    element_property: true
+    items:
+      $ref: Publication.yaml
+    type: array
+  resourceType:
+    default: gene_phenotype_association
+    description: One of the resource types defined as part of BMEG
+    type: string
+  responseType:
+    element_property: true
+    type: string
+  source:
+    element_property: true
+    type: string
+  sourceDocument:
+    element_property: true
+    type: string
+  sourceUrl:
+    element_property: true
+    type: string
+  submitterId:
+    element_property: true
+    type: string
+  substances:
+    backref: substances_genephenotypeassociation
+    element_property: true
+    items:
+      $ref: Substance.yaml
+    type: array
+  type:
+    element_property: true
+    type: string
+  updatedDateTime:
+    element_property: true
+    format: date-time
+    type: string
+required:
+- submitterId
+- projectId
+title: GenePhenotypeAssociation
+type: object

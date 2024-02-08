@@ -1,45 +1,68 @@
 $schema: https://json-schema.org/draft/2020-12/schema
-$id: gene
+$id: Gene
 title: Gene
 type: object
-description: 'A gene.'
+description: A region (or regions) that includes all of the sequence elements necessary
+  to encode a functional transcript. A gene may include regulatory regions, transcribed
+  regions and/or other functional sequence regions. A gene may be considered as a
+  unit of inheritance.
 required:
-- submitter_id
-- project_id
-- description
-- chromosome
-- strand
-- start
-- genome
-- end
-- symbol
+  - submitterId
+  - projectId
 links: []
 properties:
   id:
     type: string
+    element_property: true
   description:
     type: string
+    element_property: true
   symbol:
     type: string
+    element_property: true
   genome:
-    $ref: _definitions.yaml#/genome
+    element_property: true
+    type: string
+    description: Reference to a genome build
+    enum:
+      - GRCh37
+      - GRCh38
   chromosome:
-    $ref: _definitions.yaml#/chromosome
+    element_property: true
+    type: string
+    description: Reference to a chromosome
+    pattern: ^(chr).*$
   start:
     type: integer
+    element_property: true
   end:
     type: integer
+    element_property: true
   strand:
-    $ref: _definitions.yaml#/strand
-  project_id:
-    $ref: _definitions.yaml#/project_id
-  submitter_id:
-    type:
-    - string
-    - 'null'
+    element_property: true
+    type: string
+    description: Reference to a chromosome strand
+    enum:
+      - +
+      - '-'
   type:
     type: string
-  created_datetime:
-    $ref: _definitions.yaml#/datetime
-  updated_datetime:
-    $ref: _definitions.yaml#/datetime
+    element_property: true
+  projectId:
+    element_property: true
+    type: string
+  submitterId:
+    type: string
+    element_property: true
+  createdDateTime:
+    element_property: true
+    type: string
+    format: date-time
+  updatedDateTime:
+    element_property: true
+    type: string
+    format: date-time
+  resourceType:
+    default: gene
+    type: string
+    description: One of the resource types defined as part of BMEG

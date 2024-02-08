@@ -1,119 +1,152 @@
 $schema: https://json-schema.org/draft/2020-12/schema
-$id: allele
+$id: Allele
 title: Allele
 type: object
+description: An allele is one of a set of coexisting sequence variants of a gene.
 required:
-- id
-- chromosome
-- start
-- genome
-- reference_bases
-- alternate_bases
+  - referenceBases
+  - alternateBases
 links:
-- rel: gene
-  href: gene/{id}
-  templateRequired:
-  - id
-  targetSchema:
-    $ref: gene.yaml
-  templatePointers:
-    id: /gene/-/id
-  targetHints:
-    directionality:
-    - outbound
-    multiplicity:
-    - has_one
-    backref: alleles
-- rel: effects
-  href: effect/{id}
-  templateRequired:
-  - id
-  targetSchema:
-    $ref: allele_effect.yaml
-  templatePointers:
-    id: /effects/-/id
-  targetHints:
-    directionality:
-    - outbound
-    multiplicity:
-    - has_one
-    backref: allele
-- rel: transcript
-  href: transcript/{id}
-  templateRequired:
-  - id
-  targetSchema:
-    $ref: transcript.yaml
-  templatePointers:
-    id: /transcript/-/id
-  targetHints:
-    directionality:
-    - outbound
-    multiplicity:
-    - has_one
-    backref: alleles
-- rel: protein
-  href: protein/{id}
-  templateRequired:
-  - id
-  targetSchema:
-    $ref: protein.yaml
-  templatePointers:
-    id: /protein/-/id
-  targetHints:
-    directionality:
-    - outbound
-    multiplicity:
-    - has_one
-    backref: allele
+  - rel: gene_Gene
+    href: Gene/{id}
+    templateRequired:
+      - id
+    targetSchema:
+      $ref: Gene.yaml
+    templatePointers:
+      id: /gene/-/id
+    targetHints:
+      directionality:
+        - outbound
+      multiplicity:
+        - has_one
+      backref:
+        - gene_allele
+  - rel: effects_AlleleEffect
+    href: Effect/{id}
+    templateRequired:
+      - id
+    targetSchema:
+      $ref: AlleleEffect.yaml
+    templatePointers:
+      id: /effects/-/id
+    targetHints:
+      directionality:
+        - outbound
+      multiplicity:
+        - has_one
+      backref:
+        - effects_allele
+  - rel: transcript_Transcript
+    href: Transcript/{id}
+    templateRequired:
+      - id
+    targetSchema:
+      $ref: Transcript.yaml
+    templatePointers:
+      id: /transcript/-/id
+    targetHints:
+      directionality:
+        - outbound
+      multiplicity:
+        - has_one
+      backref:
+        - transcript_allele
+  - rel: protein_Protein
+    href: Protein/{id}
+    templateRequired:
+      - id
+    targetSchema:
+      $ref: Protein.yaml
+    templatePointers:
+      id: /protein/-/id
+    targetHints:
+      directionality:
+        - outbound
+      multiplicity:
+        - has_one
+      backref:
+        - protein_allele
 properties:
   id:
     type: string
-  reference_bases:
-    type: string
-  alternate_bases:
-    type: string
+    element_property: true
   genome:
-    $ref: _definitions.yaml#/genome
+    element_property: true
+    type: string
+    description: Reference to a genome build
+    enum:
+      - GRCh37
+      - GRCh38
   chromosome:
-    $ref: _definitions.yaml#/chromosome
+    element_property: true
+    type: string
+    description: Reference to a chromosome
+    pattern: ^(chr).*$
   start:
     type: integer
+    element_property: true
   end:
     type: integer
+    element_property: true
   strand:
-    $ref: _definitions.yaml#/strand
-  dbsnp_rs:
+    element_property: true
     type: string
-  project_id:
-    $ref: _definitions.yaml#/project_id
-  submitter_id:
-    type:
-    - string
-    - 'null'
+    description: Reference to a chromosome strand
+    enum:
+      - +
+      - '-'
   type:
     type: string
-  created_datetime:
-    $ref: _definitions.yaml#/datetime
-  updated_datetime:
-    $ref: _definitions.yaml#/datetime
+    element_property: true
   gene:
-    type:
-    - array
+    type: array
     items:
-      $ref: reference.yaml
+      $ref: Gene.yaml
+    element_property: true
+    backref: gene_allele
   effects:
-    type:
-    - array
+    type: array
     items:
-      $ref: reference.yaml
+      $ref: AlleleEffect.yaml
+    element_property: true
+    backref: effects_allele
   transcript:
-    type:
-    - array
+    type: array
     items:
-      $ref: reference.yaml
+      $ref: Transcript.yaml
+    element_property: true
+    backref: transcript_allele
   protein:
-    type:
-    - array
+    type: array
     items:
-      $ref: reference.yaml
+      $ref: Protein.yaml
+    element_property: true
+    backref: protein_allele
+  referenceBases:
+    type: string
+    element_property: true
+  alternateBases:
+    type: string
+    element_property: true
+  dbsnpRs:
+    type: string
+    element_property: true
+  projectId:
+    element_property: true
+    type: string
+  submitterId:
+    type: string
+    element_property: true
+  createdDateTime:
+    element_property: true
+    type: string
+    format: date-time
+  updatedDateTime:
+    element_property: true
+    type: string
+    format: date-time
+  resourceType:
+    default: allele
+    type: string
+    description: One of the resource types defined as part of BMEG

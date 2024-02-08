@@ -140,6 +140,51 @@ links:
     id: /restriction/recipient/-/reference
   templateRequired:
   - id
+- href: DocumentReference/{id}
+  rel: documents_DocumentReference
+  targetHints:
+    backref:
+    - documents_task
+    directionality:
+    - outbound
+    multiplicity:
+    - has_many
+  targetSchema:
+    $ref: DocumentReference.yaml
+  templatePointers:
+    id: /documents/-/id
+  templateRequired:
+  - id
+- href: Specimen/{id}
+  rel: specimen_Specimen
+  targetHints:
+    backref:
+    - specimen_task
+    directionality:
+    - outbound
+    multiplicity:
+    - has_many
+  targetSchema:
+    $ref: Specimen.yaml
+  templatePointers:
+    id: /specimen/-/id
+  templateRequired:
+  - id
+- href: DocumentReference/{id}
+  rel: documents_DocumentReference
+  targetHints:
+    backref:
+    - documents_task
+    directionality:
+    - outbound
+    multiplicity:
+    - has_many
+  targetSchema:
+    $ref: DocumentReference.yaml
+  templatePointers:
+    id: /documents/-/id
+  templateRequired:
+  - id
 properties:
   _authoredOn:
     $ref: FHIRPrimitiveExtension.yaml
@@ -232,6 +277,12 @@ properties:
     element_property: true
     title: True if Task is prohibiting action
     type: boolean
+  documents:
+    backref: documents_task
+    element_property: true
+    items:
+      $ref: DocumentReference.yaml
+    type: array
   encounter:
     $ref: Reference.yaml
     backref: task
@@ -570,6 +621,12 @@ properties:
       limitations on what parts of the referenced request should be actioned.
     element_property: true
     title: Constraints on fulfillment tasks
+  specimen:
+    backref: specimen_task
+    element_property: true
+    items:
+      $ref: Specimen.yaml
+    type: array
   status:
     binding_description: The current status of the task.
     binding_strength: required

@@ -1,0 +1,94 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: SomaticVariant
+title: SomaticVariant
+type: object
+description: A collection of somatic variants.
+links:
+  - rel: somaticCallset_SomaticCallset
+    href: Somaticcallset/{id}
+    templateRequired:
+      - id
+    targetSchema:
+      $ref: SomaticCallset.yaml
+    templatePointers:
+      id: /somaticCallset/-/id
+    targetHints:
+      directionality:
+        - outbound
+      multiplicity:
+        - has_one
+      association: true
+  - rel: allele_Allele
+    href: Allele/{id}
+    templateRequired:
+      - id
+    targetSchema:
+      $ref: Allele.yaml
+    templatePointers:
+      id: /allele/-/id
+    targetHints:
+      directionality:
+        - outbound
+      multiplicity:
+        - has_one
+      association: true
+properties:
+  id:
+    type: string
+    systemAlias: node_id
+    element_property: true
+  ref:
+    type: string
+    element_property: true
+  alt:
+    type: string
+    element_property: true
+  filter:
+    type: string
+    element_property: true
+  methods:
+    type: array
+    items:
+      type: string
+    element_property: true
+  allele:
+    type: array
+    items:
+      $ref: Allele.yaml
+    element_property: true
+  tDepth:
+    type: integer
+    element_property: true
+  tRefCount:
+    type: integer
+    element_property: true
+  tAltCount:
+    type: integer
+    element_property: true
+  nDepth:
+    type: integer
+    element_property: true
+  nRefCount:
+    type: integer
+    element_property: true
+  nAltCount:
+    type: integer
+    element_property: true
+  ensemblProtein:
+    type: string
+    element_property: true
+  ensemblTranscript:
+    type: string
+    element_property: true
+  ensemblGene:
+    type: string
+    element_property: true
+  somaticCallset:
+    type: array
+    items:
+      $ref: SomaticCallset.yaml
+    element_property: true
+  resourceType:
+    default: somatic_variant
+    type: string
+    description: One of the resource types defined as part of BMEG

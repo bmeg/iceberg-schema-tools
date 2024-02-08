@@ -2,34 +2,6 @@ $id: Specimen
 additionalProperties: false
 description: Sample for analysis. A sample to be used for analysis. [See https://hl7.org/fhir/R5/Specimen.html]
 links:
-- rel: ResearchStudies
-  href: ResearchStudy/{id}
-  templateRequired:
-  - id
-  targetSchema:
-    $ref: ResearchStudy.yaml
-  templatePointers:
-    id: /ResearchStudy/-/id
-  targetHints:
-    directionality:
-    - outbound
-    multiplicity:
-    - has_many
-    backref: Specimen
-- rel: phenotypes
-  href: phenotype/{id}
-  templateRequired:
-    - id
-  targetSchema:
-    $ref: phenotype.yaml
-  templatePointers:
-    id: /phenotypes/-/id
-  targetHints:
-    directionality:
-    - outbound
-    multiplicity:
-    - has_many
-    backref: Specimen
 - href: Specimen/{id}
   rel: parent
   targetHints:
@@ -121,6 +93,66 @@ links:
     $ref: Substance.yaml
   templatePointers:
     id: /processing/-/additive/-/reference
+  templateRequired:
+  - id
+- href: ResearchStudy/{id}
+  rel: projects_ResearchStudy
+  targetHints:
+    backref:
+    - projects_specimen
+    directionality:
+    - outbound
+    multiplicity:
+    - has_many
+  targetSchema:
+    $ref: ResearchStudy.yaml
+  templatePointers:
+    id: /projects/-/id
+  templateRequired:
+  - id
+- href: Phenotype/{id}
+  rel: phenotypes_Phenotype
+  targetHints:
+    backref:
+    - phenotypes_specimen
+    directionality:
+    - outbound
+    multiplicity:
+    - has_many
+  targetSchema:
+    $ref: Phenotype.yaml
+  templatePointers:
+    id: /phenotypes/-/id
+  templateRequired:
+  - id
+- href: ResearchStudy/{id}
+  rel: projects_ResearchStudy
+  targetHints:
+    backref:
+    - projects_specimen
+    directionality:
+    - outbound
+    multiplicity:
+    - has_many
+  targetSchema:
+    $ref: ResearchStudy.yaml
+  templatePointers:
+    id: /projects/-/id
+  templateRequired:
+  - id
+- href: DocumentReference/{id}
+  rel: specimen_DocumentReference
+  targetHints:
+    backref:
+    - specimen_specimen
+    directionality:
+    - outbound
+    multiplicity:
+    - has_many
+  targetSchema:
+    $ref: DocumentReference.yaml
+  templatePointers:
+    id: /specimen/-/id
   templateRequired:
   - id
 properties:
@@ -306,12 +338,24 @@ properties:
       $ref: Reference.yaml
     title: Specimen from which this specimen originated
     type: array
+  phenotypes:
+    backref: phenotypes_specimen
+    element_property: true
+    items:
+      $ref: Phenotype.yaml
+    type: array
   processing:
     description: Details concerning processing and processing steps for the specimen.
     element_property: true
     items:
       $ref: SpecimenProcessing.yaml
     title: Processing and processing step details
+    type: array
+  projects:
+    backref: projects_specimen
+    element_property: true
+    items:
+      $ref: ResearchStudy.yaml
     type: array
   receivedTime:
     description: Time when specimen is received by the testing laboratory for processing
@@ -347,6 +391,12 @@ properties:
     items:
       $ref: CodeableConcept.yaml
     title: The role the specimen serves
+    type: array
+  specimen:
+    backref: specimen_specimen
+    element_property: true
+    items:
+      $ref: DocumentReference.yaml
     type: array
   status:
     binding_description: Codes providing the status/availability of a specimen.
@@ -396,14 +446,5 @@ properties:
     description: The kind of material that forms the specimen.
     element_property: true
     title: Kind of material that forms the specimen
-  phenotypes:
-    $ref: phenotype.yaml
-    description: 'An observable characteristics of a case or sample resulting from the  interaction
-      of its genotype with the environment (i.e. a disease).'
-    element_property: true
-  ResearchStudies:
-    $ref: ResearchStudy.yaml
-    description: 'Investigation to increase healthcare-related patient-independent knowledge.'
-    element_property: true
 title: Specimen
 type: object

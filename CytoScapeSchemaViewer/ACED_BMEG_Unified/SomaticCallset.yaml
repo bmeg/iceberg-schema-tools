@@ -1,93 +1,74 @@
-$id: Phenotype
+$id: SomaticCallset
 $schema: https://json-schema.org/draft/2020-12/schema
-description: An observable characteristics of a case or sample resulting from the  interaction
-  of its genotype with the environment (i.e. a disease).
+description: A collection of somatic variants - A somatic mutation (variant) is a
+  change in the DNA sequence of a somatic cell of a multicellular organism with dedicated
+  reproductive cells; that is, any mutation that occurs in a cell other than a gamete,
+  germ cell, or gametocyte.
 links:
-- href: Phenotype/{id}
-  rel: childTerms_Phenotype
+- href: Allele/{id}
+  rel: alleles_Allele
   targetHints:
     backref:
-    - childTerms_phenotype
+    - alleles_somatic_callset
     directionality:
     - outbound
     multiplicity:
     - has_many
   targetSchema:
-    $ref: Phenotype.yaml
+    $ref: Allele.yaml
   templatePointers:
-    id: /childTerms/-/id
+    id: /alleles/-/id
   templateRequired:
   - id
-- href: Patient/{id}
-  rel: patients_Patient
+- href: Specimen/{id}
+  rel: specimen_Specimen
   targetHints:
     backref:
-    - patients_phenotype
+    - specimen_somaticcallset
     directionality:
     - outbound
     multiplicity:
     - has_many
   targetSchema:
-    $ref: Patient.yaml
+    $ref: Specimen.yaml
   templatePointers:
-    id: /patients/-/id
-  templateRequired:
-  - id
-- href: Patient/{id}
-  rel: patients_Patient
-  targetHints:
-    backref:
-    - patients_phenotype
-    directionality:
-    - outbound
-    multiplicity:
-    - has_many
-  targetSchema:
-    $ref: Patient.yaml
-  templatePointers:
-    id: /patients/-/id
+    id: /specimen/-/id
   templateRequired:
   - id
 properties:
-  childTerms:
-    backref: childTerms_phenotype
+  alleles:
+    backref: alleles_somatic_callset
     element_property: true
     items:
-      $ref: Phenotype.yaml
+      $ref: Allele.yaml
     type: array
   createdDateTime:
     element_property: true
     format: date-time
     type: string
-  description:
-    element_property: true
-    type: string
   id:
     element_property: true
     type: string
-  name:
+  normalAliquotId:
     element_property: true
     type: string
-  patients:
-    backref: patients_phenotype
-    element_property: true
-    items:
-      $ref: Patient.yaml
-    type: array
   projectId:
     element_property: true
     type: string
   resourceType:
-    default: phenotype
+    default: somatic_callset
     description: One of the resource types defined as part of BMEG
     type: string
+  specimen:
+    backref: specimen_somaticcallset
+    element_property: true
+    items:
+      $ref: Specimen.yaml
+    type: array
   submitterId:
     element_property: true
     type: string
-  term:
-    element_property: true
-    type: string
-  termId:
+  tumorAliquotId:
     element_property: true
     type: string
   type:
@@ -99,7 +80,7 @@ properties:
     type: string
 required:
 - submitterId
-- termId
+- tumorAliquotId
 - projectId
-title: Phenotype
+title: SomaticCallset
 type: object

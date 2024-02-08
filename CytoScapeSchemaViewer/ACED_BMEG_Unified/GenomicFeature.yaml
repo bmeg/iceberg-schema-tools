@@ -1,70 +1,78 @@
 $schema: https://json-schema.org/draft/2020-12/schema
-$id: Exon
-title: Exon
+$id: GenomicFeature
+title: GenomicFeature
 type: object
-description: An exon - Exon is a region of the transcript sequence within a gene which
-  is not removed from the primary RNA transcript by RNA splicing.
+description: An abstract genomic feature - A sequence feature (continuous extent of
+  biological sequence) that is of genomic origin (i.e. carries sequence from the genome
+  of a cell or organism)
 required:
   - submitterId
   - projectId
-  - exonId
 links:
-  - rel: transcripts_Transcript
-    href: Transcript/{id}
+  - rel: genes_Gene
+    href: Gene/{id}
     templateRequired:
       - id
     targetSchema:
-      $ref: Transcript.yaml
+      $ref: Gene.yaml
     templatePointers:
-      id: /transcripts/-/id
+      id: /genes/-/id
     targetHints:
       directionality:
         - outbound
       multiplicity:
         - has_many
       backref:
-        - transcripts_exon
+        - genes_genomic_feature
 properties:
-  id:
+  annotations:
+    type: array
+    element_property: true
+  effect:
     type: string
     element_property: true
   genome:
-    element_property: true
     type: string
     description: Reference to a genome build
     enum:
       - GRCh37
       - GRCh38
-  chromosome:
     element_property: true
+  chromosome:
     type: string
     description: Reference to a chromosome
     pattern: ^(chr).*$
-  start:
-    type: integer
     element_property: true
   end:
     type: integer
     element_property: true
-  strand:
+  start:
+    type: integer
     element_property: true
+  strand:
     type: string
     description: Reference to a chromosome strand
     enum:
       - +
       - '-'
+    element_property: true
+  name:
+    type: string
+    element_property: true
+  id:
+    systemAlias: node_id
+    element_property: true
+    type: string
+    pattern: ^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$
   type:
     type: string
     element_property: true
-  transcripts:
+  genes:
     type: array
     items:
-      $ref: Transcript.yaml
+      $ref: Gene.yaml
     element_property: true
-    backref: transcripts_exon
-  exonId:
-    type: string
-    element_property: true
+    backref: genes_genomic_feature
   projectId:
     element_property: true
     type: string
@@ -80,6 +88,6 @@ properties:
     type: string
     format: date-time
   resourceType:
-    default: exon
+    default: genomic_feature
     type: string
     description: One of the resource types defined as part of BMEG

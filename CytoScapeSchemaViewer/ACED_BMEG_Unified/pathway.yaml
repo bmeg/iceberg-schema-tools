@@ -1,106 +1,125 @@
 $schema: https://json-schema.org/draft/2020-12/schema
-$id: pathway
+$id: Pathway
 title: Pathway
 type: object
-description: 'A biological pathway
-
-  '
+description: A biological pathway - A pathway is a set of inter-connected reactions
+  and interactions whose delineation and scope are used as a model for exploring and
+  studying, describing and understanding the working of and relationships between
+  biomolecules within a context.
 required:
-- submitter_id
-- project_id
-- name
+  - submitterId
+  - projectId
 links:
-- rel: genes
-  href: gene/{id}
-  templateRequired:
-  - id
-  targetSchema:
-    $ref: gene.yaml
-  templatePointers:
-    id: /genes/-/id
-  targetHints:
-    directionality:
-    - outbound
-    multiplicity:
-    - has_many
-    backref: pathways
-- rel: interactions
-  href: interaction/{id}
-  templateRequired:
-  - id
-  targetSchema:
-    $ref: interaction.yaml
-  templatePointers:
-    id: /interactions/-/id
-  targetHints:
-    directionality:
-    - outbound
-    multiplicity:
-    - has_many
-    backref: pathways
-- rel: sub_pathways
-  href: pathway/{id}
-  templateRequired:
-  - id
-  targetSchema:
-    $ref: pathway.yaml
-  templatePointers:
-    id: /sub_pathways/-/id
-  targetHints:
-    directionality:
-    - outbound
-    multiplicity:
-    - has_many
-    backref: pathways
-- rel: publications
-  href: publication/{id}
-  templateRequired:
-  - id
-  targetSchema:
-    $ref: publication.yaml
-  templatePointers:
-    id: /publications/-/id
-  targetHints:
-    directionality:
-    - outbound
-    multiplicity:
-    - has_one
-    backref: pathways
+  - rel: genes_Gene
+    href: Gene/{id}
+    templateRequired:
+      - id
+    targetSchema:
+      $ref: Gene.yaml
+    templatePointers:
+      id: /genes/-/id
+    targetHints:
+      directionality:
+        - outbound
+      multiplicity:
+        - has_many
+      backref:
+        - genes_pathway
+  - rel: interactions_Interaction
+    href: Interaction/{id}
+    templateRequired:
+      - id
+    targetSchema:
+      $ref: Interaction.yaml
+    templatePointers:
+      id: /interactions/-/id
+    targetHints:
+      directionality:
+        - outbound
+      multiplicity:
+        - has_many
+      backref:
+        - interactions_pathway
+  - rel: subPathways_Pathw
+    href: Pathway/{id}
+    templateRequired:
+      - id
+    targetSchema:
+      $ref: Pathway.yaml
+    templatePointers:
+      id: /subPathways/-/id
+    targetHints:
+      directionality:
+        - outbound
+      multiplicity:
+        - has_many
+      backref:
+        - subPathways_pathway
+  - rel: publications_Publication
+    href: Publication/{id}
+    templateRequired:
+      - id
+    targetSchema:
+      $ref: Publication.yaml
+    templatePointers:
+      id: /publications/-/id
+    targetHints:
+      directionality:
+        - outbound
+      multiplicity:
+        - has_one
+      backref:
+        - publications_pathway
 properties:
   id:
     type: string
     systemAlias: node_id
+    element_property: true
   name:
     type: string
-  project_id:
-    $ref: _definitions.yaml#/project_id
-  submitter_id:
-    type:
-    - string
-    - 'null'
+    element_property: true
   type:
     type: string
-  created_datetime:
-    $ref: _definitions.yaml#/datetime
-  updated_datetime:
-    $ref: _definitions.yaml#/datetime
+    element_property: true
   genes:
-    type:
-    - array
+    type: array
     items:
-      $ref: reference.yaml
+      $ref: Gene.yaml
+    element_property: true
+    backref: genes_pathway
   interactions:
-    type:
-    - array
+    type: array
     items:
-      $ref: reference.yaml
-  sub_pathways:
-    type:
-    - array
-    items:
-      $ref: reference.yaml
+      $ref: Interaction.yaml
+    element_property: true
+    backref: interactions_pathway
   publications:
-    type:
-    - array
+    type: array
     items:
-      $ref: reference.yaml
+      $ref: Publication.yaml
+    element_property: true
+    backref: publications_pathway
+  projectId:
+    element_property: true
+    type: string
+  submitterId:
+    type: string
+    element_property: true
+  createdDateTime:
+    element_property: true
+    type: string
+    format: date-time
+  updatedDateTime:
+    element_property: true
+    type: string
+    format: date-time
+  subPathways:
+    type: array
+    items:
+      $ref: Pathway.yaml
+    element_property: true
+    backref: subPathways_pathway
+  resourceType:
+    default: pathway
+    type: string
+    description: One of the resource types defined as part of BMEG

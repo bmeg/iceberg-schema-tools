@@ -1,0 +1,201 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: AlleleEffect
+title: AlleleEffect
+type: object
+description: Allele effect refers to the specific impact or influence that a particular
+  allele, or variant of a gene has on a trait or phenotype.
+links:
+  - rel: ensemblGene_Gene
+    href: Ensemblgene/{id}
+    templateRequired:
+      - id
+    targetSchema:
+      $ref: Gene.yaml
+    templatePointers:
+      id: /ensemblGene/-/id
+    targetHints:
+      directionality:
+        - outbound
+      multiplicity:
+        - has_one
+      backref:
+        - ensemblGene_allele_effect
+  - rel: ensemblTranscript_Transcript
+    href: Ensembltranscript/{id}
+    templateRequired:
+      - id
+    targetSchema:
+      $ref: Transcript.yaml
+    templatePointers:
+      id: /ensemblTranscript/-/id
+    targetHints:
+      directionality:
+        - outbound
+      multiplicity:
+        - has_one
+      backref:
+        - ensemblTranscript_allele_effect
+properties:
+  id:
+    type: string
+    element_property: true
+  annotation:
+    type: string
+    element_property: true
+  hgvsc:
+    type: string
+    element_property: true
+  hgvsp:
+    type: string
+    element_property: true
+  chain:
+    type: string
+    element_property: true
+  site:
+    type: string
+    element_property: true
+  structure:
+    type: string
+    element_property: true
+  repeat:
+    type: string
+    element_property: true
+  domain:
+    type: string
+    element_property: true
+  propeptide:
+    type: string
+    element_property: true
+  peptide:
+    type: string
+    element_property: true
+  biotype:
+    type: string
+    element_property: true
+  annotationImpact:
+    type: string
+    element_property: true
+  aaPosition:
+    type: integer
+    element_property: true
+  aaLength:
+    type: integer
+    element_property: true
+  aaRef:
+    type: string
+    element_property: true
+  aaVar:
+    type: string
+    element_property: true
+  cdsPosition:
+    type: integer
+    element_property: true
+  cdsLength:
+    type: integer
+    element_property: true
+  cdnaPosition:
+    type: integer
+    element_property: true
+  cdnaLength:
+    type: integer
+    element_property: true
+  exonRank:
+    type: string
+    element_property: true
+  hgncId:
+    type: string
+    element_property: true
+  numTranscripts:
+    type: number
+    element_property: true
+  percentTranscriptsAffected:
+    type: number
+    element_property: true
+  initiatorMethionine:
+    type: string
+    element_property: true
+  modifiedResidue:
+    type: string
+    element_property: true
+  sequenceConflict:
+    type: string
+    element_property: true
+  crossLink:
+    type: string
+    element_property: true
+  spliceVariant:
+    type: string
+    element_property: true
+  sequenceVariant:
+    type: string
+    element_property: true
+  mutagenesisSite:
+    type: string
+    element_property: true
+  regionOfInterest:
+    type: string
+    element_property: true
+  compositionallyBiasedRegion:
+    type: string
+    element_property: true
+  shortSequenceMotif:
+    type: string
+    element_property: true
+  transmembraneRegion:
+    type: string
+    element_property: true
+  activeSite:
+    type: string
+    element_property: true
+  transitPeptide:
+    type: string
+    element_property: true
+  topologicalDomain:
+    type: string
+    element_property: true
+  glycosylationSite:
+    type: string
+    element_property: true
+  lipidMoietyBindingRegion:
+    type: string
+    element_property: true
+  disulfideBond:
+    type: string
+    element_property: true
+  bindingSite:
+    type: string
+    element_property: true
+  intramembraneRegion:
+    type: string
+    element_property: true
+  zincFingerRegion:
+    type: string
+    element_property: true
+  dnaBindingRegion:
+    type: string
+    element_property: true
+  signalPeptide:
+    type: string
+    element_property: true
+  nonStandardAminoAcid:
+    type: string
+    element_property: true
+  hugoSymbol:
+    type: string
+    element_property: true
+  ensemblGene:
+    type: array
+    items:
+      $ref: Gene.yaml
+    element_property: true
+    backref: ensemblGene_allele_effect
+  ensemblTranscript:
+    type: array
+    items:
+      $ref: Transcript.yaml
+    element_property: true
+    backref: ensemblTranscript_allele_effect
+  resourceType:
+    default: allele_effect
+    type: string
+    description: One of the resource types defined as part of BMEG

@@ -1,13 +1,14 @@
-$id: Methylation
+$id: TranscriptExpression
 $schema: https://json-schema.org/draft/2020-12/schema
-description: Methylatyion values for an aliquot - Methylatyion is the covalent chemical
-  or biochemical addition of a methyl group(s) to a compound.
+description: Transcript level expression values for an aliquot - Transcript expression
+  is the pattern of gene expression at the level of genetic transcription in a specific
+  organism or under specific circumstances in specific cells. Here in aliquot samples.
 links:
 - href: Specimen/{id}
   rel: specimen_Specimen
   targetHints:
     backref:
-    - specimen_methylation
+    - specimen_transcriptexpression
     directionality:
     - outbound
     multiplicity:
@@ -25,24 +26,31 @@ properties:
     type: string
   id:
     element_property: true
-    pattern: ^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$
     systemAlias: node_id
     type: string
   method:
     element_property: true
     type: string
   metric:
+    description: Expression metric
     element_property: true
+    enum:
+    - TPM
+    - TPM_GENE
+    - RPKM
+    - FPKM
+    - RAW_COUNT
+    - RMA
     type: string
   projectId:
     element_property: true
     type: string
   resourceType:
-    default: methylation
+    default: transcript_expression
     description: One of the resource types defined as part of BMEG
     type: string
   specimen:
-    backref: specimen_methylation
+    backref: specimen_transcriptexpression
     element_property: true
     items:
       $ref: Specimen.yaml
@@ -59,13 +67,13 @@ properties:
     type: string
   values:
     additionalProperties:
-      type:
-      - number
-      - 'null'
+      type: number
     element_property: true
+    propertyNames:
+      pattern: ^ENST[0-9]+
     type: object
 required:
 - submitterId
 - projectId
-title: Methylation
+title: TranscriptExpression
 type: object

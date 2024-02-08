@@ -1,13 +1,15 @@
-$id: Methylation
+$id: GeneExpression
 $schema: https://json-schema.org/draft/2020-12/schema
-description: Methylatyion values for an aliquot - Methylatyion is the covalent chemical
-  or biochemical addition of a methyl group(s) to a compound.
+description: Gene level expression values for an aliquot - The process in which a
+  genes sequence is converted into a mature gene product (protein or RNA). This includes
+  the production of an RNA transcript and its processing, as well as translation and
+  maturation for protein-coding genes.
 links:
 - href: Specimen/{id}
   rel: specimen_Specimen
   targetHints:
     backref:
-    - specimen_methylation
+    - specimen_geneexpression
     directionality:
     - outbound
     multiplicity:
@@ -25,24 +27,31 @@ properties:
     type: string
   id:
     element_property: true
-    pattern: ^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$
     systemAlias: node_id
     type: string
   method:
     element_property: true
     type: string
   metric:
+    description: Expression metric
     element_property: true
+    enum:
+    - TPM
+    - TPM_GENE
+    - RPKM
+    - FPKM
+    - RAW_COUNT
+    - RMA
     type: string
   projectId:
     element_property: true
     type: string
   resourceType:
-    default: methylation
+    default: gene_expression
     description: One of the resource types defined as part of BMEG
     type: string
   specimen:
-    backref: specimen_methylation
+    backref: specimen_geneexpression
     element_property: true
     items:
       $ref: Specimen.yaml
@@ -59,13 +68,13 @@ properties:
     type: string
   values:
     additionalProperties:
-      type:
-      - number
-      - 'null'
+      type: number
     element_property: true
+    propertyNames:
+      pattern: ^ENSG[0-9]+
     type: object
 required:
 - submitterId
 - projectId
-title: Methylation
+title: GeneExpression
 type: object

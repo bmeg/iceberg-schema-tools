@@ -1,67 +1,89 @@
 $schema: https://json-schema.org/draft/2020-12/schema
-$id: transcript
+$id: Transcript
 title: Transcript
 type: object
-description: 'A transcript.
-
-  '
+description: A transcript - An RNA synthesized on a DNA or RNA template by an RNA
+  polymerase.
 required:
-- submitter_id
-- project_id
-- biotype
-- chromosome
-- strand
-- start
-- genome
-- end
-- transcript_id
+  - submitterId
+  - projectId
+  - transcriptId
 links:
-- rel: gene
-  href: gene/{id}
-  templateRequired:
-  - id
-  targetSchema:
-    $ref: gene.yaml
-  templatePointers:
-    id: /gene/-/id
-  targetHints:
-    directionality:
-    - outbound
-    multiplicity:
-    - has_one
-    backref: transcripts
+  - rel: gene_Gene
+    href: Gene/{id}
+    templateRequired:
+      - id
+    targetSchema:
+      $ref: Gene.yaml
+    templatePointers:
+      id: /gene/-/id
+    targetHints:
+      directionality:
+        - outbound
+      multiplicity:
+        - has_one
+      backref:
+        - gene_transcript
 properties:
-  transcript_id:
-    type: string
   biotype:
     type: string
+    element_property: true
   genome:
-    $ref: _definitions.yaml#/genome
+    element_property: true
+    type: string
+    description: Reference to a genome build
+    enum:
+      - GRCh37
+      - GRCh38
   chromosome:
-    $ref: _definitions.yaml#/chromosome
+    element_property: true
+    type: string
+    description: Reference to a chromosome
+    pattern: ^(chr).*$
   start:
     type: integer
+    element_property: true
   end:
     type: integer
+    element_property: true
   strand:
-    $ref: _definitions.yaml#/strand
-  project_id:
-    $ref: _definitions.yaml#/project_id
-  submitter_id:
-    type:
-    - string
-    - 'null'
+    element_property: true
+    type: string
+    description: Reference to a chromosome strand
+    enum:
+      - +
+      - '-'
   id:
     type: string
     systemAlias: node_id
+    element_property: true
   type:
     type: string
-  created_datetime:
-    $ref: _definitions.yaml#/datetime
-  updated_datetime:
-    $ref: _definitions.yaml#/datetime
+    element_property: true
   gene:
-    type:
-    - array
+    type: array
     items:
-      $ref: reference.yaml
+      $ref: Gene.yaml
+    element_property: true
+    backref: gene_transcript
+  transcriptId:
+    type: string
+    element_property: true
+  projectId:
+    element_property: true
+    type: string
+  submitterId:
+    type: string
+    element_property: true
+  createdDateTime:
+    element_property: true
+    type: string
+    format: date-time
+  updatedDateTime:
+    element_property: true
+    type: string
+    format: date-time
+  resourceType:
+    default: transcript
+    type: string
+    description: One of the resource types defined as part of BMEG

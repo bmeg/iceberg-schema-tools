@@ -1,68 +1,57 @@
 $schema: https://json-schema.org/draft/2020-12/schema
-$id: Exon
-title: Exon
+$id: ProteinStructure
+title: ProteinStructure
 type: object
-description: An exon - Exon is a region of the transcript sequence within a gene which
-  is not removed from the primary RNA transcript by RNA splicing.
+description: A protein structure - The amino acids and their 3-D arrangement in constituting
+  a protein.
 required:
   - submitterId
   - projectId
-  - exonId
 links:
-  - rel: transcripts_Transcript
-    href: Transcript/{id}
+  - rel: protein_Protein
+    href: Protein/{id}
     templateRequired:
       - id
     targetSchema:
-      $ref: Transcript.yaml
+      $ref: Protein.yaml
     templatePointers:
-      id: /transcripts/-/id
+      id: /protein/-/id
     targetHints:
       directionality:
         - outbound
       multiplicity:
-        - has_many
+        - has_one
       backref:
-        - transcripts_exon
+        - protein_protein_structure
 properties:
   id:
     type: string
     element_property: true
-  genome:
+  resolution:
+    type: number
     element_property: true
+  description:
     type: string
-    description: Reference to a genome build
-    enum:
-      - GRCh37
-      - GRCh38
-  chromosome:
     element_property: true
+  source:
     type: string
-    description: Reference to a chromosome
-    pattern: ^(chr).*$
-  start:
-    type: integer
     element_property: true
-  end:
-    type: integer
-    element_property: true
-  strand:
-    element_property: true
-    type: string
-    description: Reference to a chromosome strand
-    enum:
-      - +
-      - '-'
   type:
     type: string
     element_property: true
-  transcripts:
+  protein:
     type: array
     items:
-      $ref: Transcript.yaml
+      $ref: Protein.yaml
     element_property: true
-    backref: transcripts_exon
-  exonId:
+    backref: protein_protein_structure
+  shortDescription:
+    type: string
+    element_property: true
+  submissionDate:
+    type: string
+    element_property: true
+  experimentType:
     type: string
     element_property: true
   projectId:
@@ -80,6 +69,6 @@ properties:
     type: string
     format: date-time
   resourceType:
-    default: exon
+    default: protein_structure
     type: string
     description: One of the resource types defined as part of BMEG

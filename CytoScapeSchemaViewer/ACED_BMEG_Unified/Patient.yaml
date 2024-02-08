@@ -4,34 +4,6 @@ description: Information about an individual or animal receiving health care ser
   Demographics and other administrative information about an individual or animal
   receiving care or other health-related services. [See https://hl7.org/fhir/R5/Patient.html]
 links:
-- rel: phenotypes
-  href: phenotype/{id}
-  templateRequired:
-    - id
-  targetSchema:
-    $ref: phenotype.yaml
-  templatePointers:
-    id: /phenotypes/-/id
-  targetHints:
-    directionality:
-    - outbound
-    multiplicity:
-    - has_many
-    backref: patients
-- rel: substances
-  href: Substance/{id}
-  templateRequired:
-  - id
-  targetSchema:
-    $ref: Substance.yaml
-  templatePointers:
-    id: /substamces/-/id
-  targetHints:
-    directionality:
-    - outbound
-    multiplicity:
-    - has_many
-    backref: patients
 - $comment: From PatientLink/link
   href: Patient/{id}
   rel: link_other_Patient
@@ -46,6 +18,36 @@ links:
     $ref: Patient.yaml
   templatePointers:
     id: /link/-/other/reference
+  templateRequired:
+  - id
+- href: Substance/{id}
+  rel: substances_Substance
+  targetHints:
+    backref:
+    - substances_patient
+    directionality:
+    - outbound
+    multiplicity:
+    - has_many
+  targetSchema:
+    $ref: Substance.yaml
+  templatePointers:
+    id: /substances/-/id
+  templateRequired:
+  - id
+- href: Substance/{id}
+  rel: substances_Substance
+  targetHints:
+    backref:
+    - substances_patient
+    directionality:
+    - outbound
+    multiplicity:
+    - has_many
+  targetSchema:
+    $ref: Substance.yaml
+  templatePointers:
+    id: /substances/-/id
   templateRequired:
   - id
 properties:
@@ -301,6 +303,12 @@ properties:
     description: One of the resource types defined as part of FHIR
     title: Resource Type
     type: string
+  substances:
+    backref: substances_patient
+    element_property: true
+    items:
+      $ref: Substance.yaml
+    type: array
   telecom:
     description: A contact detail (e.g. a telephone number or an email address) by
       which the individual may be contacted.
@@ -319,14 +327,5 @@ properties:
       to ensure clinical safety.
     element_property: true
     title: Text summary of the resource, for human interpretation
-  phenotypes:
-    $ref: phenotype.yaml
-    description: An observable characteristics of a case or specimen resulting from the  interaction
-      of its genotype with the environment (i.e. a disease).
-    element_property: true
-  substances:
-    $ref: Substance.yaml
-    description: A homogeneous material with a definite composition. [See https://hl7.org/fhir/R5/Substance.html]
-    element_property: true
 title: Patient
 type: object

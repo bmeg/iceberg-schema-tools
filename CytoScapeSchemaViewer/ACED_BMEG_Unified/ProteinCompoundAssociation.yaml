@@ -1,0 +1,164 @@
+$id: ProteinCompoundAssociation
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Definitions for protein-compound Associations
+links:
+- href: Protein/{id}
+  rel: proteins_Protein
+  targetHints:
+    backref:
+    - proteins_protein_compound_association
+    directionality:
+    - outbound
+    multiplicity:
+    - has_many
+  targetSchema:
+    $ref: Protein.yaml
+  templatePointers:
+    id: /proteins/-/id
+  templateRequired:
+  - id
+- href: Gene/{id}
+  rel: genes_Gene
+  targetHints:
+    backref:
+    - genes_protein_compound_association
+    directionality:
+    - outbound
+    multiplicity:
+    - has_many
+  targetSchema:
+    $ref: Gene.yaml
+  templatePointers:
+    id: /genes/-/id
+  templateRequired:
+  - id
+- href: Publication/{id}
+  rel: publications_Publication
+  targetHints:
+    backref:
+    - publications_protein_compound_association
+    directionality:
+    - outbound
+    multiplicity:
+    - has_many
+  targetSchema:
+    $ref: Publication.yaml
+  templatePointers:
+    id: /publications/-/id
+  templateRequired:
+  - id
+- href: ProteinStructure/{id}
+  rel: proteinStructures_ProteinStructure
+  targetHints:
+    backref:
+    - proteinStructures_protein_compound_association
+    directionality:
+    - outbound
+    multiplicity:
+    - has_many
+  targetSchema:
+    $ref: ProteinStructure.yaml
+  templatePointers:
+    id: /proteinStructures/-/id
+  templateRequired:
+  - id
+- href: Substance/{id}
+  rel: substance_Substance
+  targetHints:
+    backref:
+    - substance_proteincompoundassociation
+    directionality:
+    - outbound
+    multiplicity:
+    - has_one
+  targetSchema:
+    $ref: Substance.yaml
+  templatePointers:
+    id: /substance/-/id
+  templateRequired:
+  - id
+- href: Substance/{id}
+  rel: substance_Substance
+  targetHints:
+    backref:
+    - substance_proteincompoundassociation
+    directionality:
+    - outbound
+    multiplicity:
+    - has_one
+  targetSchema:
+    $ref: Substance.yaml
+  templatePointers:
+    id: /substance/-/id
+  templateRequired:
+  - id
+properties:
+  associationType:
+    description: protein-compound association keyword, example inhibitor
+    element_property: true
+    type: string
+  createdDateTime:
+    element_property: true
+    format: date-time
+    type: string
+  genes:
+    backref: genes_protein_compound_association
+    element_property: true
+    items:
+      $ref: Gene.yaml
+    type: array
+  id:
+    element_property: true
+    type: string
+  kiNm:
+    element_property: true
+    type: number
+  projectId:
+    element_property: true
+    type: string
+  proteinStructures:
+    backref: proteinStructures_protein_compound_association
+    element_property: true
+    items:
+      $ref: ProteinStructure.yaml
+    type: array
+  proteins:
+    backref: proteins_protein_compound_association
+    element_property: true
+    items:
+      $ref: Protein.yaml
+    type: array
+  publications:
+    backref: publications_protein_compound_association
+    element_property: true
+    items:
+      $ref: Publication.yaml
+    type: array
+  resourceType:
+    default: protein_compound_association
+    description: One of the resource types defined as part of BMEG
+    type: string
+  source:
+    element_property: true
+    type: string
+  submitterId:
+    element_property: true
+    type: string
+  substance:
+    backref: substance_proteincompoundassociation
+    element_property: true
+    items:
+      $ref: Substance.yaml
+    type: array
+  type:
+    element_property: true
+    type: string
+  updatedDateTime:
+    element_property: true
+    format: date-time
+    type: string
+required:
+- submitterId
+- projectId
+title: ProteinCompoundAssociation
+type: object

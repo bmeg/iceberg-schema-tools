@@ -1,0 +1,148 @@
+$id: DrugResponse
+$schema: https://json-schema.org/draft/2020-12/schema
+description: "Drug response curve fit parameters. The dose\u2013response relationship,\
+  \ or exposure\u2013response relationship, describes the magnitude of the response\
+  \ of an organism, as a function of exposure (or doses) to a stimulus or stressor\
+  \ (a chemical) after a certain exposure time."
+links:
+- href: Substance/{id}
+  rel: substances_Substance
+  targetHints:
+    backref:
+    - substances_drugresponse
+    directionality:
+    - outbound
+    multiplicity:
+    - has_many
+  targetSchema:
+    $ref: Substance.yaml
+  templatePointers:
+    id: /substances/-/id
+  templateRequired:
+  - id
+- href: Substance/{id}
+  rel: substances_Substance
+  targetHints:
+    backref:
+    - substances_drugresponse
+    directionality:
+    - outbound
+    multiplicity:
+    - has_many
+  targetSchema:
+    $ref: Substance.yaml
+  templatePointers:
+    id: /substances/-/id
+  templateRequired:
+  - id
+properties:
+  aac:
+    description: 'Area above curve
+
+      '
+    element_property: true
+    type: number
+  auc:
+    description: 'Area under curve
+
+      '
+    element_property: true
+    type: number
+  createdDateTime:
+    element_property: true
+    format: date-time
+    type: string
+  doseUm:
+    description: 'The drug doses (micromolar) for which responses were measured.
+
+      '
+    element_property: true
+    type: array
+  dss1:
+    description: 'Drug sensitivity score 1; an AUC measurement with the baseline noise
+      subtracted.  https://www.ncbi.nlm.nih.gov/pubmed/24898935
+
+      '
+    element_property: true
+    type: number
+  dss2:
+    description: 'Drug sensitivity score 2; DSS1 further normalized by the logarithm
+      of the top  asymptote Rmax. https://www.ncbi.nlm.nih.gov/pubmed/24898935
+
+      '
+    element_property: true
+    type: number
+  dss3:
+    description: 'Drug sensitivity score 3; DSS1 further normalized by the dose range
+      over which  the response exceeds the activity threshold Amin. https://www.ncbi.nlm.nih.gov/pubmed/24898935
+
+      '
+    element_property: true
+    type: number
+  ec50:
+    description: 'The dose at which 50% of the maximum response is observed
+
+      '
+    element_property: true
+    type: number
+  einf:
+    description: 'The maximum theoretical inhibition
+
+      '
+    element_property: true
+    type: number
+  hs:
+    description: 'The Hill Slope
+
+      '
+    element_property: true
+    type: number
+  ic50:
+    description: 'The dose that achieves  50% inhibition of cell viability
+
+      '
+    element_property: true
+    type: number
+  id:
+    element_property: true
+    type: string
+  projectId:
+    element_property: true
+    type: string
+  resourceType:
+    default: drug_response
+    description: One of the resource types defined as part of BMEG
+    type: string
+  response:
+    description: 'The measured drug response for a given drug dose.
+
+      '
+    element_property: true
+    type: array
+  sourceCellName:
+    element_property: true
+    type: string
+  sourceDrugName:
+    element_property: true
+    type: string
+  submitterId:
+    element_property: true
+    type: string
+  substances:
+    backref: substances_drugresponse
+    element_property: true
+    items:
+      $ref: Substance.yaml
+    type: array
+  type:
+    element_property: true
+    type: string
+  updatedDateTime:
+    element_property: true
+    format: date-time
+    type: string
+required:
+- submitterId
+- projectId
+title: DrugResponse
+type: object

@@ -10,20 +10,6 @@ description: "A reference to a document. A reference to a document of any kind f
   \ and managed.  The actual content may be inline base64 encoded data or provided\
   \ by direct reference. [See https://hl7.org/fhir/R5/DocumentReference.html]"
 links:
-- rel: aliquots
-  href: aliquot/{id}
-  templateRequired:
-  - id
-  targetSchema:
-    $ref: aliquot.yaml
-  templatePointers:
-    id: /aliquots/-/id
-  targetHints:
-    directionality:
-    - outbound
-    multiplicity:
-    - has_one
-    backref: files
 - href: Patient/{id}
   rel: author_Patient
   targetHints:
@@ -473,15 +459,6 @@ properties:
     enum_reference_types:
     - Resource
     title: Who/what is the subject of the document
-  aliquots:
-    $ref: aliquot.yaml
-    backref: document_reference
-    description: 'Pertaining to a portion of the whole; any one of two or more samples
-      of something, of the same volume or weight.'
-    element_property: true
-    enum_reference_types:
-    - aliquot
-    title: Pertaining to a portion of the whole
   text:
     $ref: Narrative.yaml
     description: A human-readable narrative that contains a summary of the resource

@@ -1,28 +1,27 @@
 $schema: https://json-schema.org/draft/2020-12/schema
-$id: Interaction
-title: Interaction
+$id: GeneSet
+title: GeneSet
 type: object
-description: A biological interaction. This node represent an interaction between
-  two or  more entities (e.g. protein-protein, gene-drug, catalysis, or synthesis).
+description: A set of biologically related genes
 required:
   - submitterId
   - projectId
 links:
-  - rel: interactionOutput_Gene
+  - rel: genes_Gene
     href: Gene/{id}
     templateRequired:
       - id
     targetSchema:
       $ref: Gene.yaml
     templatePointers:
-      id: /interactionOutput/-/id
+      id: /genes/-/id
     targetHints:
       directionality:
         - outbound
       multiplicity:
         - has_many
       backref:
-        - interactionOutput_interaction
+        - genes_gene_set
   - rel: publications_Publication
     href: Publication/{id}
     templateRequired:
@@ -37,39 +36,68 @@ links:
       multiplicity:
         - has_many
       backref:
-        - publications_interaction
-  - rel: interactionInput_Protein
-    href: Interactioninpu/{id}
-    templateRequired:
-      - id
-    targetSchema:
-      $ref: Protein.yaml
-    templatePointers:
-      id: /interactionInput/-/id
-    targetHints:
-      directionality:
-        - outbound
-      multiplicity:
-        - has_one
-      backref:
-        - interactionInput_interaction
+        - publications_gene_set
 properties:
-  source:
+  id:
+    type: string
+    element_property: true
+  geoid:
+    type: string
+    element_property: true
+  chip:
+    type: string
+    element_property: true
+  contributor:
     type: string
     element_property: true
   type:
     type: string
     element_property: true
-  id:
-    type: string
-    systemAlias: node_id
+  genes:
+    type: array
+    items:
+      $ref: Gene.yaml
     element_property: true
+    backref: genes_gene_set
   publications:
     type: array
     items:
       $ref: Publication.yaml
     element_property: true
-    backref: publications_interaction
+    backref: publications_gene_set
+  standardName:
+    type: string
+    element_property: true
+  systematicName:
+    type: string
+    element_property: true
+  historicalNames:
+    type: string
+    element_property: true
+  exactSource:
+    type: string
+    element_property: true
+  genesetListingUrl:
+    type: string
+    element_property: true
+  externalDetailsUrl:
+    type: string
+    element_property: true
+  categoryCode:
+    type: string
+    element_property: true
+  subCategoryCode:
+    type: string
+    element_property: true
+  contributorOrg:
+    type: string
+    element_property: true
+  descriptionBrief:
+    type: string
+    element_property: true
+  descriptionFull:
+    type: string
+    element_property: true
   projectId:
     element_property: true
     type: string
@@ -84,19 +112,7 @@ properties:
     element_property: true
     type: string
     format: date-time
-  interactionOutput:
-    type: array
-    items:
-      $ref: Gene.yaml
-    element_property: true
-    backref: interactionOutput_interaction
-  interactionInput:
-    type: array
-    items:
-      $ref: Protein.yaml
-    element_property: true
-    backref: interactionInput_interaction
   resourceType:
-    default: interaction
+    default: gene_set
     type: string
     description: One of the resource types defined as part of BMEG

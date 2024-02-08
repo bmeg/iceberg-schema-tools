@@ -1,68 +1,56 @@
 $schema: https://json-schema.org/draft/2020-12/schema
-$id: Exon
-title: Exon
+$id: MethylationProbe
+title: MethylationProbe
 type: object
-description: An exon - Exon is a region of the transcript sequence within a gene which
-  is not removed from the primary RNA transcript by RNA splicing.
+description: Definition for a methylation probe - A probe is a DNA sequence used experimentally
+  to detect the presence or absence of a complementary nucleic acid.
 required:
   - submitterId
   - projectId
-  - exonId
+  - probeId
 links:
-  - rel: transcripts_Transcript
-    href: Transcript/{id}
+  - rel: gene_Gene
+    href: Gene/{id}
     templateRequired:
       - id
     targetSchema:
-      $ref: Transcript.yaml
+      $ref: Gene.yaml
     templatePointers:
-      id: /transcripts/-/id
+      id: /gene/-/id
     targetHints:
       directionality:
         - outbound
       multiplicity:
-        - has_many
+        - has_one
       backref:
-        - transcripts_exon
+        - gene_methylation_probe
 properties:
-  id:
-    type: string
-    element_property: true
-  genome:
-    element_property: true
-    type: string
-    description: Reference to a genome build
-    enum:
-      - GRCh37
-      - GRCh38
   chromosome:
     element_property: true
     type: string
     description: Reference to a chromosome
     pattern: ^(chr).*$
-  start:
+  position:
     type: integer
     element_property: true
-  end:
-    type: integer
+  target:
+    type: string
     element_property: true
-  strand:
+  id:
+    systemAlias: node_id
     element_property: true
     type: string
-    description: Reference to a chromosome strand
-    enum:
-      - +
-      - '-'
+    pattern: ^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$
   type:
     type: string
     element_property: true
-  transcripts:
+  gene:
     type: array
     items:
-      $ref: Transcript.yaml
+      $ref: Gene.yaml
     element_property: true
-    backref: transcripts_exon
-  exonId:
+    backref: gene_methylation_probe
+  probeId:
     type: string
     element_property: true
   projectId:
@@ -80,6 +68,6 @@ properties:
     type: string
     format: date-time
   resourceType:
-    default: exon
+    default: methylation_probe
     type: string
     description: One of the resource types defined as part of BMEG
