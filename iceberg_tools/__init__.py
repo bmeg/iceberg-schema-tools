@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 def monkey_patch_url_validate():
     # monkey patch to allow file: urls
     import fhir.resources.fhirtypes
-    from pydantic import FileUrl
+    from pydantic.v1 import FileUrl
 
     original_url_validate = fhir.resources.fhirtypes.Url.validate
 
