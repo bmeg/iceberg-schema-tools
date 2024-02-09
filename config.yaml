@@ -16,7 +16,7 @@ dependency_order:
   #
 #  - Organization
 #  - Location
-#  - Practitioner
+  - Practitioner
 #  - PractitionerRole
   - ResearchStudy
   - Patient
@@ -25,13 +25,13 @@ dependency_order:
   - Specimen
 #  - Encounter
   - Observation
-#  - DiagnosticReport
+  - DiagnosticReport
   - Condition
   - Medication
   - MedicationAdministration
-  - MedicationStatement
-  - MedicationRequest
-#  - Procedure
+#  - MedicationStatement
+#  - MedicationRequest
+  - Procedure
   - DocumentReference
   - Task
   - FamilyMemberHistory
@@ -54,6 +54,9 @@ nested_objects:
   Task:
     - input.valueReference
     - output.valueReference
+  Medication:
+    - ingredient.item
+
 
 # Specify which entities you want to add to a FHIR entities model
 extensions:
@@ -82,6 +85,19 @@ limit_links:
     - Specimen
     - ResearchStudy
     - Observation
+  Practitioner: []
+  ResearchStudy:
+    - Project
+    - ResearchStudy
+  FamilyMemberHistory:
+    - Patient
+  Procedure:
+    - Patient
+    - Practitioner
+    - Procedure
+  MedicationAdministration:
+    - Patient
+    - Medication
 
 # Add these extra properties to the simplified schema
 # These may be used to add extra scalar properties to the simplified schema as well as constrain edge destination types.
