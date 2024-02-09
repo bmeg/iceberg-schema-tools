@@ -87,6 +87,37 @@ limit_links:
 # These may be used to add extra scalar properties to the simplified schema as well as constrain edge destination types.
 extra_properties:
 
+  Patient:
+    us_core_race_ombCategory_coding:
+      description: extension
+      type: array
+      items:
+        type: string
+    us_core_ethnicity_ombCategory_coding:
+      description: extension
+      type: array
+      items:
+        type: string
+    us_core_race_text:
+      description: extension
+      type: string
+    patient_birthPlace_resourceType:
+      description: nested
+      type: string
+    patient_birthPlace_city:
+      description: nested
+      type: string
+    us_core_ethnicity_text:
+      description: nested
+      type: string
+    patient_birthPlace_state:
+      description: nested
+      type: string
+    patient_birthPlace_country:
+      description: nested
+      type: string
+
+
   # Add gen3 file scaffolding expected properties
   DocumentReference:
     $ref: "_definitions.yaml#/data_file_properties"
@@ -120,8 +151,24 @@ extra_properties:
 #        description: from content attachment
     # from denormalization
     patient_id:
+      type: string
+      description: Denormalized patient id
+    patient_identifier:
+      description: Denormalized patient identifier
+      type: array
+      items:
         type: string
-        description: Denormalized patient id
+    specimen_identifier:
+      description: Denormalized specimen identifier
+      type: array
+      items:
+        type: string
+    task_identifier:
+      description: Denormalized task identifier
+      type: array
+      items:
+        type: string
+
 
     subject:
       description: Who/what is the subject of the document.
@@ -182,6 +229,21 @@ extra_properties:
         $ref: Reference.yaml
       title: What the observation is about, when it is not about the subject of record
       type: array
+    patient_identifier:
+      description: Denormalized patient identifier
+      type: array
+      items:
+        type: string
+    specimen_identifier:
+      description: Denormalized specimen identifier
+      type: array
+      items:
+        type: string
+    condition_identifier:
+      description: Denormalized condition identifier
+      type: array
+      items:
+        type: string
 
   # add a link from a sub-object collection.bodySite
   Specimen:
@@ -199,7 +261,11 @@ extra_properties:
       enum_reference_types:
       - BodyStructure
       title: Anatomical collection site
-
+    patient_identifier:
+      description: Denormalized patient identifier
+      type: array
+      items:
+        type: string
 
 # Add a `category` field to the simplified schema: defaults to Clinical
 categories:
