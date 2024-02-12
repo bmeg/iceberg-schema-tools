@@ -1,5 +1,4 @@
 import importlib
-import json
 from string import Formatter
 from typing import List, Iterator, Callable
 from glom import glom, PathAccessError, flatten
@@ -8,6 +7,7 @@ import fastjsonschema
 import jsonschema
 import requests
 import re
+import json
 from jsonpointer import resolve_pointer
 
 from iceberg_tools.schema import extract_schemas, BASE_URI
@@ -526,9 +526,10 @@ class VertexLinkWriter:
             # disambiguate polymorphic references
             # if we have a FHIR polymorphic reference, we need to check that the target schema is in the list of values
             ref = schema_link['targetSchema']['$ref'].split('/')[-1]
+
             ref = ref.replace('.yaml', '')
             if ref != 'Resource':  # skip `Any` Resource
-                if '/' in values_ and ref not in values_:
+                if '/' in _ and ref not in _:
                     # Polymorphic reference {schema_link['targetSchema']['$ref']} {values} skipping
                     return [None]
 
