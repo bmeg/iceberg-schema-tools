@@ -14,10 +14,10 @@ dependency_order:
   #
   # FHIR objects
   #
-#  - Organization
+  - Organization
 #  - Location
   - Practitioner
-#  - PractitionerRole
+  - PractitionerRole
   - ResearchStudy
   - Patient
   - ResearchSubject
@@ -34,8 +34,9 @@ dependency_order:
   - Procedure
   - DocumentReference
   - Task
+  - ImagingStudy
   - FamilyMemberHistory
-#  - BodyStructure
+  - BodyStructure
 #  - Immunization
 
 
