@@ -26,9 +26,12 @@ from fhir.resources.quantity import Quantity
 from fhir.resources.reference import Reference
 from fhir.resources.task import Task
 from yaml import SafeLoader
+from copy import deepcopy
 
-from iceberg_tools.util import EmitterContextManager, directory_reader
+from iceberg_tools.util import EmitterContextManager, directory_reader, parse_obj
 from iceberg_tools.data.simplifier.oid_lookup import get_oid
+from gen3_tracker.meta.dataframer import normalize_value, is_number, normalize_coding
+
 
 # Latest FHIR version by default
 FHIR_CLASSES = importlib.import_module('fhir.resources')
@@ -717,7 +720,28 @@ class SimplifierContextManager:
         Task.dict = self.orig_task_dict
 
 
-def simplify_directory(input_path, pattern, output_path, schema_path, dialect, config_path, transform_ids=None):
+def obs_splitter(observation: dict):
+    value_normalized, _ = normalize_value(observation)
+    observation['valueString'] = value_normalized
+
+    # renormalize the value in components
+    for component in observation.get('component', []):
+        # simplify the value
+        observation = deepcopy(observation)
+        value_normalized, _ = normalize_value(component)
+        observation['code'] = component['code']
+        if value_normalized:
+            observation['valueString'] = value_normalized.strip()
+        if 'component' in observation:
+            del observation['component']
+        yield observation
+
+    if 'component' in observation:
+        del observation['component']
+    yield observation
+
+
+def simplify_directory(input_path, pattern, output_path, schema_path, dialect, config_path, split_obs, transform_ids=None):
     """Reads directory of FHIR, renders simple, data frame friendly flattened records."""
 
     input_path = pathlib.Path(input_path)
@@ -746,22 +770,42 @@ def simplify_directory(input_path, pattern, output_path, schema_path, dialect, c
                     # print other exceptions too
                     logger.error(f"{parse_result.path} has exception {parse_result.exception}")
                     continue
+
                 resource = parse_result.resource
+                if split_obs is True and parse_result.resource.resource_type == "Observation":
+                    for obs in obs_splitter(parse_result.object):
 
-                simplified, references = simplify(resource, dialect, nested_objects, transform_ids)
-                try:
-                    check_simplified_schemas(simplified, schemas)
-                except (TypeError, AssertionError) as e:
-                    _debug_once(str(e))
+                        parse_result = parse_obj(obs).resource
+                        simplified, references = simplify(parse_result, dialect, nested_objects, transform_ids)
+                        try:
+                            check_simplified_schemas(simplified, schemas)
+                        except (TypeError, AssertionError) as e:
+                            _debug_once(str(e))
 
-                assert simplified, ("Should have simplified", resource.resource_type, resource.id)
-                all_ok = all([validate_simplified_value(_) for _ in simplified.values()])
-                _assert_all_ok(all_ok, parse_result, resource, simplified)
+                        assert simplified, ("Should have simplified", resource.resource_type, resource.id)
+                        all_ok = all([validate_simplified_value(_) for _ in simplified.values()])
+                        _assert_all_ok(all_ok, parse_result, resource, simplified)
 
-                simplified = _render_dialect(simplified, references, dialect, schemas, limit_links)
-                fp = emitter.emit(resource.resource_type)
-                fp.write(orjson.dumps(simplified, default=_default_json_serializer,
-                                      option=orjson.OPT_APPEND_NEWLINE).decode())
+                        simplified = _render_dialect(simplified, references, dialect, schemas, limit_links)
+                        fp = emitter.emit(resource.resource_type)
+                        fp.write(orjson.dumps(simplified, default=_default_json_serializer,
+                                 option=orjson.OPT_APPEND_NEWLINE).decode())
+
+                else:
+                    simplified, references = simplify(resource, dialect, nested_objects, transform_ids)
+                    try:
+                        check_simplified_schemas(simplified, schemas)
+                    except (TypeError, AssertionError) as e:
+                        _debug_once(str(e))
+
+                    assert simplified, ("Should have simplified", resource.resource_type, resource.id)
+                    all_ok = all([validate_simplified_value(_) for _ in simplified.values()])
+                    _assert_all_ok(all_ok, parse_result, resource, simplified)
+
+                    simplified = _render_dialect(simplified, references, dialect, schemas, limit_links)
+                    fp = emitter.emit(resource.resource_type)
+                    fp.write(orjson.dumps(simplified, default=_default_json_serializer,
+                             option=orjson.OPT_APPEND_NEWLINE).decode())
 
 
 def _debug_once(msg):
@@ -798,17 +842,23 @@ def _assert_all_ok(all_ok, parse_result, resource, simplified):
               default='config.yaml',
               show_default=True,
               help='Path to config file.')
+@click.option('--split_obs',
+              default=False,
+              show_default=True,
+              is_flag=True,
+              help='g3t dataframe -- which type of node to split on',
+              )
 @click.option('--transform_ids',
               default=None,
               show_default=True,
               help='Transform ids based on this seed')
-def cli(path, pattern, output_path, schema_path, dialect, config_path, transform_ids):
+def cli(path, pattern, output_path, schema_path, dialect, config_path, split_obs, transform_ids):
     """Renders PFB friendly flattened records.
 
     PATH: Path containing bundles (*.json) or resources (*.ndjson)
     OUTPUT_PATH: Path where simplified resources will be stored
     """
-    simplify_directory(path, pattern, output_path, schema_path, dialect, config_path, transform_ids)
+    simplify_directory(path, pattern, output_path, schema_path, dialect, config_path, split_obs, transform_ids)
 
 
 if __name__ == '__main__':
