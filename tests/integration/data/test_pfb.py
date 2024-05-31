@@ -24,7 +24,7 @@ def setup_module(module):
 def test_studies(caplog, dependency_order):
     """Ensure we can create a pfb file from a synthetic study."""
     simplify_directory('tests/fixtures/simplify/study/', '**/*.*', 'tmp/study/extractions',
-                       'tests/integration/data/schemas/simplified-fhir.json', 'PFB', 'tests/integration/data/config.yaml')
+                       'tests/integration/data/schemas/simplified-fhir.json', 'PFB', 'tests/integration/data/config.yaml', False)
 
     pfb_writer = SimplePFBWriter(schema_path='tests/integration/data/schemas/simplified-fhir.json',
                                  output_path='tmp/CohesiveDataSet.avro',
@@ -41,7 +41,7 @@ def test_studies(caplog, dependency_order):
 def test_synthea(caplog, dependency_order):
     """Ensure we can create a pfb file from a synthetic study."""
     simplify_directory('tests/fixtures/simplify/synthea', '**/*.*', 'tmp/synthea/extractions',
-                       'tests/integration/data/schemas/simplified-fhir.json', 'PFB', 'tests/integration/data/config.yaml')
+                       'tests/integration/data/schemas/simplified-fhir.json', 'PFB', 'tests/integration/data/config.yaml', False)
 
     pfb_writer = SimplePFBWriter(schema_path='tests/integration/data/schemas/simplified-fhir.json',
                                  output_path='tmp/Synthea.avro',
@@ -58,7 +58,7 @@ def test_synthea(caplog, dependency_order):
 def test_kf(caplog, dependency_order):
     """Ensure we can create a pfb file from a Kids first study."""
     simplify_directory('tests/fixtures/simplify/kf', '**/*.*', 'tmp/kf/extractions',
-                       'tests/integration/data/schemas/simplified-fhir.json', 'PFB', 'tests/integration/data/config.yaml')
+                       'tests/integration/data/schemas/simplified-fhir.json', 'PFB', 'tests/integration/data/config.yaml', False)
 
     pfb_writer = SimplePFBWriter(schema_path='tests/integration/data/schemas/simplified-fhir.json',
                                  output_path='tmp/KidsFirst.avro',
@@ -76,7 +76,7 @@ def test_ncpi(caplog, dependency_order):
     """Ensure we can create a pfb file from a NCPI IG examples."""
 
     simplify_directory('tests/fixtures/simplify/ncpi/examples-5.0', '*.*', 'tmp/ncpi/extractions',
-                       'tests/integration/data/schemas/simplified-fhir.json', 'PFB', 'tests/integration/data/config.yaml')
+                       'tests/integration/data/schemas/simplified-fhir.json', 'PFB', 'tests/integration/data/config.yaml', False)
 
     pfb_writer = SimplePFBWriter(schema_path='tests/integration/data/schemas/simplified-fhir.json',
                                  output_path='tmp/NCPI.avro',
@@ -95,7 +95,7 @@ def test_genomics_reporting(caplog, dependency_order):
 
     simplify_directory('tests/fixtures/simplify/genomics-reporting/examples-5.0',
                        '*.*', 'tmp/genomics-reporting/extractions',
-                       'tests/integration/data/schemas/simplified-fhir.json', 'PFB', 'tests/integration/data/config.yaml')
+                       'tests/integration/data/schemas/simplified-fhir.json', 'PFB', 'tests/integration/data/config.yaml', False)
 
     pfb_writer = SimplePFBWriter(schema_path='tests/integration/data/schemas/simplified-fhir.json',
                                  output_path='tmp/GenomicsReporting.avro',
@@ -113,7 +113,7 @@ def test_dbgap(caplog, dependency_order):
     """Ensure we can create a pfb file from dbGAP examples."""
 
     simplify_directory('tests/fixtures/simplify/dbgap/examples-5.0', '*.*', 'tmp/dbgap/extractions',
-                       'tests/integration/data/schemas/simplified-fhir.json', 'PFB', 'tests/integration/data/config.yaml')
+                       'tests/integration/data/schemas/simplified-fhir.json', 'PFB', 'tests/integration/data/config.yaml', False)
 
     pfb_writer = SimplePFBWriter(schema_path='tests/integration/data/schemas/simplified-fhir.json',
                                  output_path='tmp/dbGap.avro',
@@ -131,7 +131,7 @@ def test_anvil(caplog, dependency_order):
     """Ensure we can create a pfb file from AnVIL examples."""
 
     simplify_directory('tests/fixtures/simplify/anvil/fhir-5.0/', '**/*.*', 'tmp/anvil/extractions',
-                       'tests/integration/data/schemas/simplified-fhir.json', 'PFB', 'tests/integration/data/config.yaml')
+                       'tests/integration/data/schemas/simplified-fhir.json', 'PFB', 'tests/integration/data/config.yaml', False)
 
     pfb_writer = SimplePFBWriter(schema_path='tests/integration/data/schemas/simplified-fhir.json',
                                  output_path='tmp/AnVIL.avro',
