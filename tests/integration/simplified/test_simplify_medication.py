@@ -24,7 +24,7 @@ def test_simplify_medication(distribution_schema):
     with SimplifierContextManager():
 
         simplified, references = simplify(medication_administration, dialect='PFB')
-        rendered = _render_dialect(simplified, references, 'PFB', schemas=distribution_schema)
+        rendered = _render_dialect(simplified, references, 'PFB', schemas=distribution_schema, project_id=None)
 
         print(orjson.dumps(rendered, option=orjson.OPT_INDENT_2).decode())
 

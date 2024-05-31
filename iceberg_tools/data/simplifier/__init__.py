@@ -4,12 +4,14 @@ import logging
 import pathlib
 import threading
 import uuid
-from typing import Dict, List
+import re
+import orjson
+from typing import Dict, List, Iterator
 
 import click
 import inflection
-import orjson
 import requests
+import os
 import yaml
 
 from fhir.resources import FHIRAbstractModel  # noqa
@@ -27,8 +29,9 @@ from fhir.resources.reference import Reference
 from fhir.resources.task import Task
 from yaml import SafeLoader
 
-from iceberg_tools.util import EmitterContextManager, directory_reader
+from iceberg_tools.util import EmitterContextManager, directory_reader, _is_ndjson, _to_file, _is_json_file
 from iceberg_tools.data.simplifier.oid_lookup import get_oid
+from iceberg_tools.graph import VertexLinkWriter
 
 # Latest FHIR version by default
 FHIR_CLASSES = importlib.import_module('fhir.resources')
@@ -532,6 +535,54 @@ def validate_simplified_value(v) -> bool:
     return True
 
 
+def _grip_simplifier(simplified: dict, project_id: str):
+    assert project_id is not None, "pass a project id in the form --project_id [program]-[project]"
+    project_parts = project_id.split("-")
+
+    # project_parts must be of length 2
+    assert len(project_parts) == 2, "project_id must be of form [program]-[project]"
+
+    if simplified["resourceType"] == "DocumentReference":
+        simplified["resourceType"] = "File"
+
+    new_dict = {
+        "gid": simplified["id"],
+        "label": simplified["resourceType"],
+    }
+    simplified.update({
+        "project_id": project_id,
+        "auth_resource_path": f"/programs/{project_parts[0]}/projects/{project_parts[1]}"
+    })
+    # If vertex is project, front end expects to see an availability type
+    if simplified["resourceType"] == "Project":
+        simplified.update({"availability_type": "Open"})
+
+    del simplified["resourceType"]
+
+    # uuid regex
+    pattern = r'[a-zA-Z]+/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}'
+    names = []
+    for fields in simplified.items():
+        if isinstance(fields[1], list):
+            simplified[fields[0]] = fields[1][0]
+
+        if re.match(pattern, str(simplified[fields[0]])):
+            elems = simplified[fields[0]].split("/")
+
+            temp_fields = fields[0]
+            if "_" in temp_fields:
+                temp_fields = temp_fields.split("_")[-1]
+
+            names.append(fields[0])
+
+    for elems in names:
+        simplified.pop(elems)
+
+    logger.info(simplified)
+    new_dict["data"] = simplified
+    return new_dict
+
+
 def _gen3_scaffolding_document_reference(simplified: dict, resource: FHIRAbstractModel) -> dict:
     """Add Gen3 boiler plate"""
 
@@ -585,15 +636,20 @@ def _ensure_dialect(simplified: dict, resource: FHIRAbstractModel, dialect: str)
     """
     if dialect != 'PFB':
         return simplified
+
     simplified = _gen3_scaffolding_document_reference(simplified, resource)
     return simplified
 
 
-def _render_dialect(simplified: dict, references: List[str], dialect: str, schemas: dict, limit_links: dict = {}) -> dict:
-    """Render as PFB record ready for import
-    """
-    if dialect != 'PFB':
+def _render_dialect(simplified: dict, references: List[str], dialect: str, schemas: dict, project_id: str = None, limit_links: dict = {}) -> dict:
+    """Render as PFB record ready for import"""
+
+    if dialect == 'FHIR':
         return simplified
+
+    if dialect == "GRIP":
+        grip_simplified = _grip_simplifier(simplified, project_id)
+        return grip_simplified
 
     labels = [_['title'] for _ in schemas.values() if 'title' in _]
 
@@ -717,12 +773,45 @@ class SimplifierContextManager:
         Task.dict = self.orig_task_dict
 
 
-def simplify_directory(input_path, pattern, output_path, schema_path, dialect, config_path, transform_ids=None):
+def directory_json(
+        directory_path: pathlib.Path,
+        pattern: str = '*.*',
+        ignore_path: str = None) -> Iterator[dict]:
+    """Extract JSON resources from directory
+    Args:
+        directory_path (pathlib.Path): directory to read
+        pattern (str, optional): glob pattern. Defaults to '*.*'.
+        ignore_path (str, optional): ignore files with this string in path. Defaults to None.
+    """
+
+    assert directory_path.is_dir(), f"{directory_path.name} is not a directory"
+
+    input_files = [_ for _ in directory_path.glob(pattern) if _is_json_file(_.name)]
+    for input_file in input_files:
+        if ignore_path is not None and ignore_path in str(input_file):
+            continue
+        logger.info(input_file)
+        if not input_file.is_file():
+            continue
+        is_ndjson = _is_ndjson(input_file)
+        fp = _to_file(input_file)
+        with fp:
+            if is_ndjson:
+                for line in fp.readlines():
+                    yield line
+            else:
+                _ = orjson.loads(fp.read())
+                yield _
+                continue
+
+
+def simplify_directory(input_path, pattern, output_path, schema_path, dialect, config_path, project_id=None, transform_ids=None):
     """Reads directory of FHIR, renders simple, data frame friendly flattened records."""
 
     input_path = pathlib.Path(input_path)
     assert input_path.is_dir(), f"{input_path} not a directory"
     dialect = dialect.upper()
+    print("DIALECT ", dialect)
 
     if pathlib.Path(schema_path).is_file():
         with open(schema_path, "rb") as fp_:
@@ -738,9 +827,12 @@ def simplify_directory(input_path, pattern, output_path, schema_path, dialect, c
 
     with SimplifierContextManager():
         with EmitterContextManager(output_path) as emitter:
+
             for parse_result in directory_reader(directory_path=input_path, pattern=pattern,
                                                  validate=False, ignore_path=output_path):
+                # print("PARSE RESULT: ", parse_result)
                 if parse_result.exception is not None:
+                    print("PARSE EXCEPTION: ", parse_result.exception)
                     if 'resourceType' not in str(parse_result.exception):
                         logger.error(f"{parse_result.path} has exception {parse_result.exception}")
                     # print other exceptions too
@@ -758,9 +850,68 @@ def simplify_directory(input_path, pattern, output_path, schema_path, dialect, c
                 all_ok = all([validate_simplified_value(_) for _ in simplified.values()])
                 _assert_all_ok(all_ok, parse_result, resource, simplified)
 
-                simplified = _render_dialect(simplified, references, dialect, schemas, limit_links)
-                fp = emitter.emit(resource.resource_type)
+                simplified = _render_dialect(simplified, references, dialect, schemas, project_id, limit_links)
+
+                resource_emitted = resource.resource_type
+                # Fix to work with frontend
+                if resource_emitted == "DocumentReference":
+                    resource_emitted = "File"
+                fp = emitter.emit(resource_emitted)
+
                 fp.write(orjson.dumps(simplified, default=_default_json_serializer,
+                                      option=orjson.OPT_APPEND_NEWLINE).decode())
+
+            if dialect == "GRIP":
+                logger.info(f"Generating Grip Edges at {output_path}.edges")
+                schemas = schemas["$defs"]
+                with EmitterContextManager(output_path) as edge_emitter:
+                    first_line = True
+                    # read the first line so that don't have to re-enter the VertexLinkWriter every line
+                    for vertex in directory_reader(directory_path=input_path, pattern=pattern,
+                                                   validate=False, ignore_path=output_path):
+                        vertex = vertex.object
+                        if first_line and "resourceType" in vertex and vertex["resourceType"] in schemas:
+                            actual_schema = schemas[vertex["resourceType"]]
+                            break
+                        else:
+                            logger.warning(f"resourceType field not found for first line in line {vertex}")
+
+                    print("actual schema ", actual_schema)
+                    with VertexLinkWriter(actual_schema) as mgr:
+                        for vertex in directory_reader(directory_path=input_path, pattern=pattern,
+                                                       validate=False, ignore_path=output_path):
+                            vertex = vertex.object
+                            instance = mgr.insert_links(vertex)
+                            if "links" in instance:
+                                for link in instance['links']:
+                                    edge = {"label": link["rel"], "from": str(instance["id"]), "to": link["href"].split("/")[-1]}
+
+                                    if vertex["resourceType"] == "DocumentReference":
+                                        vertex["resourceType"] = "File"
+
+                                    fp = edge_emitter.emit(vertex["resourceType"] + ".edge")
+                                    fp.write(orjson.dumps(edge, default=_default_json_serializer,
+                                             option=orjson.OPT_APPEND_NEWLINE).decode())
+                                    logger.info(f" {edge}")
+                            else:
+                                logger.warning(f"ResourceType key not in resource, skipping line {vertex}")
+
+                assert project_id is not None, "using dialect GRIP, --project_id option must be populated"
+                fp = emitter.emit("Project")
+                project_parts = project_id.split("-")
+                vertex = {
+                    "gid": str(uuid.uuid5(ICEBERG_NAMESPACE, project_id)),
+                    "label": "Project",
+                    "data": {
+                        "auth_resource_path": f"/programs/{project_parts[0]}/projects/{project_parts[1]}",
+                        "availability_type": "Open",
+                        "code": project_parts[1],
+                        "id": str(uuid.uuid5(ICEBERG_NAMESPACE, project_id)),
+                        "name": project_id,
+                        "project_id": project_id
+                    }
+                }
+                fp.write(orjson.dumps(vertex, default=_default_json_serializer,
                                       option=orjson.OPT_APPEND_NEWLINE).decode())
 
 
@@ -791,24 +942,28 @@ def _assert_all_ok(all_ok, parse_result, resource, simplified):
               )
 @click.option('--dialect',
               default='PFB',
-              type=click.Choice(['FHIR', 'PFB'], case_sensitive=False),
+              type=click.Choice(['FHIR', 'PFB', 'GRIP'], case_sensitive=False),
               help='PFB: adds common properties, FHIR: passthrough'
               )
 @click.option('--config_path',
               default='config.yaml',
               show_default=True,
               help='Path to config file.')
+@click.option('--project_id',
+              default=None,
+              show_default=True,
+              help='If grip dialect is enabled, project_id is required')
 @click.option('--transform_ids',
               default=None,
               show_default=True,
               help='Transform ids based on this seed')
-def cli(path, pattern, output_path, schema_path, dialect, config_path, transform_ids):
+def cli(path, pattern, output_path, schema_path, dialect, config_path, project_id, transform_ids):
     """Renders PFB friendly flattened records.
 
     PATH: Path containing bundles (*.json) or resources (*.ndjson)
     OUTPUT_PATH: Path where simplified resources will be stored
     """
-    simplify_directory(path, pattern, output_path, schema_path, dialect, config_path, transform_ids)
+    simplify_directory(path, pattern, output_path, schema_path, dialect, config_path, project_id, transform_ids)
 
 
 if __name__ == '__main__':
