@@ -51,3 +51,6 @@ referencing==0.31.0
 
 # Fast Avro for Python
 fastavro
+
+# gen3 tracker
+gen3-tracker==0.0.4rc10

@@ -30,7 +30,7 @@ from copy import deepcopy
 
 from iceberg_tools.util import EmitterContextManager, directory_reader, parse_obj
 from iceberg_tools.data.simplifier.oid_lookup import get_oid
-from gen3_tracker.meta.dataframer import normalize_value, is_number, normalize_coding
+from gen3_tracker.meta.dataframer import normalize_value
 
 
 # Latest FHIR version by default
@@ -721,9 +721,6 @@ class SimplifierContextManager:
 
 
 def obs_splitter(observation: dict):
-    value_normalized, _ = normalize_value(observation)
-    observation['valueString'] = value_normalized
-
     # renormalize the value in components
     for component in observation.get('component', []):
         # simplify the value
@@ -732,13 +729,17 @@ def obs_splitter(observation: dict):
         observation['code'] = component['code']
         if value_normalized:
             observation['valueString'] = value_normalized.strip()
-        if 'component' in observation:
-            del observation['component']
+
+        # unsure if this is a good idea, but the new rows must have a unique id
+        observation['id'] = str(uuid.uuid5(ICEBERG_NAMESPACE, str(observation)))
         yield observation
 
-    if 'component' in observation:
+    if len(observation.get('component', [])) > 0:
         del observation['component']
-    yield observation
+    else:
+        value_normalized, _ = normalize_value(observation)
+        observation['valueString'] = value_normalized
+        yield observation
 
 
 def simplify_directory(input_path, pattern, output_path, schema_path, dialect, config_path, split_obs, transform_ids=None):
