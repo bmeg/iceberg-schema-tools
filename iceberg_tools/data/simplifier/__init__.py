@@ -484,9 +484,13 @@ def _render_codings(self: FHIRAbstractModel, *args, **kwargs) -> Dict:
                     compound_name = compound_name.replace('-', '_')
                     if compound_name not in codings:
                         codings[compound_name] = []
+
+                    if not isinstance(codings[compound_name], list):
+                        codings[compound_name] = [codings[compound_name]]
                     codings[compound_name].extend(_['__value__'])
                     if is_scalar:
                         codings[compound_name] = codings[compound_name][0]
+
     return codings
 
 

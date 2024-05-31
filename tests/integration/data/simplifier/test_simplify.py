@@ -60,3 +60,23 @@ def test_simplify_foo():
                     actual = set([_ for _ in simplified if _.startswith('content')])
                     assert expected == actual, (file_name, line)
                     assert len(pfb_ready['relations']) > 0, "DocumentReference should have relationships"
+
+
+def test_simplify_tcga_luad():
+    """Ensure we can validate a synthetic study"""
+
+    simplify_directory('tests/fixtures/simplify/TCGA-LUAD/', '**/*.*', 'tmp/TCGA-LUAD/extractions',
+                       'iceberg/schemas/simplified/simplified-fhir.json', 'PFB', 'config.yaml')
+
+    directory_path = pathlib.Path('tmp/TCGA-LUAD/extractions')
+    input_files = [_ for _ in directory_path.glob("MedicationAdministration.ndjson")]
+    for file_name in input_files:
+        with open(file_name) as fp:
+            for line in fp.readlines():
+                pfb_ready = orjson.loads(line)
+                simplified = pfb_ready['object']
+                all_ok = all([validate_simplified_value(_) for _ in simplified.values()])
+                print((file_name, line))
+                assert all_ok, (file_name, line)
+                if simplified['resourceType'] == 'MedicationAdministration':
+                    assert len(pfb_ready['relations']) > 0, "MedicationAdministration should have relationships"
