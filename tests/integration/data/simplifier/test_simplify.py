@@ -9,7 +9,7 @@ def test_simplify_study():
     """Ensure we can validate a synthetic study"""
 
     simplify_directory('tests/fixtures/simplify/study/', '**/*.*', 'tmp/study/extractions',
-                       'iceberg/schemas/simplified/simplified-fhir.json', 'PFB', 'config.yaml')
+                       'iceberg/schemas/simplified/simplified-fhir.json', 'PFB', 'config.yaml', False)
 
     directory_path = pathlib.Path('tmp/study/extractions')
     input_files = [_ for _ in directory_path.glob("*.ndjson")]
@@ -39,7 +39,7 @@ def test_simplify_foo():
     """Ensure we can validate a synthetic study"""
 
     simplify_directory('tests/fixtures/simplify/foo/', '**/*.*', 'tmp/foo/extractions',
-                       'iceberg/schemas/simplified/simplified-fhir.json', 'PFB', 'config.yaml')
+                       'iceberg/schemas/simplified/simplified-fhir.json', 'PFB', 'config.yaml', False)
 
     directory_path = pathlib.Path('tmp/foo/extractions')
     input_files = [_ for _ in directory_path.glob("*.ndjson")]
@@ -60,3 +60,28 @@ def test_simplify_foo():
                     actual = set([_ for _ in simplified if _.startswith('content')])
                     assert expected == actual, (file_name, line)
                     assert len(pfb_ready['relations']) > 0, "DocumentReference should have relationships"
+
+
+def test_simplify_obs_splitter():
+    """Test obs splitter functionality"""
+
+    simplify_directory('tests/fixtures/simplify/synthea_obs/', '**/*.*', 'tmp/synthea_obs/extractions',
+                       'iceberg/schemas/simplified/simplified-fhir.json', 'PFB', 'config.yaml', True)
+
+    directory_path = pathlib.Path('tmp/synthea_obs/extractions')
+    input_files = [_ for _ in directory_path.glob("Observation.ndjson")]
+    for file_name in input_files:
+        with open(file_name) as fp:
+            obs_count = 0
+            for line in fp.readlines():
+                pfb_ready = orjson.loads(line)
+                simplified = pfb_ready['object']
+                all_ok = all([validate_simplified_value(_) for _ in simplified.values()])
+                print((file_name, line))
+                assert all_ok, (file_name, line)
+                if simplified['resourceType'] == 'Observation':
+                    obs_count += 1
+                    assert 'component' not in pfb_ready, "component sub structure should have been removed"
+
+            if file_name == "Observation.ndjson":
+                assert obs_count == 7
