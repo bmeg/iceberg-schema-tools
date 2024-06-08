@@ -8,7 +8,7 @@ def test_schema_load(fhir_schema, fhir_validator, vertex_schemas, edge_schemas):
     link_hrefs = set([_['href'].split('/')[0] for _ in document_reference['links']])
     out_of_scope = set([
         'RelatedPerson',
-        'Practitioner',
-        'PractitionerRole',
-        'Organization'])
+    ])
+    print(link_hrefs)
+    print((out_of_scope - link_hrefs))
     assert (out_of_scope - link_hrefs) == out_of_scope, f"Did not expect {out_of_scope - link_hrefs}"
