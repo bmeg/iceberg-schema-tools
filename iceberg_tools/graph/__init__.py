@@ -174,12 +174,13 @@ def _extract_links(schema: dict, classes) -> List[dict]:
             links.append(
                 {
                     "rel": rel,
-                    "href": f"{enum_reference_type}/{{id}}",
+                    "href": "{id}",
                     "templateRequired": ["id"],
                     "targetHints": {
                         "multiplicity": [multiplicity],
                         "direction": [direction],
                         'backref': [property_['backref']],
+                        'regex_match': [f"{enum_reference_type}/*"]
                     },
                     "templatePointers": {
                         'id': "/" + _path.replace('.', '/')
