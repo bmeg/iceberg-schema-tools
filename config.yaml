@@ -29,8 +29,8 @@ dependency_order:
   - Condition
   - Medication
   - MedicationAdministration
-#  - MedicationStatement
-#  - MedicationRequest
+  - MedicationStatement
+  - MedicationRequest
   - Procedure
   - DocumentReference
   - Task
