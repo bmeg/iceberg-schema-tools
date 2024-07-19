@@ -159,8 +159,7 @@ def _extract_links(schema: dict, classes, dependency_order) -> List[dict]:
         property_ = schema['properties'][property_name]
 
         if 'enum_reference_types' not in property_ or\
-            (len(property_["enum_reference_types"]) == 1 and\
-                property_["enum_reference_types"][0] == "Resource"):
+                (len(property_["enum_reference_types"]) == 1 and property_["enum_reference_types"][0] == "Resource"):
             property_['enum_reference_types'] = dependency_order
         append_postscript = len(property_['enum_reference_types']) > 1
         _path = '.'.join(match.split('.')[1:-1])
@@ -399,7 +398,7 @@ class AssociationInstance:
 class VertexSchemaDecorator:
     """Adds links to vertex schema."""
 
-    def __init__(self, schema: dict, classes: list):
+    def __init__(self, schema: dict, classes: list, dependency_order: list):
         """Load and compile a JSON schema."""
         self.schema = _load_schema(schema)
         # add links property
@@ -412,7 +411,7 @@ class VertexSchemaDecorator:
             }
         }
         # add links element
-        links, nested_links = _generate_links_from_fhir_references(schema, classes)
+        links, nested_links = _generate_links_from_fhir_references(schema, classes, dependency_order)
         self.schema['links'] = links + nested_links
         # check schema
         jsonschema.Draft202012Validator.check_schema(schema)   # Draft202012Validator.check_schema(schema)
