@@ -16,12 +16,14 @@ dependency_order:
   #
   - Organization
 #  - Location
+  - Group
   - Practitioner
   - PractitionerRole
   - ResearchStudy
   - Patient
   - ResearchSubject
   - Substance
+  - SubstanceDefinition
   - Specimen
 #  - Encounter
   - Observation
@@ -29,8 +31,8 @@ dependency_order:
   - Condition
   - Medication
   - MedicationAdministration
-#  - MedicationStatement
-#  - MedicationRequest
+  - MedicationStatement
+  - MedicationRequest
   - Procedure
   - DocumentReference
   - Task

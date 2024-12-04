@@ -67,7 +67,7 @@ def _extract_target_hints(schema_link):
     return directionality, multiplicity, association
 
 
-def _generate_links_from_fhir_references(schema, classes) -> List[dict]:
+def _generate_links_from_fhir_references(schema, classes, dependency_order) -> List[dict]:
     """Generate links for a schema.
 
     Parameters
@@ -79,14 +79,15 @@ def _generate_links_from_fhir_references(schema, classes) -> List[dict]:
 
     # Direct links from {schema['title']}"
     links = []
-    links.extend(_extract_links(schema, classes))
+    dependency_order = [elem for elem in dependency_order if elem not in ["_definitions.yaml", "_terms.yaml", "Program", "Project"]]
+    links.extend(_extract_links(schema, classes, dependency_order))
 
     # Nested links
     nested_links = []
     for nested_schema, path in _extract_nested_schemas(schema):
         if nested_schema['title'] in NESTED_OBJECTS_IGNORE:
             continue
-        extracted_links = _extract_links(nested_schema, classes)
+        extracted_links = _extract_links(nested_schema, classes, dependency_order)
         if len(extracted_links) == 0:
             continue
 
@@ -137,11 +138,12 @@ def _extract_nested_schemas(schema) -> Iterator[tuple[dict, str]]:
         yield sub_schema, match
 
 
-def _extract_links(schema: dict, classes) -> List[dict]:
+def _extract_links(schema: dict, classes, dependency_order) -> List[dict]:
     """Extract Link Description Object (LDO) from a schema.
 
     see https://json-schema.org/draft/2019-09/json-schema-hypermedia.html#rfc.section.6
     """
+
     refs_finder = RefFinder(schema, refs=True)
     matches = sorted(refs_finder.find_refs())
 
@@ -155,8 +157,10 @@ def _extract_links(schema: dict, classes) -> List[dict]:
             multiplicity = 'has_many'
         property_name = match.split('.')[1]
         property_ = schema['properties'][property_name]
-        if 'enum_reference_types' not in property_:
-            property_['enum_reference_types'] = ['__ANY__']
+
+        if 'enum_reference_types' not in property_ or\
+                (len(property_["enum_reference_types"]) == 1 and property_["enum_reference_types"][0] == "Resource"):
+            property_['enum_reference_types'] = dependency_order
         append_postscript = len(property_['enum_reference_types']) > 1
         _path = '.'.join(match.split('.')[1:-1])
         _path = _path + '.reference'
@@ -394,7 +398,7 @@ class AssociationInstance:
 class VertexSchemaDecorator:
     """Adds links to vertex schema."""
 
-    def __init__(self, schema: dict, classes: list):
+    def __init__(self, schema: dict, classes: list, dependency_order: list):
         """Load and compile a JSON schema."""
         self.schema = _load_schema(schema)
         # add links property
@@ -407,7 +411,7 @@ class VertexSchemaDecorator:
             }
         }
         # add links element
-        links, nested_links = _generate_links_from_fhir_references(schema, classes)
+        links, nested_links = _generate_links_from_fhir_references(schema, classes, dependency_order)
         self.schema['links'] = links + nested_links
         # check schema
         jsonschema.Draft202012Validator.check_schema(schema)   # Draft202012Validator.check_schema(schema)
@@ -471,7 +475,6 @@ class VertexLinkWriter:
             return vertex
 
         for schema_link in _schema['links']:
-
             keys = self._extract_href_keys(schema_link['href'])
 
             values = self._extract_values(schema_link, vertex)
@@ -606,7 +609,7 @@ class SchemaLinkWriter:
         pass
 
     @staticmethod
-    def insert_links(schema, classes) -> dict:
+    def insert_links(schema, classes, dependency_order) -> dict:
         """Insert links into a schema.
 
         Parameters:
@@ -616,8 +619,9 @@ class SchemaLinkWriter:
             dict: schema with links inserted
 
         """
+
         schema = _load_schema(schema)
-        links, nested_links = _generate_links_from_fhir_references(schema, classes)
+        links, nested_links = _generate_links_from_fhir_references(schema, classes, dependency_order)
         schema['links'] = links + nested_links
         schema['properties']['links'] = {
             'type': 'array',
