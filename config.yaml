@@ -16,12 +16,14 @@ dependency_order:
   #
   - Organization
 #  - Location
+  - Group
   - Practitioner
   - PractitionerRole
   - ResearchStudy
   - Patient
   - ResearchSubject
   - Substance
+  - SubstanceDefinition
   - Specimen
 #  - Encounter
   - Observation
