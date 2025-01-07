@@ -18,30 +18,6 @@ def python_source_directories() -> List[str]:
     return ["tools", "tests"]
 
 
-_DEPENDENCY_LIST = [
-    "Organization",
-    "Practitioner",
-    "PractitionerRole",
-    "ResearchStudy",
-    "Patient",
-    "ResearchSubject",
-    "Substance",
-    "Specimen",
-    "Observation",
-    "DiagnosticReport",
-    "Condition",
-    "Medication",
-    "MedicationAdministration",
-    "MedicationStatement",
-    "MedicationRequest",
-    "Procedure",
-    "DocumentReference",
-    "Task",
-    "ImagingStudy",
-    "FamilyMemberHistory",
-    "BodyStructure"
-]
-
 _SCHEMA = yaml.safe_load("""
 ---
 "$schema": https://json-schema.org/draft/2020-12/schema
@@ -184,11 +160,6 @@ references:
     - reference: Substance/sub-1
     - reference: Substance/sub-2
 """)
-
-
-@pytest.fixture
-def dependency_list():
-    return _DEPENDENCY_LIST
 
 
 @pytest.fixture
