@@ -1,4 +1,4 @@
-# subclass_depth: 3  # default is 3 uncomment to override for fhir json schema
+subclass_depth: 4  # default is 3 uncomment to override for fhir json schema
 
 
 # This limits the top level objects the system will render
@@ -14,30 +14,36 @@ dependency_order:
   #
   # FHIR objects
   #
-#  - Organization
-#  - Location
-#  - Practitioner
-#  - PractitionerRole
+  - Organization
+  - Practitioner
+  - PractitionerRole
   - ResearchStudy
   - Patient
   - ResearchSubject
   - Substance
   - Specimen
-#  - Encounter
   - Observation
-#  - DiagnosticReport
   - Condition
   - Medication
   - MedicationAdministration
   - MedicationStatement
   - MedicationRequest
-#  - Procedure
   - DocumentReference
   - Task
   - FamilyMemberHistory
-#  - BodyStructure
+  - ImagingStudy
+  - Citation
+  - Substance
+  - SubstanceDefinition
+  - ServiceRequest
+  - Group
+  - Device
+  - BodyStructure
 #  - Immunization
-
+#  - Encounter
+#  - Location
+#  - DiagnosticReport
+#  - Procedure
 
 # Properties to 'pluck' from nested objects and render in the parent object
 nested_objects:
@@ -67,6 +73,7 @@ extensions:
   - http://synthetichealth.github.io/synthea/quality-adjusted-life-years
   - https://hl7.org/fhir/extensions/StructureDefinition-patient-birthPlace.json
   - https://hl7.org/fhir/extensions/StructureDefinition-patient-mothersMaidenName.json
+  # - https://calypr.ohsu.edu/fhir/StructureDefinition/part-of-study # TODO: search term?
 
 
 # Constrain the parent destination links from a Node for the Simplified Model.
@@ -82,6 +89,30 @@ limit_links:
     - Specimen
     - ResearchStudy
     - Observation
+    - ServiceRequest
+    - Practitioner
+    - PractitionerRole
+  ServiceRequest:
+    - Patient
+    - Specimen
+    - Device
+  Task:
+    - Specimen
+    - DocumentReference
+    - Practitioner
+    - PractitionerRole
+  ImagingStudy:
+    - Patient
+    - Specimen
+    - Practitioner
+    - PractitionerRole
+    - Device
+  Practitioner:
+    - Organization
+  PractitionerRole:
+    - Practitioner
+    - Organization
+
 
 # Add these extra properties to the simplified schema
 # These may be used to add extra scalar properties to the simplified schema as well as constrain edge destination types.
