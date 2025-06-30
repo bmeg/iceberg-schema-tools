@@ -138,3 +138,6 @@ iceberg/
 tmp/
 studies/
 notes/
+
+.DS_Store
+
