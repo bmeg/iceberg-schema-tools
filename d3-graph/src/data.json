@@ -1,0 +1,3528 @@
+{
+  "full": {
+    "nodes": [
+      {
+        "id": "ServiceRequestPatientInstruction",
+        "group": 1
+      },
+      {
+        "id": "MedicationAdministration",
+        "group": 1
+      },
+      {
+        "id": "DocumentReference",
+        "group": 1
+      },
+      {
+        "id": "CitationCitedArtifactContributorship",
+        "group": 1
+      },
+      {
+        "id": "ImagingStudySeriesPerformer",
+        "group": 1
+      },
+      {
+        "id": "CitationCitedArtifactContributorshipEntry",
+        "group": 1
+      },
+      {
+        "id": "TaskPerformer",
+        "group": 1
+      },
+      {
+        "id": "Timing",
+        "group": 1
+      },
+      {
+        "id": "SampledData",
+        "group": 1
+      },
+      {
+        "id": "ResearchStudyComparisonGroup",
+        "group": 1
+      },
+      {
+        "id": "FamilyMemberHistory",
+        "group": 1
+      },
+      {
+        "id": "RelatedArtifact",
+        "group": 1
+      },
+      {
+        "id": "Observation",
+        "group": 1
+      },
+      {
+        "id": "ObservationTriggeredBy",
+        "group": 1
+      },
+      {
+        "id": "SubstanceDefinitionCode",
+        "group": 1
+      },
+      {
+        "id": "CitationCitedArtifactClassification",
+        "group": 1
+      },
+      {
+        "id": "CitationCitedArtifactAbstract",
+        "group": 1
+      },
+      {
+        "id": "DataRequirementCodeFilter",
+        "group": 1
+      },
+      {
+        "id": "FamilyMemberHistoryParticipant",
+        "group": 1
+      },
+      {
+        "id": "PatientLink",
+        "group": 1
+      },
+      {
+        "id": "TaskOutput",
+        "group": 1
+      },
+      {
+        "id": "Patient",
+        "group": 1
+      },
+      {
+        "id": "Practitioner",
+        "group": 1
+      },
+      {
+        "id": "SubstanceDefinitionProperty",
+        "group": 1
+      },
+      {
+        "id": "ServiceRequest",
+        "group": 1
+      },
+      {
+        "id": "Annotation",
+        "group": 1
+      },
+      {
+        "id": "Substance",
+        "group": 1
+      },
+      {
+        "id": "UsageContext",
+        "group": 1
+      },
+      {
+        "id": "CitationCitedArtifactStatusDate",
+        "group": 1
+      },
+      {
+        "id": "CodeableReference",
+        "group": 1
+      },
+      {
+        "id": "MedicationRequest",
+        "group": 1
+      },
+      {
+        "id": "PractitionerCommunication",
+        "group": 1
+      },
+      {
+        "id": "GroupCharacteristic",
+        "group": 1
+      },
+      {
+        "id": "MedicationRequestDispenseRequest",
+        "group": 1
+      },
+      {
+        "id": "Period",
+        "group": 1
+      },
+      {
+        "id": "PractitionerQualification",
+        "group": 1
+      },
+      {
+        "id": "CitationCitedArtifactPart",
+        "group": 1
+      },
+      {
+        "id": "AvailabilityNotAvailableTime",
+        "group": 1
+      },
+      {
+        "id": "SubstanceDefinitionMolecularWeight",
+        "group": 1
+      },
+      {
+        "id": "BodyStructureIncludedStructureBodyLandmarkOrientation",
+        "group": 1
+      },
+      {
+        "id": "ConditionParticipant",
+        "group": 1
+      },
+      {
+        "id": "SubstanceDefinitionSourceMaterial",
+        "group": 1
+      },
+      {
+        "id": "FHIRPrimitiveExtension",
+        "group": 1
+      },
+      {
+        "id": "ExtendedContactDetail",
+        "group": 1
+      },
+      {
+        "id": "DataRequirementValueFilter",
+        "group": 1
+      },
+      {
+        "id": "CitationCitedArtifactRelatesTo",
+        "group": 1
+      },
+      {
+        "id": "DataRequirementSort",
+        "group": 1
+      },
+      {
+        "id": "ImagingStudySeries",
+        "group": 1
+      },
+      {
+        "id": "SubstanceDefinitionRelationship",
+        "group": 1
+      },
+      {
+        "id": "CitationCitedArtifact",
+        "group": 1
+      },
+      {
+        "id": "DeviceName",
+        "group": 1
+      },
+      {
+        "id": "MedicationStatement",
+        "group": 1
+      },
+      {
+        "id": "OrganizationQualification",
+        "group": 1
+      },
+      {
+        "id": "Task",
+        "group": 1
+      },
+      {
+        "id": "ResearchStudyAssociatedParty",
+        "group": 1
+      },
+      {
+        "id": "Range",
+        "group": 1
+      },
+      {
+        "id": "PatientContact",
+        "group": 1
+      },
+      {
+        "id": "DataRequirement",
+        "group": 1
+      },
+      {
+        "id": "Condition",
+        "group": 1
+      },
+      {
+        "id": "AvailabilityAvailableTime",
+        "group": 1
+      },
+      {
+        "id": "ResearchStudyRecruitment",
+        "group": 1
+      },
+      {
+        "id": "SubstanceDefinitionName",
+        "group": 1
+      },
+      {
+        "id": "Citation",
+        "group": 1
+      },
+      {
+        "id": "SpecimenCollection",
+        "group": 1
+      },
+      {
+        "id": "GroupMember",
+        "group": 1
+      },
+      {
+        "id": "Attachment",
+        "group": 1
+      },
+      {
+        "id": "ResearchStudyProgressStatus",
+        "group": 1
+      },
+      {
+        "id": "ServiceRequestOrderDetail",
+        "group": 1
+      },
+      {
+        "id": "MedicationIngredient",
+        "group": 1
+      },
+      {
+        "id": "SubstanceDefinitionNameOfficial",
+        "group": 1
+      },
+      {
+        "id": "CitationSummary",
+        "group": 1
+      },
+      {
+        "id": "Money",
+        "group": 1
+      },
+      {
+        "id": "MedicationRequestSubstitution",
+        "group": 1
+      },
+      {
+        "id": "FamilyMemberHistoryProcedure",
+        "group": 1
+      },
+      {
+        "id": "CitationCitedArtifactPublicationForm",
+        "group": 1
+      },
+      {
+        "id": "TaskRestriction",
+        "group": 1
+      },
+      {
+        "id": "RatioRange",
+        "group": 1
+      },
+      {
+        "id": "Device",
+        "group": 1
+      },
+      {
+        "id": "MedicationStatementAdherence",
+        "group": 1
+      },
+      {
+        "id": "ServiceRequestOrderDetailParameter",
+        "group": 1
+      },
+      {
+        "id": "FamilyMemberHistoryCondition",
+        "group": 1
+      },
+      {
+        "id": "ImagingStudySeriesInstance",
+        "group": 1
+      },
+      {
+        "id": "CitationClassification",
+        "group": 1
+      },
+      {
+        "id": "Resource",
+        "group": 1
+      },
+      {
+        "id": "PractitionerRole",
+        "group": 1
+      },
+      {
+        "id": "DosageDoseAndRate",
+        "group": 1
+      },
+      {
+        "id": "ObservationReferenceRange",
+        "group": 1
+      },
+      {
+        "id": "ContactDetail",
+        "group": 1
+      },
+      {
+        "id": "MedicationRequestDispenseRequestInitialFill",
+        "group": 1
+      },
+      {
+        "id": "ResearchStudyLabel",
+        "group": 1
+      },
+      {
+        "id": "DocumentReferenceContentProfile",
+        "group": 1
+      },
+      {
+        "id": "ResearchStudyObjective",
+        "group": 1
+      },
+      {
+        "id": "ResearchSubjectProgress",
+        "group": 1
+      },
+      {
+        "id": "Organization",
+        "group": 1
+      },
+      {
+        "id": "Distance",
+        "group": 1
+      },
+      {
+        "id": "CitationCitedArtifactContributorshipSummary",
+        "group": 1
+      },
+      {
+        "id": "CitationStatusDate",
+        "group": 1
+      },
+      {
+        "id": "ImagingStudy",
+        "group": 1
+      },
+      {
+        "id": "BodyStructure",
+        "group": 1
+      },
+      {
+        "id": "ObservationComponent",
+        "group": 1
+      },
+      {
+        "id": "Address",
+        "group": 1
+      },
+      {
+        "id": "SubstanceDefinitionStructureRepresentation",
+        "group": 1
+      },
+      {
+        "id": "Expression",
+        "group": 1
+      },
+      {
+        "id": "SubstanceIngredient",
+        "group": 1
+      },
+      {
+        "id": "Reference",
+        "group": 1
+      },
+      {
+        "id": "CitationCitedArtifactVersion",
+        "group": 1
+      },
+      {
+        "id": "SubstanceDefinitionMoiety",
+        "group": 1
+      },
+      {
+        "id": "Availability",
+        "group": 1
+      },
+      {
+        "id": "DeviceVersion",
+        "group": 1
+      },
+      {
+        "id": "Count",
+        "group": 1
+      },
+      {
+        "id": "Quantity",
+        "group": 1
+      },
+      {
+        "id": "BodyStructureIncludedStructureBodyLandmarkOrientationDistanceFromLandmark",
+        "group": 1
+      },
+      {
+        "id": "DeviceConformsTo",
+        "group": 1
+      },
+      {
+        "id": "DocumentReferenceAttester",
+        "group": 1
+      },
+      {
+        "id": "DocumentReferenceRelatesTo",
+        "group": 1
+      },
+      {
+        "id": "DeviceProperty",
+        "group": 1
+      },
+      {
+        "id": "Narrative",
+        "group": 1
+      },
+      {
+        "id": "SpecimenFeature",
+        "group": 1
+      },
+      {
+        "id": "DocumentReferenceContent",
+        "group": 1
+      },
+      {
+        "id": "ResearchStudy",
+        "group": 1
+      },
+      {
+        "id": "DataRequirementDateFilter",
+        "group": 1
+      },
+      {
+        "id": "Signature",
+        "group": 1
+      },
+      {
+        "id": "Dosage",
+        "group": 1
+      },
+      {
+        "id": "PatientCommunication",
+        "group": 1
+      },
+      {
+        "id": "Specimen",
+        "group": 1
+      },
+      {
+        "id": "CitationCitedArtifactTitle",
+        "group": 1
+      },
+      {
+        "id": "MedicationAdministrationDosage",
+        "group": 1
+      },
+      {
+        "id": "SpecimenContainer",
+        "group": 1
+      },
+      {
+        "id": "Extension",
+        "group": 1
+      },
+      {
+        "id": "CitationCitedArtifactPublicationFormPublishedIn",
+        "group": 1
+      },
+      {
+        "id": "CitationCitedArtifactContributorshipEntryContributionInstance",
+        "group": 1
+      },
+      {
+        "id": "HumanName",
+        "group": 1
+      },
+      {
+        "id": "SubstanceDefinitionCharacterization",
+        "group": 1
+      },
+      {
+        "id": "TriggerDefinition",
+        "group": 1
+      },
+      {
+        "id": "Meta",
+        "group": 1
+      },
+      {
+        "id": "ResearchStudyOutcomeMeasure",
+        "group": 1
+      },
+      {
+        "id": "Identifier",
+        "group": 1
+      },
+      {
+        "id": "MedicationAdministrationPerformer",
+        "group": 1
+      },
+      {
+        "id": "BodyStructureIncludedStructure",
+        "group": 1
+      },
+      {
+        "id": "Group",
+        "group": 1
+      },
+      {
+        "id": "TaskInput",
+        "group": 1
+      },
+      {
+        "id": "Medication",
+        "group": 1
+      },
+      {
+        "id": "MedicationBatch",
+        "group": 1
+      },
+      {
+        "id": "ResearchSubject",
+        "group": 1
+      },
+      {
+        "id": "CodeableConcept",
+        "group": 1
+      },
+      {
+        "id": "ContactPoint",
+        "group": 1
+      },
+      {
+        "id": "Age",
+        "group": 1
+      },
+      {
+        "id": "SubstanceDefinition",
+        "group": 1
+      },
+      {
+        "id": "ConditionStage",
+        "group": 1
+      },
+      {
+        "id": "DeviceUdiCarrier",
+        "group": 1
+      },
+      {
+        "id": "Duration",
+        "group": 1
+      },
+      {
+        "id": "SpecimenProcessing",
+        "group": 1
+      },
+      {
+        "id": "SubstanceDefinitionStructure",
+        "group": 1
+      },
+      {
+        "id": "Ratio",
+        "group": 1
+      },
+      {
+        "id": "ParameterDefinition",
+        "group": 1
+      },
+      {
+        "id": "CitationCitedArtifactWebLocation",
+        "group": 1
+      },
+      {
+        "id": "Coding",
+        "group": 1
+      },
+      {
+        "id": "TimingRepeat",
+        "group": 1
+      }
+    ],
+    "links": [
+      {
+        "source": "ServiceRequestPatientInstruction",
+        "target": "DocumentReference",
+        "relationship": "instructionReference"
+      },
+      {
+        "source": "MedicationAdministration",
+        "target": "MedicationAdministration",
+        "relationship": "partOf_MedicationAdministration"
+      },
+      {
+        "source": "MedicationAdministration",
+        "target": "MedicationRequest",
+        "relationship": "request"
+      },
+      {
+        "source": "MedicationAdministration",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "MedicationAdministration",
+        "target": "Group",
+        "relationship": "subject_Group"
+      },
+      {
+        "source": "MedicationAdministration",
+        "target": "Resource",
+        "relationship": "supportingInformation"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "Practitioner",
+        "relationship": "author_Practitioner"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "PractitionerRole",
+        "relationship": "author_PractitionerRole"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "Organization",
+        "relationship": "author_Organization"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "Device",
+        "relationship": "author_Device"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "Patient",
+        "relationship": "author_Patient"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "MedicationRequest",
+        "relationship": "basedOn_MedicationRequest"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "ServiceRequest",
+        "relationship": "basedOn_ServiceRequest"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "Organization",
+        "relationship": "custodian"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "Resource",
+        "relationship": "subject"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "Patient",
+        "relationship": "attester_party_Patient"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "Practitioner",
+        "relationship": "attester_party_Practitioner"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "PractitionerRole",
+        "relationship": "attester_party_PractitionerRole"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "Organization",
+        "relationship": "attester_party_Organization"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "DocumentReference",
+        "relationship": "relatesTo_target"
+      },
+      {
+        "source": "CitationCitedArtifactContributorship",
+        "target": "Organization",
+        "relationship": "entry_affiliation_Organization"
+      },
+      {
+        "source": "CitationCitedArtifactContributorship",
+        "target": "PractitionerRole",
+        "relationship": "entry_affiliation_PractitionerRole"
+      },
+      {
+        "source": "CitationCitedArtifactContributorship",
+        "target": "Practitioner",
+        "relationship": "entry_contributor_Practitioner"
+      },
+      {
+        "source": "CitationCitedArtifactContributorship",
+        "target": "Organization",
+        "relationship": "entry_contributor_Organization"
+      },
+      {
+        "source": "ImagingStudySeriesPerformer",
+        "target": "Practitioner",
+        "relationship": "actor_Practitioner"
+      },
+      {
+        "source": "ImagingStudySeriesPerformer",
+        "target": "PractitionerRole",
+        "relationship": "actor_PractitionerRole"
+      },
+      {
+        "source": "ImagingStudySeriesPerformer",
+        "target": "Organization",
+        "relationship": "actor_Organization"
+      },
+      {
+        "source": "ImagingStudySeriesPerformer",
+        "target": "Patient",
+        "relationship": "actor_Patient"
+      },
+      {
+        "source": "ImagingStudySeriesPerformer",
+        "target": "Device",
+        "relationship": "actor_Device"
+      },
+      {
+        "source": "CitationCitedArtifactContributorshipEntry",
+        "target": "Organization",
+        "relationship": "affiliation_Organization"
+      },
+      {
+        "source": "CitationCitedArtifactContributorshipEntry",
+        "target": "PractitionerRole",
+        "relationship": "affiliation_PractitionerRole"
+      },
+      {
+        "source": "CitationCitedArtifactContributorshipEntry",
+        "target": "Practitioner",
+        "relationship": "contributor_Practitioner"
+      },
+      {
+        "source": "CitationCitedArtifactContributorshipEntry",
+        "target": "Organization",
+        "relationship": "contributor_Organization"
+      },
+      {
+        "source": "TaskPerformer",
+        "target": "Practitioner",
+        "relationship": "actor_Practitioner"
+      },
+      {
+        "source": "TaskPerformer",
+        "target": "PractitionerRole",
+        "relationship": "actor_PractitionerRole"
+      },
+      {
+        "source": "TaskPerformer",
+        "target": "Organization",
+        "relationship": "actor_Organization"
+      },
+      {
+        "source": "TaskPerformer",
+        "target": "Patient",
+        "relationship": "actor_Patient"
+      },
+      {
+        "source": "ResearchStudyComparisonGroup",
+        "target": "Group",
+        "relationship": "observedGroup"
+      },
+      {
+        "source": "FamilyMemberHistory",
+        "target": "Patient",
+        "relationship": "patient"
+      },
+      {
+        "source": "FamilyMemberHistory",
+        "target": "Practitioner",
+        "relationship": "participant_actor_Practitioner"
+      },
+      {
+        "source": "FamilyMemberHistory",
+        "target": "PractitionerRole",
+        "relationship": "participant_actor_PractitionerRole"
+      },
+      {
+        "source": "FamilyMemberHistory",
+        "target": "Patient",
+        "relationship": "participant_actor_Patient"
+      },
+      {
+        "source": "FamilyMemberHistory",
+        "target": "Device",
+        "relationship": "participant_actor_Device"
+      },
+      {
+        "source": "FamilyMemberHistory",
+        "target": "Organization",
+        "relationship": "participant_actor_Organization"
+      },
+      {
+        "source": "RelatedArtifact",
+        "target": "Resource",
+        "relationship": "resourceReference"
+      },
+      {
+        "source": "Observation",
+        "target": "MedicationRequest",
+        "relationship": "basedOn_MedicationRequest"
+      },
+      {
+        "source": "Observation",
+        "target": "ServiceRequest",
+        "relationship": "basedOn_ServiceRequest"
+      },
+      {
+        "source": "Observation",
+        "target": "BodyStructure",
+        "relationship": "bodyStructure"
+      },
+      {
+        "source": "Observation",
+        "target": "DocumentReference",
+        "relationship": "derivedFrom_DocumentReference"
+      },
+      {
+        "source": "Observation",
+        "target": "ImagingStudy",
+        "relationship": "derivedFrom_ImagingStudy"
+      },
+      {
+        "source": "Observation",
+        "target": "Observation",
+        "relationship": "derivedFrom_Observation"
+      },
+      {
+        "source": "Observation",
+        "target": "Device",
+        "relationship": "device_Device"
+      },
+      {
+        "source": "Observation",
+        "target": "Resource",
+        "relationship": "focus"
+      },
+      {
+        "source": "Observation",
+        "target": "Observation",
+        "relationship": "hasMember_Observation"
+      },
+      {
+        "source": "Observation",
+        "target": "MedicationAdministration",
+        "relationship": "partOf_MedicationAdministration"
+      },
+      {
+        "source": "Observation",
+        "target": "MedicationStatement",
+        "relationship": "partOf_MedicationStatement"
+      },
+      {
+        "source": "Observation",
+        "target": "ImagingStudy",
+        "relationship": "partOf_ImagingStudy"
+      },
+      {
+        "source": "Observation",
+        "target": "Practitioner",
+        "relationship": "performer_Practitioner"
+      },
+      {
+        "source": "Observation",
+        "target": "PractitionerRole",
+        "relationship": "performer_PractitionerRole"
+      },
+      {
+        "source": "Observation",
+        "target": "Organization",
+        "relationship": "performer_Organization"
+      },
+      {
+        "source": "Observation",
+        "target": "Patient",
+        "relationship": "performer_Patient"
+      },
+      {
+        "source": "Observation",
+        "target": "Specimen",
+        "relationship": "specimen_Specimen"
+      },
+      {
+        "source": "Observation",
+        "target": "Group",
+        "relationship": "specimen_Group"
+      },
+      {
+        "source": "Observation",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "Observation",
+        "target": "Group",
+        "relationship": "subject_Group"
+      },
+      {
+        "source": "Observation",
+        "target": "Device",
+        "relationship": "subject_Device"
+      },
+      {
+        "source": "Observation",
+        "target": "Organization",
+        "relationship": "subject_Organization"
+      },
+      {
+        "source": "Observation",
+        "target": "Practitioner",
+        "relationship": "subject_Practitioner"
+      },
+      {
+        "source": "Observation",
+        "target": "Medication",
+        "relationship": "subject_Medication"
+      },
+      {
+        "source": "Observation",
+        "target": "Substance",
+        "relationship": "subject_Substance"
+      },
+      {
+        "source": "Observation",
+        "target": "Observation",
+        "relationship": "triggeredBy_observation"
+      },
+      {
+        "source": "ObservationTriggeredBy",
+        "target": "Observation",
+        "relationship": "observation"
+      },
+      {
+        "source": "SubstanceDefinitionCode",
+        "target": "DocumentReference",
+        "relationship": "source"
+      },
+      {
+        "source": "FamilyMemberHistoryParticipant",
+        "target": "Practitioner",
+        "relationship": "actor_Practitioner"
+      },
+      {
+        "source": "FamilyMemberHistoryParticipant",
+        "target": "PractitionerRole",
+        "relationship": "actor_PractitionerRole"
+      },
+      {
+        "source": "FamilyMemberHistoryParticipant",
+        "target": "Patient",
+        "relationship": "actor_Patient"
+      },
+      {
+        "source": "FamilyMemberHistoryParticipant",
+        "target": "Device",
+        "relationship": "actor_Device"
+      },
+      {
+        "source": "FamilyMemberHistoryParticipant",
+        "target": "Organization",
+        "relationship": "actor_Organization"
+      },
+      {
+        "source": "PatientLink",
+        "target": "Patient",
+        "relationship": "other_Patient"
+      },
+      {
+        "source": "TaskOutput",
+        "target": "Group",
+        "relationship": "valueDataRequirement_subjectReference"
+      },
+      {
+        "source": "TaskOutput",
+        "target": "Organization",
+        "relationship": "valueExtendedContactDetail_organization"
+      },
+      {
+        "source": "TaskOutput",
+        "target": "Resource",
+        "relationship": "valueRelatedArtifact_resourceReference"
+      },
+      {
+        "source": "TaskOutput",
+        "target": "Practitioner",
+        "relationship": "valueSignature_onBehalfOf_Practitioner"
+      },
+      {
+        "source": "TaskOutput",
+        "target": "PractitionerRole",
+        "relationship": "valueSignature_onBehalfOf_PractitionerRole"
+      },
+      {
+        "source": "TaskOutput",
+        "target": "Patient",
+        "relationship": "valueSignature_onBehalfOf_Patient"
+      },
+      {
+        "source": "TaskOutput",
+        "target": "Device",
+        "relationship": "valueSignature_onBehalfOf_Device"
+      },
+      {
+        "source": "TaskOutput",
+        "target": "Organization",
+        "relationship": "valueSignature_onBehalfOf_Organization"
+      },
+      {
+        "source": "TaskOutput",
+        "target": "Practitioner",
+        "relationship": "valueSignature_who_Practitioner"
+      },
+      {
+        "source": "TaskOutput",
+        "target": "PractitionerRole",
+        "relationship": "valueSignature_who_PractitionerRole"
+      },
+      {
+        "source": "TaskOutput",
+        "target": "Patient",
+        "relationship": "valueSignature_who_Patient"
+      },
+      {
+        "source": "TaskOutput",
+        "target": "Device",
+        "relationship": "valueSignature_who_Device"
+      },
+      {
+        "source": "TaskOutput",
+        "target": "Organization",
+        "relationship": "valueSignature_who_Organization"
+      },
+      {
+        "source": "TaskOutput",
+        "target": "ResearchStudy",
+        "relationship": "valueUsageContext_valueReference_ResearchStudy"
+      },
+      {
+        "source": "TaskOutput",
+        "target": "Group",
+        "relationship": "valueUsageContext_valueReference_Group"
+      },
+      {
+        "source": "TaskOutput",
+        "target": "Organization",
+        "relationship": "valueUsageContext_valueReference_Organization"
+      },
+      {
+        "source": "Patient",
+        "target": "Organization",
+        "relationship": "generalPractitioner_Organization"
+      },
+      {
+        "source": "Patient",
+        "target": "Practitioner",
+        "relationship": "generalPractitioner_Practitioner"
+      },
+      {
+        "source": "Patient",
+        "target": "PractitionerRole",
+        "relationship": "generalPractitioner_PractitionerRole"
+      },
+      {
+        "source": "Patient",
+        "target": "Organization",
+        "relationship": "managingOrganization"
+      },
+      {
+        "source": "Patient",
+        "target": "Organization",
+        "relationship": "contact_organization"
+      },
+      {
+        "source": "Patient",
+        "target": "Patient",
+        "relationship": "link_other_Patient"
+      },
+      {
+        "source": "Practitioner",
+        "target": "Organization",
+        "relationship": "qualification_issuer"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "ServiceRequest",
+        "relationship": "basedOn_ServiceRequest"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "MedicationRequest",
+        "relationship": "basedOn_MedicationRequest"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "BodyStructure",
+        "relationship": "bodyStructure"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "Resource",
+        "relationship": "focus"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "Practitioner",
+        "relationship": "performer_Practitioner"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "PractitionerRole",
+        "relationship": "performer_PractitionerRole"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "Organization",
+        "relationship": "performer_Organization"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "Patient",
+        "relationship": "performer_Patient"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "Device",
+        "relationship": "performer_Device"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "ServiceRequest",
+        "relationship": "replaces"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "Practitioner",
+        "relationship": "requester_Practitioner"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "PractitionerRole",
+        "relationship": "requester_PractitionerRole"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "Organization",
+        "relationship": "requester_Organization"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "Patient",
+        "relationship": "requester_Patient"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "Device",
+        "relationship": "requester_Device"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "Specimen",
+        "relationship": "specimen"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "Group",
+        "relationship": "subject_Group"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "Device",
+        "relationship": "subject_Device"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "DocumentReference",
+        "relationship": "patientInstruction_instructionReference"
+      },
+      {
+        "source": "Annotation",
+        "target": "Practitioner",
+        "relationship": "authorReference_Practitioner"
+      },
+      {
+        "source": "Annotation",
+        "target": "PractitionerRole",
+        "relationship": "authorReference_PractitionerRole"
+      },
+      {
+        "source": "Annotation",
+        "target": "Patient",
+        "relationship": "authorReference_Patient"
+      },
+      {
+        "source": "Annotation",
+        "target": "Organization",
+        "relationship": "authorReference_Organization"
+      },
+      {
+        "source": "Substance",
+        "target": "Substance",
+        "relationship": "ingredient_substanceReference"
+      },
+      {
+        "source": "UsageContext",
+        "target": "ResearchStudy",
+        "relationship": "valueReference_ResearchStudy"
+      },
+      {
+        "source": "UsageContext",
+        "target": "Group",
+        "relationship": "valueReference_Group"
+      },
+      {
+        "source": "UsageContext",
+        "target": "Organization",
+        "relationship": "valueReference_Organization"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "MedicationRequest",
+        "relationship": "basedOn_MedicationRequest"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "ServiceRequest",
+        "relationship": "basedOn_ServiceRequest"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Patient",
+        "relationship": "informationSource_Patient"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Practitioner",
+        "relationship": "informationSource_Practitioner"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "PractitionerRole",
+        "relationship": "informationSource_PractitionerRole"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Organization",
+        "relationship": "informationSource_Organization"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Practitioner",
+        "relationship": "performer_Practitioner"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "PractitionerRole",
+        "relationship": "performer_PractitionerRole"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Organization",
+        "relationship": "performer_Organization"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Patient",
+        "relationship": "performer_Patient"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "MedicationRequest",
+        "relationship": "priorPrescription"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Practitioner",
+        "relationship": "recorder_Practitioner"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "PractitionerRole",
+        "relationship": "recorder_PractitionerRole"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Practitioner",
+        "relationship": "requester_Practitioner"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "PractitionerRole",
+        "relationship": "requester_PractitionerRole"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Organization",
+        "relationship": "requester_Organization"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Patient",
+        "relationship": "requester_Patient"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Device",
+        "relationship": "requester_Device"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Group",
+        "relationship": "subject_Group"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Resource",
+        "relationship": "supportingInformation"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Organization",
+        "relationship": "dispenseRequest_dispenser"
+      },
+      {
+        "source": "MedicationRequestDispenseRequest",
+        "target": "Organization",
+        "relationship": "dispenser"
+      },
+      {
+        "source": "PractitionerQualification",
+        "target": "Organization",
+        "relationship": "issuer"
+      },
+      {
+        "source": "CitationCitedArtifactPart",
+        "target": "Citation",
+        "relationship": "baseCitation"
+      },
+      {
+        "source": "ConditionParticipant",
+        "target": "Practitioner",
+        "relationship": "actor_Practitioner"
+      },
+      {
+        "source": "ConditionParticipant",
+        "target": "PractitionerRole",
+        "relationship": "actor_PractitionerRole"
+      },
+      {
+        "source": "ConditionParticipant",
+        "target": "Patient",
+        "relationship": "actor_Patient"
+      },
+      {
+        "source": "ConditionParticipant",
+        "target": "Device",
+        "relationship": "actor_Device"
+      },
+      {
+        "source": "ConditionParticipant",
+        "target": "Organization",
+        "relationship": "actor_Organization"
+      },
+      {
+        "source": "ExtendedContactDetail",
+        "target": "Organization",
+        "relationship": "organization"
+      },
+      {
+        "source": "ImagingStudySeries",
+        "target": "Specimen",
+        "relationship": "specimen"
+      },
+      {
+        "source": "ImagingStudySeries",
+        "target": "Practitioner",
+        "relationship": "performer_actor_Practitioner"
+      },
+      {
+        "source": "ImagingStudySeries",
+        "target": "PractitionerRole",
+        "relationship": "performer_actor_PractitionerRole"
+      },
+      {
+        "source": "ImagingStudySeries",
+        "target": "Organization",
+        "relationship": "performer_actor_Organization"
+      },
+      {
+        "source": "ImagingStudySeries",
+        "target": "Patient",
+        "relationship": "performer_actor_Patient"
+      },
+      {
+        "source": "ImagingStudySeries",
+        "target": "Device",
+        "relationship": "performer_actor_Device"
+      },
+      {
+        "source": "SubstanceDefinitionRelationship",
+        "target": "DocumentReference",
+        "relationship": "source"
+      },
+      {
+        "source": "SubstanceDefinitionRelationship",
+        "target": "SubstanceDefinition",
+        "relationship": "substanceDefinitionReference"
+      },
+      {
+        "source": "CitationCitedArtifact",
+        "target": "Citation",
+        "relationship": "part_baseCitation"
+      },
+      {
+        "source": "CitationCitedArtifact",
+        "target": "Citation",
+        "relationship": "version_baseCitation"
+      },
+      {
+        "source": "MedicationStatement",
+        "target": "Resource",
+        "relationship": "derivedFrom"
+      },
+      {
+        "source": "MedicationStatement",
+        "target": "Patient",
+        "relationship": "informationSource_Patient"
+      },
+      {
+        "source": "MedicationStatement",
+        "target": "Practitioner",
+        "relationship": "informationSource_Practitioner"
+      },
+      {
+        "source": "MedicationStatement",
+        "target": "PractitionerRole",
+        "relationship": "informationSource_PractitionerRole"
+      },
+      {
+        "source": "MedicationStatement",
+        "target": "Organization",
+        "relationship": "informationSource_Organization"
+      },
+      {
+        "source": "MedicationStatement",
+        "target": "MedicationStatement",
+        "relationship": "partOf_MedicationStatement"
+      },
+      {
+        "source": "MedicationStatement",
+        "target": "Observation",
+        "relationship": "relatedClinicalInformation_Observation"
+      },
+      {
+        "source": "MedicationStatement",
+        "target": "Condition",
+        "relationship": "relatedClinicalInformation_Condition"
+      },
+      {
+        "source": "MedicationStatement",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "MedicationStatement",
+        "target": "Group",
+        "relationship": "subject_Group"
+      },
+      {
+        "source": "OrganizationQualification",
+        "target": "Organization",
+        "relationship": "issuer"
+      },
+      {
+        "source": "Task",
+        "target": "Resource",
+        "relationship": "basedOn"
+      },
+      {
+        "source": "Task",
+        "target": "Resource",
+        "relationship": "focus"
+      },
+      {
+        "source": "Task",
+        "target": "Resource",
+        "relationship": "for_fhir"
+      },
+      {
+        "source": "Task",
+        "target": "Practitioner",
+        "relationship": "owner_Practitioner"
+      },
+      {
+        "source": "Task",
+        "target": "PractitionerRole",
+        "relationship": "owner_PractitionerRole"
+      },
+      {
+        "source": "Task",
+        "target": "Organization",
+        "relationship": "owner_Organization"
+      },
+      {
+        "source": "Task",
+        "target": "Patient",
+        "relationship": "owner_Patient"
+      },
+      {
+        "source": "Task",
+        "target": "Task",
+        "relationship": "partOf"
+      },
+      {
+        "source": "Task",
+        "target": "Device",
+        "relationship": "requester_Device"
+      },
+      {
+        "source": "Task",
+        "target": "Organization",
+        "relationship": "requester_Organization"
+      },
+      {
+        "source": "Task",
+        "target": "Patient",
+        "relationship": "requester_Patient"
+      },
+      {
+        "source": "Task",
+        "target": "Practitioner",
+        "relationship": "requester_Practitioner"
+      },
+      {
+        "source": "Task",
+        "target": "PractitionerRole",
+        "relationship": "requester_PractitionerRole"
+      },
+      {
+        "source": "Task",
+        "target": "Practitioner",
+        "relationship": "performer_actor_Practitioner"
+      },
+      {
+        "source": "Task",
+        "target": "PractitionerRole",
+        "relationship": "performer_actor_PractitionerRole"
+      },
+      {
+        "source": "Task",
+        "target": "Organization",
+        "relationship": "performer_actor_Organization"
+      },
+      {
+        "source": "Task",
+        "target": "Patient",
+        "relationship": "performer_actor_Patient"
+      },
+      {
+        "source": "Task",
+        "target": "Patient",
+        "relationship": "restriction_recipient_Patient"
+      },
+      {
+        "source": "Task",
+        "target": "Practitioner",
+        "relationship": "restriction_recipient_Practitioner"
+      },
+      {
+        "source": "Task",
+        "target": "PractitionerRole",
+        "relationship": "restriction_recipient_PractitionerRole"
+      },
+      {
+        "source": "Task",
+        "target": "Group",
+        "relationship": "restriction_recipient_Group"
+      },
+      {
+        "source": "Task",
+        "target": "Organization",
+        "relationship": "restriction_recipient_Organization"
+      },
+      {
+        "source": "ResearchStudyAssociatedParty",
+        "target": "Practitioner",
+        "relationship": "party_Practitioner"
+      },
+      {
+        "source": "ResearchStudyAssociatedParty",
+        "target": "PractitionerRole",
+        "relationship": "party_PractitionerRole"
+      },
+      {
+        "source": "ResearchStudyAssociatedParty",
+        "target": "Organization",
+        "relationship": "party_Organization"
+      },
+      {
+        "source": "PatientContact",
+        "target": "Organization",
+        "relationship": "organization"
+      },
+      {
+        "source": "DataRequirement",
+        "target": "Group",
+        "relationship": "subjectReference"
+      },
+      {
+        "source": "Condition",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "Condition",
+        "target": "Group",
+        "relationship": "subject_Group"
+      },
+      {
+        "source": "Condition",
+        "target": "Practitioner",
+        "relationship": "participant_actor_Practitioner"
+      },
+      {
+        "source": "Condition",
+        "target": "PractitionerRole",
+        "relationship": "participant_actor_PractitionerRole"
+      },
+      {
+        "source": "Condition",
+        "target": "Patient",
+        "relationship": "participant_actor_Patient"
+      },
+      {
+        "source": "Condition",
+        "target": "Device",
+        "relationship": "participant_actor_Device"
+      },
+      {
+        "source": "Condition",
+        "target": "Organization",
+        "relationship": "participant_actor_Organization"
+      },
+      {
+        "source": "Condition",
+        "target": "Observation",
+        "relationship": "stage_assessment_Observation"
+      },
+      {
+        "source": "ResearchStudyRecruitment",
+        "target": "Group",
+        "relationship": "actualGroup"
+      },
+      {
+        "source": "ResearchStudyRecruitment",
+        "target": "Group",
+        "relationship": "eligibility_Group"
+      },
+      {
+        "source": "SubstanceDefinitionName",
+        "target": "DocumentReference",
+        "relationship": "source"
+      },
+      {
+        "source": "SubstanceDefinitionName",
+        "target": "DocumentReference",
+        "relationship": "synonym_source"
+      },
+      {
+        "source": "SubstanceDefinitionName",
+        "target": "DocumentReference",
+        "relationship": "translation_source"
+      },
+      {
+        "source": "Citation",
+        "target": "Resource",
+        "relationship": "relatedArtifact_resourceReference"
+      },
+      {
+        "source": "Citation",
+        "target": "ResearchStudy",
+        "relationship": "useContext_valueReference_ResearchStudy"
+      },
+      {
+        "source": "Citation",
+        "target": "Group",
+        "relationship": "useContext_valueReference_Group"
+      },
+      {
+        "source": "Citation",
+        "target": "Organization",
+        "relationship": "useContext_valueReference_Organization"
+      },
+      {
+        "source": "SpecimenCollection",
+        "target": "Practitioner",
+        "relationship": "collector_Practitioner"
+      },
+      {
+        "source": "SpecimenCollection",
+        "target": "PractitionerRole",
+        "relationship": "collector_PractitionerRole"
+      },
+      {
+        "source": "SpecimenCollection",
+        "target": "Patient",
+        "relationship": "collector_Patient"
+      },
+      {
+        "source": "GroupMember",
+        "target": "Device",
+        "relationship": "entity_Device"
+      },
+      {
+        "source": "GroupMember",
+        "target": "Group",
+        "relationship": "entity_Group"
+      },
+      {
+        "source": "GroupMember",
+        "target": "Organization",
+        "relationship": "entity_Organization"
+      },
+      {
+        "source": "GroupMember",
+        "target": "Patient",
+        "relationship": "entity_Patient"
+      },
+      {
+        "source": "GroupMember",
+        "target": "Practitioner",
+        "relationship": "entity_Practitioner"
+      },
+      {
+        "source": "GroupMember",
+        "target": "PractitionerRole",
+        "relationship": "entity_PractitionerRole"
+      },
+      {
+        "source": "GroupMember",
+        "target": "Specimen",
+        "relationship": "entity_Specimen"
+      },
+      {
+        "source": "CitationCitedArtifactPublicationForm",
+        "target": "Organization",
+        "relationship": "publishedIn_publisher"
+      },
+      {
+        "source": "TaskRestriction",
+        "target": "Patient",
+        "relationship": "recipient_Patient"
+      },
+      {
+        "source": "TaskRestriction",
+        "target": "Practitioner",
+        "relationship": "recipient_Practitioner"
+      },
+      {
+        "source": "TaskRestriction",
+        "target": "PractitionerRole",
+        "relationship": "recipient_PractitionerRole"
+      },
+      {
+        "source": "TaskRestriction",
+        "target": "Group",
+        "relationship": "recipient_Group"
+      },
+      {
+        "source": "TaskRestriction",
+        "target": "Organization",
+        "relationship": "recipient_Organization"
+      },
+      {
+        "source": "Device",
+        "target": "Organization",
+        "relationship": "owner"
+      },
+      {
+        "source": "Device",
+        "target": "Device",
+        "relationship": "parent"
+      },
+      {
+        "source": "PractitionerRole",
+        "target": "Organization",
+        "relationship": "organization"
+      },
+      {
+        "source": "PractitionerRole",
+        "target": "Practitioner",
+        "relationship": "practitioner"
+      },
+      {
+        "source": "PractitionerRole",
+        "target": "Organization",
+        "relationship": "contact_organization"
+      },
+      {
+        "source": "Organization",
+        "target": "Organization",
+        "relationship": "partOf"
+      },
+      {
+        "source": "Organization",
+        "target": "Organization",
+        "relationship": "contact_organization"
+      },
+      {
+        "source": "Organization",
+        "target": "Organization",
+        "relationship": "qualification_issuer"
+      },
+      {
+        "source": "ImagingStudy",
+        "target": "ServiceRequest",
+        "relationship": "basedOn_ServiceRequest"
+      },
+      {
+        "source": "ImagingStudy",
+        "target": "Task",
+        "relationship": "basedOn_Task"
+      },
+      {
+        "source": "ImagingStudy",
+        "target": "Practitioner",
+        "relationship": "referrer_Practitioner"
+      },
+      {
+        "source": "ImagingStudy",
+        "target": "PractitionerRole",
+        "relationship": "referrer_PractitionerRole"
+      },
+      {
+        "source": "ImagingStudy",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "ImagingStudy",
+        "target": "Device",
+        "relationship": "subject_Device"
+      },
+      {
+        "source": "ImagingStudy",
+        "target": "Group",
+        "relationship": "subject_Group"
+      },
+      {
+        "source": "ImagingStudy",
+        "target": "Specimen",
+        "relationship": "series_specimen"
+      },
+      {
+        "source": "BodyStructure",
+        "target": "Patient",
+        "relationship": "patient"
+      },
+      {
+        "source": "SubstanceDefinitionStructureRepresentation",
+        "target": "DocumentReference",
+        "relationship": "document"
+      },
+      {
+        "source": "SubstanceIngredient",
+        "target": "Substance",
+        "relationship": "substanceReference"
+      },
+      {
+        "source": "CitationCitedArtifactVersion",
+        "target": "Citation",
+        "relationship": "baseCitation"
+      },
+      {
+        "source": "DocumentReferenceAttester",
+        "target": "Patient",
+        "relationship": "party_Patient"
+      },
+      {
+        "source": "DocumentReferenceAttester",
+        "target": "Practitioner",
+        "relationship": "party_Practitioner"
+      },
+      {
+        "source": "DocumentReferenceAttester",
+        "target": "PractitionerRole",
+        "relationship": "party_PractitionerRole"
+      },
+      {
+        "source": "DocumentReferenceAttester",
+        "target": "Organization",
+        "relationship": "party_Organization"
+      },
+      {
+        "source": "DocumentReferenceRelatesTo",
+        "target": "DocumentReference",
+        "relationship": "target"
+      },
+      {
+        "source": "ResearchStudy",
+        "target": "ResearchStudy",
+        "relationship": "partOf"
+      },
+      {
+        "source": "ResearchStudy",
+        "target": "Citation",
+        "relationship": "result_Citation"
+      },
+      {
+        "source": "ResearchStudy",
+        "target": "ResearchStudy",
+        "relationship": "site_ResearchStudy"
+      },
+      {
+        "source": "ResearchStudy",
+        "target": "Organization",
+        "relationship": "site_Organization"
+      },
+      {
+        "source": "ResearchStudy",
+        "target": "Practitioner",
+        "relationship": "associatedParty_party_Practitioner"
+      },
+      {
+        "source": "ResearchStudy",
+        "target": "PractitionerRole",
+        "relationship": "associatedParty_party_PractitionerRole"
+      },
+      {
+        "source": "ResearchStudy",
+        "target": "Organization",
+        "relationship": "associatedParty_party_Organization"
+      },
+      {
+        "source": "ResearchStudy",
+        "target": "Group",
+        "relationship": "comparisonGroup_observedGroup"
+      },
+      {
+        "source": "ResearchStudy",
+        "target": "Group",
+        "relationship": "recruitment_actualGroup"
+      },
+      {
+        "source": "ResearchStudy",
+        "target": "Group",
+        "relationship": "recruitment_eligibility_Group"
+      },
+      {
+        "source": "ResearchStudy",
+        "target": "Resource",
+        "relationship": "relatedArtifact_resourceReference"
+      },
+      {
+        "source": "Signature",
+        "target": "Practitioner",
+        "relationship": "onBehalfOf_Practitioner"
+      },
+      {
+        "source": "Signature",
+        "target": "PractitionerRole",
+        "relationship": "onBehalfOf_PractitionerRole"
+      },
+      {
+        "source": "Signature",
+        "target": "Patient",
+        "relationship": "onBehalfOf_Patient"
+      },
+      {
+        "source": "Signature",
+        "target": "Device",
+        "relationship": "onBehalfOf_Device"
+      },
+      {
+        "source": "Signature",
+        "target": "Organization",
+        "relationship": "onBehalfOf_Organization"
+      },
+      {
+        "source": "Signature",
+        "target": "Practitioner",
+        "relationship": "who_Practitioner"
+      },
+      {
+        "source": "Signature",
+        "target": "PractitionerRole",
+        "relationship": "who_PractitionerRole"
+      },
+      {
+        "source": "Signature",
+        "target": "Patient",
+        "relationship": "who_Patient"
+      },
+      {
+        "source": "Signature",
+        "target": "Device",
+        "relationship": "who_Device"
+      },
+      {
+        "source": "Signature",
+        "target": "Organization",
+        "relationship": "who_Organization"
+      },
+      {
+        "source": "Specimen",
+        "target": "Specimen",
+        "relationship": "parent"
+      },
+      {
+        "source": "Specimen",
+        "target": "ServiceRequest",
+        "relationship": "request"
+      },
+      {
+        "source": "Specimen",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "Specimen",
+        "target": "Group",
+        "relationship": "subject_Group"
+      },
+      {
+        "source": "Specimen",
+        "target": "Device",
+        "relationship": "subject_Device"
+      },
+      {
+        "source": "Specimen",
+        "target": "Substance",
+        "relationship": "subject_Substance"
+      },
+      {
+        "source": "Specimen",
+        "target": "Practitioner",
+        "relationship": "collection_collector_Practitioner"
+      },
+      {
+        "source": "Specimen",
+        "target": "PractitionerRole",
+        "relationship": "collection_collector_PractitionerRole"
+      },
+      {
+        "source": "Specimen",
+        "target": "Patient",
+        "relationship": "collection_collector_Patient"
+      },
+      {
+        "source": "Specimen",
+        "target": "Device",
+        "relationship": "container_device"
+      },
+      {
+        "source": "Specimen",
+        "target": "Substance",
+        "relationship": "processing_additive"
+      },
+      {
+        "source": "SpecimenContainer",
+        "target": "Device",
+        "relationship": "device"
+      },
+      {
+        "source": "Extension",
+        "target": "Group",
+        "relationship": "valueDataRequirement_subjectReference"
+      },
+      {
+        "source": "Extension",
+        "target": "Organization",
+        "relationship": "valueExtendedContactDetail_organization"
+      },
+      {
+        "source": "Extension",
+        "target": "Resource",
+        "relationship": "valueRelatedArtifact_resourceReference"
+      },
+      {
+        "source": "Extension",
+        "target": "Practitioner",
+        "relationship": "valueSignature_onBehalfOf_Practitioner"
+      },
+      {
+        "source": "Extension",
+        "target": "PractitionerRole",
+        "relationship": "valueSignature_onBehalfOf_PractitionerRole"
+      },
+      {
+        "source": "Extension",
+        "target": "Patient",
+        "relationship": "valueSignature_onBehalfOf_Patient"
+      },
+      {
+        "source": "Extension",
+        "target": "Device",
+        "relationship": "valueSignature_onBehalfOf_Device"
+      },
+      {
+        "source": "Extension",
+        "target": "Organization",
+        "relationship": "valueSignature_onBehalfOf_Organization"
+      },
+      {
+        "source": "Extension",
+        "target": "Practitioner",
+        "relationship": "valueSignature_who_Practitioner"
+      },
+      {
+        "source": "Extension",
+        "target": "PractitionerRole",
+        "relationship": "valueSignature_who_PractitionerRole"
+      },
+      {
+        "source": "Extension",
+        "target": "Patient",
+        "relationship": "valueSignature_who_Patient"
+      },
+      {
+        "source": "Extension",
+        "target": "Device",
+        "relationship": "valueSignature_who_Device"
+      },
+      {
+        "source": "Extension",
+        "target": "Organization",
+        "relationship": "valueSignature_who_Organization"
+      },
+      {
+        "source": "Extension",
+        "target": "ResearchStudy",
+        "relationship": "valueUsageContext_valueReference_ResearchStudy"
+      },
+      {
+        "source": "Extension",
+        "target": "Group",
+        "relationship": "valueUsageContext_valueReference_Group"
+      },
+      {
+        "source": "Extension",
+        "target": "Organization",
+        "relationship": "valueUsageContext_valueReference_Organization"
+      },
+      {
+        "source": "CitationCitedArtifactPublicationFormPublishedIn",
+        "target": "Organization",
+        "relationship": "publisher"
+      },
+      {
+        "source": "TriggerDefinition",
+        "target": "Group",
+        "relationship": "data_subjectReference"
+      },
+      {
+        "source": "Identifier",
+        "target": "Organization",
+        "relationship": "assigner"
+      },
+      {
+        "source": "Group",
+        "target": "Organization",
+        "relationship": "managingEntity_Organization"
+      },
+      {
+        "source": "Group",
+        "target": "Practitioner",
+        "relationship": "managingEntity_Practitioner"
+      },
+      {
+        "source": "Group",
+        "target": "PractitionerRole",
+        "relationship": "managingEntity_PractitionerRole"
+      },
+      {
+        "source": "Group",
+        "target": "Device",
+        "relationship": "member_entity_Device"
+      },
+      {
+        "source": "Group",
+        "target": "Group",
+        "relationship": "member_entity_Group"
+      },
+      {
+        "source": "Group",
+        "target": "Organization",
+        "relationship": "member_entity_Organization"
+      },
+      {
+        "source": "Group",
+        "target": "Patient",
+        "relationship": "member_entity_Patient"
+      },
+      {
+        "source": "Group",
+        "target": "Practitioner",
+        "relationship": "member_entity_Practitioner"
+      },
+      {
+        "source": "Group",
+        "target": "PractitionerRole",
+        "relationship": "member_entity_PractitionerRole"
+      },
+      {
+        "source": "Group",
+        "target": "Specimen",
+        "relationship": "member_entity_Specimen"
+      },
+      {
+        "source": "TaskInput",
+        "target": "Group",
+        "relationship": "valueDataRequirement_subjectReference"
+      },
+      {
+        "source": "TaskInput",
+        "target": "Organization",
+        "relationship": "valueExtendedContactDetail_organization"
+      },
+      {
+        "source": "TaskInput",
+        "target": "Resource",
+        "relationship": "valueRelatedArtifact_resourceReference"
+      },
+      {
+        "source": "TaskInput",
+        "target": "Practitioner",
+        "relationship": "valueSignature_onBehalfOf_Practitioner"
+      },
+      {
+        "source": "TaskInput",
+        "target": "PractitionerRole",
+        "relationship": "valueSignature_onBehalfOf_PractitionerRole"
+      },
+      {
+        "source": "TaskInput",
+        "target": "Patient",
+        "relationship": "valueSignature_onBehalfOf_Patient"
+      },
+      {
+        "source": "TaskInput",
+        "target": "Device",
+        "relationship": "valueSignature_onBehalfOf_Device"
+      },
+      {
+        "source": "TaskInput",
+        "target": "Organization",
+        "relationship": "valueSignature_onBehalfOf_Organization"
+      },
+      {
+        "source": "TaskInput",
+        "target": "Practitioner",
+        "relationship": "valueSignature_who_Practitioner"
+      },
+      {
+        "source": "TaskInput",
+        "target": "PractitionerRole",
+        "relationship": "valueSignature_who_PractitionerRole"
+      },
+      {
+        "source": "TaskInput",
+        "target": "Patient",
+        "relationship": "valueSignature_who_Patient"
+      },
+      {
+        "source": "TaskInput",
+        "target": "Device",
+        "relationship": "valueSignature_who_Device"
+      },
+      {
+        "source": "TaskInput",
+        "target": "Organization",
+        "relationship": "valueSignature_who_Organization"
+      },
+      {
+        "source": "TaskInput",
+        "target": "ResearchStudy",
+        "relationship": "valueUsageContext_valueReference_ResearchStudy"
+      },
+      {
+        "source": "TaskInput",
+        "target": "Group",
+        "relationship": "valueUsageContext_valueReference_Group"
+      },
+      {
+        "source": "TaskInput",
+        "target": "Organization",
+        "relationship": "valueUsageContext_valueReference_Organization"
+      },
+      {
+        "source": "Medication",
+        "target": "Organization",
+        "relationship": "marketingAuthorizationHolder"
+      },
+      {
+        "source": "ResearchSubject",
+        "target": "ResearchStudy",
+        "relationship": "study"
+      },
+      {
+        "source": "ResearchSubject",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "ResearchSubject",
+        "target": "Group",
+        "relationship": "subject_Group"
+      },
+      {
+        "source": "ResearchSubject",
+        "target": "Specimen",
+        "relationship": "subject_Specimen"
+      },
+      {
+        "source": "ResearchSubject",
+        "target": "Device",
+        "relationship": "subject_Device"
+      },
+      {
+        "source": "ResearchSubject",
+        "target": "Medication",
+        "relationship": "subject_Medication"
+      },
+      {
+        "source": "ResearchSubject",
+        "target": "Substance",
+        "relationship": "subject_Substance"
+      },
+      {
+        "source": "SubstanceDefinition",
+        "target": "Citation",
+        "relationship": "informationSource"
+      },
+      {
+        "source": "SubstanceDefinition",
+        "target": "Organization",
+        "relationship": "manufacturer"
+      },
+      {
+        "source": "SubstanceDefinition",
+        "target": "Organization",
+        "relationship": "supplier"
+      },
+      {
+        "source": "SubstanceDefinition",
+        "target": "DocumentReference",
+        "relationship": "code_source"
+      },
+      {
+        "source": "SubstanceDefinition",
+        "target": "DocumentReference",
+        "relationship": "name_source"
+      },
+      {
+        "source": "SubstanceDefinition",
+        "target": "DocumentReference",
+        "relationship": "relationship_source"
+      },
+      {
+        "source": "SubstanceDefinition",
+        "target": "SubstanceDefinition",
+        "relationship": "relationship_substanceDefinitionReference"
+      },
+      {
+        "source": "SubstanceDefinition",
+        "target": "DocumentReference",
+        "relationship": "structure_sourceDocument"
+      },
+      {
+        "source": "ConditionStage",
+        "target": "Observation",
+        "relationship": "assessment_Observation"
+      },
+      {
+        "source": "SpecimenProcessing",
+        "target": "Substance",
+        "relationship": "additive"
+      },
+      {
+        "source": "SubstanceDefinitionStructure",
+        "target": "DocumentReference",
+        "relationship": "sourceDocument"
+      },
+      {
+        "source": "SubstanceDefinitionStructure",
+        "target": "DocumentReference",
+        "relationship": "representation_document"
+      }
+    ]
+  },
+  "minimal": {
+    "nodes": [
+      {
+        "id": "MedicationAdministration",
+        "group": 1
+      },
+      {
+        "id": "DocumentReference",
+        "group": 1
+      },
+      {
+        "id": "Observation",
+        "group": 1
+      },
+      {
+        "id": "Patient",
+        "group": 1
+      },
+      {
+        "id": "Practitioner",
+        "group": 1
+      },
+      {
+        "id": "ServiceRequest",
+        "group": 1
+      },
+      {
+        "id": "Substance",
+        "group": 1
+      },
+      {
+        "id": "MedicationRequest",
+        "group": 1
+      },
+      {
+        "id": "MedicationStatement",
+        "group": 1
+      },
+      {
+        "id": "Task",
+        "group": 1
+      },
+      {
+        "id": "Condition",
+        "group": 1
+      },
+      {
+        "id": "Citation",
+        "group": 1
+      },
+      {
+        "id": "Device",
+        "group": 1
+      },
+      {
+        "id": "PractitionerRole",
+        "group": 1
+      },
+      {
+        "id": "Organization",
+        "group": 1
+      },
+      {
+        "id": "ImagingStudy",
+        "group": 1
+      },
+      {
+        "id": "BodyStructure",
+        "group": 1
+      },
+      {
+        "id": "ResearchStudy",
+        "group": 1
+      },
+      {
+        "id": "Specimen",
+        "group": 1
+      },
+      {
+        "id": "Group",
+        "group": 1
+      },
+      {
+        "id": "Medication",
+        "group": 1
+      },
+      {
+        "id": "ResearchSubject",
+        "group": 1
+      },
+      {
+        "id": "SubstanceDefinition",
+        "group": 1
+      }
+    ],
+    "links": [
+      {
+        "source": "MedicationAdministration",
+        "target": "MedicationAdministration",
+        "relationship": "partOf_MedicationAdministration"
+      },
+      {
+        "source": "MedicationAdministration",
+        "target": "MedicationRequest",
+        "relationship": "request"
+      },
+      {
+        "source": "MedicationAdministration",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "MedicationAdministration",
+        "target": "Group",
+        "relationship": "subject_Group"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "Practitioner",
+        "relationship": "author_Practitioner"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "PractitionerRole",
+        "relationship": "author_PractitionerRole"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "Organization",
+        "relationship": "author_Organization"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "Device",
+        "relationship": "author_Device"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "Patient",
+        "relationship": "author_Patient"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "MedicationRequest",
+        "relationship": "basedOn_MedicationRequest"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "ServiceRequest",
+        "relationship": "basedOn_ServiceRequest"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "Organization",
+        "relationship": "custodian"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "Patient",
+        "relationship": "attester_party_Patient"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "Practitioner",
+        "relationship": "attester_party_Practitioner"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "PractitionerRole",
+        "relationship": "attester_party_PractitionerRole"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "Organization",
+        "relationship": "attester_party_Organization"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "DocumentReference",
+        "relationship": "relatesTo_target"
+      },
+      {
+        "source": "Observation",
+        "target": "MedicationRequest",
+        "relationship": "basedOn_MedicationRequest"
+      },
+      {
+        "source": "Observation",
+        "target": "ServiceRequest",
+        "relationship": "basedOn_ServiceRequest"
+      },
+      {
+        "source": "Observation",
+        "target": "BodyStructure",
+        "relationship": "bodyStructure"
+      },
+      {
+        "source": "Observation",
+        "target": "DocumentReference",
+        "relationship": "derivedFrom_DocumentReference"
+      },
+      {
+        "source": "Observation",
+        "target": "ImagingStudy",
+        "relationship": "derivedFrom_ImagingStudy"
+      },
+      {
+        "source": "Observation",
+        "target": "Observation",
+        "relationship": "derivedFrom_Observation"
+      },
+      {
+        "source": "Observation",
+        "target": "Device",
+        "relationship": "device_Device"
+      },
+      {
+        "source": "Observation",
+        "target": "Observation",
+        "relationship": "hasMember_Observation"
+      },
+      {
+        "source": "Observation",
+        "target": "MedicationAdministration",
+        "relationship": "partOf_MedicationAdministration"
+      },
+      {
+        "source": "Observation",
+        "target": "MedicationStatement",
+        "relationship": "partOf_MedicationStatement"
+      },
+      {
+        "source": "Observation",
+        "target": "ImagingStudy",
+        "relationship": "partOf_ImagingStudy"
+      },
+      {
+        "source": "Observation",
+        "target": "Practitioner",
+        "relationship": "performer_Practitioner"
+      },
+      {
+        "source": "Observation",
+        "target": "PractitionerRole",
+        "relationship": "performer_PractitionerRole"
+      },
+      {
+        "source": "Observation",
+        "target": "Organization",
+        "relationship": "performer_Organization"
+      },
+      {
+        "source": "Observation",
+        "target": "Patient",
+        "relationship": "performer_Patient"
+      },
+      {
+        "source": "Observation",
+        "target": "Specimen",
+        "relationship": "specimen_Specimen"
+      },
+      {
+        "source": "Observation",
+        "target": "Group",
+        "relationship": "specimen_Group"
+      },
+      {
+        "source": "Observation",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "Observation",
+        "target": "Group",
+        "relationship": "subject_Group"
+      },
+      {
+        "source": "Observation",
+        "target": "Device",
+        "relationship": "subject_Device"
+      },
+      {
+        "source": "Observation",
+        "target": "Organization",
+        "relationship": "subject_Organization"
+      },
+      {
+        "source": "Observation",
+        "target": "Practitioner",
+        "relationship": "subject_Practitioner"
+      },
+      {
+        "source": "Observation",
+        "target": "Medication",
+        "relationship": "subject_Medication"
+      },
+      {
+        "source": "Observation",
+        "target": "Substance",
+        "relationship": "subject_Substance"
+      },
+      {
+        "source": "Observation",
+        "target": "Observation",
+        "relationship": "triggeredBy_observation"
+      },
+      {
+        "source": "Patient",
+        "target": "Organization",
+        "relationship": "generalPractitioner_Organization"
+      },
+      {
+        "source": "Patient",
+        "target": "Practitioner",
+        "relationship": "generalPractitioner_Practitioner"
+      },
+      {
+        "source": "Patient",
+        "target": "PractitionerRole",
+        "relationship": "generalPractitioner_PractitionerRole"
+      },
+      {
+        "source": "Patient",
+        "target": "Organization",
+        "relationship": "managingOrganization"
+      },
+      {
+        "source": "Patient",
+        "target": "Organization",
+        "relationship": "contact_organization"
+      },
+      {
+        "source": "Patient",
+        "target": "Patient",
+        "relationship": "link_other_Patient"
+      },
+      {
+        "source": "Practitioner",
+        "target": "Organization",
+        "relationship": "qualification_issuer"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "ServiceRequest",
+        "relationship": "basedOn_ServiceRequest"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "MedicationRequest",
+        "relationship": "basedOn_MedicationRequest"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "BodyStructure",
+        "relationship": "bodyStructure"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "Practitioner",
+        "relationship": "performer_Practitioner"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "PractitionerRole",
+        "relationship": "performer_PractitionerRole"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "Organization",
+        "relationship": "performer_Organization"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "Patient",
+        "relationship": "performer_Patient"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "Device",
+        "relationship": "performer_Device"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "ServiceRequest",
+        "relationship": "replaces"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "Practitioner",
+        "relationship": "requester_Practitioner"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "PractitionerRole",
+        "relationship": "requester_PractitionerRole"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "Organization",
+        "relationship": "requester_Organization"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "Patient",
+        "relationship": "requester_Patient"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "Device",
+        "relationship": "requester_Device"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "Specimen",
+        "relationship": "specimen"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "Group",
+        "relationship": "subject_Group"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "Device",
+        "relationship": "subject_Device"
+      },
+      {
+        "source": "ServiceRequest",
+        "target": "DocumentReference",
+        "relationship": "patientInstruction_instructionReference"
+      },
+      {
+        "source": "Substance",
+        "target": "Substance",
+        "relationship": "ingredient_substanceReference"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "MedicationRequest",
+        "relationship": "basedOn_MedicationRequest"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "ServiceRequest",
+        "relationship": "basedOn_ServiceRequest"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Patient",
+        "relationship": "informationSource_Patient"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Practitioner",
+        "relationship": "informationSource_Practitioner"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "PractitionerRole",
+        "relationship": "informationSource_PractitionerRole"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Organization",
+        "relationship": "informationSource_Organization"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Practitioner",
+        "relationship": "performer_Practitioner"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "PractitionerRole",
+        "relationship": "performer_PractitionerRole"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Organization",
+        "relationship": "performer_Organization"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Patient",
+        "relationship": "performer_Patient"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "MedicationRequest",
+        "relationship": "priorPrescription"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Practitioner",
+        "relationship": "recorder_Practitioner"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "PractitionerRole",
+        "relationship": "recorder_PractitionerRole"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Practitioner",
+        "relationship": "requester_Practitioner"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "PractitionerRole",
+        "relationship": "requester_PractitionerRole"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Organization",
+        "relationship": "requester_Organization"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Patient",
+        "relationship": "requester_Patient"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Device",
+        "relationship": "requester_Device"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Group",
+        "relationship": "subject_Group"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Organization",
+        "relationship": "dispenseRequest_dispenser"
+      },
+      {
+        "source": "MedicationStatement",
+        "target": "Patient",
+        "relationship": "informationSource_Patient"
+      },
+      {
+        "source": "MedicationStatement",
+        "target": "Practitioner",
+        "relationship": "informationSource_Practitioner"
+      },
+      {
+        "source": "MedicationStatement",
+        "target": "PractitionerRole",
+        "relationship": "informationSource_PractitionerRole"
+      },
+      {
+        "source": "MedicationStatement",
+        "target": "Organization",
+        "relationship": "informationSource_Organization"
+      },
+      {
+        "source": "MedicationStatement",
+        "target": "MedicationStatement",
+        "relationship": "partOf_MedicationStatement"
+      },
+      {
+        "source": "MedicationStatement",
+        "target": "Observation",
+        "relationship": "relatedClinicalInformation_Observation"
+      },
+      {
+        "source": "MedicationStatement",
+        "target": "Condition",
+        "relationship": "relatedClinicalInformation_Condition"
+      },
+      {
+        "source": "MedicationStatement",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "MedicationStatement",
+        "target": "Group",
+        "relationship": "subject_Group"
+      },
+      {
+        "source": "Task",
+        "target": "Practitioner",
+        "relationship": "owner_Practitioner"
+      },
+      {
+        "source": "Task",
+        "target": "PractitionerRole",
+        "relationship": "owner_PractitionerRole"
+      },
+      {
+        "source": "Task",
+        "target": "Organization",
+        "relationship": "owner_Organization"
+      },
+      {
+        "source": "Task",
+        "target": "Patient",
+        "relationship": "owner_Patient"
+      },
+      {
+        "source": "Task",
+        "target": "Task",
+        "relationship": "partOf"
+      },
+      {
+        "source": "Task",
+        "target": "Device",
+        "relationship": "requester_Device"
+      },
+      {
+        "source": "Task",
+        "target": "Organization",
+        "relationship": "requester_Organization"
+      },
+      {
+        "source": "Task",
+        "target": "Patient",
+        "relationship": "requester_Patient"
+      },
+      {
+        "source": "Task",
+        "target": "Practitioner",
+        "relationship": "requester_Practitioner"
+      },
+      {
+        "source": "Task",
+        "target": "PractitionerRole",
+        "relationship": "requester_PractitionerRole"
+      },
+      {
+        "source": "Task",
+        "target": "Practitioner",
+        "relationship": "performer_actor_Practitioner"
+      },
+      {
+        "source": "Task",
+        "target": "PractitionerRole",
+        "relationship": "performer_actor_PractitionerRole"
+      },
+      {
+        "source": "Task",
+        "target": "Organization",
+        "relationship": "performer_actor_Organization"
+      },
+      {
+        "source": "Task",
+        "target": "Patient",
+        "relationship": "performer_actor_Patient"
+      },
+      {
+        "source": "Task",
+        "target": "Patient",
+        "relationship": "restriction_recipient_Patient"
+      },
+      {
+        "source": "Task",
+        "target": "Practitioner",
+        "relationship": "restriction_recipient_Practitioner"
+      },
+      {
+        "source": "Task",
+        "target": "PractitionerRole",
+        "relationship": "restriction_recipient_PractitionerRole"
+      },
+      {
+        "source": "Task",
+        "target": "Group",
+        "relationship": "restriction_recipient_Group"
+      },
+      {
+        "source": "Task",
+        "target": "Organization",
+        "relationship": "restriction_recipient_Organization"
+      },
+      {
+        "source": "Condition",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "Condition",
+        "target": "Group",
+        "relationship": "subject_Group"
+      },
+      {
+        "source": "Condition",
+        "target": "Practitioner",
+        "relationship": "participant_actor_Practitioner"
+      },
+      {
+        "source": "Condition",
+        "target": "PractitionerRole",
+        "relationship": "participant_actor_PractitionerRole"
+      },
+      {
+        "source": "Condition",
+        "target": "Patient",
+        "relationship": "participant_actor_Patient"
+      },
+      {
+        "source": "Condition",
+        "target": "Device",
+        "relationship": "participant_actor_Device"
+      },
+      {
+        "source": "Condition",
+        "target": "Organization",
+        "relationship": "participant_actor_Organization"
+      },
+      {
+        "source": "Condition",
+        "target": "Observation",
+        "relationship": "stage_assessment_Observation"
+      },
+      {
+        "source": "Citation",
+        "target": "ResearchStudy",
+        "relationship": "useContext_valueReference_ResearchStudy"
+      },
+      {
+        "source": "Citation",
+        "target": "Group",
+        "relationship": "useContext_valueReference_Group"
+      },
+      {
+        "source": "Citation",
+        "target": "Organization",
+        "relationship": "useContext_valueReference_Organization"
+      },
+      {
+        "source": "Device",
+        "target": "Organization",
+        "relationship": "owner"
+      },
+      {
+        "source": "Device",
+        "target": "Device",
+        "relationship": "parent"
+      },
+      {
+        "source": "PractitionerRole",
+        "target": "Organization",
+        "relationship": "organization"
+      },
+      {
+        "source": "PractitionerRole",
+        "target": "Practitioner",
+        "relationship": "practitioner"
+      },
+      {
+        "source": "PractitionerRole",
+        "target": "Organization",
+        "relationship": "contact_organization"
+      },
+      {
+        "source": "Organization",
+        "target": "Organization",
+        "relationship": "partOf"
+      },
+      {
+        "source": "Organization",
+        "target": "Organization",
+        "relationship": "contact_organization"
+      },
+      {
+        "source": "Organization",
+        "target": "Organization",
+        "relationship": "qualification_issuer"
+      },
+      {
+        "source": "ImagingStudy",
+        "target": "ServiceRequest",
+        "relationship": "basedOn_ServiceRequest"
+      },
+      {
+        "source": "ImagingStudy",
+        "target": "Task",
+        "relationship": "basedOn_Task"
+      },
+      {
+        "source": "ImagingStudy",
+        "target": "Practitioner",
+        "relationship": "referrer_Practitioner"
+      },
+      {
+        "source": "ImagingStudy",
+        "target": "PractitionerRole",
+        "relationship": "referrer_PractitionerRole"
+      },
+      {
+        "source": "ImagingStudy",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "ImagingStudy",
+        "target": "Device",
+        "relationship": "subject_Device"
+      },
+      {
+        "source": "ImagingStudy",
+        "target": "Group",
+        "relationship": "subject_Group"
+      },
+      {
+        "source": "ImagingStudy",
+        "target": "Specimen",
+        "relationship": "series_specimen"
+      },
+      {
+        "source": "BodyStructure",
+        "target": "Patient",
+        "relationship": "patient"
+      },
+      {
+        "source": "ResearchStudy",
+        "target": "ResearchStudy",
+        "relationship": "partOf"
+      },
+      {
+        "source": "ResearchStudy",
+        "target": "Citation",
+        "relationship": "result_Citation"
+      },
+      {
+        "source": "ResearchStudy",
+        "target": "ResearchStudy",
+        "relationship": "site_ResearchStudy"
+      },
+      {
+        "source": "ResearchStudy",
+        "target": "Organization",
+        "relationship": "site_Organization"
+      },
+      {
+        "source": "ResearchStudy",
+        "target": "Practitioner",
+        "relationship": "associatedParty_party_Practitioner"
+      },
+      {
+        "source": "ResearchStudy",
+        "target": "PractitionerRole",
+        "relationship": "associatedParty_party_PractitionerRole"
+      },
+      {
+        "source": "ResearchStudy",
+        "target": "Organization",
+        "relationship": "associatedParty_party_Organization"
+      },
+      {
+        "source": "ResearchStudy",
+        "target": "Group",
+        "relationship": "comparisonGroup_observedGroup"
+      },
+      {
+        "source": "ResearchStudy",
+        "target": "Group",
+        "relationship": "recruitment_actualGroup"
+      },
+      {
+        "source": "ResearchStudy",
+        "target": "Group",
+        "relationship": "recruitment_eligibility_Group"
+      },
+      {
+        "source": "Specimen",
+        "target": "Specimen",
+        "relationship": "parent"
+      },
+      {
+        "source": "Specimen",
+        "target": "ServiceRequest",
+        "relationship": "request"
+      },
+      {
+        "source": "Specimen",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "Specimen",
+        "target": "Group",
+        "relationship": "subject_Group"
+      },
+      {
+        "source": "Specimen",
+        "target": "Device",
+        "relationship": "subject_Device"
+      },
+      {
+        "source": "Specimen",
+        "target": "Substance",
+        "relationship": "subject_Substance"
+      },
+      {
+        "source": "Specimen",
+        "target": "Practitioner",
+        "relationship": "collection_collector_Practitioner"
+      },
+      {
+        "source": "Specimen",
+        "target": "PractitionerRole",
+        "relationship": "collection_collector_PractitionerRole"
+      },
+      {
+        "source": "Specimen",
+        "target": "Patient",
+        "relationship": "collection_collector_Patient"
+      },
+      {
+        "source": "Specimen",
+        "target": "Device",
+        "relationship": "container_device"
+      },
+      {
+        "source": "Specimen",
+        "target": "Substance",
+        "relationship": "processing_additive"
+      },
+      {
+        "source": "Group",
+        "target": "Organization",
+        "relationship": "managingEntity_Organization"
+      },
+      {
+        "source": "Group",
+        "target": "Practitioner",
+        "relationship": "managingEntity_Practitioner"
+      },
+      {
+        "source": "Group",
+        "target": "PractitionerRole",
+        "relationship": "managingEntity_PractitionerRole"
+      },
+      {
+        "source": "Group",
+        "target": "Device",
+        "relationship": "member_entity_Device"
+      },
+      {
+        "source": "Group",
+        "target": "Group",
+        "relationship": "member_entity_Group"
+      },
+      {
+        "source": "Group",
+        "target": "Organization",
+        "relationship": "member_entity_Organization"
+      },
+      {
+        "source": "Group",
+        "target": "Patient",
+        "relationship": "member_entity_Patient"
+      },
+      {
+        "source": "Group",
+        "target": "Practitioner",
+        "relationship": "member_entity_Practitioner"
+      },
+      {
+        "source": "Group",
+        "target": "PractitionerRole",
+        "relationship": "member_entity_PractitionerRole"
+      },
+      {
+        "source": "Group",
+        "target": "Specimen",
+        "relationship": "member_entity_Specimen"
+      },
+      {
+        "source": "Medication",
+        "target": "Organization",
+        "relationship": "marketingAuthorizationHolder"
+      },
+      {
+        "source": "ResearchSubject",
+        "target": "ResearchStudy",
+        "relationship": "study"
+      },
+      {
+        "source": "ResearchSubject",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "ResearchSubject",
+        "target": "Group",
+        "relationship": "subject_Group"
+      },
+      {
+        "source": "ResearchSubject",
+        "target": "Specimen",
+        "relationship": "subject_Specimen"
+      },
+      {
+        "source": "ResearchSubject",
+        "target": "Device",
+        "relationship": "subject_Device"
+      },
+      {
+        "source": "ResearchSubject",
+        "target": "Medication",
+        "relationship": "subject_Medication"
+      },
+      {
+        "source": "ResearchSubject",
+        "target": "Substance",
+        "relationship": "subject_Substance"
+      },
+      {
+        "source": "SubstanceDefinition",
+        "target": "Citation",
+        "relationship": "informationSource"
+      },
+      {
+        "source": "SubstanceDefinition",
+        "target": "Organization",
+        "relationship": "manufacturer"
+      },
+      {
+        "source": "SubstanceDefinition",
+        "target": "Organization",
+        "relationship": "supplier"
+      },
+      {
+        "source": "SubstanceDefinition",
+        "target": "DocumentReference",
+        "relationship": "code_source"
+      },
+      {
+        "source": "SubstanceDefinition",
+        "target": "DocumentReference",
+        "relationship": "name_source"
+      },
+      {
+        "source": "SubstanceDefinition",
+        "target": "DocumentReference",
+        "relationship": "relationship_source"
+      },
+      {
+        "source": "SubstanceDefinition",
+        "target": "SubstanceDefinition",
+        "relationship": "relationship_substanceDefinitionReference"
+      },
+      {
+        "source": "SubstanceDefinition",
+        "target": "DocumentReference",
+        "relationship": "structure_sourceDocument"
+      }
+    ]
+  }
+}

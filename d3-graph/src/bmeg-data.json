@@ -1,0 +1,1884 @@
+{
+  "full": {
+    "nodes": [
+      {
+        "id": "MedicationAdministration",
+        "group": 1
+      },
+      {
+        "id": "DocumentReference",
+        "group": 1
+      },
+      {
+        "id": "TaskPerformer",
+        "group": 1
+      },
+      {
+        "id": "Timing",
+        "group": 1
+      },
+      {
+        "id": "SampledData",
+        "group": 1
+      },
+      {
+        "id": "ResearchStudyComparisonGroup",
+        "group": 1
+      },
+      {
+        "id": "FamilyMemberHistory",
+        "group": 1
+      },
+      {
+        "id": "GenePhenotypeAssociation",
+        "group": 1
+      },
+      {
+        "id": "RelatedArtifact",
+        "group": 1
+      },
+      {
+        "id": "Observation",
+        "group": 1
+      },
+      {
+        "id": "ObservationTriggeredBy",
+        "group": 1
+      },
+      {
+        "id": "SubstanceDefinitionCode",
+        "group": 1
+      },
+      {
+        "id": "DataRequirementCodeFilter",
+        "group": 1
+      },
+      {
+        "id": "FamilyMemberHistoryParticipant",
+        "group": 1
+      },
+      {
+        "id": "Phenotype",
+        "group": 1
+      },
+      {
+        "id": "PatientLink",
+        "group": 1
+      },
+      {
+        "id": "TaskOutput",
+        "group": 1
+      },
+      {
+        "id": "Patient",
+        "group": 1
+      },
+      {
+        "id": "SubstanceDefinitionProperty",
+        "group": 1
+      },
+      {
+        "id": "Annotation",
+        "group": 1
+      },
+      {
+        "id": "Substance",
+        "group": 1
+      },
+      {
+        "id": "UsageContext",
+        "group": 1
+      },
+      {
+        "id": "CodeableReference",
+        "group": 1
+      },
+      {
+        "id": "Allele",
+        "group": 1
+      },
+      {
+        "id": "ProteinStructure",
+        "group": 1
+      },
+      {
+        "id": "MedicationRequest",
+        "group": 1
+      },
+      {
+        "id": "MedicationRequestDispenseRequest",
+        "group": 1
+      },
+      {
+        "id": "Period",
+        "group": 1
+      },
+      {
+        "id": "EncounterParticipant",
+        "group": 1
+      },
+      {
+        "id": "AvailabilityNotAvailableTime",
+        "group": 1
+      },
+      {
+        "id": "SubstanceDefinitionMolecularWeight",
+        "group": 1
+      },
+      {
+        "id": "ConditionParticipant",
+        "group": 1
+      },
+      {
+        "id": "SubstanceDefinitionSourceMaterial",
+        "group": 1
+      },
+      {
+        "id": "CopyNumberAlteration",
+        "group": 1
+      },
+      {
+        "id": "FHIRPrimitiveExtension",
+        "group": 1
+      },
+      {
+        "id": "ExtendedContactDetail",
+        "group": 1
+      },
+      {
+        "id": "DataRequirementValueFilter",
+        "group": 1
+      },
+      {
+        "id": "Protein",
+        "group": 1
+      },
+      {
+        "id": "DataRequirementSort",
+        "group": 1
+      },
+      {
+        "id": "GenomicFeature",
+        "group": 1
+      },
+      {
+        "id": "SubstanceDefinitionRelationship",
+        "group": 1
+      },
+      {
+        "id": "MedicationStatement",
+        "group": 1
+      },
+      {
+        "id": "Gene",
+        "group": 1
+      },
+      {
+        "id": "Task",
+        "group": 1
+      },
+      {
+        "id": "ResearchStudyAssociatedParty",
+        "group": 1
+      },
+      {
+        "id": "Range",
+        "group": 1
+      },
+      {
+        "id": "PatientContact",
+        "group": 1
+      },
+      {
+        "id": "DataRequirement",
+        "group": 1
+      },
+      {
+        "id": "ProcedureFocalDevice",
+        "group": 1
+      },
+      {
+        "id": "Condition",
+        "group": 1
+      },
+      {
+        "id": "AvailabilityAvailableTime",
+        "group": 1
+      },
+      {
+        "id": "ResearchStudyRecruitment",
+        "group": 1
+      },
+      {
+        "id": "SubstanceDefinitionName",
+        "group": 1
+      },
+      {
+        "id": "SpecimenCollection",
+        "group": 1
+      },
+      {
+        "id": "Attachment",
+        "group": 1
+      },
+      {
+        "id": "ResearchStudyProgressStatus",
+        "group": 1
+      },
+      {
+        "id": "MedicationIngredient",
+        "group": 1
+      },
+      {
+        "id": "SubstanceDefinitionNameOfficial",
+        "group": 1
+      },
+      {
+        "id": "Money",
+        "group": 1
+      },
+      {
+        "id": "MedicationRequestSubstitution",
+        "group": 1
+      },
+      {
+        "id": "FamilyMemberHistoryProcedure",
+        "group": 1
+      },
+      {
+        "id": "Encounter",
+        "group": 1
+      },
+      {
+        "id": "TaskRestriction",
+        "group": 1
+      },
+      {
+        "id": "RatioRange",
+        "group": 1
+      },
+      {
+        "id": "SomaticVariant",
+        "group": 1
+      },
+      {
+        "id": "TranscriptExpression",
+        "group": 1
+      },
+      {
+        "id": "MedicationStatementAdherence",
+        "group": 1
+      },
+      {
+        "id": "MethylationProbe",
+        "group": 1
+      },
+      {
+        "id": "GeneOntologyTerm",
+        "group": 1
+      },
+      {
+        "id": "FamilyMemberHistoryCondition",
+        "group": 1
+      },
+      {
+        "id": "Resource",
+        "group": 1
+      },
+      {
+        "id": "GeneExpression",
+        "group": 1
+      },
+      {
+        "id": "DosageDoseAndRate",
+        "group": 1
+      },
+      {
+        "id": "ObservationReferenceRange",
+        "group": 1
+      },
+      {
+        "id": "ContactDetail",
+        "group": 1
+      },
+      {
+        "id": "Procedure",
+        "group": 1
+      },
+      {
+        "id": "MedicationRequestDispenseRequestInitialFill",
+        "group": 1
+      },
+      {
+        "id": "ResearchStudyLabel",
+        "group": 1
+      },
+      {
+        "id": "DocumentReferenceContentProfile",
+        "group": 1
+      },
+      {
+        "id": "ResearchStudyObjective",
+        "group": 1
+      },
+      {
+        "id": "ProcedurePerformer",
+        "group": 1
+      },
+      {
+        "id": "ResearchSubjectProgress",
+        "group": 1
+      },
+      {
+        "id": "Distance",
+        "group": 1
+      },
+      {
+        "id": "Methylation",
+        "group": 1
+      },
+      {
+        "id": "Interaction",
+        "group": 1
+      },
+      {
+        "id": "SomaticCallset",
+        "group": 1
+      },
+      {
+        "id": "ObservationComponent",
+        "group": 1
+      },
+      {
+        "id": "Address",
+        "group": 1
+      },
+      {
+        "id": "SubstanceDefinitionStructureRepresentation",
+        "group": 1
+      },
+      {
+        "id": "Expression",
+        "group": 1
+      },
+      {
+        "id": "SubstanceIngredient",
+        "group": 1
+      },
+      {
+        "id": "EncounterLocation",
+        "group": 1
+      },
+      {
+        "id": "EncounterDiagnosis",
+        "group": 1
+      },
+      {
+        "id": "Reference",
+        "group": 1
+      },
+      {
+        "id": "Transcript",
+        "group": 1
+      },
+      {
+        "id": "SubstanceDefinitionMoiety",
+        "group": 1
+      },
+      {
+        "id": "Availability",
+        "group": 1
+      },
+      {
+        "id": "Count",
+        "group": 1
+      },
+      {
+        "id": "Quantity",
+        "group": 1
+      },
+      {
+        "id": "DocumentReferenceAttester",
+        "group": 1
+      },
+      {
+        "id": "GeneSet",
+        "group": 1
+      },
+      {
+        "id": "DocumentReferenceRelatesTo",
+        "group": 1
+      },
+      {
+        "id": "Narrative",
+        "group": 1
+      },
+      {
+        "id": "SpecimenFeature",
+        "group": 1
+      },
+      {
+        "id": "DocumentReferenceContent",
+        "group": 1
+      },
+      {
+        "id": "EncounterAdmission",
+        "group": 1
+      },
+      {
+        "id": "VirtualServiceDetail",
+        "group": 1
+      },
+      {
+        "id": "ResearchStudy",
+        "group": 1
+      },
+      {
+        "id": "DataRequirementDateFilter",
+        "group": 1
+      },
+      {
+        "id": "EncounterReason",
+        "group": 1
+      },
+      {
+        "id": "Signature",
+        "group": 1
+      },
+      {
+        "id": "Dosage",
+        "group": 1
+      },
+      {
+        "id": "PatientCommunication",
+        "group": 1
+      },
+      {
+        "id": "Specimen",
+        "group": 1
+      },
+      {
+        "id": "MedicationAdministrationDosage",
+        "group": 1
+      },
+      {
+        "id": "SpecimenContainer",
+        "group": 1
+      },
+      {
+        "id": "Extension",
+        "group": 1
+      },
+      {
+        "id": "DrugResponse",
+        "group": 1
+      },
+      {
+        "id": "HumanName",
+        "group": 1
+      },
+      {
+        "id": "SubstanceDefinitionCharacterization",
+        "group": 1
+      },
+      {
+        "id": "TriggerDefinition",
+        "group": 1
+      },
+      {
+        "id": "Meta",
+        "group": 1
+      },
+      {
+        "id": "ResearchStudyOutcomeMeasure",
+        "group": 1
+      },
+      {
+        "id": "ProteinCompoundAssociation",
+        "group": 1
+      },
+      {
+        "id": "AlleleEffect",
+        "group": 1
+      },
+      {
+        "id": "Pathway",
+        "group": 1
+      },
+      {
+        "id": "Identifier",
+        "group": 1
+      },
+      {
+        "id": "MedicationAdministrationPerformer",
+        "group": 1
+      },
+      {
+        "id": "TaskInput",
+        "group": 1
+      },
+      {
+        "id": "Medication",
+        "group": 1
+      },
+      {
+        "id": "MedicationBatch",
+        "group": 1
+      },
+      {
+        "id": "ResearchSubject",
+        "group": 1
+      },
+      {
+        "id": "Publication",
+        "group": 1
+      },
+      {
+        "id": "CodeableConcept",
+        "group": 1
+      },
+      {
+        "id": "ContactPoint",
+        "group": 1
+      },
+      {
+        "id": "Exon",
+        "group": 1
+      },
+      {
+        "id": "Age",
+        "group": 1
+      },
+      {
+        "id": "SubstanceDefinition",
+        "group": 1
+      },
+      {
+        "id": "ConditionStage",
+        "group": 1
+      },
+      {
+        "id": "Duration",
+        "group": 1
+      },
+      {
+        "id": "SpecimenProcessing",
+        "group": 1
+      },
+      {
+        "id": "SubstanceDefinitionStructure",
+        "group": 1
+      },
+      {
+        "id": "Ratio",
+        "group": 1
+      },
+      {
+        "id": "ParameterDefinition",
+        "group": 1
+      },
+      {
+        "id": "Coding",
+        "group": 1
+      },
+      {
+        "id": "TimingRepeat",
+        "group": 1
+      }
+    ],
+    "links": [
+      {
+        "source": "MedicationAdministration",
+        "target": "MedicationAdministration",
+        "relationship": "partOf_MedicationAdministration"
+      },
+      {
+        "source": "MedicationAdministration",
+        "target": "MedicationRequest",
+        "relationship": "request"
+      },
+      {
+        "source": "MedicationAdministration",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "MedicationAdministration",
+        "target": "Resource",
+        "relationship": "supportingInformation"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "Patient",
+        "relationship": "author_Patient"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "MedicationRequest",
+        "relationship": "basedOn_MedicationRequest"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "Resource",
+        "relationship": "subject"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "Patient",
+        "relationship": "attester_party_Patient"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "DocumentReference",
+        "relationship": "relatesTo_target"
+      },
+      {
+        "source": "TaskPerformer",
+        "target": "Patient",
+        "relationship": "actor_Patient"
+      },
+      {
+        "source": "FamilyMemberHistory",
+        "target": "Patient",
+        "relationship": "patient"
+      },
+      {
+        "source": "FamilyMemberHistory",
+        "target": "Patient",
+        "relationship": "participant_actor_Patient"
+      },
+      {
+        "source": "GenePhenotypeAssociation",
+        "target": "Allele",
+        "relationship": "alleles_Allele"
+      },
+      {
+        "source": "GenePhenotypeAssociation",
+        "target": "Gene",
+        "relationship": "genes_Gene"
+      },
+      {
+        "source": "GenePhenotypeAssociation",
+        "target": "GenomicFeature",
+        "relationship": "genomicFeatures_GenomicFeature"
+      },
+      {
+        "source": "GenePhenotypeAssociation",
+        "target": "Publication",
+        "relationship": "publications_Publication"
+      },
+      {
+        "source": "GenePhenotypeAssociation",
+        "target": "Phenotype",
+        "relationship": "phenotypes_Phenotype"
+      },
+      {
+        "source": "GenePhenotypeAssociation",
+        "target": "Substance",
+        "relationship": "substances_Substance"
+      },
+      {
+        "source": "RelatedArtifact",
+        "target": "Resource",
+        "relationship": "resourceReference"
+      },
+      {
+        "source": "Observation",
+        "target": "MedicationRequest",
+        "relationship": "basedOn_MedicationRequest"
+      },
+      {
+        "source": "Observation",
+        "target": "DocumentReference",
+        "relationship": "derivedFrom_DocumentReference"
+      },
+      {
+        "source": "Observation",
+        "target": "Observation",
+        "relationship": "derivedFrom_Observation"
+      },
+      {
+        "source": "Observation",
+        "target": "Resource",
+        "relationship": "focus"
+      },
+      {
+        "source": "Observation",
+        "target": "Observation",
+        "relationship": "hasMember_Observation"
+      },
+      {
+        "source": "Observation",
+        "target": "MedicationAdministration",
+        "relationship": "partOf_MedicationAdministration"
+      },
+      {
+        "source": "Observation",
+        "target": "MedicationStatement",
+        "relationship": "partOf_MedicationStatement"
+      },
+      {
+        "source": "Observation",
+        "target": "Patient",
+        "relationship": "performer_Patient"
+      },
+      {
+        "source": "Observation",
+        "target": "Specimen",
+        "relationship": "specimen_Specimen"
+      },
+      {
+        "source": "Observation",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "Observation",
+        "target": "Medication",
+        "relationship": "subject_Medication"
+      },
+      {
+        "source": "Observation",
+        "target": "Substance",
+        "relationship": "subject_Substance"
+      },
+      {
+        "source": "Observation",
+        "target": "Observation",
+        "relationship": "triggeredBy_observation"
+      },
+      {
+        "source": "ObservationTriggeredBy",
+        "target": "Observation",
+        "relationship": "observation"
+      },
+      {
+        "source": "SubstanceDefinitionCode",
+        "target": "DocumentReference",
+        "relationship": "source"
+      },
+      {
+        "source": "FamilyMemberHistoryParticipant",
+        "target": "Patient",
+        "relationship": "actor_Patient"
+      },
+      {
+        "source": "Phenotype",
+        "target": "Phenotype",
+        "relationship": "childTerms_Phenotype"
+      },
+      {
+        "source": "Phenotype",
+        "target": "Patient",
+        "relationship": "patients_Patient"
+      },
+      {
+        "source": "PatientLink",
+        "target": "Patient",
+        "relationship": "other_Patient"
+      },
+      {
+        "source": "TaskOutput",
+        "target": "Resource",
+        "relationship": "valueRelatedArtifact_resourceReference"
+      },
+      {
+        "source": "TaskOutput",
+        "target": "Patient",
+        "relationship": "valueSignature_onBehalfOf_Patient"
+      },
+      {
+        "source": "TaskOutput",
+        "target": "Patient",
+        "relationship": "valueSignature_who_Patient"
+      },
+      {
+        "source": "TaskOutput",
+        "target": "ResearchStudy",
+        "relationship": "valueUsageContext_valueReference_ResearchStudy"
+      },
+      {
+        "source": "Patient",
+        "target": "Patient",
+        "relationship": "link_other_Patient"
+      },
+      {
+        "source": "Patient",
+        "target": "Substance",
+        "relationship": "substances_Substance"
+      },
+      {
+        "source": "Patient",
+        "target": "Substance",
+        "relationship": "substances_Substance"
+      },
+      {
+        "source": "Annotation",
+        "target": "Patient",
+        "relationship": "authorReference_Patient"
+      },
+      {
+        "source": "Substance",
+        "target": "Substance",
+        "relationship": "ingredient_substanceReference"
+      },
+      {
+        "source": "Substance",
+        "target": "ResearchStudy",
+        "relationship": "projects_ResearchStudy"
+      },
+      {
+        "source": "UsageContext",
+        "target": "ResearchStudy",
+        "relationship": "valueReference_ResearchStudy"
+      },
+      {
+        "source": "Allele",
+        "target": "Gene",
+        "relationship": "gene_Gene"
+      },
+      {
+        "source": "Allele",
+        "target": "AlleleEffect",
+        "relationship": "effects_AlleleEffect"
+      },
+      {
+        "source": "Allele",
+        "target": "Transcript",
+        "relationship": "transcript_Transcript"
+      },
+      {
+        "source": "Allele",
+        "target": "Protein",
+        "relationship": "protein_Protein"
+      },
+      {
+        "source": "ProteinStructure",
+        "target": "Protein",
+        "relationship": "protein_Protein"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "MedicationRequest",
+        "relationship": "basedOn_MedicationRequest"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Patient",
+        "relationship": "informationSource_Patient"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Patient",
+        "relationship": "performer_Patient"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "MedicationRequest",
+        "relationship": "priorPrescription"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Patient",
+        "relationship": "requester_Patient"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Resource",
+        "relationship": "supportingInformation"
+      },
+      {
+        "source": "EncounterParticipant",
+        "target": "Patient",
+        "relationship": "actor_Patient"
+      },
+      {
+        "source": "ConditionParticipant",
+        "target": "Patient",
+        "relationship": "actor_Patient"
+      },
+      {
+        "source": "CopyNumberAlteration",
+        "target": "Specimen",
+        "relationship": "specimen_Specimen"
+      },
+      {
+        "source": "Protein",
+        "target": "Gene",
+        "relationship": "gene_Gene"
+      },
+      {
+        "source": "Protein",
+        "target": "Transcript",
+        "relationship": "transcript_Transcript"
+      },
+      {
+        "source": "GenomicFeature",
+        "target": "Gene",
+        "relationship": "genes_Gene"
+      },
+      {
+        "source": "SubstanceDefinitionRelationship",
+        "target": "DocumentReference",
+        "relationship": "source"
+      },
+      {
+        "source": "SubstanceDefinitionRelationship",
+        "target": "SubstanceDefinition",
+        "relationship": "substanceDefinitionReference"
+      },
+      {
+        "source": "MedicationStatement",
+        "target": "Resource",
+        "relationship": "derivedFrom"
+      },
+      {
+        "source": "MedicationStatement",
+        "target": "Patient",
+        "relationship": "informationSource_Patient"
+      },
+      {
+        "source": "MedicationStatement",
+        "target": "MedicationStatement",
+        "relationship": "partOf_MedicationStatement"
+      },
+      {
+        "source": "MedicationStatement",
+        "target": "Observation",
+        "relationship": "relatedClinicalInformation_Observation"
+      },
+      {
+        "source": "MedicationStatement",
+        "target": "Condition",
+        "relationship": "relatedClinicalInformation_Condition"
+      },
+      {
+        "source": "MedicationStatement",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "Task",
+        "target": "Resource",
+        "relationship": "basedOn"
+      },
+      {
+        "source": "Task",
+        "target": "Resource",
+        "relationship": "focus"
+      },
+      {
+        "source": "Task",
+        "target": "Resource",
+        "relationship": "for_fhir"
+      },
+      {
+        "source": "Task",
+        "target": "Patient",
+        "relationship": "owner_Patient"
+      },
+      {
+        "source": "Task",
+        "target": "Task",
+        "relationship": "partOf"
+      },
+      {
+        "source": "Task",
+        "target": "Patient",
+        "relationship": "requester_Patient"
+      },
+      {
+        "source": "Task",
+        "target": "Patient",
+        "relationship": "performer_actor_Patient"
+      },
+      {
+        "source": "Task",
+        "target": "Patient",
+        "relationship": "restriction_recipient_Patient"
+      },
+      {
+        "source": "Task",
+        "target": "DocumentReference",
+        "relationship": "documents_DocumentReference"
+      },
+      {
+        "source": "Task",
+        "target": "Specimen",
+        "relationship": "specimen_Specimen"
+      },
+      {
+        "source": "Task",
+        "target": "DocumentReference",
+        "relationship": "documents_DocumentReference"
+      },
+      {
+        "source": "Condition",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "Condition",
+        "target": "Patient",
+        "relationship": "participant_actor_Patient"
+      },
+      {
+        "source": "Condition",
+        "target": "Observation",
+        "relationship": "stage_assessment_Observation"
+      },
+      {
+        "source": "SubstanceDefinitionName",
+        "target": "DocumentReference",
+        "relationship": "source"
+      },
+      {
+        "source": "SubstanceDefinitionName",
+        "target": "DocumentReference",
+        "relationship": "synonym_source"
+      },
+      {
+        "source": "SubstanceDefinitionName",
+        "target": "DocumentReference",
+        "relationship": "translation_source"
+      },
+      {
+        "source": "SpecimenCollection",
+        "target": "Patient",
+        "relationship": "collector_Patient"
+      },
+      {
+        "source": "Encounter",
+        "target": "MedicationRequest",
+        "relationship": "basedOn_MedicationRequest"
+      },
+      {
+        "source": "Encounter",
+        "target": "Encounter",
+        "relationship": "partOf"
+      },
+      {
+        "source": "Encounter",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "Encounter",
+        "target": "Patient",
+        "relationship": "participant_actor_Patient"
+      },
+      {
+        "source": "TaskRestriction",
+        "target": "Patient",
+        "relationship": "recipient_Patient"
+      },
+      {
+        "source": "SomaticVariant",
+        "target": "SomaticCallset",
+        "relationship": "somaticCallset_SomaticCallset"
+      },
+      {
+        "source": "SomaticVariant",
+        "target": "Allele",
+        "relationship": "allele_Allele"
+      },
+      {
+        "source": "TranscriptExpression",
+        "target": "Specimen",
+        "relationship": "specimen_Specimen"
+      },
+      {
+        "source": "MethylationProbe",
+        "target": "Gene",
+        "relationship": "gene_Gene"
+      },
+      {
+        "source": "GeneOntologyTerm",
+        "target": "Gene",
+        "relationship": "genes_Gene"
+      },
+      {
+        "source": "GeneOntologyTerm",
+        "target": "GeneOntologyTerm",
+        "relationship": "childTerms_GeneOntologyTer"
+      },
+      {
+        "source": "GeneExpression",
+        "target": "Specimen",
+        "relationship": "specimen_Specimen"
+      },
+      {
+        "source": "Procedure",
+        "target": "Encounter",
+        "relationship": "encounter"
+      },
+      {
+        "source": "Procedure",
+        "target": "Patient",
+        "relationship": "focus_Patient"
+      },
+      {
+        "source": "Procedure",
+        "target": "Specimen",
+        "relationship": "focus_Specimen"
+      },
+      {
+        "source": "Procedure",
+        "target": "Procedure",
+        "relationship": "partOf_Procedure"
+      },
+      {
+        "source": "Procedure",
+        "target": "Observation",
+        "relationship": "partOf_Observation"
+      },
+      {
+        "source": "Procedure",
+        "target": "MedicationAdministration",
+        "relationship": "partOf_MedicationAdministration"
+      },
+      {
+        "source": "Procedure",
+        "target": "Patient",
+        "relationship": "recorder_Patient"
+      },
+      {
+        "source": "Procedure",
+        "target": "DocumentReference",
+        "relationship": "report_DocumentReference"
+      },
+      {
+        "source": "Procedure",
+        "target": "Patient",
+        "relationship": "reportedReference_Patient"
+      },
+      {
+        "source": "Procedure",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "Procedure",
+        "target": "Resource",
+        "relationship": "supportingInfo"
+      },
+      {
+        "source": "Procedure",
+        "target": "Patient",
+        "relationship": "performer_actor_Patient"
+      },
+      {
+        "source": "ProcedurePerformer",
+        "target": "Patient",
+        "relationship": "actor_Patient"
+      },
+      {
+        "source": "Methylation",
+        "target": "Specimen",
+        "relationship": "specimen_Specimen"
+      },
+      {
+        "source": "Interaction",
+        "target": "Gene",
+        "relationship": "interactionOutput_Gene"
+      },
+      {
+        "source": "Interaction",
+        "target": "Publication",
+        "relationship": "publications_Publication"
+      },
+      {
+        "source": "Interaction",
+        "target": "Protein",
+        "relationship": "interactionInput_Protein"
+      },
+      {
+        "source": "SomaticCallset",
+        "target": "Allele",
+        "relationship": "alleles_Allele"
+      },
+      {
+        "source": "SomaticCallset",
+        "target": "Specimen",
+        "relationship": "specimen_Specimen"
+      },
+      {
+        "source": "SubstanceDefinitionStructureRepresentation",
+        "target": "DocumentReference",
+        "relationship": "document"
+      },
+      {
+        "source": "SubstanceIngredient",
+        "target": "Substance",
+        "relationship": "substanceReference"
+      },
+      {
+        "source": "Transcript",
+        "target": "Gene",
+        "relationship": "gene_Gene"
+      },
+      {
+        "source": "DocumentReferenceAttester",
+        "target": "Patient",
+        "relationship": "party_Patient"
+      },
+      {
+        "source": "GeneSet",
+        "target": "Gene",
+        "relationship": "genes_Gene"
+      },
+      {
+        "source": "GeneSet",
+        "target": "Publication",
+        "relationship": "publications_Publication"
+      },
+      {
+        "source": "DocumentReferenceRelatesTo",
+        "target": "DocumentReference",
+        "relationship": "target"
+      },
+      {
+        "source": "ResearchStudy",
+        "target": "ResearchStudy",
+        "relationship": "partOf"
+      },
+      {
+        "source": "ResearchStudy",
+        "target": "ResearchStudy",
+        "relationship": "site_ResearchStudy"
+      },
+      {
+        "source": "ResearchStudy",
+        "target": "Resource",
+        "relationship": "relatedArtifact_resourceReference"
+      },
+      {
+        "source": "Signature",
+        "target": "Patient",
+        "relationship": "onBehalfOf_Patient"
+      },
+      {
+        "source": "Signature",
+        "target": "Patient",
+        "relationship": "who_Patient"
+      },
+      {
+        "source": "Specimen",
+        "target": "Specimen",
+        "relationship": "parent"
+      },
+      {
+        "source": "Specimen",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "Specimen",
+        "target": "Substance",
+        "relationship": "subject_Substance"
+      },
+      {
+        "source": "Specimen",
+        "target": "Patient",
+        "relationship": "collection_collector_Patient"
+      },
+      {
+        "source": "Specimen",
+        "target": "Substance",
+        "relationship": "processing_additive"
+      },
+      {
+        "source": "Specimen",
+        "target": "ResearchStudy",
+        "relationship": "projects_ResearchStudy"
+      },
+      {
+        "source": "Specimen",
+        "target": "Phenotype",
+        "relationship": "phenotypes_Phenotype"
+      },
+      {
+        "source": "Specimen",
+        "target": "ResearchStudy",
+        "relationship": "projects_ResearchStudy"
+      },
+      {
+        "source": "Specimen",
+        "target": "DocumentReference",
+        "relationship": "specimen_DocumentReference"
+      },
+      {
+        "source": "Extension",
+        "target": "Resource",
+        "relationship": "valueRelatedArtifact_resourceReference"
+      },
+      {
+        "source": "Extension",
+        "target": "Patient",
+        "relationship": "valueSignature_onBehalfOf_Patient"
+      },
+      {
+        "source": "Extension",
+        "target": "Patient",
+        "relationship": "valueSignature_who_Patient"
+      },
+      {
+        "source": "Extension",
+        "target": "ResearchStudy",
+        "relationship": "valueUsageContext_valueReference_ResearchStudy"
+      },
+      {
+        "source": "DrugResponse",
+        "target": "Substance",
+        "relationship": "substances_Substance"
+      },
+      {
+        "source": "ProteinCompoundAssociation",
+        "target": "Protein",
+        "relationship": "proteins_Protein"
+      },
+      {
+        "source": "ProteinCompoundAssociation",
+        "target": "Gene",
+        "relationship": "genes_Gene"
+      },
+      {
+        "source": "ProteinCompoundAssociation",
+        "target": "Publication",
+        "relationship": "publications_Publication"
+      },
+      {
+        "source": "ProteinCompoundAssociation",
+        "target": "ProteinStructure",
+        "relationship": "proteinStructures_ProteinStructure"
+      },
+      {
+        "source": "ProteinCompoundAssociation",
+        "target": "Substance",
+        "relationship": "substance_Substance"
+      },
+      {
+        "source": "AlleleEffect",
+        "target": "Gene",
+        "relationship": "ensemblGene_Gene"
+      },
+      {
+        "source": "AlleleEffect",
+        "target": "Transcript",
+        "relationship": "ensemblTranscript_Transcript"
+      },
+      {
+        "source": "Pathway",
+        "target": "Gene",
+        "relationship": "genes_Gene"
+      },
+      {
+        "source": "Pathway",
+        "target": "Interaction",
+        "relationship": "interactions_Interaction"
+      },
+      {
+        "source": "Pathway",
+        "target": "Pathway",
+        "relationship": "subPathways_Pathw"
+      },
+      {
+        "source": "Pathway",
+        "target": "Publication",
+        "relationship": "publications_Publication"
+      },
+      {
+        "source": "TaskInput",
+        "target": "Resource",
+        "relationship": "valueRelatedArtifact_resourceReference"
+      },
+      {
+        "source": "TaskInput",
+        "target": "Patient",
+        "relationship": "valueSignature_onBehalfOf_Patient"
+      },
+      {
+        "source": "TaskInput",
+        "target": "Patient",
+        "relationship": "valueSignature_who_Patient"
+      },
+      {
+        "source": "TaskInput",
+        "target": "ResearchStudy",
+        "relationship": "valueUsageContext_valueReference_ResearchStudy"
+      },
+      {
+        "source": "ResearchSubject",
+        "target": "ResearchStudy",
+        "relationship": "study"
+      },
+      {
+        "source": "ResearchSubject",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "ResearchSubject",
+        "target": "Specimen",
+        "relationship": "subject_Specimen"
+      },
+      {
+        "source": "ResearchSubject",
+        "target": "Medication",
+        "relationship": "subject_Medication"
+      },
+      {
+        "source": "ResearchSubject",
+        "target": "Substance",
+        "relationship": "subject_Substance"
+      },
+      {
+        "source": "Exon",
+        "target": "Transcript",
+        "relationship": "transcripts_Transcript"
+      },
+      {
+        "source": "SubstanceDefinition",
+        "target": "DocumentReference",
+        "relationship": "code_source"
+      },
+      {
+        "source": "SubstanceDefinition",
+        "target": "DocumentReference",
+        "relationship": "name_source"
+      },
+      {
+        "source": "SubstanceDefinition",
+        "target": "DocumentReference",
+        "relationship": "relationship_source"
+      },
+      {
+        "source": "SubstanceDefinition",
+        "target": "SubstanceDefinition",
+        "relationship": "relationship_substanceDefinitionReference"
+      },
+      {
+        "source": "SubstanceDefinition",
+        "target": "DocumentReference",
+        "relationship": "structure_sourceDocument"
+      },
+      {
+        "source": "ConditionStage",
+        "target": "Observation",
+        "relationship": "assessment_Observation"
+      },
+      {
+        "source": "SpecimenProcessing",
+        "target": "Substance",
+        "relationship": "additive"
+      },
+      {
+        "source": "SubstanceDefinitionStructure",
+        "target": "DocumentReference",
+        "relationship": "sourceDocument"
+      },
+      {
+        "source": "SubstanceDefinitionStructure",
+        "target": "DocumentReference",
+        "relationship": "representation_document"
+      }
+    ]
+  },
+  "minimal": {
+    "nodes": [
+      {
+        "id": "MedicationAdministration",
+        "group": 1
+      },
+      {
+        "id": "DocumentReference",
+        "group": 1
+      },
+      {
+        "id": "Observation",
+        "group": 1
+      },
+      {
+        "id": "Patient",
+        "group": 1
+      },
+      {
+        "id": "Substance",
+        "group": 1
+      },
+      {
+        "id": "MedicationRequest",
+        "group": 1
+      },
+      {
+        "id": "MedicationStatement",
+        "group": 1
+      },
+      {
+        "id": "Task",
+        "group": 1
+      },
+      {
+        "id": "Condition",
+        "group": 1
+      },
+      {
+        "id": "ResearchStudy",
+        "group": 1
+      },
+      {
+        "id": "Specimen",
+        "group": 1
+      },
+      {
+        "id": "Medication",
+        "group": 1
+      },
+      {
+        "id": "ResearchSubject",
+        "group": 1
+      },
+      {
+        "id": "SubstanceDefinition",
+        "group": 1
+      }
+    ],
+    "links": [
+      {
+        "source": "MedicationAdministration",
+        "target": "MedicationAdministration",
+        "relationship": "partOf_MedicationAdministration"
+      },
+      {
+        "source": "MedicationAdministration",
+        "target": "MedicationRequest",
+        "relationship": "request"
+      },
+      {
+        "source": "MedicationAdministration",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "Patient",
+        "relationship": "author_Patient"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "MedicationRequest",
+        "relationship": "basedOn_MedicationRequest"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "Patient",
+        "relationship": "attester_party_Patient"
+      },
+      {
+        "source": "DocumentReference",
+        "target": "DocumentReference",
+        "relationship": "relatesTo_target"
+      },
+      {
+        "source": "Observation",
+        "target": "MedicationRequest",
+        "relationship": "basedOn_MedicationRequest"
+      },
+      {
+        "source": "Observation",
+        "target": "DocumentReference",
+        "relationship": "derivedFrom_DocumentReference"
+      },
+      {
+        "source": "Observation",
+        "target": "Observation",
+        "relationship": "derivedFrom_Observation"
+      },
+      {
+        "source": "Observation",
+        "target": "Observation",
+        "relationship": "hasMember_Observation"
+      },
+      {
+        "source": "Observation",
+        "target": "MedicationAdministration",
+        "relationship": "partOf_MedicationAdministration"
+      },
+      {
+        "source": "Observation",
+        "target": "MedicationStatement",
+        "relationship": "partOf_MedicationStatement"
+      },
+      {
+        "source": "Observation",
+        "target": "Patient",
+        "relationship": "performer_Patient"
+      },
+      {
+        "source": "Observation",
+        "target": "Specimen",
+        "relationship": "specimen_Specimen"
+      },
+      {
+        "source": "Observation",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "Observation",
+        "target": "Medication",
+        "relationship": "subject_Medication"
+      },
+      {
+        "source": "Observation",
+        "target": "Substance",
+        "relationship": "subject_Substance"
+      },
+      {
+        "source": "Observation",
+        "target": "Observation",
+        "relationship": "triggeredBy_observation"
+      },
+      {
+        "source": "Patient",
+        "target": "Patient",
+        "relationship": "link_other_Patient"
+      },
+      {
+        "source": "Patient",
+        "target": "Substance",
+        "relationship": "substances_Substance"
+      },
+      {
+        "source": "Patient",
+        "target": "Substance",
+        "relationship": "substances_Substance"
+      },
+      {
+        "source": "Substance",
+        "target": "Substance",
+        "relationship": "ingredient_substanceReference"
+      },
+      {
+        "source": "Substance",
+        "target": "ResearchStudy",
+        "relationship": "projects_ResearchStudy"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "MedicationRequest",
+        "relationship": "basedOn_MedicationRequest"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Patient",
+        "relationship": "informationSource_Patient"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Patient",
+        "relationship": "performer_Patient"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "MedicationRequest",
+        "relationship": "priorPrescription"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Patient",
+        "relationship": "requester_Patient"
+      },
+      {
+        "source": "MedicationRequest",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "MedicationStatement",
+        "target": "Patient",
+        "relationship": "informationSource_Patient"
+      },
+      {
+        "source": "MedicationStatement",
+        "target": "MedicationStatement",
+        "relationship": "partOf_MedicationStatement"
+      },
+      {
+        "source": "MedicationStatement",
+        "target": "Observation",
+        "relationship": "relatedClinicalInformation_Observation"
+      },
+      {
+        "source": "MedicationStatement",
+        "target": "Condition",
+        "relationship": "relatedClinicalInformation_Condition"
+      },
+      {
+        "source": "MedicationStatement",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "Task",
+        "target": "Patient",
+        "relationship": "owner_Patient"
+      },
+      {
+        "source": "Task",
+        "target": "Task",
+        "relationship": "partOf"
+      },
+      {
+        "source": "Task",
+        "target": "Patient",
+        "relationship": "requester_Patient"
+      },
+      {
+        "source": "Task",
+        "target": "Patient",
+        "relationship": "performer_actor_Patient"
+      },
+      {
+        "source": "Task",
+        "target": "Patient",
+        "relationship": "restriction_recipient_Patient"
+      },
+      {
+        "source": "Task",
+        "target": "DocumentReference",
+        "relationship": "documents_DocumentReference"
+      },
+      {
+        "source": "Task",
+        "target": "Specimen",
+        "relationship": "specimen_Specimen"
+      },
+      {
+        "source": "Task",
+        "target": "DocumentReference",
+        "relationship": "documents_DocumentReference"
+      },
+      {
+        "source": "Condition",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "Condition",
+        "target": "Patient",
+        "relationship": "participant_actor_Patient"
+      },
+      {
+        "source": "Condition",
+        "target": "Observation",
+        "relationship": "stage_assessment_Observation"
+      },
+      {
+        "source": "ResearchStudy",
+        "target": "ResearchStudy",
+        "relationship": "partOf"
+      },
+      {
+        "source": "ResearchStudy",
+        "target": "ResearchStudy",
+        "relationship": "site_ResearchStudy"
+      },
+      {
+        "source": "Specimen",
+        "target": "Specimen",
+        "relationship": "parent"
+      },
+      {
+        "source": "Specimen",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "Specimen",
+        "target": "Substance",
+        "relationship": "subject_Substance"
+      },
+      {
+        "source": "Specimen",
+        "target": "Patient",
+        "relationship": "collection_collector_Patient"
+      },
+      {
+        "source": "Specimen",
+        "target": "Substance",
+        "relationship": "processing_additive"
+      },
+      {
+        "source": "Specimen",
+        "target": "ResearchStudy",
+        "relationship": "projects_ResearchStudy"
+      },
+      {
+        "source": "Specimen",
+        "target": "ResearchStudy",
+        "relationship": "projects_ResearchStudy"
+      },
+      {
+        "source": "Specimen",
+        "target": "DocumentReference",
+        "relationship": "specimen_DocumentReference"
+      },
+      {
+        "source": "ResearchSubject",
+        "target": "ResearchStudy",
+        "relationship": "study"
+      },
+      {
+        "source": "ResearchSubject",
+        "target": "Patient",
+        "relationship": "subject_Patient"
+      },
+      {
+        "source": "ResearchSubject",
+        "target": "Specimen",
+        "relationship": "subject_Specimen"
+      },
+      {
+        "source": "ResearchSubject",
+        "target": "Medication",
+        "relationship": "subject_Medication"
+      },
+      {
+        "source": "ResearchSubject",
+        "target": "Substance",
+        "relationship": "subject_Substance"
+      },
+      {
+        "source": "SubstanceDefinition",
+        "target": "DocumentReference",
+        "relationship": "code_source"
+      },
+      {
+        "source": "SubstanceDefinition",
+        "target": "DocumentReference",
+        "relationship": "name_source"
+      },
+      {
+        "source": "SubstanceDefinition",
+        "target": "DocumentReference",
+        "relationship": "relationship_source"
+      },
+      {
+        "source": "SubstanceDefinition",
+        "target": "SubstanceDefinition",
+        "relationship": "relationship_substanceDefinitionReference"
+      },
+      {
+        "source": "SubstanceDefinition",
+        "target": "DocumentReference",
+        "relationship": "structure_sourceDocument"
+      }
+    ]
+  }
+}
