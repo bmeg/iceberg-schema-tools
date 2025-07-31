@@ -39,11 +39,14 @@ dependency_order:
   - Group
   - Device
   - BodyStructure
+  - DiagnosticReport
+  - ActivityDefinition
+#  - Procedure
+#  - Encounter
 #  - Immunization
 #  - Encounter
 #  - Location
-#  - DiagnosticReport
-#  - Procedure
+
 
 # Properties to 'pluck' from nested objects and render in the parent object
 nested_objects:
