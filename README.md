@@ -86,5 +86,8 @@ tmp
 
 ```
 
+## Architecture Documentation
+See [Repository Architecture Guide](docs/repository-architecture.md) for track-based documentation covering simplified (gen3/pfb), graph (vertex/edge), and JSON hypermedia links.
+
 ## Contributing
 See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for developer notes.
